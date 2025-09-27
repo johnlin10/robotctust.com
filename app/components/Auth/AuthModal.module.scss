@@ -1,0 +1,55 @@
+@use '../../styles/mixins' as mixins;
+
+.modal_overlay {
+  z-index: 1000;
+  @include mixins.flexbox(column, center, center);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  @include mixins.glass-blur;
+  @include mixins.respond-to('phone') {
+    padding: 0;
+  }
+
+  > .modal_content {
+    @include mixins.flexbox(column, center, center);
+    height: 100%;
+    width: 100%;
+    position: relative;
+
+    > .auth_modal_container {
+      // @include mixins.flexbox(column, center, center);
+      margin: 0 auto;
+      width: 100%;
+      max-width: 540px;
+      height: fit-content;
+      max-height: 100%;
+      padding: 2rem;
+      background: var(--background);
+      border: 1px solid var(--border);
+      @include mixins.border-radius(12px);
+      overflow-y: auto;
+
+      @include mixins.respond-to('phone') {
+        height: 100%;
+        max-width: unset;
+        border: 0 solid #00000000;
+        @include mixins.border-radius(0);
+      }
+    }
+  }
+}
+
+//* 動畫效果
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

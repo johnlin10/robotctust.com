@@ -1,0 +1,17 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.aboutContainer {
+  > .aboutContent {
+    @include mixins.content-container;
+
+    > .contact {
+      > h2 {
+        border-top: none;
+        padding-top: 0;
+      }
+      > p {
+        color: var(--text-secondary);
+      }
+    }
+  }
+}

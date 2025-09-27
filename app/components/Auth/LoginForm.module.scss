@@ -1,0 +1,160 @@
+@use '../../styles/mixins' as mixins;
+
+.form_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  > h2 {
+    margin: 0;
+    color: var(--foreground);
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  > .close_button {
+    height: 44px;
+    width: 44px;
+    font-size: 1.5rem;
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(6px);
+    @include mixins.hover-scale-effect;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--border-hover);
+      background: var(--background-secondary);
+      color: var(--foreground);
+    }
+  }
+}
+
+.error_message {
+  background: #fee;
+  color: #c53030;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  border: 1px solid #fed7d7;
+}
+
+.form {
+  > .form_group {
+    margin-bottom: 1rem;
+
+    > label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--foreground);
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+
+    > input {
+      box-sizing: border-box;
+      padding: 0.75rem;
+      width: 100%;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      @include mixins.border-radius(6px);
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      &.error {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      }
+
+      &::placeholder {
+        color: var(--foreground-tertiary);
+      }
+    }
+
+    > .field_error {
+      display: block;
+      color: var(--theme-red-600);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+  }
+
+  > .submit_button {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    padding: 0.875rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border-tertiary);
+    @include mixins.border-radius(6px);
+    @include mixins.hover-scale-effect(1.01);
+
+    &:hover:not(:disabled) {
+      border-color: var(--border-tertiary-hover);
+      background: var(--primary-hover);
+    }
+
+    &:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+}
+
+.divider {
+  @include mixins.flexbox(row, center, center);
+  position: relative;
+  text-align: center;
+  margin: 36px 0;
+  width: 100%;
+
+  > span {
+    &.divider_line {
+      z-index: 1;
+      height: 1px;
+      width: 100%;
+      background: var(--border);
+    }
+    &.divider_text {
+      z-index: 10;
+      position: absolute;
+      left: 50%;
+      right: 0;
+      width: fit-content;
+      background: var(--background);
+      padding: 0 1rem;
+      color: var(--foreground);
+      font-size: 0.875rem;
+      @include mixins.transform-container(translateX(-50%));
+    }
+  }
+}
+
+.switch_form {
+  text-align: center;
+  color: var(--foreground-tertiary);
+  font-size: 0.875rem;
+
+  > button {
+    background: none;
+    border: none;
+    color: #3b82f6;
+    cursor: pointer;
+    font-weight: 500;
+    margin-left: 0.25rem;
+    text-decoration: underline;
+
+    &:hover {
+      color: #2563eb;
+    }
+  }
+}

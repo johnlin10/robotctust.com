@@ -1,0 +1,21 @@
+@use '../../styles/mixins.scss' as mixins;
+
+.menu {
+  z-index: 1000;
+  @include mixins.flexbox(column, center, center);
+  position: fixed;
+  padding-bottom: 72px;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 144px;
+  @include mixins.transform-container(translateY(calc(-100% + 72px)));
+  @include mixins.transition(0.5s cubic-bezier(0.23, 1, 0.32, 1));
+
+  &.open {
+    background-color: rgba(var(--background-secondary-rgb), 0.8);
+    @include mixins.glass-blur(24px);
+    @include mixins.transform-container(translateY(0));
+    border-bottom: 1px solid var(--border);
+  }
+}

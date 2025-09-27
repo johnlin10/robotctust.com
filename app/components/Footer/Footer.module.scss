@@ -1,0 +1,63 @@
+@use '../../styles/mixins' as mixins;
+
+footer.footer {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x) var(--space) 0 var(--space-2x);
+  width: 100%;
+  height: fit-content;
+  background-color: var(--background);
+
+  > .footerContainer {
+    width: 100%;
+    max-width: 720px;
+
+    > .footerContent {
+      > .header {
+        @include mixins.flexbox(row, space-between, center);
+        gap: var(--space);
+
+        > .headerLeft {
+          @include mixins.flexbox(row, center, center);
+          gap: var(--space);
+
+          > img {
+            width: clamp(42px, 6vw, 60px);
+            height: clamp(42px, 6vw, 60px);
+          }
+
+          > h1 {
+            margin: 0;
+            font-size: clamp(1.5rem, 3.25vw, 2rem);
+            font-weight: bold;
+            letter-spacing: 0.05rem;
+            background: linear-gradient(
+              170deg,
+              var(--purple-400),
+              var(--purple-600)
+            );
+            background-size: 100% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+        }
+
+        > .headerRight {
+          @include mixins.flexbox(row, center, center);
+          gap: var(--space);
+        }
+      }
+    }
+
+    > .copyright {
+      @include mixins.flexbox(row, center, center);
+      margin-top: var(--space-2x);
+      padding-top: var(--space);
+
+      > p {
+        font-size: 0.8rem;
+        color: var(--foreground-tertiary);
+      }
+    }
+  }
+}

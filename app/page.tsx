@@ -1,103 +1,88 @@
-import Image from "next/image";
+import Image from 'next/image'
+import styles from './home.module.scss'
+// components
+import Page from './components/page/Page'
+import Footer from './components/Footer/Footer'
+// data
+import { howWeLearn } from './messages/howWeLearn'
+// utils
+import { metadata } from './utils/metadata'
 
+/**
+ * 首頁
+ */
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <Page style={styles.homeContainer} maxWidth="none">
+      <section className={styles.headerSection}>
+        <div className={styles.firstRow}>
+          <Image
+            src="/assets/image/home/robotctust-home-image.png"
+            alt="中臺機器人研究社"
+            width={96}
+            height={96}
+            className={styles.homeImage}
+          />
+          <h1>中臺機器人研究社</h1>
+          <p>從創意到實戰，打造你的機器人宇宙。</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <div className={styles.robotContainer}>
           <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            src="/assets/image/home/robot-background@0.5x.webp"
+            alt="中臺機器人研究社"
+            width={1080}
+            height={1080}
+            className={styles.robotBackground}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
           <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+            src="/assets/image/home/robot-v1@0.5x.webp"
+            alt="中臺機器人研究社"
+            width={540}
+            height={480}
+            className={styles.robotImage}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+        </div>
+      </section>
+      <section className={styles.howWeLearnSection}>
+        <div className={styles.howWeLearnContainer}>
+          <div className={styles.headerContainer}>
+            <h2>我們如何學習與成長？</h2>
+            <p>
+              在機器人研究社，我們相信「做中學」是最好的成長方式。
+              <br />
+              我們規劃了由淺入深的學習路徑，無論你是完全沒接觸過的新手，還是已有基礎的同好，都能在這裡找到屬於你的舞台，享受動手創造的樂趣！
+            </p>
+          </div>
+          <div className={styles.cardContainer}>
+            {howWeLearn.map((item) => (
+              <div className={styles.card} key={item.title}>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+                <div className={styles.points}>
+                  <p>{item.points.title}</p>
+                  <ul>
+                    {item.points.points.map((point) => (
+                      <li key={point}>{point}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <Footer />
+    </Page>
+  )
+}
+
+export async function generateMetadata() {
+  return metadata({
+    title: '中臺機器人研究社｜Robot Research Club of CTUST',
+    description:
+      '中臺機器人研究社是一個由中臺科技大學學生組成的社團，主要研究機器人技術，並且提供學生一個學習機器人技術的平台。',
+    keywords: ['首頁', '主頁', '機器人研究'],
+    url: '/',
+    type: 'website',
+  })
 }

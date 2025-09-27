@@ -1,0 +1,102 @@
+# Query: var(--color-gray
+# ContextLines: 1
+
+82 results - 6 files
+
+app/components/Auth/LoginForm.module.css:
+  1: ⟪ 2729 characters skipped ⟫);-ms-transform:translateX(-50%);-o-transform:translateX(-50%)}.login_form .google_button{width:100%;display:flex;align-items:center;justify-content:center;gap:.75rem;background:#fff;border:3px solid var(--color-gray-100);padding:.875rem;font-size:1rem;font-weight:500;cursor:pointer;margin-bottom:1.5rem;border-radius:9px;-webkit-border-radius:9px;-moz-border-radius:9px;-ms-border-radius:9px;-o-border-radius:9px}.login_form .google_button:hover:not(:disabled){border-color:var(--color-gray-300)}.login_form .google_button:disabled{opacity:.6;cursor:not-allowed;transform:none}.login_form .google_button .google_icon{width:20px;height:20px}.login_form .google_button span{color:var(--color-gray-700)}.login_form .switch_form{text-align:center;color:#6b7280;font-size:.875rem}.login_form .switch_form button{background:none;border:none;color:#3b82f6;cursor:pointer;font-weight:500;margin-left:.25rem;text-decoration:underline}.login_form .switch_form button:hover{color:#2563eb}
+
+app/components/Auth/LoginForm.module.scss:
+  156      background: white;
+  157:     border: 3px solid var(--gray-100);
+  158      padding: 0.875rem;
+
+  165      &:hover:not(:disabled) {
+  166:       border-color: var(--color-gray-300);
+  167      }
+
+  180      span {
+  181:       color: var(--color-gray-700);
+  182      }
+
+app/components/Auth/RegisterForm.module.css:
+  1: ⟪ 953 characters skipped ⟫rm .register_options{margin-bottom:1.5rem}.register_form .register_options .google_button{width:100%;display:flex;align-items:center;justify-content:center;gap:.75rem;background:#fff;border:3px solid var(--color-gray-100);padding:.875rem;font-size:1rem;font-weight:500;cursor:pointer;margin-bottom:1.5rem;border-radius:9px;-webkit-border-radius:9px;-moz-border-radius:9px;-ms-border-radius:9px;-o-border-radius:9px}.register_form .register_options .google_button:hover:not(:disabled){border-color:var(--color-gray-300)}.register_form .register_options .google_button:disabled{opacity:.6;cursor:not-allowed;transform:none}.register_form .register_options .google_button .google_icon{width:20px;height:20px}.register_form .register_options .google_button span{color:var(--color-gray-700)}.register_form .register_options .divider{display:flex;flex-direction:row;justify-content:center;align-items:center;position:relative;text-align:center;margin:36px 0;width:100%}.register_form .register_options .divider>span.divider_line{z-index:1;height:1px;width:100%;background:var(--border)}.register_form .register_options .divider>span.divider_text{z-index:10;position:absolute;left:50%;right:0;width:-moz-fit-content;width:fit-content;background:var(--background-secondary);padding:0 1rem;color:var(--foreground);font-size:.875rem;transform:translateX(-50%);-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);-o-transform:translateX(-50%)}.register_form .form .avatar_section{margin-bottom:1.5rem;text-align:center}.register_form .form .avatar_section label{display:block;margin-bottom:1rem;color:var(--foreground);font-weight:500;font-size:.875rem}.register_form .form .avatar_section .avatar_upload{display:inline-block;pos
+
+app/components/Auth/RegisterForm.module.scss:
+  63        background: white;
+  64:       border: 3px solid var(--color-gray-100);
+  65        padding: 0.875rem;
+
+  72        &:hover:not(:disabled) {
+  73:         border-color: var(--color-gray-300);
+  74        }
+
+  87        span {
+  88:         color: var(--color-gray-700);
+  89        }
+
+app/styles/_colors.css:
+  1: ⟪ 1407 characters skipped ⟫ple-950: oklch(0.05 0.39 295);--color-success: #10b981;--color-warning: #f59e0b;--color-error: #ef4444;--color-info: #3b82f6}:root,:root.light{--background: var(--color-white);--background-secondary: var(--color-gray-100);--background-tertiary: var(--color-gray-200);--text-primary: var(--color-gray-900);--text-secondary: var(--color-gray-700);--text-tertiary: var(--color-gray-500);--foreground: var(--color-gray-900);--foreground-secondary: var(--color-gray-700);--foreground-tertiary: var(--color-gray-500);--border: var(--color-gray-200);--border-secondary: var(--color-gray-300);--border-hover: var(--color-gray-400);--primary: var(--purple-500);--secondary: var(--purple-300);--primary-foreground: var(--color-white);--primary-hover: var(--purple-400);--danger: var(--color-red-500);--danger-foreground: var(--color-white);--danger-hover: var(--color-red-700);--card: var(--color-white);--card-foreground: var(--color-gray-900);--muted: var(--color-gray-100);--muted-foreground: var(--color-gray-500);--accent: var(--color-gray-100);--accent-foreground: var(--color-gray-900);--background-rgb: 255, 255, 255;--background-secondary-rgb: 223, 242, 254;--foreground-rgb: 17, 24, 39;--docs-card-background: var(--color-white);--docs-card-shadow: 0 0 48px 24px rgba(0, 0, 0, 0.05)}:root.dark{--background: var(--color-gray-900);--background-secondary: var(--color-gray-800);--background-tertiary: var(--color-gray-700);--text-primary: var(--color-white);--text-secondary: var(--color-gray-300);--text-tertiary: var(--color-gray-400);--foreground: var(--color-gray-50);--foreground-secondary: var(--color-gray-200);--foreground-tertiary: var(--color-gray-400);--border: var(--color-gray-700);--border-secondary: var(--color-gray-600);--border-hover: var(--color-gray-500);--primary: var(--purple-500);--secondary: var(--purple-700);--primary-foreground: var(--color-white);--primary-hover: var(--purple-400);--danger: var(--color-red-700);--danger-foreground: var(--color-white);--danger-hover: var(--color-red-900);--card: var(--color-gray-800);--card-foreground: var(--color-gray-50);--muted: var(--color-gray-800);--muted-foreground: var(--color-gray-400);--accent: var(--color-gray-800);--accent-foreground: var(--color-gray-50);--background-rgb: 17, 24, 39;--background-secondary-rgb: 27, 36, 49;--foreground-rgb: 249, 250, 251;--docs-card-background: var(--color-gray-800);--docs-card-shadow: 0 0 48px 24px rgba(0, 0, 0, 0.15);--docs-card-border: var(--color-gray-700)}*{transition:background-color .3s cubic-bezier(0.23, 1, 0.32, 1),color .3s cubic-bezier(0.23, 1, 0.32, 1),border-color .3s cubic-bezier(0.23, 1, 0.32, 1)}
+
+app/styles/_colors.scss:
+   67    --background: var(--color-white);
+   68:   --background-secondary: var(--color-gray-100);
+   69:   --background-tertiary: var(--color-gray-200);
+   70  
+   71:   --text-primary: var(--color-gray-900);
+   72:   --text-secondary: var(--color-gray-700);
+   73:   --text-tertiary: var(--color-gray-500);
+   74  
+   75:   --foreground: var(--color-gray-900);
+   76:   --foreground-secondary: var(--color-gray-700);
+   77:   --foreground-tertiary: var(--color-gray-500);
+   78  
+   79:   --border: var(--color-gray-200);
+   80:   --border-secondary: var(--color-gray-300);
+   81:   --border-hover: var(--color-gray-400);
+   82  
+
+   92    --card: var(--color-white);
+   93:   --card-foreground: var(--color-gray-900);
+   94  
+   95:   --muted: var(--color-gray-100);
+   96:   --muted-foreground: var(--color-gray-500);
+   97  
+   98:   --accent: var(--color-gray-100);
+   99:   --accent-foreground: var(--color-gray-900);
+  100  
+
+  112  :root.dark {
+  113:   --background: var(--color-gray-900);
+  114:   --background-secondary: var(--color-gray-800);
+  115:   --background-tertiary: var(--color-gray-700);
+  116  
+  117    --text-primary: var(--color-white);
+  118:   --text-secondary: var(--color-gray-300);
+  119:   --text-tertiary: var(--color-gray-400);
+  120  
+  121:   --foreground: var(--color-gray-50);
+  122:   --foreground-secondary: var(--color-gray-200);
+  123:   --foreground-tertiary: var(--color-gray-400);
+  124  
+  125:   --border: var(--color-gray-700);
+  126:   --border-secondary: var(--color-gray-600);
+  127:   --border-hover: var(--color-gray-500);
+  128  
+
+  137  
+  138:   --card: var(--color-gray-800);
+  139:   --card-foreground: var(--color-gray-50);
+  140  
+  141:   --muted: var(--color-gray-800);
+  142:   --muted-foreground: var(--color-gray-400);
+  143  
+  144:   --accent: var(--color-gray-800);
+  145:   --accent-foreground: var(--color-gray-50);
+  146  
+
+  152    // Docs Card
+  153:   --docs-card-background: var(--color-gray-800);
+  154    --docs-card-shadow: 0 0 48px 24px rgba(0, 0, 0, 0.15);
+  155:   --docs-card-border: var(--color-gray-700);
+  156  }

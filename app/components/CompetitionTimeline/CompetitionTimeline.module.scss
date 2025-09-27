@@ -1,0 +1,268 @@
+@use '../../styles/mixins' as mixins;
+
+.timelineContainer {
+  @include mixins.flexbox(column, start, stretch);
+  gap: var(--space-2x);
+  width: 100%;
+
+  //* 排序控制
+  > .sortControls {
+    @include mixins.flexbox(row, space-between, center);
+    gap: var(--space);
+    margin-bottom: var(--space);
+
+    @include mixins.respond-to('phone') {
+      @include mixins.flexbox(column, start, stretch);
+      gap: var(--space);
+    }
+
+    > .timelineTitle {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--foreground);
+
+      @include mixins.respond-to('phone') {
+        font-size: 1.5rem;
+      }
+    }
+
+    > .sortButtons {
+      @include mixins.hover-scale-effect;
+      @include mixins.flexbox(row, start, center);
+      gap: 6px;
+      background: rgba(var(--background-secondary-rgb), 0.25);
+      padding: 4px;
+      @include mixins.border-radius(12px);
+      border: 1px solid var(--border);
+
+      &:hover {
+        background: rgba(var(--background-secondary-rgb), 0.5);
+      }
+
+      @include mixins.respond-to('phone') {
+        width: 100%;
+      }
+
+      > .sortButton {
+        padding: 6px 12px;
+        background: transparent;
+        border: none;
+        @include mixins.border-radius(8px);
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--foreground-secondary);
+        cursor: pointer;
+        @include mixins.transition(all 0.2s ease);
+        white-space: nowrap;
+
+        &:hover {
+          background: var(--background-tertiary);
+          color: var(--foreground);
+        }
+
+        &.active {
+          background: var(--primary);
+          color: var(--color-white);
+          // @include mixins.shadow(var(--shadow-sm));
+        }
+
+        @include mixins.respond-to('phone') {
+          flex: 1;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  //* 時間線
+  > .timeline {
+    @include mixins.flexbox(column, start, stretch);
+    gap: var(--space-2x);
+    position: relative;
+
+    > .timelineGroup {
+      @include mixins.flexbox(row, start, start);
+      gap: var(--space-2x);
+      position: relative;
+      margin-bottom: var(--space);
+
+      @include mixins.respond-to('tablet') {
+        @include mixins.flexbox(column, start, stretch);
+        gap: var(--space);
+      }
+      @include mixins.respond-to('phone') {
+        @include mixins.flexbox(column, start, stretch);
+        gap: var(--space);
+      }
+
+      &:last-child .dateCircle {
+        background: var(--theme-blue-400) !important;
+      }
+
+      > .dateSection {
+        z-index: 10;
+        @include mixins.flexbox(row, start, start);
+        gap: var(--space);
+        min-width: 200px;
+        min-height: 100%;
+        position: sticky;
+        top: 72px;
+        @include mixins.transition(var(--transition-default));
+
+        &.compact {
+          top: 48px;
+        }
+
+        //* Sticky 狀態
+        @include mixins.respond-to('tablet') {
+          &.sticky {
+            // background: rgba(var(--background-rgb), 0.5);
+
+            > .dateInfo {
+              padding: var(--space);
+              border: 1px solid var(--border);
+              background: rgba(var(--background-rgb), 0.85);
+              @include mixins.glass-blur(6px);
+              @include mixins.border-radius(12px);
+              @include mixins.transform-container(scale(1.02));
+              @include mixins.box-shadow(24px);
+            }
+          }
+        }
+        @include mixins.respond-to('phone') {
+          &.sticky {
+            // background: rgba(var(--background-rgb), 0.5);
+
+            > .dateInfo {
+              padding: var(--space);
+              border: 1px solid var(--border);
+              background: rgba(var(--background-rgb), 0.85);
+              @include mixins.glass-blur(6px);
+              @include mixins.border-radius(12px);
+              @include mixins.transform-container(scale(1.02));
+              @include mixins.box-shadow(24px);
+            }
+          }
+        }
+        @include mixins.respond-to('desktop') {
+          @include mixins.flexbox(row-reverse, start, start);
+        }
+
+        > .dateNode {
+          @include mixins.flexbox(column, start, center);
+          position: relative;
+          min-width: 24px;
+          height: 100%;
+
+          > .dateCircle {
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            @include mixins.border-radius(50%);
+            border: 3px solid var(--background);
+            // @include mixins.shadow(var(--shadow-md));
+            position: relative;
+            z-index: 2;
+          }
+
+          > .timelineLine {
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            @include mixins.border-radius(1.5px);
+            height: 1000px;
+            background: linear-gradient(
+              to bottom,
+              var(--primary) 0%,
+              var(--theme-blue-300) 100%
+            );
+            z-index: 1;
+
+            // @include mixins.respond-to('tablet') {
+            //   display: none;
+            // }
+          }
+        }
+
+        > .dateInfo {
+          @include mixins.flexbox(column, start, start);
+          gap: 4px;
+          flex: 1;
+          border: 1px solid #00000000;
+          padding-bottom: var(--space);
+          @include mixins.transition(var(--transition-default));
+
+          @include mixins.respond-to('desktop') {
+            @include mixins.flexbox(column, start, flex-end);
+          }
+
+          > .dateTitle {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--foreground);
+            line-height: 1.2;
+
+            @include mixins.respond-to('phone') {
+              font-size: 1rem;
+            }
+          }
+
+          > .dateSubtitle {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--foreground-secondary);
+            font-weight: 500;
+          }
+        }
+      }
+
+      > .competitionsSection {
+        flex: 1;
+        min-width: 0; // 防止 flex 子項目溢出
+
+        @include mixins.respond-to('tablet') {
+          margin-left: calc(24px + var(--space));
+        }
+
+        @include mixins.respond-to('phone') {
+          margin-left: calc(24px + var(--space));
+        }
+
+        > .competitionCards {
+          @include mixins.flexbox(column, start, stretch);
+          gap: var(--space);
+
+          @include mixins.respond-to('desktop') {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--space);
+          }
+        }
+      }
+    }
+  }
+}
+
+//* 沒有競賽資料
+.emptyState {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x);
+  text-align: center;
+  color: var(--foreground-secondary);
+
+  h3 {
+    margin: 0 0 var(--space) 0;
+    font-size: 1.2rem;
+    color: var(--foreground);
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}

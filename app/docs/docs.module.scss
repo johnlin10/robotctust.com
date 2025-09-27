@@ -1,0 +1,79 @@
+@use '../styles/mixins' as mixins;
+
+.docsContainer {
+  > .docsContent {
+    @include mixins.content-container;
+
+    > p {
+      color: var(--text-secondary);
+    }
+
+    > .docsGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      width: 100%;
+      gap: 12px;
+      margin-top: 24px;
+
+      > .docCard {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        padding: 1.5rem;
+        border: 1px solid var(--border);
+        text-decoration: none;
+        color: inherit;
+        overflow: hidden;
+        @include mixins.border-radius(12px);
+
+        &:hover {
+          background: rgba(var(--background-secondary-rgb), 0.75);
+          border: 1px solid var(--border-hover);
+          @include mixins.hover-scale-effect(1.01);
+
+          > .docCategory {
+            background-color: var(--background-tertiary);
+          }
+        }
+
+        .docIcon {
+          position: absolute;
+          top: 0;
+          right: 0;
+          font-size: 180px;
+          color: var(--gray-200);
+          margin-bottom: 1rem;
+          opacity: 0.5;
+        }
+
+        .docTitle {
+          z-index: 10;
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin-bottom: 0.1rem;
+          color: var(--text-primary);
+        }
+
+        .docDescription {
+          z-index: 10;
+          color: var(--text-secondary);
+          font-size: 0.9rem;
+          line-height: 1.5;
+        }
+
+        .docCategory {
+          z-index: 10;
+          margin-top: 1rem;
+          padding: 3px 9px;
+          width: fit-content;
+          font-size: 0.8rem;
+          font-weight: 500;
+          color: var(--foreground-secondary);
+          border: 1px solid var(--border);
+          background-color: var(--background-secondary);
+          @include mixins.border-radius(18px);
+        }
+      }
+    }
+  }
+}

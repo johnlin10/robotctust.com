@@ -1,0 +1,37 @@
+@use '../../styles/mixins' as mixins;
+
+.toggle {
+  @include mixins.button;
+
+  &:hover {
+    background: var(--background-tertiary);
+    border-color: var(--border-secondary);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.skeleton {
+  width: 80px;
+  height: 36px;
+  background: var(--muted);
+  border-radius: 8px;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

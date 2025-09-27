@@ -1,0 +1,90 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.clubOfficer {
+  @include mixins.flexbox(column, start, start);
+  gap: var(--space);
+  width: 100%;
+
+  > .clubOfficerList {
+    @include mixins.grid-layout(3, 1rem);
+    width: 100%;
+
+    @include mixins.respond-to('phone') {
+      @include mixins.grid-layout(1, 1rem);
+    }
+    @include mixins.respond-to('tablet') {
+      @include mixins.grid-layout(2, 1rem);
+    }
+
+    > .clubOfficerItem {
+      @include mixins.flexbox(row, space-between, center);
+      padding: 24px;
+      width: 100%;
+      height: 100%;
+      border: 1px solid var(--border);
+      @include mixins.border-radius(12px);
+      cursor: default;
+
+      @include mixins.respond-to('desktop') {
+        @include mixins.flexbox(column, center, center);
+      }
+
+      > .clubOfficerItemImage {
+        position: relative;
+        width: fit-content;
+        min-height: min-content;
+        @include mixins.border-radius(50%);
+
+        @include mixins.respond-to('desktop') {
+          width: 100%;
+        }
+
+        > img {
+          width: 100%;
+          max-width: 120px;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+          @include mixins.border-radius(50%);
+
+          @include mixins.respond-to('desktop') {
+            width: 100%;
+            max-width: unset;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+          }
+        }
+      }
+
+      > .clubOfficerInfo {
+        width: 100%;
+        padding: 0 12px;
+
+        @include mixins.respond-to('desktop') {
+          @include mixins.flexbox(column, center, center);
+        }
+
+        > .clubOfficerItemName {
+          @include mixins.respond-to('desktop') {
+            margin-top: 12px;
+          }
+
+          > h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+          }
+        }
+        > .clubOfficerItemPosition {
+          margin-top: 4px;
+
+          > p {
+            margin: 0;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+}

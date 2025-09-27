@@ -1,0 +1,361 @@
+@use '../../styles/_mixins.scss' as mixins;
+
+//* 按鈕組模式樣式
+.selectorContainer {
+  position: relative;
+  width: 100%;
+
+  > .selectorTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin: 0 0 var(--space) 0;
+
+    @include mixins.respond-to('phone') {
+      font-size: 1.1rem;
+    }
+  }
+
+  //* 按鈕組樣式
+  > .buttonGroup {
+    @include mixins.flexbox(row, start, center);
+    gap: 12px;
+    flex-wrap: wrap;
+
+    @include mixins.respond-to('phone') {
+      @include mixins.flexbox(column, start, stretch);
+      gap: 6px;
+    }
+
+    > .button {
+      @include mixins.button('secondary', 'normal');
+      @include mixins.flexbox(row, center, center);
+      gap: 6px;
+      font-weight: 500;
+      @include mixins.transition(all 0.3s ease);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+
+      @include mixins.respond-to('phone') {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      > .buttonLabel {
+        color: var(--foreground);
+      }
+
+      > .buttonCount {
+        font-size: 0.85rem;
+        color: var(--foreground-secondary);
+        font-weight: 400;
+      }
+
+      &:hover {
+        @include mixins.hover-scale-effect(1.02);
+        background: var(--background-secondary);
+        border-color: var(--foreground-300);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        &:hover {
+          transform: none;
+          background: var(--background);
+          border-color: var(--border);
+        }
+      }
+
+      &.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: var(--color-white);
+
+        > .buttonLabel {
+          color: var(--color-white);
+        }
+
+        > .buttonCount {
+          color: var(--color-white);
+          opacity: 0.9;
+        }
+
+        &:hover {
+          background: var(--primary);
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+}
+
+//* 下拉選單模式樣式
+.selector {
+  z-index: 100;
+  position: relative;
+  width: 100%;
+  @include mixins.hover-scale-effect(1.02);
+  @include mixins.border-radius(6px);
+
+  &:hover {
+    > .trigger,
+    .dropdown {
+      @include mixins.box-shadow(12px);
+    }
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  > .trigger {
+    z-index: 200;
+    @include mixins.flexbox(row, space-between, center);
+    width: 100%;
+    padding: var(--space-0-75x) var(--space);
+    background: var(--background);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(6px);
+    cursor: pointer;
+    @include mixins.transition(all 0.2s ease);
+    min-height: 44px;
+
+    &:hover {
+      border-color: var(--border-hover);
+      background: var(--background-secondary);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--foreground-900);
+      background: var(--background-secondary);
+    }
+
+    &.open {
+      border-color: var(--foreground-900);
+      background: var(--background-secondary);
+      @include mixins.border-radius(8px 8px 0 0);
+    }
+
+    > .triggerText {
+      flex: 1;
+      text-align: left;
+      color: var(--foreground);
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    > .arrow {
+      @include mixins.transition(transform 0.2s ease);
+      color: var(--foreground-secondary);
+      font-size: 0.8rem;
+      margin-left: var(--space-0-5x);
+
+      &.up {
+        transform: rotate(180deg);
+      }
+
+      &.down {
+        transform: rotate(0deg);
+      }
+    }
+  }
+
+  > .dropdown {
+    // z-index: -1;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--background);
+    border: 1px solid var(--foreground-900);
+    border-top: none;
+    @include mixins.border-radius(0 0 8px 8px);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    overflow-y: auto;
+
+    &:hover {
+      border: 1px solid var(--foreground-800);
+      border-top: none;
+    }
+
+    //* 自定義滾動條
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--background-secondary);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--border);
+      @include mixins.border-radius(3px);
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--foreground-300);
+    }
+  }
+}
+
+//* 選項樣式
+.optionsList {
+  padding: 0;
+}
+
+.option {
+  @include mixins.flexbox(row, space-between, center);
+  padding: var(--space-0-75x) var(--space);
+  cursor: pointer;
+  @include mixins.transition(background-color 0.2s ease);
+  gap: var(--space-0-5x);
+
+  &:hover {
+    background: var(--background-secondary);
+  }
+
+  &.selected {
+    background: var(--primary);
+    color: var(--primary);
+
+    > .optionLabel {
+      font-weight: 500;
+    }
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  > .optionLabel {
+    flex: 1;
+    font-size: 0.95rem;
+    color: var(--foreground);
+  }
+
+  > .optionCount {
+    font-size: 0.85rem;
+    color: var(--foreground-secondary);
+    margin-left: auto;
+  }
+
+  > .checkbox {
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(3px);
+    @include mixins.flexbox(row, center, center);
+    font-size: 0.75rem;
+    color: var(--color-white);
+    @include mixins.transition(all 0.2s ease);
+
+    &.checked {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+  }
+}
+
+//* 分組選項樣式
+.optionGroup {
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  > .groupLabel {
+    padding: var(--space-0-75x) var(--space);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--foreground-secondary);
+    background: var(--background-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  > .groupOptions {
+    padding: var(--space-0-25x) 0;
+
+    > .option {
+      padding-left: var(--space-1-5x);
+    }
+  }
+}
+
+//* 下拉選單底部
+.dropdownFooter {
+  padding: var(--space-0-5x) var(--space);
+  border-top: 1px solid var(--border);
+  background: var(--background-secondary);
+
+  > .clearButton {
+    @include mixins.button('secondary', 'small');
+    width: 100%;
+    font-size: 0.85rem;
+    color: var(--danger);
+    border-color: var(--danger);
+
+    &:hover {
+      background: var(--danger);
+      color: var(--color-white);
+    }
+  }
+}
+
+//* 響應式設計
+@include mixins.respond-to('tablet') {
+  .dropdown {
+    max-height: 250px;
+  }
+}
+
+@include mixins.respond-to('phone') {
+  .dropdown {
+    max-height: 200px;
+    left: -1px;
+    right: -1px;
+  }
+
+  .option {
+    padding: var(--space) var(--space);
+
+    > .optionLabel {
+      font-size: 1rem;
+    }
+  }
+
+  .trigger {
+    min-height: 48px;
+    padding: var(--space) var(--space);
+
+    > .triggerText {
+      font-size: 1rem;
+    }
+  }
+}
+
+//* 動畫效果
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown {
+  @include mixins.animation-container(fadeIn 0.2s ease-out);
+}

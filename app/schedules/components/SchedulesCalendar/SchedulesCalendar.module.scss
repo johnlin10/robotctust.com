@@ -1,0 +1,685 @@
+@use '../../../styles/_mixins.scss' as mixins;
+
+.calendarContainer {
+  width: 100%;
+  margin: 0 auto;
+  scroll-snap-type: y mandatory;
+
+  > .yearTitle {
+    text-align: start;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: var(--space);
+    padding: var(--space) 0;
+
+    @include mixins.respond-to('phone') {
+      font-size: 1.25rem;
+      margin-bottom: var(--space);
+    }
+  }
+
+  > .yearSelector {
+    margin-bottom: var(--space-2x);
+    padding: var(--space);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(12px);
+    max-width: 300px;
+
+    @include mixins.respond-to('phone') {
+      max-width: 100%;
+    }
+
+    > h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--foreground);
+      margin: 0 var(--space-0-5x) var(--space-0-5x) var(--space-0-5x);
+    }
+  }
+
+  > .calendarContent {
+    @include mixins.flexbox(column, center, start);
+    gap: var(--space);
+    width: 100%;
+
+    @include mixins.respond-by-min-width(860px) {
+      flex-direction: row;
+      gap: var(--space-2x);
+    }
+
+    > .calendarAside {
+      z-index: 10;
+      position: sticky;
+      top: 72px;
+      width: 100%;
+      background: var(--background);
+      @include mixins.border-radius(12px);
+      border: 1px solid var(--border);
+      padding: 0 var(--space-1-5x);
+      @include mixins.hide-scrollbar;
+      @include mixins.transition(var(--transition-default));
+      overflow: hidden;
+
+      @include mixins.respond-by-max-width(859px) {
+        &.sticky {
+          background-color: rgba(var(--background-secondary-rgb), 0.25);
+          @include mixins.glass-blur(12px);
+
+          &.headerCompact {
+            top: 48px;
+            border: 1px solid var(--foreground-950);
+          }
+        }
+      }
+
+      @include mixins.respond-by-min-width(860px) {
+        padding: var(--space-1-5x);
+        width: 50%;
+        max-width: 200px;
+        min-height: 200px;
+        height: calc(100vh - 72px - var(--space-2x));
+        overflow-y: auto;
+
+        &.headerCompact {
+          top: calc(48px);
+          height: calc(100vh - 48px - var(--space-2x));
+        }
+      }
+
+      > .asideHeader {
+        z-index: 10;
+        position: sticky;
+        top: 0;
+        margin-bottom: var(--space);
+        padding-bottom: var(--space);
+        background: var(--background);
+        box-shadow: 0 -12px 0 12px var(--background);
+        border-bottom: 1px solid var(--border);
+
+        @include mixins.respond-by-max-width(859px) {
+          margin-bottom: 0;
+          display: none;
+        }
+
+        > h3 {
+          margin: 0 0 8px 0;
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: var(--foreground);
+        }
+
+        > .eventCount {
+          font-size: 0.85rem;
+          color: var(--foreground-secondary);
+        }
+      }
+
+      > .monthNavigation {
+        @include mixins.flexbox(column, stretch, stretch);
+        gap: 6px;
+
+        @include mixins.respond-by-max-width(859px) {
+          flex-direction: row;
+          gap: var(--space-0-5x);
+          padding: var(--space-0-5x);
+          margin-left: calc(var(--space-1-5x) * -1);
+          width: calc(100% + var(--space-3x));
+          overflow-x: auto;
+          @include mixins.hide-scrollbar;
+        }
+
+        > .monthNavButton {
+          @include mixins.flexbox(row, space-between, center);
+          padding: var(--space);
+          background: var(--background-secondary);
+          border: 1px solid var(--border);
+          @include mixins.border-radius(6px);
+          @include mixins.transition(all 0.2s ease);
+          cursor: pointer;
+          text-align: left;
+          @include mixins.hover-scale-effect;
+
+          @include mixins.respond-by-max-width(860px) {
+            padding: var(--space-0-5x) var(--space);
+            gap: var(--space-0-5x);
+          }
+
+          &:hover {
+            background: var(--background-tertiary);
+          }
+
+          &.active {
+            background: var(--primary);
+            border-color: var(--foreground-800);
+            color: var(--color-white);
+
+            &:hover {
+              background: var(--theme-purple-600);
+            }
+
+            > .monthNavContent {
+              > .monthName,
+              > .monthYear {
+                color: var(--color-white);
+              }
+            }
+
+            > .monthEventCount {
+              background: var(--color-white);
+              color: var(--primary);
+            }
+          }
+
+          &.empty {
+            opacity: 0.6;
+
+            > .monthNavContent {
+              > .monthName,
+              > .monthYear {
+                color: var(--foreground-tertiary);
+              }
+            }
+          }
+
+          > .monthNavContent {
+            @include mixins.flexbox(column, start, start);
+            gap: 2px;
+
+            @include mixins.respond-by-max-width(859px) {
+              @include mixins.flexbox(row, start, center);
+
+              > .monthName,
+              > .monthYear {
+                white-space: nowrap;
+              }
+            }
+
+            > .monthName {
+              font-size: 0.9rem;
+              font-weight: 600;
+              color: var(--foreground);
+
+              @include mixins.respond-by-max-width(859px) {
+                font-size: 1rem;
+              }
+            }
+
+            > .monthYear {
+              font-size: 0.75rem;
+              color: var(--foreground-secondary);
+            }
+          }
+
+          > .monthEventCount {
+            background: var(--primary);
+            color: var(--color-white);
+            font-size: 0.75rem;
+            font-weight: 600;
+            width: 20px;
+            height: 20px;
+            @include mixins.border-radius(10px);
+            min-width: 20px;
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    > .monthsGrid {
+      @include mixins.flexbox(row, center, start);
+      flex-wrap: wrap;
+      gap: 20px;
+      width: 100%;
+
+      @include mixins.respond-by-max-width(859px) {
+        margin-left: -24px;
+        margin-top: 24px;
+        width: calc(100% + 48px);
+      }
+
+      > .monthContainer {
+        @include mixins.flexbox(column, stretch, stretch);
+        background: var(--background);
+        max-width: 960px;
+        overflow: hidden;
+        scroll-snap-align: start;
+
+        // 響應式布局 - 桌面：3列
+        @include mixins.respond-to('desktop') {
+          // width: calc(50% - 10px);
+          width: 100%;
+          min-width: 300px;
+        }
+
+        // 響應式布局 - 平板：2列
+        @include mixins.respond-to('tablet') {
+          width: 100%;
+          min-width: 250px;
+        }
+
+        // 響應式布局 - 手機：1列
+        @include mixins.respond-to('phone') {
+          width: 100%;
+          min-width: 250px;
+        }
+
+        > .monthHeader {
+          // background: var(--background-secondary);
+          padding: var(--space) 0;
+          text-align: start;
+          font-weight: 600;
+          font-size: 1.25rem;
+          color: var(--foreground);
+          // border-bottom: 1px solid var(--border);
+
+          @include mixins.respond-by-max-width(859px) {
+            font-size: 1.5rem;
+            padding: 6px 24px;
+          }
+        }
+      }
+    }
+  }
+
+  // FullCalendar 基本樣式覆蓋
+  :global(.fc) {
+    font-family: inherit;
+    font-size: 0.9rem;
+
+    // 月檢視樣式
+    :global(.fc-dayGridMonth-view) {
+      // 移除預設邊框
+      :global(.fc-scrollgrid) {
+        border: none;
+
+        td[role='presentation'] {
+          border: none;
+        }
+
+        > thead {
+          & > tr > th {
+            padding-bottom: 6px;
+            background: var(--background);
+            border: none;
+            border-bottom: 1px solid var(--border);
+
+            th {
+              border: none;
+            }
+          }
+        }
+      }
+
+      // 月份標題
+      :global(.fc-col-header-row) {
+        background: var(--background-secondary);
+
+        :global(.fc-col-header-cell) {
+          padding: 8px 4px;
+          font-weight: 600;
+          color: var(--foreground);
+          border-color: var(--border);
+          font-size: 0.8rem;
+
+          @include mixins.respond-to('phone') {
+            padding: 6px 2px;
+            font-size: 0.75rem;
+          }
+        }
+      }
+
+      // 日期格子
+      :global(.fc-daygrid-day) {
+        padding: 4px;
+        min-height: 40px;
+        border: none;
+        margin: 1px;
+        border: none !important;
+        @include mixins.border-radius(6px);
+        overflow: hidden;
+
+        @include mixins.respond-to('phone') {
+          min-height: 35px;
+        }
+
+        :global(.fc-daygrid-day-events) {
+          :global(.fc-daygrid-event-harness) {
+            pointer-events: none;
+          }
+        }
+
+        // 日期數字
+        :global(.fc-daygrid-day-number) {
+          color: var(--foreground);
+          font-size: 0.9rem;
+          padding: 1px 4px;
+
+          @include mixins.respond-to('phone') {
+            font-size: 0.8rem;
+            padding: 0 3px;
+          }
+        }
+
+        // Hover 效果
+        &:hover {
+          background-color: var(--foreground-950);
+        }
+        &:active {
+          background-color: var(--foreground-900);
+        }
+
+        // 今天的樣式
+        &:global(.fc-day-today) {
+          background-color: var(--theme-purple-300);
+          box-shadow: inset 0 0 0 1px var(--foreground-900);
+
+          &:hover {
+            background-color: var(--theme-purple-400);
+            box-shadow: inset 0 0 0 1px var(--foreground-800);
+          }
+          &:active {
+            background-color: var(--theme-purple-300);
+          }
+
+          :global(.fc-daygrid-day-number) {
+            font-weight: 700;
+            color: var(--color-white);
+          }
+        }
+
+        &:global(.fc-day-disabled) {
+          background-color: var(--background);
+        }
+
+        // 其他月份的日期 - 完全隱藏
+        &:global(.fc-day-other) {
+          display: none !important;
+        }
+      }
+
+      // 事件樣式
+      :global(.fc-event) {
+        border: none;
+        @include mixins.border-radius(4px);
+        font-size: 0.7rem;
+        padding: 2px 4px;
+        margin: 1px 0;
+        cursor: pointer;
+
+        // Hover 效果
+        &:hover {
+          @include mixins.box-shadow(2px);
+        }
+
+        // 事件標題
+        :global(.fc-event-title) {
+          font-weight: 500;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        // 事件時間
+        :global(.fc-event-time) {
+          font-weight: 400;
+          font-size: 0.5rem;
+          min-width: fit-content;
+          white-space: nowrap;
+
+          @include mixins.respond-to('phone') {
+            display: none;
+          }
+        }
+      }
+    }
+
+    // 標題樣式 - 隱藏工具列但保留樣式
+    :global(.fc-toolbar) {
+      display: none; // 我們使用自己的標題
+    }
+
+    // 月份標題樣式
+    :global(.fc-toolbar-title) {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--foreground);
+      text-align: center;
+      padding: var(--space) 0;
+      background: var(--background-secondary);
+      border-bottom: 1px solid var(--border);
+
+      @include mixins.respond-to('phone') {
+        font-size: 1rem;
+        padding: 8px 0;
+      }
+    }
+  }
+}
+
+// 學期外日期暗淡效果
+.dayOutOfSemester {
+  opacity: 0.3 !important;
+  background-color: var(--background-secondary) !important;
+
+  :global(.fc-daygrid-day-number) {
+    color: var(--foreground-tertiary) !important;
+  }
+
+  // 學期外的事件也要暗淡
+  :global(.fc-event) {
+    opacity: 0.5 !important;
+  }
+}
+
+// 學期內日期正常顯示
+.dayInSemester {
+  opacity: 1;
+}
+
+// 錯誤容器
+.errorContainer {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x);
+  color: var(--danger);
+  font-size: 1rem;
+  text-align: center;
+  background: var(--background-secondary);
+  border: 1px solid var(--danger);
+  @include mixins.border-radius(8px);
+  margin: var(--space-2x) 0;
+
+  > p {
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+//* 日程詳細檢視器
+.calendarDayDetailContent {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: calc(100% - var(--space-2x));
+  height: 0;
+  max-height: 320px;
+  @include mixins.border-radius(12px 12px 0 0);
+  overflow: hidden;
+  border: 1px solid #00000000;
+  transform: translateY(100%);
+  @include mixins.transition(var(--transition-default));
+
+  // 顯示狀態：從底部滑出
+  &.visible {
+    bottom: -24px;
+    height: 40vh;
+    border: 1px solid var(--border);
+    background: rgba(var(--background-rgb), 0.5);
+    @include mixins.glass-blur(24px);
+    @include mixins.transform-container(translateY(0 - 24px));
+
+    @include mixins.respond-to('phone') {
+      border-bottom: none;
+    }
+
+    @include mixins.respond-to('tablet') {
+      bottom: 0;
+      width: calc(100% - var(--space-4x));
+      @include mixins.border-radius(12px);
+    }
+  }
+
+  // 響應式調整
+  @include mixins.respond-by-min-width(860px) {
+    // 在大螢幕上，配合 calendarContent 的佈局
+    position: sticky;
+    bottom: 0 !important;
+    left: auto;
+    right: auto;
+    width: 100% !important;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(12px);
+  }
+
+  > .dayDetailHeader {
+    @include mixins.flexbox(row, space-between, center);
+    padding: var(--space) var(--space-1-5x);
+    border-bottom: 1px solid var(--border);
+    background: rgba(var(--background-secondary-rgb), 0.75);
+    height: 60px;
+
+    > .dayDetailTitle {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--foreground);
+      cursor: pointer;
+    }
+
+    > .closeDayDetailButton {
+      @include mixins.flexbox(row, center, center);
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      color: var(--foreground-tertiary);
+      cursor: pointer;
+      @include mixins.border-radius(8px);
+      @include mixins.transition(var(--transition-default));
+
+      &:hover {
+        background: var(--background-tertiary);
+        color: var(--foreground);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+
+  > .dayDetailContent {
+    height: calc(100% - 60px);
+    overflow: hidden;
+
+    > .noDayEvents {
+      @include mixins.flexbox(column, center, center);
+      height: 100%;
+      color: var(--foreground-secondary);
+      font-size: 1rem;
+
+      > p {
+        margin: 0;
+        text-align: center;
+      }
+    }
+
+    // FullCalendar 在日程檢視中的樣式調整
+    :global(.fc) {
+      height: 100% !important;
+
+      * {
+        border: none;
+        background: #00000000;
+      }
+
+      :global(.fc-scroller) {
+        padding-bottom: var(--space);
+      }
+
+      :global(.fc-timegrid-slot-label) {
+        font-size: 0.875rem;
+        color: var(--foreground-tertiary);
+        padding: var(--space-0-5x) var(--space) !important;
+
+        //* 確保時間標籤在較高的時間段中垂直置中
+        @include mixins.flexbox(row, center, center);
+        height: 60px !important;
+
+        @include mixins.respond-to('phone') {
+          height: 50px !important;
+          font-size: 0.8rem;
+          padding: var(--space-0-5x) 6px !important;
+        }
+      }
+      :global(.fc-timegrid-body) {
+        :global(.fc-timegrid-slot) {
+          border-color: var(--border);
+          min-width: fit-content;
+        }
+      }
+
+      :global(.fc-event) {
+        border-radius: 4px;
+        font-size: 0.875rem;
+      }
+
+      :global(.fc-timegrid-divider) {
+        display: none;
+      }
+
+      // 時間軸標題
+      :global(.fc-col-header) {
+        tr {
+          border-bottom: 1px solid var(--border);
+        }
+      }
+      // 時間軸內容
+      :global(.fc-timegrid-slots) {
+        tr {
+          border-bottom: 1px solid var(--border);
+
+          //* 調整時間軸小時段高度
+          :global(.fc-timegrid-slot) {
+            height: 60px !important;
+            min-height: 60px !important;
+
+            @include mixins.respond-to('phone') {
+              height: 50px !important;
+              min-height: 50px !important;
+            }
+          }
+        }
+
+        :global(.fc-timegrid-slot-label) {
+          align-items: flex-start;
+        }
+      }
+      :global(.fc-timegrid-event-harness) {
+        a {
+          margin-bottom: 0;
+          border: 1px solid var(--foreground-700) !important;
+          @include mixins.border-radius(6px);
+          box-shadow: 0 0 6px 0 var(--background);
+
+          :global(.fc-event-main) {
+            padding: 3px 6px;
+          }
+        }
+      }
+    }
+  }
+}

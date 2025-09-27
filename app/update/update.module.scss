@@ -1,0 +1,327 @@
+@use '../styles/mixins' as mixins;
+
+.updateContainer {
+  > .updateContent {
+    @include mixins.content-container;
+    @include mixins.flexbox(column, start, stretch);
+    gap: 0;
+
+    //* Header
+    > .header {
+      @include mixins.flexbox(row, space-between, center);
+      gap: var(--space);
+      margin-bottom: var(--space);
+
+      > h1 {
+        margin-bottom: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--foreground);
+      }
+
+      @include mixins.respond-to('phone') {
+        @include mixins.flexbox(column, start, stretch);
+        gap: var(--space);
+      }
+    }
+
+    //* Filter Section
+    > .filterSection {
+      @include mixins.flexbox(column, center, flex-start);
+      gap: 12px;
+      margin-left: -24px;
+      margin-bottom: var(--space);
+      width: calc(100% + 48px);
+      @include mixins.border-radius(12px);
+
+      > .filterButtons {
+        @include mixins.flexbox(row, start, center);
+        gap: 8px;
+        overflow-x: auto;
+        max-width: 100%;
+        padding: 12px 0;
+        @include mixins.hide-scrollbar;
+
+        > .filterButton {
+          @include mixins.button('large', 'normal');
+          font-size: 1rem;
+          font-weight: 600;
+          @include mixins.transition(all 0.2s ease);
+          background: var(--background);
+          border: 1px solid var(--border);
+
+          &:first-child {
+            margin-left: 24px;
+          }
+          &:last-child {
+            margin-right: 24px;
+          }
+
+          &.active {
+            background: var(--purple-700);
+            border-color: var(--foreground-dark-900);
+            color: var(--color-white);
+            max-width: max-content;
+
+            &:first-child {
+              background: var(--primary);
+            }
+          }
+
+          &:hover:not(.active) {
+            background: var(--background-secondary);
+            border-color: var(--border-hover);
+          }
+        }
+      }
+    }
+
+    //* Post Container
+    > .postsContainer {
+      @include mixins.flexbox(row, start, stretch);
+      flex-wrap: wrap;
+      gap: var(--space);
+
+      //* Post Card
+      > .postCard {
+        @include mixins.flexbox(row, start, center);
+        gap: 12px;
+        width: 100%;
+        border: 1px solid var(--border);
+        @include mixins.border-radius(12px);
+        @include mixins.transition(all 0.2s ease);
+        cursor: pointer;
+        outline: none;
+        overflow-x: auto;
+        @include mixins.hide-scrollbar;
+        scroll-snap-type: x mandatory;
+
+        &:hover {
+          background: rgba(var(--background-secondary-rgb), 0.75);
+          border: 1px solid var(--border-hover);
+          @include mixins.hover-scale-effect(1.01);
+        }
+
+        > .postCardContent {
+          @include mixins.flexbox(column, start, stretch);
+          padding: var(--space-1-5x);
+          min-width: 100%;
+          height: 100%;
+          background: var(--background);
+          @include mixins.border-radius(12px);
+          overflow-x: auto;
+          scroll-snap-align: start;
+
+          &:hover {
+            background: var(--background-secondary);
+          }
+          &:focus {
+            border-color: var(--primary);
+            @include mixins.box-shadow(8px);
+            outline-offset: 2px;
+          }
+          &:active {
+            @include mixins.transform-container(translateY(0));
+          }
+
+          //* Post Header
+          > .postHeader {
+            @include mixins.flexbox(row, space-between, start);
+            gap: 12px;
+
+            > .postMeta {
+              @include mixins.flexbox(column, start, start);
+              gap: 4px;
+              flex: 1;
+
+              > .postTitle {
+                margin: 0;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: var(--foreground);
+                line-height: 1.4;
+
+                // First Post
+                &:first-child {
+                  font-size: 1.2rem;
+                }
+              }
+
+              > div.postInfo {
+                @include mixins.flexbox(row, start, center);
+                gap: 8px;
+                font-size: 0.8rem;
+                color: var(--foreground-secondary);
+
+                > .categoryBadge {
+                  padding: 2px 8px;
+                  background: var(--primary);
+                  color: var(--color-white);
+                  @include mixins.border-radius(12px);
+                  font-size: 0.7rem;
+                  font-weight: 500;
+                  white-space: nowrap;
+                }
+
+                > .postAuthor {
+                  font-weight: 500;
+                }
+
+                .postDate {
+                  &::before {
+                    content: '•';
+                    margin-right: 7px;
+                    opacity: 0.5;
+                  }
+                }
+              }
+            }
+
+            > .postCover {
+              margin-top: -6px;
+              margin-right: -6px;
+              width: 80px;
+              height: 60px;
+              @include mixins.border-radius(6px);
+              object-fit: cover;
+              object-position: top;
+              flex-shrink: 0;
+            }
+          }
+
+          //* Post Content
+          .postContent {
+            margin-top: 9px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--foreground-secondary);
+
+            // 限制顯示行數
+            display: box;
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-box;
+            display: -o-box;
+
+            line-clamp: 3;
+            -webkit-line-clamp: 3;
+            -moz-line-clamp: 3;
+            -ms-line-clamp: 3;
+            -o-line-clamp: 3;
+
+            -webkit-box-orient: vertical;
+            -moz-box-orient: vertical;
+            -ms-box-orient: vertical;
+            -o-box-orient: vertical;
+            overflow: hidden;
+          }
+        }
+
+        //* 文章卡片操作（刪除按鈕）
+        > .postCardActions {
+          @include mixins.flexbox(row, start, center);
+          padding-right: 12px;
+          gap: 12px;
+          scroll-snap-align: end;
+
+          button {
+            @include mixins.button('normal', 'normal');
+
+            &.deleteButton {
+              @include mixins.button('danger', 'normal');
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+//* 發布文章按鈕容器
+.actions {
+  @include mixins.flexbox(row, start, center);
+  position: fixed;
+  right: 24px;
+  bottom: 36px;
+  gap: var(--space);
+  z-index: 1000;
+
+  @include mixins.respond-to('phone') {
+    @include mixins.flexbox(column, start, stretch);
+    right: 12px;
+    bottom: 36px;
+  }
+
+  // 發布文章按鈕
+  > .createButton {
+    @include mixins.button('primary', 'normal');
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    min-width: 120px;
+
+    &:hover {
+      @include mixins.box-shadow(24px);
+    }
+
+    @include mixins.respond-to('phone') {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+}
+
+// 載入狀態
+.loadingState {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x);
+  color: var(--foreground-secondary);
+  font-size: 0.9rem;
+
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border);
+    border-top: 2px solid var(--primary);
+    border-radius: 50%;
+    @include mixins.animation-container(spin 1s linear infinite);
+    margin-bottom: 12px;
+  }
+}
+
+// 錯誤狀態
+.errorState {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x);
+  color: var(--danger);
+  font-size: 0.9rem;
+  text-align: center;
+
+  .retryButton {
+    @include mixins.button('normal', 'small');
+    margin-top: 12px;
+  }
+}
+
+// 無資料狀態
+.emptyState {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x);
+  color: var(--foreground-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+
+  .emptyIcon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

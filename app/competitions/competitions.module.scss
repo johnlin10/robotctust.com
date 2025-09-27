@@ -1,0 +1,65 @@
+@use '../styles/mixins' as mixins;
+
+.competitionsContainer {
+  > .competitionsContent {
+    @include mixins.content-container;
+    @include mixins.flexbox(column, start, stretch);
+    gap: var(--space-2x);
+
+    @include mixins.respond-to('tablet') {
+      @include mixins.content-container;
+    }
+  }
+}
+
+.loadingState {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x);
+  color: var(--foreground-secondary);
+  gap: var(--space);
+  width: 100%;
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border);
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    @include mixins.animation-container(spin 1s linear infinite);
+  }
+}
+
+.errorState {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x);
+  text-align: center;
+  gap: var(--space);
+  background: var(--background-secondary);
+  border: 1px solid var(--danger);
+  @include mixins.border-radius(12px);
+
+  h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--danger);
+  }
+
+  p {
+    margin: 0;
+    color: var(--foreground-secondary);
+    line-height: 1.5;
+  }
+}
+
+.retryButton {
+  @include mixins.button('primary', 'normal');
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

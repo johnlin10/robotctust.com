@@ -1,0 +1,333 @@
+@use '../../styles/mixins' as mixins;
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: rgba(var(--background-rgb), 0.6);
+  @include mixins.glass-blur(2px);
+  @include mixins.flexbox(column, center, center);
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  @include mixins.transition(all 0.3s ease-out);
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @include mixins.respond-to('phone') {
+    padding: 0;
+  }
+
+  > .modal {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    max-height: 90vh;
+    background: var(--background);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(16px);
+    @include mixins.flexbox(column, start, stretch);
+    overflow: hidden;
+    @include mixins.transform-container(scale(0.95));
+    @include mixins.transition(transform 0.3s ease-out);
+
+    &.visible {
+      @include mixins.transform-container(scale(1));
+    }
+
+    @include mixins.respond-to('phone') {
+      max-width: 100%;
+      max-height: 100vh;
+      @include mixins.border-radius(0);
+      border: none;
+    }
+
+    > .header {
+      @include mixins.flexbox(row, space-between, center);
+      gap: var(--space);
+      padding: var(--space);
+      background: var(--background-secondary);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+
+      > h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--foreground);
+      }
+
+      > .headerActions {
+        @include mixins.flexbox(row, start, center);
+        gap: 8px;
+
+        > .closeButton {
+          @include mixins.button('normal', 'small');
+          width: 32px;
+          height: 32px;
+          min-width: 32px;
+          padding: 0;
+          border-radius: 50%;
+
+          svg {
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    > .content {
+      @include mixins.flexbox(column, start, stretch);
+      flex: 1;
+      overflow: auto;
+      overflow-x: hidden;
+
+      > .form {
+        @include mixins.flexbox(column, start, stretch);
+        gap: var(--space);
+        padding: var(--space);
+        flex: 1;
+        overflow: hidden;
+
+        > .formGroup {
+          @include mixins.flexbox(column, start, stretch);
+          gap: 8px;
+
+          > .label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--foreground);
+            margin: 0;
+          }
+
+          > .input {
+            padding: 12px;
+            background: var(--background);
+            border: 1px solid var(--border);
+            @include mixins.border-radius(8px);
+            font-size: 0.9rem;
+            color: var(--foreground);
+            @include mixins.transition(border-color 0.2s ease);
+
+            &:focus {
+              outline: none;
+              border-color: var(--primary);
+            }
+
+            &::placeholder {
+              color: var(--foreground-tertiary);
+            }
+          }
+          > .select {
+            @extend .input;
+            cursor: pointer;
+          }
+
+          > .imageUploadSection {
+            @include mixins.flexbox(column, start, stretch);
+            gap: 12px;
+
+            > .imageUpload {
+              position: relative;
+              @include mixins.flexbox(column, center, center);
+              gap: 8px;
+              padding: var(--space);
+              background: var(--background-secondary);
+              border: 2px dashed var(--border);
+              @include mixins.border-radius(8px);
+              cursor: pointer;
+              @include mixins.transition(all 0.2s ease);
+
+              &:hover {
+                border-color: var(--border-hover);
+                background: var(--background-tertiary);
+              }
+
+              &.dragOver {
+                border-color: var(--primary);
+                background: var(--background-tertiary);
+              }
+
+              > input {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                cursor: pointer;
+              }
+
+              > .uploadIcon {
+                font-size: 2rem;
+                color: var(--foreground-secondary);
+              }
+
+              > .uploadText {
+                font-size: 0.9rem;
+                color: var(--foreground-secondary);
+                text-align: center;
+
+                > .highlight {
+                  color: var(--primary);
+                  font-weight: 600;
+                }
+              }
+            }
+
+            > .imagePreview {
+              position: relative;
+              @include mixins.flexbox(row, start, center);
+              gap: 12px;
+              padding: 12px;
+              background: var(--background-secondary);
+              border: 1px solid var(--border);
+              @include mixins.border-radius(8px);
+
+              > img {
+                width: 80px;
+                height: 60px;
+                @include mixins.border-radius(6px);
+                object-fit: cover;
+                flex-shrink: 0;
+              }
+
+              > .imageInfo {
+                @include mixins.flexbox(column, start, start);
+                gap: 4px;
+                flex: 1;
+
+                > .fileName {
+                  font-size: 0.9rem;
+                  font-weight: 500;
+                  color: var(--foreground);
+                }
+
+                > .fileSize {
+                  font-size: 0.8rem;
+                  color: var(--foreground-secondary);
+                }
+              }
+
+              > .removeImageButton {
+                @include mixins.button('danger', 'small');
+                width: 28px;
+                height: 28px;
+                min-width: 28px;
+                padding: 0;
+                border-radius: 50%;
+
+                svg {
+                  font-size: 0.7rem;
+                }
+              }
+            }
+          }
+        }
+
+        > .editorSection {
+          @include mixins.flexbox(column, start, stretch);
+          gap: 8px;
+          flex: 1;
+          min-height: 300px;
+
+          > .editorHeader {
+            @include mixins.flexbox(row, space-between, center);
+            gap: 8px;
+          }
+
+          > .editorWrapper {
+            flex: 1;
+            position: relative;
+            height: min-content;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            @include mixins.border-radius(9px);
+
+            // MarkdownEditor 將透過 props 控制樣式
+          }
+        }
+      }
+    }
+
+    > .footer {
+      @include mixins.flexbox(row, space-between, center);
+      gap: var(--space);
+      padding: var(--space);
+      background: var(--background-secondary);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+
+      @include mixins.respond-to('phone') {
+        @include mixins.flexbox(column, start, stretch);
+      }
+
+      > .footerLeft {
+        @include mixins.flexbox(row, start, center);
+        gap: 8px;
+        font-size: 0.8rem;
+        color: var(--foreground-secondary);
+
+        @include mixins.respond-to('phone') {
+          order: 2;
+        }
+      }
+
+      > .footerRight {
+        @include mixins.flexbox(row, start, center);
+        gap: 12px;
+
+        @include mixins.respond-to('phone') {
+          order: 1;
+          width: 100%;
+        }
+
+        > .cancelButton {
+          @include mixins.button('normal', 'normal');
+
+          @include mixins.respond-to('phone') {
+            flex: 1;
+          }
+        }
+
+        > .submitButton {
+          @include mixins.button('primary', 'normal');
+
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+
+          @include mixins.respond-to('phone') {
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+.loadingSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  @include mixins.animation-container(spin 1s linear infinite);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

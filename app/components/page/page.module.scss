@@ -1,0 +1,39 @@
+@use '../../styles/mixins' as mixins;
+
+.page {
+  height: 100%;
+  width: 100%;
+  min-width: 300px;
+  min-height: 100vh;
+  padding-top: 72px;
+
+  > .pageContainer {
+    @include mixins.flexbox(column, start, center);
+    padding-bottom: 60px;
+    width: calc(100% - 48px);
+    height: fit-content;
+    margin: 0 auto;
+
+    > .pageHeader {
+      width: 100%;
+      padding: 0 0 var(--space-3x) 0;
+      // margin-bottom: var(--space-3x);
+
+      h1 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        font-weight: bold;
+        letter-spacing: 0.1rem;
+        color: var(--foreground);
+      }
+
+      p {
+        font-size: 0.9rem;
+        font-weight: normal;
+        letter-spacing: 0.05rem;
+        color: var(--foreground-secondary);
+      }
+    }
+  }
+}

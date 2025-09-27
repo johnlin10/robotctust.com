@@ -1,0 +1,594 @@
+@use '../../styles/mixins' as mixins;
+
+// Main Container
+.competitionDetail {
+  @include mixins.page-container;
+
+  // 競賽詳細頁面容器
+  > .competitionDetailContainer {
+    @include mixins.content-container;
+
+    // 頁面標題區域
+    > .competitionHeader {
+      @include mixins.flexbox(column, start, stretch);
+      gap: var(--space-2x);
+      @include mixins.border-radius(16px);
+      padding: 0 0 var(--space-2x) 0;
+
+      // 圖片容器
+      > .imageContainer {
+        position: relative;
+        width: 100%;
+        height: max-content;
+        max-height: 300px;
+        overflow: hidden;
+        @include mixins.border-radius(12px);
+        @include mixins.transition(var(--transition-default));
+        @include mixins.hover-scale-effect(1.01);
+        @include mixins.box-shadow(96px);
+
+        @include mixins.respond-to('phone') {
+          width: calc(100% + 48px);
+          margin-left: -24px;
+          @include mixins.border-radius(0);
+          @include mixins.hover-scale-effect(1);
+        }
+
+        &:hover {
+          max-height: 720px;
+          @include mixins.box-shadow(96px);
+        }
+
+        .competitionImage {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          @include mixins.transition(transform 0.3s ease);
+        }
+      }
+
+      // 標題區域內容
+      > .headerContent {
+        @include mixins.flexbox(column, start, stretch);
+        gap: var(--space-1-5x);
+
+        // 標題區域
+        > .titleSection {
+          @include mixins.flexbox(column, start, stretch);
+          gap: 12px;
+
+          // 徽章容器
+          > .badges {
+            @include mixins.flexbox(row, start, center);
+            gap: 9px;
+            flex-wrap: wrap;
+            height: 32px;
+
+            // 狀態徽章
+            > .statusBadge {
+              height: 100%;
+              padding: 3px 9px;
+              @include mixins.border-radius(6px);
+              font-size: 1rem;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+
+              // 狀態樣式
+              &.draft {
+                background: var(--foreground-tertiary);
+                color: var(--foreground-secondary);
+              }
+
+              &.upcoming {
+                background: var(--color-info);
+                color: var(--color-white);
+              }
+
+              &.registrationOpen {
+                background: var(--color-success);
+                color: var(--color-white);
+              }
+
+              &.ongoing {
+                background: var(--color-warning);
+                color: var(--color-white);
+              }
+
+              &.completed {
+                background: var(--foreground-secondary);
+                color: var(--color-white);
+              }
+
+              &.cancelled {
+                background: var(--danger);
+                color: var(--color-white);
+              }
+            }
+
+            // 層級徽章
+            > .positionBadge {
+              padding: 3px 9px;
+              background: var(--background-tertiary);
+              color: var(--foreground-secondary);
+              @include mixins.border-radius(6px);
+              font-size: 1rem;
+              font-weight: 600;
+              border: 1px solid var(--border-secondary);
+            }
+          }
+
+          // 競賽標題
+          > .competitionTitle {
+            margin: 0;
+            margin-top: var(--space);
+            width: fit-content;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--foreground);
+            background: linear-gradient(
+              135deg,
+              var(--theme-purple-800) 0%,
+              var(--theme-purple-600) 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+
+            @include mixins.respond-to('tablet') {
+              font-size: 2rem;
+            }
+
+            @include mixins.respond-to('phone') {
+              font-size: 1.75rem;
+            }
+          }
+        }
+
+        // 競賽描述
+        > .competitionDescription {
+          margin: 0;
+          font-size: 1.1rem;
+          line-height: 1.6;
+          color: var(--text-secondary);
+          text-align: justify;
+
+          @include mixins.respond-to('phone') {
+            font-size: 1rem;
+          }
+        }
+
+        // 標籤容器
+        > .tagsContainer {
+          @include mixins.flexbox(row, start, center);
+          gap: 8px;
+          flex-wrap: wrap;
+
+          // 標籤
+          > .tag {
+            color: var(--color-white);
+            @include mixins.border-radius(16px);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--theme-purple-600);
+            @include mixins.transition(opacity 0.2s ease);
+
+            &:hover {
+              opacity: 1;
+            }
+          }
+        }
+
+        > .competitionInfo {
+          padding-top: var(--space-1-5x);
+          border-top: 1px solid var(--border);
+
+          > .mainInfo {
+            @include mixins.flexbox(row, start, start);
+            gap: var(--space-2x);
+            padding: 0 var(--space);
+
+            > .infoItem {
+              @include mixins.flexbox(row, center, center);
+              gap: 6px;
+              font-size: 0.85rem;
+
+              > .infoLabel {
+                color: var(--foreground);
+                font-weight: 700;
+              }
+
+              > .infoValue {
+                color: var(--foreground-secondary);
+                font-weight: 500;
+              }
+            }
+          }
+        }
+
+        // 資訊網格
+        > .infoGrid {
+          @include mixins.grid-layout(2, var(--space));
+          width: 100%;
+
+          @include mixins.respond-to('phone') {
+            @include mixins.grid-layout(1, var(--space));
+          }
+
+          // 資訊卡片
+          > .infoCard {
+            @include mixins.flexbox(column, start, stretch);
+            gap: var(--space);
+            background: var(--background);
+            border: 1px solid var(--border);
+            @include mixins.border-radius(12px);
+            padding: var(--space-1-5x);
+            @include mixins.transition(all 0.3s ease);
+
+            // 資訊卡片標題
+            > .infoCardTitle {
+              margin: 0;
+              font-size: 1.2rem;
+              font-weight: 600;
+              color: var(--foreground);
+              border-bottom: 1px solid var(--border);
+              padding-bottom: 8px;
+            }
+
+            // 資訊列表
+            > .infoList {
+              @include mixins.flexbox(column, start, stretch);
+              gap: 12px;
+              width: 100%;
+
+              // 資訊項目
+              > .infoItem {
+                @include mixins.flexbox(row, start, start);
+                gap: 8px;
+                font-size: 0.9rem;
+                line-height: 1.4;
+
+                @include mixins.respond-to('phone') {
+                  @include mixins.flexbox(column, start, stretch);
+                  gap: 4px;
+                }
+
+                // 資訊標籤
+                > .infoLabel {
+                  color: var(--text-secondary);
+                  font-weight: 500;
+                  min-width: 100px;
+                  flex-shrink: 0;
+
+                  @include mixins.respond-to('phone') {
+                    min-width: unset;
+                  }
+                }
+
+                // 資訊值
+                > .infoValue {
+                  color: var(--foreground);
+                  font-weight: 600;
+                  word-break: break-word;
+                }
+              }
+            }
+
+            // 獎勵列表
+            > .rewardsList {
+              @include mixins.flexbox(column, start, stretch);
+              gap: 8px;
+              margin: 0;
+
+              // 獎勵項目
+              > .rewardItem {
+                color: var(--text-secondary);
+                line-height: 1.5;
+                position: relative;
+                font-size: 0.9rem;
+                text-align: justify;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// CompetitionTimeline
+.timelineSection {
+  width: 100%;
+
+  // 區段標題
+  > .sectionTitle {
+    margin: 0;
+    margin-top: var(--space-2x);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--theme-purple-700);
+    border-bottom: 1px solid var(--theme-purple-700);
+    padding-bottom: 12px;
+    margin-bottom: var(--space-2x);
+
+    @include mixins.respond-to('tablet') {
+      font-size: 1.75rem;
+    }
+
+    @include mixins.respond-to('phone') {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// 詳細規則區段
+.detailSection {
+  width: 100%;
+}
+
+// Markdown 內容
+.markdownContent {
+  background: var(--background);
+  @include mixins.border-radius(12px);
+}
+
+//* 詳細時間線容器 - 參考競賽頁面設計
+.detailTimelineContainer {
+  @include mixins.flexbox(column, start, stretch);
+  position: relative;
+  width: 100%;
+
+  // 時間線組別
+  > .detailTimelineGroup {
+    @include mixins.flexbox(row, start, start);
+    gap: var(--space-2x);
+    position: relative;
+    overflow: hidden;
+
+    @include mixins.respond-to('tablet') {
+      @include mixins.flexbox(column, start, stretch);
+      gap: var(--space);
+    }
+
+    @include mixins.respond-to('phone') {
+      @include mixins.flexbox(column, start, stretch);
+      gap: var(--space);
+    }
+
+    &:last-child .detailDateCircle {
+      background: var(--theme-blue-400);
+    }
+
+    // 日期區域
+    > .detailDateSection {
+      @include mixins.flexbox(row, start, start);
+      gap: var(--space);
+      min-width: 180px;
+      min-height: 100%;
+
+      @include mixins.respond-to('desktop') {
+        @include mixins.flexbox(row-reverse, start, start);
+      }
+
+      // 日期節點
+      > .detailDateNode {
+        @include mixins.flexbox(column, start, center);
+        position: relative;
+        min-width: 24px;
+        height: 100%;
+
+        > .detailDateCircle {
+          width: 18px;
+          height: 18px;
+          background: var(--primary);
+          @include mixins.border-radius(50%);
+          border: 3px solid var(--background);
+          position: relative;
+          z-index: 2;
+        }
+
+        > .detailTimelineLine {
+          position: absolute;
+          top: 18px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 2px;
+          @include mixins.border-radius(1.5px);
+          height: 720px;
+          background: linear-gradient(
+            to bottom,
+            var(--primary) 0%,
+            var(--theme-purple-300) 100%
+          );
+          z-index: 1;
+        }
+      }
+
+      // 日期資訊
+      > .detailDateInfo {
+        @include mixins.flexbox(column, start, start);
+        gap: 4px;
+        flex: 1;
+
+        @include mixins.respond-to('desktop') {
+          @include mixins.flexbox(column, start, flex-end);
+        }
+
+        > .detailDateTitle {
+          margin: 0;
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: var(--foreground);
+          line-height: 1.2;
+
+          @include mixins.respond-to('phone') {
+            font-size: 1rem;
+          }
+        }
+
+        > .detailDateSubtitle {
+          margin: 0;
+          font-size: 0.8rem;
+          color: var(--foreground-secondary);
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+    }
+
+    // 階段內容區域
+    > .detailStepSection {
+      flex: 1;
+      min-width: 0;
+
+      @include mixins.respond-to('tablet') {
+        margin-left: calc(24px + var(--space));
+      }
+
+      @include mixins.respond-to('phone') {
+        margin-left: calc(24px + var(--space));
+      }
+
+      // 階段卡片
+      > .detailStepCard {
+        @include mixins.flexbox(column, start, stretch);
+        background: var(--background);
+        border: 1px solid var(--border);
+        @include mixins.border-radius(12px);
+        margin-bottom: var(--space-2x);
+        @include mixins.transition(all 0.3s ease);
+        overflow: hidden;
+
+        // 階段開始時間
+
+        > .stepTime {
+          @include mixins.flexbox(row, start, center);
+          gap: var(--space);
+          padding: var(--space);
+          background: var(--background-secondary);
+
+          > .dut {
+            width: 9px;
+            height: 9px;
+            @include mixins.border-radius(50%);
+          }
+
+          > .stepTimeText {
+            font-weight: 500;
+            font-size: 0.85rem;
+          }
+
+          &.stepStartTime {
+            border-bottom: 1px solid var(--border);
+
+            > .dut {
+              background: var(--theme-purple-700);
+            }
+
+            > .stepTimeText {
+              color: var(--theme-purple-700);
+            }
+          }
+
+          // 階段結束時間
+          &.stepEndTime {
+            border-top: 1px solid var(--border);
+
+            > .dut {
+              background: var(--foreground-secondary);
+            }
+
+            > .stepTimeText {
+              color: var(--foreground-secondary);
+            }
+          }
+        }
+
+        > .detailStepCardContainer {
+          padding: var(--space-1-5x);
+
+          // 階段描述
+          > .detailStepDescription {
+            margin: 0;
+            color: var(--foreground);
+            line-height: 1.5;
+            font-size: 1rem;
+          }
+
+          // 子時間線
+          > .detailSubTimeline {
+            @include mixins.flexbox(column, start, stretch);
+            gap: var(--space-0-5x);
+            margin-top: var(--space);
+            padding: var(--space) 0;
+            background: var(--background);
+
+            > .detailSubTimelineTitle {
+              margin: 0;
+              font-size: 0.9rem;
+              font-weight: 600;
+              color: var(--foreground-tertiary);
+              margin-bottom: var(--space-half);
+            }
+
+            > .detailSubSteps {
+              @include mixins.flexbox(column, start, stretch);
+              gap: 8px;
+
+              // 子階段
+              > .detailSubStep {
+                @include mixins.flexbox(row, center, center);
+                gap: var(--space);
+                padding: 8px 12px;
+                background: var(--background-secondary);
+                border: 1px solid var(--border-secondary);
+                @include mixins.border-radius(6px);
+                font-size: 0.85rem;
+
+                @include mixins.respond-to('phone') {
+                  @include mixins.flexbox(column, start, stretch);
+                  gap: 4px;
+                }
+
+                > .detailSubStepName {
+                  color: var(--foreground);
+                  font-weight: 500;
+                  font-size: 0.9rem;
+                  flex: 1;
+                }
+
+                > .detailSubStepTime {
+                  color: var(--text-secondary);
+                  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                  font-size: 0.8rem;
+                  flex-shrink: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// 載入狀態
+.loading {
+  @include mixins.flexbox(column, center, center);
+  gap: var(--space);
+  padding: var(--space-4x);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+// 錯誤狀態
+.error {
+  @include mixins.flexbox(column, center, center);
+  gap: var(--space);
+  padding: var(--space-4x);
+  color: var(--danger);
+  font-size: 1.1rem;
+  text-align: center;
+}

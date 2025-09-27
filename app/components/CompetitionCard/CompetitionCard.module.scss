@@ -1,0 +1,187 @@
+@use '../../styles/mixins' as mixins;
+
+.competitionCard {
+  @include mixins.flexbox(column, start, stretch);
+  background: var(--background-secondary);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(12px);
+  overflow: hidden;
+  @include mixins.transition(all 0.3s ease);
+  position: relative;
+
+  &:hover {
+    border-color: var(--border-hover);
+    background: rgba(var(--background-tertiary-rgb), 0.75);
+    @include mixins.hover-scale-effect(1.01);
+  }
+
+  > .imageContainer {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: var(--background-tertiary);
+
+    &:hover > .competitionImage {
+      transform: scale(1.05);
+    }
+
+    @include mixins.respond-to('phone') {
+      height: 140px;
+    }
+    @include mixins.respond-to('tablet') {
+      height: 160px;
+    }
+
+    > .competitionImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      @include mixins.transition(transform 0.3s ease);
+    }
+  }
+
+  > .cardContent {
+    @include mixins.flexbox(column, start, stretch);
+    gap: var(--space);
+    padding: var(--space-1-5x);
+    flex: 1;
+
+    @include mixins.respond-to('phone') {
+      padding: calc(var(--space) + 3px) var(--space) var(--space) var(--space);
+    }
+
+    > .cardHeader {
+      @include mixins.flexbox(column, start, stretch);
+      gap: 8px;
+
+      > .titleSection {
+        @include mixins.flexbox(column, start, stretch);
+        gap: 8px;
+
+        > .competitionTitle {
+          margin: 0;
+          font-size: 1.2rem;
+          font-weight: 600;
+          line-height: 1.3;
+          color: var(--foreground);
+
+          @include mixins.respond-to('phone') {
+            font-size: 1.1rem;
+          }
+
+          > .titleLink {
+            color: inherit;
+            text-decoration: none;
+          }
+        }
+        > .badges {
+          @include mixins.flexbox(row, start, center);
+          gap: 8px;
+          flex-wrap: wrap;
+
+          > .statusBadge {
+            padding: 1px 5px;
+            @include mixins.border-radius(8px);
+            font-size: 0.7rem;
+            font-weight: 500;
+
+            &.draft {
+              background: var(--foreground-tertiary);
+              color: var(--foreground-secondary);
+            }
+
+            &.upcoming {
+              background: var(--color-info);
+              color: var(--color-white);
+            }
+
+            &.registrationOpen {
+              background: var(--color-success);
+              color: var(--color-white);
+            }
+
+            &.ongoing {
+              background: var(--color-warning);
+              color: var(--color-white);
+            }
+
+            &.completed {
+              background: var(--foreground-secondary);
+              color: var(--color-white);
+            }
+
+            &.cancelled {
+              background: var(--danger);
+              color: var(--color-white);
+            }
+          }
+
+          > .positionBadge {
+            padding: 1px 5px;
+            background: var(--background-tertiary);
+            color: var(--foreground-secondary);
+            @include mixins.border-radius(8px);
+            font-size: 0.7rem;
+            font-weight: 500;
+            border: 1px solid var(--border-secondary);
+          }
+        }
+      }
+    }
+
+    > .competitionDescription {
+      margin: 0;
+      padding: 0 3px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--foreground-secondary);
+      text-align: justify;
+    }
+
+    > .tagsContainer {
+      @include mixins.flexbox(row, start, center);
+      gap: 6px;
+      flex-wrap: wrap;
+
+      > .tag {
+        padding: 1px 5px;
+        background: var(--primary);
+        color: var(--color-white);
+        @include mixins.border-radius(6px);
+        font-size: 0.7rem;
+        font-weight: 500;
+        opacity: 0.8;
+      }
+    }
+
+    > .competitionInfo {
+      @include mixins.flexbox(column, start, stretch);
+      gap: 4px;
+      padding: var(--space);
+      background: rgba(var(--background-rgb), 0.5);
+      border: 1px solid var(--border);
+      @include mixins.border-radius(8px);
+
+      > .infoItem {
+        @include mixins.flexbox(row, start, center);
+        gap: 4px;
+        font-size: 0.8rem;
+
+        @include mixins.respond-to('phone') {
+          gap: 2px;
+        }
+
+        > .infoLabel {
+          color: var(--foreground-secondary);
+          font-weight: 500;
+          min-width: fit-content;
+        }
+        > .infoValue {
+          color: var(--foreground);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

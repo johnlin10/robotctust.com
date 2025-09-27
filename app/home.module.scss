@@ -1,0 +1,197 @@
+@use './styles/mixins' as mixins;
+
+.homeContainer {
+  @include mixins.flexbox(column, center, center);
+  height: fit-content !important;
+  width: 100% !important;
+
+  > section.headerSection {
+    @include mixins.flexbox(column, flex-end, center);
+    padding: var(--space-2x);
+    width: 100%;
+    height: calc(100vh - 72px);
+    max-width: calc(240px + 60vw);
+
+    @include mixins.respond-to('desktop') {
+      @include mixins.flexbox(row, center, center);
+    }
+
+    > .firstRow {
+      width: 100%;
+
+      @include mixins.respond-to('phone') {
+        margin-bottom: 10vh;
+      }
+      @include mixins.respond-to('tablet') {
+        margin-bottom: 10vh;
+      }
+
+      > .homeImage {
+        margin-left: -18px;
+        width: clamp(96px, 12vw, 180px);
+      }
+
+      > h1 {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+      }
+      > p {
+        font-size: clamp(1rem, 1.75vw, 2.75rem);
+      }
+    }
+
+    // > .secondRow {
+    // }
+
+    > .robotContainer {
+      z-index: -1;
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+
+      > .robotImage {
+        position: absolute;
+        top: 50%;
+        right: 8vw;
+        opacity: 0.95;
+        @include mixins.transform-container(translateY(-50%));
+
+        @include mixins.respond-to('phone') {
+          right: 50%;
+          @include mixins.transform-container(translateX(50%) translateY(-50%));
+        }
+      }
+
+      > .robotBackground {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        object-position: right;
+        opacity: 0.3;
+      }
+    }
+  }
+
+  > section.howWeLearnSection {
+    @include mixins.flexbox(column, center, center);
+    width: 100%;
+    height: fit-content;
+    background: linear-gradient(
+      120deg,
+      var(--theme-purple-300),
+      var(--theme-purple-100),
+      var(--theme-blue-100)
+    );
+
+    > .howWeLearnContainer {
+      padding: var(--space-6x) var(--space-2x);
+      width: clamp(360px, 100vw, 1080px);
+      height: fit-content;
+
+      > .headerContainer {
+        margin: var(--space-4x) 0;
+        width: 100%;
+        max-width: 720px;
+
+        > h2 {
+          margin-top: 0;
+          font-size: clamp(2rem, 3vw, 3rem);
+          font-weight: bold;
+          letter-spacing: 0.1rem;
+          color: var(--foreground);
+        }
+
+        > p {
+          font-size: 1rem;
+          letter-spacing: 0.05rem;
+          color: var(--foreground-secondary);
+        }
+      }
+
+      > .cardContainer {
+        width: 100%;
+        height: fit-content;
+
+        > .card {
+          @include mixins.flexbox(column, start, start);
+          padding: var(--space-6x) var(--space-4x);
+          width: 70%;
+          min-width: 580px;
+          border: 1px solid var(--border);
+          background-color: var(--background);
+          @include mixins.border-radius(12px);
+          @include mixins.box-shadow(36px);
+
+          // 偶數
+          &:nth-child(even) {
+            margin-left: auto;
+
+            > h3 {
+              color: var(--theme-blue-600);
+            }
+
+            > .points {
+              > p {
+                background-color: var(--theme-blue-500);
+              }
+            }
+          }
+          &:not(:first-child) {
+            margin-top: -24px;
+          }
+
+          @include mixins.respond-by-max-width(628px) {
+            width: 100%;
+            padding: var(--space-3x) var(--space-2x);
+            margin-top: 24px !important;
+            min-width: unset !important;
+          }
+
+          > h3 {
+            font-size: clamp(1.5rem, 3.25vw, 2rem);
+            font-weight: 900;
+            letter-spacing: 0.1rem;
+            color: var(--theme-purple-600);
+          }
+
+          > p {
+            margin-top: var(--space);
+            margin-bottom: var(--space);
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: var(--foreground-secondary);
+            letter-spacing: 0.05rem;
+          }
+
+          > .points {
+            > p {
+              margin: var(--space-1-5x) 0 var(--space) 0;
+              padding: 6px 12px;
+              width: fit-content;
+              font-size: clamp(0.9rem, 2vw, 1.25rem);
+              font-weight: bolder;
+              background-color: var(--theme-purple-500);
+              color: var(--color-white);
+            }
+
+            > ul {
+              list-style-type: disc;
+              list-style-position: outside;
+              padding-left: 1.5rem;
+
+              > li {
+                font-size: clamp(0.9rem, 2vw, 1.2rem);
+                letter-spacing: 0.05rem;
+                color: var(--foreground-secondary);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  > h1 {
+    color: var(--text-primary);
+  }
+}

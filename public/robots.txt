@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://robotctust.com
+
+# Sitemaps
+Sitemap: https://robotctust.com/sitemap.xml

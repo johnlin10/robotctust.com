@@ -1,0 +1,97 @@
+@use '../styles/_mixins.scss' as mixins;
+
+.schedulesContainer {
+  @include mixins.content-container;
+
+  > p {
+    line-height: 1.6;
+    font-size: 1rem;
+    color: var(--foreground-secondary);
+  }
+}
+
+.schedules {
+  margin-top: var(--space-2x);
+  width: 100%;
+
+  > .calendarSection {
+    margin-bottom: var(--space-3x);
+  }
+
+  > .loadingState {
+    @include mixins.flexbox(column, center, center);
+    padding: var(--space-4x);
+    color: var(--foreground-secondary);
+    font-size: 1rem;
+
+    > .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      @include mixins.animation-container(spin 1s linear infinite);
+      margin-bottom: var(--space);
+    }
+  }
+
+  > .errorState {
+    @include mixins.flexbox(column, center, center);
+    padding: var(--space-3x);
+    color: var(--danger);
+    font-size: 1rem;
+    text-align: center;
+    background: var(--background-secondary);
+    border: 1px solid var(--danger);
+    @include mixins.border-radius(12px);
+    margin: var(--space-2x) 0;
+
+    > h3 {
+      margin: 0 0 var(--space) 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    > p {
+      margin: 0 0 var(--space-2x) 0;
+      line-height: 1.5;
+    }
+
+    > .retryButton {
+      @include mixins.button('danger', 'normal');
+    }
+  }
+
+  > .emptyState {
+    @include mixins.flexbox(column, center, center);
+    padding: var(--space-4x);
+    color: var(--foreground-secondary);
+    font-size: 1rem;
+    text-align: center;
+    background: var(--background-secondary);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(12px);
+    margin: var(--space-2x) 0;
+
+    > h3 {
+      margin: 0 0 var(--space) 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    > p {
+      margin: 0;
+      line-height: 1.5;
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

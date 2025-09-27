@@ -1,0 +1,83 @@
+@use '../../styles/mixins' as mixins;
+
+.docContent {
+  > .docContentContainer {
+    @include mixins.content-container;
+
+    > .docHeader {
+      margin: 12px 0;
+      padding: 24px;
+      border: 1px solid var(--border);
+      background-color: var(--background);
+      width: 100%;
+      @include mixins.border-radius(12px);
+
+      @include mixins.respond-to('tablet') {
+        position: sticky;
+        top: 60px + 24px;
+      }
+
+      @include mixins.respond-to('desktop') {
+        position: sticky;
+        top: 60px + 24px;
+      }
+
+      > .docInfo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        > .docIcon {
+          font-size: 2.25rem;
+          color: var(--primary-color);
+        }
+
+        > .docMeta {
+          > h3 {
+            @include mixins.flexbox(row, flex-start, center);
+            margin: 0;
+            margin-bottom: 3px;
+
+            > span.docCategory {
+              background-color: var(--background-secondary);
+              margin-left: 12px;
+              padding: 3px 9px;
+              font-size: 0.8rem;
+              color: var(--text-tertiary);
+              border: 1px solid var(--border);
+              @include mixins.border-radius(18px);
+            }
+          }
+
+          > p.docDescription {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+
+    > .docMarkdown {
+      z-index: 1;
+      * {
+        font-family: 'Biaukai', 'BiauKaiTC-Regular' !important;
+      }
+
+      @include mixins.respond-to('tablet') {
+        margin-top: 48px;
+        padding: 48px;
+        box-shadow: var(--docs-paper-shadow);
+        background-color: var(--docs-paper-background);
+        border: 1px solid var(--docs-paper-border);
+      }
+
+      @include mixins.respond-to('desktop') {
+        margin-top: 48px;
+        padding: 48px;
+        box-shadow: var(--docs-paper-shadow);
+        background-color: var(--docs-paper-background);
+        border: 1px solid var(--docs-paper-border);
+      }
+    }
+  }
+}

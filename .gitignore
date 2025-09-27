@@ -20,6 +20,12 @@
 # production
 /build
 
+# Admin and sensitive files
+/app/admin
+ADMIN_SETUP.md
+auth-debug.md
+
+
 # misc
 .DS_Store
 *.pem
@@ -39,3 +45,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# firebase 
+robot-group-firebase-adminsdk-fbsvc-21357d1bbe.json
+# Firebase rules with sensitive data
+*.rules
+*.rules.*
+*.indexes.json
+database.rules.json
+firestore.rules
+storage.rules
+
+# auto-generated CSS files from SCSS
+*.module.css
+*.module.css.map

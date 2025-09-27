@@ -1,0 +1,118 @@
+@use '../styles/_mixins.scss' as mixins;
+
+.user_page {
+  padding-top: 0 !important;
+}
+
+// 帳號起始 User
+.user {
+  @include mixins.flexbox(column, center, center);
+  height: 100vh;
+  width: 100vw;
+
+  > .user_login {
+    > .button_container {
+      @include mixins.flexbox(row, center, center);
+      gap: var(--space);
+
+      > button {
+        &.user_login_button {
+          @include mixins.button;
+        }
+
+        &.user_register_button {
+          @include mixins.button('primary');
+        }
+      }
+    }
+  }
+}
+
+// 帳號資訊頁面 User[slug] page
+.user_contents {
+  @include mixins.flexbox(column, center, center);
+
+  > .feature_coming_soon {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+  }
+}
+
+// 帳號資訊 UserProfileClient
+.user_info {
+  @include mixins.flexbox(column, center, center);
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 24px;
+  padding-top: 60px + 12px;
+  width: 100%;
+  background-color: var(--background-secondary);
+
+  // &.own_profile {
+  // }
+
+  > .user_info_container {
+    position: relative;
+    @include mixins.flexbox(column, center, flex-start);
+    gap: 1rem;
+    width: 100%;
+    max-width: 360px;
+
+    > .own_profile_badge {
+      @include mixins.flexbox(row, center, center);
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      @include mixins.border-radius(24px);
+
+      > span {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+    }
+
+    > .user_info_header {
+      @include mixins.flexbox(row, center, center);
+      gap: 1rem;
+
+      > .user_info_header_avatar {
+        @include mixins.flexbox(column, center, center);
+        height: 60px;
+        width: 60px;
+        @include mixins.border-radius(50%);
+        overflow: hidden;
+
+        > img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      > .user_info_content {
+        @include mixins.flexbox(column, center, flex-start);
+
+        > .user_info_name {
+          font-size: 1.25rem;
+          font-weight: bold;
+          color: var(--text-primary);
+        }
+
+        > .user_info_username {
+          font-size: 0.8rem;
+          color: var(--text-secondary);
+        }
+      }
+    }
+
+    > .logout {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      @include mixins.flexbox(row, center, center);
+
+      > button {
+        @include mixins.button(danger, small);
+      }
+    }
+  }
+}
