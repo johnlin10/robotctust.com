@@ -11,7 +11,7 @@ export default function Terms() {
         descriptions: ['最後更新：2025/10/02'],
       }}
     >
-      <MarkdownRenderer filePath="/assets/docs/terms-of-service.md" />
+      <MarkdownRenderer filePath="/assets/docs/terms.md" />
     </Page>
   )
 }
