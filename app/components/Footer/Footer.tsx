@@ -8,6 +8,7 @@ import {
   faThreads,
   faXTwitter,
 } from '@fortawesome/free-brands-svg-icons'
+// import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
 /**
  * [Component] 頁尾
@@ -52,7 +53,7 @@ export default function Footer() {
               <FontAwesomeIcon icon={faThreads} />
             </Link>
             <Link
-              href="https://www.facebook.com/robotctust/"
+              href="https://x.com/robotctust"
               className={`${styles.socialItem} ${styles.twitter}`}
               target="_blank"
             >
@@ -62,7 +63,12 @@ export default function Footer() {
         </div>
 
         <div className={styles.contact}>
-          <h2 className={styles.blockTitle}>聯絡我們</h2>
+          <h2 className={styles.blockTitle}>
+            聯絡我們
+            {/* <Link href="/contact">
+              聯絡我們 <FontAwesomeIcon icon={faChevronRight} />
+            </Link> */}
+          </h2>
           <div className={styles.contactItem}>
             <p className={styles.labelTitle}>Email</p>
             <Link

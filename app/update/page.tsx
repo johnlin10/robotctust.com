@@ -46,6 +46,7 @@ export async function generateMetadata() {
   return metadata({
     title: '最新資訊｜中臺機器人研究社',
     description,
+    image: '/assets/image/metadata-backgrounds/update.webp',
     keywords: ['最新資訊', '社團動態', '技術分享', '活動公告'],
     url: '/update',
     category: 'news',

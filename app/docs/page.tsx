@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styles from './docs.module.scss'
 import { docs } from './docs'
 import { Metadata } from 'next'
+import { metadata } from '../utils/metadata'
 import Page from '../components/page/Page'
 
 export default function DocsPage() {
@@ -39,14 +40,13 @@ export default function DocsPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return {
+  return metadata({
     title: '社團文件｜中臺機器人研究社',
     description:
       '中臺機器人研究社的重要文件，包括組織章程、管理辦法及發展規劃等',
-    openGraph: {
-      title: '社團文件｜中臺機器人研究社',
-      description:
-        '中臺機器人研究社的重要文件，包括組織章程、管理辦法及發展規劃等',
-    },
-  }
+    image: '/assets/image/metadata-backgrounds/docs.webp',
+    keywords: ['社團文件', '組織章程', '管理辦法', '發展規劃'],
+    url: '/docs',
+    category: 'docs',
+  })
 }

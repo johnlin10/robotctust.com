@@ -81,7 +81,8 @@ export async function generateMetadata() {
     title: '中臺機器人研究社｜Robot Research Club of CTUST',
     description:
       '中臺機器人研究社是一個由中臺科技大學學生組成的社團，主要研究機器人技術，並且提供學生一個學習機器人技術的平台。',
-    keywords: ['首頁', '主頁', '機器人研究'],
+    keywords: ['首頁', '主頁', '官方網站'],
+    image: '/assets/image/metadata-backgrounds/global.webp',
     url: '/',
     type: 'website',
   })

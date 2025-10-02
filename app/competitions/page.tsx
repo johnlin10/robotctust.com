@@ -31,6 +31,7 @@ export function generateMetadata(): Metadata {
     description:
       '探索中臺機器人研究社參與的各項內外部競賽資訊，包含競賽時程、報名資格與獎項內容。',
     keywords: ['競賽', '比賽', '機器人競賽', '參賽資訊'],
+    image: '/assets/image/metadata-backgrounds/competitions.webp',
     url: '/competitions',
     category: 'competitions',
   })

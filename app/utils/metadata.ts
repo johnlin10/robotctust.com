@@ -4,19 +4,27 @@ import { Metadata } from 'next'
 const SITE_CONFIG = {
   name: '中臺機器人研究社',
   shortName: '中臺機器人研究社',
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://robot-ctust.vercel.app',
+  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://robotctust.com',
   locale: 'zh-TW',
   creator: '中臺機器人研究社',
   publisher: '中臺機器人研究社',
   keywords: [
+    '中臺機器人研究社',
+    '社團網站',
+    '機器人研究',
+    '機器人社團',
+    '機器人社',
     '機器人',
     '中臺科技大學',
+    '中臺科大',
     '研究社',
     '機器人技術',
     '學習平台',
     'CTUST',
     'Robot',
-    'Research Club',
+    'Robot Research',
+    'Robot Research Club',
+    'Robot Research Club of CTUST',
   ],
 } as const
 
@@ -38,6 +46,17 @@ export interface MetadataOptions {
 /**
  * 生成完整的頁面 metadata
  * @param options - metadata 選項物件
+ * @param options.title - 頁面標題
+ * @param options.description - 頁面描述
+ * @param options.keywords - 頁面關鍵字
+ * @param options.image - 頁面圖片
+ * @param options.url - 頁面網址
+ * @param options.type - 頁面類型
+ * @param options.publishedTime - 頁面發布時間
+ * @param options.modifiedTime - 頁面修改時間
+ * @param options.authors - 頁面作者
+ * @param options.category - 頁面分類
+ * @param options.noIndex - 是否禁止搜索引擎索引
  * @returns 完整的 Next.js Metadata 物件
  *
  * @example
@@ -57,7 +76,7 @@ export function metadata(options: MetadataOptions): Metadata {
     title,
     description,
     keywords = [],
-    image = '/assets/icons/web-icon/robotctust-web-icon-1024.png',
+    image = '/assets/image/metadata-backgrounds/global.webp',
     url,
     type = 'website',
     publishedTime,
@@ -118,8 +137,8 @@ export function metadata(options: MetadataOptions): Metadata {
       images: [
         {
           url: imageUrl,
-          width: 1024,
-          height: 1024,
+          width: 1920,
+          height: 1080,
           alt: title,
         },
       ],

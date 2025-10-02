@@ -27,6 +27,7 @@ export function generateMetadata(): Metadata {
   return metadata({
     title: '行事曆｜中臺機器人研究社',
     description: '檢視中臺機器人研究社的課程安排、競賽時程與社團活動。',
+    image: '/assets/image/metadata-backgrounds/schedules.webp',
     keywords: ['行事曆', '上課時間', '社團活動', '競賽時程', '社團上課時間'],
     url: '/schedules',
     category: 'schedules',

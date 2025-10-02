@@ -38,6 +38,7 @@ export async function generateMetadata() {
       '了解中臺機器人研究社的成立宗旨、活動內容與社團成員介紹。我們致力於推廣機器人技術教育，提供學生實作與學習的平台。',
     keywords: ['關於我們', '社團介紹', '成員介紹', '社團宗旨'],
     url: '/about',
+    image: '/assets/image/metadata-backgrounds/about.webp',
     category: 'about',
   })
 }
