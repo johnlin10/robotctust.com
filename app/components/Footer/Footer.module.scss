@@ -21,6 +21,7 @@ footer.footer {
           gap: var(--space);
 
           > img {
+            margin-left: -12px;
             width: clamp(42px, 6vw, 60px);
             height: clamp(42px, 6vw, 60px);
           }
@@ -49,14 +50,80 @@ footer.footer {
       }
     }
 
+    // 區塊標題
+    h2.blockTitle {
+      margin-top: var(--space-2x);
+      margin-bottom: var(--space-0-5x);
+    }
+    p.labelTitle {
+      font-size: 0.8rem;
+      color: var(--foreground-tertiary);
+    }
+
+    > .social {
+      @include mixins.flexbox(column, center, start);
+      margin-top: var(--space);
+      width: 100%;
+      gap: var(--space-0-5x);
+
+      > .socialItems {
+        @include mixins.flexbox(row, start, start);
+        gap: var(--space);
+
+        > .socialItem {
+          @include mixins.flexbox(row, center, center);
+          gap: var(--space);
+          font-size: 1.5rem;
+          color: var(--foreground-tertiary);
+          @include mixins.transition(var(--transition-default));
+
+          &:hover {
+            @include mixins.transform-container(scale(1.1));
+            &.instagram {
+              color: var(--purple-300);
+            }
+            &.threads {
+              color: var(--foreground-100);
+            }
+            &.twitter {
+              color: var(--blue-300);
+            }
+          }
+        }
+      }
+    }
+
+    > .contact {
+      @include mixins.flexbox(column, center, start);
+      width: 100%;
+      gap: var(--space-0-5x);
+
+      > .contactItem {
+        @include mixins.flexbox(row, center, center);
+        gap: var(--space-0-5x);
+
+        > a {
+          font-size: 0.8rem;
+        }
+      }
+    }
+
     > .copyright {
-      @include mixins.flexbox(row, center, center);
+      @include mixins.flexbox(column, center, center);
       margin-top: var(--space-2x);
       padding-top: var(--space);
 
       > p {
         font-size: 0.8rem;
         color: var(--foreground-tertiary);
+      }
+    }
+    > .links {
+      @include mixins.flexbox(row, center, center);
+      gap: var(--space-0-5x);
+
+      > a {
+        font-size: 0.8rem;
       }
     }
   }

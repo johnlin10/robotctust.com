@@ -7,6 +7,7 @@ import {
   getDocs,
 } from 'firebase/firestore'
 import { db } from './firebase'
+import { processFirestoreDoc } from './firestoreHelpers'
 import { UserProfile } from '../types/user'
 
 //* 服務器端從 username 獲取使用者資料
@@ -21,11 +22,7 @@ export const getUserProfileByUsernameServer = async (
     }
     const userDoc = querySnapshot.docs[0]
     const data = userDoc.data()
-    return {
-      ...data,
-      createdAt: data.createdAt?.toDate(),
-      updatedAt: data.updatedAt?.toDate(),
-    } as UserProfile
+    return processFirestoreDoc<UserProfile>(data)
   } catch (error) {
     console.error('從 username 獲取使用者資料時發生錯誤:', error)
     return null
@@ -40,11 +37,7 @@ export const getUserProfileServer = async (
     const userDoc = await getDoc(doc(db, 'users', uid))
     if (userDoc.exists()) {
       const data = userDoc.data()
-      return {
-        ...data,
-        createdAt: data.createdAt?.toDate(),
-        updatedAt: data.updatedAt?.toDate(),
-      } as UserProfile
+      return processFirestoreDoc<UserProfile>(data)
     }
     return null
   } catch (error) {

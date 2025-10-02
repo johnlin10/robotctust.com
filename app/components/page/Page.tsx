@@ -17,8 +17,8 @@ export default function Page({
   style?: string
   maxWidth?: string
   header?: {
-    title: string
-    descriptions: string[]
+    title?: string
+    descriptions?: string[]
   }
   children: React.ReactNode
 }) {

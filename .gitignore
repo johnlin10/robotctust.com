@@ -59,3 +59,5 @@ storage.rules
 # auto-generated CSS files from SCSS
 *.module.css
 *.module.css.map
+
+serializationTest.ts

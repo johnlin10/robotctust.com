@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { getUserProfileByUsernameServer } from '@/app/utils/userService'
+import { serializeUserProfile } from '@/app/types/serialized'
 import UserProfileClient from './UserProfileClient'
 import styles from '../User.module.scss'
 
@@ -13,9 +14,17 @@ export default async function UserPage({
   //* 在服務器端獲取使用者資料
   const userProfile = await getUserProfileByUsernameServer(slug)
 
+  //* 序列化使用者資料以安全傳遞給客戶端
+  const serializedUserProfile = userProfile
+    ? serializeUserProfile(userProfile)
+    : null
+
   return (
     <div className={`page ${styles.user_page}`}>
-      <UserProfileClient slug={slug} initialUserProfile={userProfile} />
+      <UserProfileClient
+        slug={slug}
+        initialUserProfile={serializedUserProfile}
+      />
       <div className={`page-container ${styles.user_contents}`}>
         <p className={styles.feature_coming_soon}>更多社群功能，敬請期待！</p>
       </div>

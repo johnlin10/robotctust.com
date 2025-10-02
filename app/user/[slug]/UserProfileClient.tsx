@@ -3,13 +3,17 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/app/contexts/AuthContext'
 import { UserProfile } from '@/app/types/user'
+import {
+  SerializedUserProfile,
+  deserializeUserProfile,
+} from '@/app/types/serialized'
 import styles from '../User.module.scss'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
 interface UserProfileClientProps {
   slug: string
-  initialUserProfile: UserProfile | null
+  initialUserProfile: SerializedUserProfile | null
 }
 
 export default function UserProfileClient({
@@ -19,7 +23,7 @@ export default function UserProfileClient({
   const { user, signOut } = useAuth()
   const router = useRouter()
   const [displayUserInfo, setDisplayUserInfo] = useState<UserProfile | null>(
-    initialUserProfile
+    initialUserProfile ? deserializeUserProfile(initialUserProfile) : null
   )
   const [isOwnProfile, setIsOwnProfile] = useState(false)
 
@@ -29,7 +33,11 @@ export default function UserProfileClient({
       setDisplayUserInfo(user)
       setIsOwnProfile(true)
     } else {
-      setDisplayUserInfo(initialUserProfile)
+      // 反序列化初始使用者資料
+      const deserializedProfile = initialUserProfile
+        ? deserializeUserProfile(initialUserProfile)
+        : null
+      setDisplayUserInfo(deserializedProfile)
       setIsOwnProfile(false)
     }
   }, [user, slug, initialUserProfile])

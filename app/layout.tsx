@@ -1,16 +1,21 @@
 import type { Metadata, Viewport } from 'next'
-import { Noto_Sans_TC } from 'next/font/google'
 import './globals.css'
+import './styles/_colors.scss'
+// font
+import { Noto_Sans_TC } from 'next/font/google'
+// analytics
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/next'
 import { GoogleAnalytics } from '@next/third-parties/google'
+// components
 import Header from './components/Header/Header'
 import ThemeColorMeta from './components/ThemeColorMeta'
+// contexts
 import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { HeaderProvider } from './contexts/HeaderContext'
+// config
 import { HEADER_SCROLL_CONFIG } from './components/Header/headerScrollConfig'
-import './styles/_colors.scss'
 
 const notoSansTC = Noto_Sans_TC({
   variable: '--font-noto-sans-tc',

@@ -1,6 +1,12 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react'
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -19,12 +25,13 @@ import {
   getDocs,
 } from 'firebase/firestore'
 import { auth, db, googleProvider } from '../utils/firebase'
+import { processFirestoreDoc } from '../utils/firestoreHelpers'
 import {
   AuthContextType,
   UserProfile,
   RegisterFormData,
-  DEFAULT_USER_PERMISSIONS,
   UserPermissions,
+  createDefaultUserProfile,
 } from '../types/user'
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -47,38 +54,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true)
 
   //* 檢查使用者名稱是否已存在
-  const checkUsernameExists = async (username: string): Promise<boolean> => {
-    try {
-      const q = query(
-        collection(db, 'users'),
-        where('username', '==', username)
-      )
-      const querySnapshot = await getDocs(q)
-      return !querySnapshot.empty
-    } catch (error) {
-      console.error('檢查使用者名稱時發生錯誤:', error)
-      throw error
-    }
-  }
+  const checkUsernameExists = useCallback(
+    async (username: string): Promise<boolean> => {
+      try {
+        const q = query(
+          collection(db, 'users'),
+          where('username', '==', username)
+        )
+        const querySnapshot = await getDocs(q)
+        return !querySnapshot.empty
+      } catch (error) {
+        console.error('檢查使用者名稱時發生錯誤:', error)
+        throw error
+      }
+    },
+    []
+  )
 
   //* 從 Firestore 獲取使用者資料
-  const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
-    try {
-      const userDoc = await getDoc(doc(db, 'users', uid))
-      if (userDoc.exists()) {
-        const data = userDoc.data()
-        return {
-          ...data,
-          createdAt: data.createdAt?.toDate(),
-          updatedAt: data.updatedAt?.toDate(),
-        } as UserProfile
+  const getUserProfile = useCallback(
+    async (uid: string): Promise<UserProfile | null> => {
+      try {
+        const userDoc = await getDoc(doc(db, 'users', uid))
+        if (userDoc.exists()) {
+          const data = userDoc.data()
+          return processFirestoreDoc<UserProfile>(data)
+        }
+        return null
+      } catch (error) {
+        console.error('獲取使用者資料時發生錯誤:', error)
+        return null
       }
-      return null
-    } catch (error) {
-      console.error('獲取使用者資料時發生錯誤:', error)
-      return null
-    }
-  }
+    },
+    []
+  )
 
   //* 從 username 獲取使用者資料
   const getUserProfileByUsername = async (
@@ -95,11 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       const userDoc = querySnapshot.docs[0]
       const data = userDoc.data()
-      return {
-        ...data,
-        createdAt: data.createdAt?.toDate(),
-        updatedAt: data.updatedAt?.toDate(),
-      } as UserProfile
+      return processFirestoreDoc<UserProfile>(data)
     } catch (error) {
       console.error('從 username 獲取使用者資料時發生錯誤:', error)
       return null
@@ -107,32 +112,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   //* 創建使用者資料到 Firestore
-  const createUserProfile = async (
-    firebaseUser: User,
-    additionalData: Partial<UserProfile>
-  ) => {
-    try {
-      const userProfile: UserProfile = {
-        uid: firebaseUser.uid,
-        email: firebaseUser.email || '',
-        username: additionalData.username || '',
-        displayName: additionalData.displayName || '',
-        photoURL:
-          additionalData.photoURL || '/assets/image/userEmptyAvatar.png',
-        provider: additionalData.provider || 'email',
-        role: 'user', // 預設為一般用戶
-        permissions: DEFAULT_USER_PERMISSIONS, // 預設權限
-        createdAt: new Date(),
-        updatedAt: new Date(),
+  const createUserProfile = useCallback(
+    async (firebaseUser: User, additionalData: Partial<UserProfile>) => {
+      try {
+        const userProfile = createDefaultUserProfile(
+          firebaseUser,
+          additionalData
+        )
+        await setDoc(doc(db, 'users', firebaseUser.uid), userProfile)
+        return userProfile
+      } catch (error) {
+        console.error('創建使用者資料時發生錯誤:', error)
+        throw error
       }
-
-      await setDoc(doc(db, 'users', firebaseUser.uid), userProfile)
-      return userProfile
-    } catch (error) {
-      console.error('創建使用者資料時發生錯誤:', error)
-      throw error
-    }
-  }
+    },
+    []
+  )
 
   //* 電子郵件登入
   const signInWithEmail = async (email: string, password: string) => {
@@ -140,6 +135,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(true)
       const result = await signInWithEmailAndPassword(auth, email, password)
       const userProfile = await getUserProfile(result.user.uid)
+
+      // 更新最後登入時間
+      if (userProfile) {
+        await setDoc(
+          doc(db, 'users', result.user.uid),
+          { lastLoginAt: new Date(), updatedAt: new Date() },
+          { merge: true }
+        )
+        userProfile.lastLoginAt = new Date()
+      }
+
       setUser(userProfile)
     } catch (error) {
       console.error('電子郵件登入失敗:', error)
@@ -149,18 +155,72 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
-  //* Google 登入
+  //* 自動修復孤兒帳號（Firebase Auth 有帳號但 Firestore 沒有資料）
+  const _autoRepairOrphanAccount = useCallback(
+    async (firebaseUser: User): Promise<UserProfile> => {
+      try {
+        console.log('偵測到孤兒帳號，正在自動修復...', firebaseUser.uid)
+
+        // 生成預設的使用者名稱（基於 email 或 uid）
+        const defaultUsername = firebaseUser.email
+          ? firebaseUser.email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_')
+          : `user_${firebaseUser.uid.slice(0, 8)}`
+
+        // 檢查使用者名稱是否已存在，如果存在則加上隨機後綴
+        let username = defaultUsername
+        let counter = 1
+        while (await checkUsernameExists(username)) {
+          username = `${defaultUsername}_${counter}`
+          counter++
+        }
+
+        // 創建使用者資料
+        const userProfile = await createUserProfile(firebaseUser, {
+          username,
+          displayName: firebaseUser.displayName || username,
+          photoURL:
+            firebaseUser.photoURL || '/assets/image/userEmptyAvatar.png',
+          provider: 'google',
+        })
+
+        console.log('孤兒帳號修復完成:', userProfile.username)
+        return userProfile
+      } catch (error) {
+        console.error('自動修復孤兒帳號失敗:', error)
+        throw new Error('帳號資料同步失敗，請聯繫管理員')
+      }
+    },
+    [checkUsernameExists, createUserProfile]
+  )
+
+  //* Google 登入（修復版本）
   const signInWithGoogle = async () => {
     try {
       setLoading(true)
       const result = await signInWithPopup(auth, googleProvider)
 
       // 檢查是否為新使用者
-      const userProfile = await getUserProfile(result.user.uid)
+      let userProfile = await getUserProfile(result.user.uid)
 
       if (!userProfile) {
-        // 新使用者，需要完成註冊流程
-        throw new Error('NEW_USER_NEEDS_REGISTRATION')
+        // 嘗試自動修復孤兒帳號
+        try {
+          userProfile = await _autoRepairOrphanAccount(result.user)
+        } catch (repairError) {
+          // 如果自動修復失敗，則要求完成註冊流程
+          console.error('自動修復失敗，需要手動註冊:', repairError)
+          throw new Error('NEW_USER_NEEDS_REGISTRATION')
+        }
+      }
+
+      // 更新最後登入時間
+      if (userProfile) {
+        await setDoc(
+          doc(db, 'users', result.user.uid),
+          { lastLoginAt: new Date(), updatedAt: new Date() },
+          { merge: true }
+        )
+        userProfile.lastLoginAt = new Date()
       }
 
       setUser(userProfile)
@@ -232,6 +292,60 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
+  //* 更新使用者個人資料
+  const updateUserProfile = async (
+    uid: string,
+    updateData: Partial<UserProfile>
+  ): Promise<void> => {
+    try {
+      const updatePayload = {
+        ...updateData,
+        updatedAt: new Date(),
+      }
+
+      await setDoc(doc(db, 'users', uid), updatePayload, { merge: true })
+
+      // 如果更新的是當前使用者，同步更新本地狀態
+      if (user && user.uid === uid) {
+        setUser({ ...user, ...updatePayload })
+      }
+    } catch (error) {
+      console.error('更新使用者資料時發生錯誤:', error)
+      throw error
+    }
+  }
+
+  //* 搜尋使用者
+  const searchUsers = async (searchTerm: string, limit: number = 10) => {
+    try {
+      // 這裡可以實作更複雜的搜尋邏輯
+      // 目前先用簡單的 username 搜尋
+      const q = query(
+        collection(db, 'users'),
+        where('username', '>=', searchTerm),
+        where('username', '<=', searchTerm + '\uf8ff')
+      )
+      const querySnapshot = await getDocs(q)
+
+      return querySnapshot.docs
+        .map((doc) => {
+          const data = doc.data()
+          return {
+            uid: data.uid,
+            username: data.username,
+            displayName: data.displayName,
+            photoURL: data.photoURL,
+            bio: data.bio,
+            isVerified: data.isVerified,
+          }
+        })
+        .slice(0, limit)
+    } catch (error) {
+      console.error('搜尋使用者時發生錯誤:', error)
+      return []
+    }
+  }
+
   /**
    * 權限檢查方法
    * @param feature 功能
@@ -262,11 +376,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // }
 
   //* 檢查是否為超級管理員（基於環境變數）
-  const checkSuperAdmin = (firebaseUser: User | null): boolean => {
+  const checkSuperAdmin = useCallback((firebaseUser: User | null): boolean => {
     if (!firebaseUser?.email) return false
     const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL
     return firebaseUser.email === adminEmail
-  }
+  }, [])
 
   //* 監聽認證狀態變化
   useEffect(() => {
@@ -276,7 +390,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setFirebaseUser(currentFirebaseUser)
 
         if (currentFirebaseUser) {
-          const userProfile = await getUserProfile(currentFirebaseUser.uid)
+          let userProfile = await getUserProfile(currentFirebaseUser.uid)
+
+          // 如果 Firebase Auth 有帳號但 Firestore 沒有資料，嘗試自動修復
+          if (!userProfile) {
+            try {
+              console.log(
+                '偵測到孤兒帳號，嘗試自動修復...',
+                currentFirebaseUser.uid
+              )
+              userProfile = await _autoRepairOrphanAccount(currentFirebaseUser)
+            } catch (error) {
+              console.error('自動修復孤兒帳號失敗:', error)
+              // 如果自動修復失敗，設定為 null，讓使用者重新註冊
+              userProfile = null
+            }
+          }
+
           setUser(userProfile)
 
           // 檢查超級管理員權限（基於環境變數）
@@ -299,7 +429,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     )
 
     return () => unsubscribe()
-  }, [])
+  }, [getUserProfile, _autoRepairOrphanAccount, checkSuperAdmin])
 
   const value: AuthContextType = {
     user,
@@ -311,6 +441,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     signInWithGoogle,
     signOut,
     register,
+    updateUserProfile,
+    searchUsers,
     hasPermission,
     isAdmin,
     isSuperAdmin,

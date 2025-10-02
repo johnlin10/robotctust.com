@@ -43,7 +43,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   onClose,
 }) => {
   // AuthContext
-  const { register: registerUser } = useAuth()
+  const { register: registerUser, getUserProfile } = useAuth()
   // 註冊狀態
   const [isLoading, setIsLoading] = useState(false)
   // 錯誤訊息
@@ -129,20 +129,32 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   }
 
   /**
-   * [Function] Google 註冊處理
+   * [Function] Google 註冊處理（改進版本）
    * @returns void
    */
   const handleGoogleRegister = async () => {
     try {
       setIsLoading(true)
       setError('')
+
       // 執行 Google 註冊
       const result = await signInWithPopup(auth, googleProvider)
       const user = result.user
+
+      // 檢查是否已經是註冊使用者（避免重複註冊）
+      const existingProfile = await getUserProfile(user.uid)
+      if (existingProfile) {
+        setError('此 Google 帳號已經註冊過，請直接登入')
+        // 自動登出以避免狀態混亂
+        await auth.signOut()
+        return
+      }
+
       // 設定 Google 使用者資料
       setIsGoogleRegister(true)
       // 重置表單並預填 Google 資料
       reset()
+
       // 設定頭像
       if (user.photoURL) {
         setPreviewImage(user.photoURL)
@@ -151,13 +163,31 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         setPreviewImage('/assets/image/userEmptyAvatar.png')
         setValue('photoURL', '/assets/image/userEmptyAvatar.png')
       }
+
       // 設定暱稱
       if (user.displayName) {
         setValue('displayName', user.displayName)
       }
+
+      // 生成建議的使用者名稱
+      const suggestedUsername = user.email
+        ? user.email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_')
+        : `user_${user.uid.slice(0, 8)}`
+      setValue('username', suggestedUsername)
     } catch (error) {
       console.error('Google 註冊失敗:', error)
-      setError('Google 註冊失敗，請稍後再試')
+
+      // 更詳細的錯誤處理
+      const firebaseError = error as { code?: string }
+      if (firebaseError?.code === 'auth/popup-closed-by-user') {
+        setError('Google 登入視窗被關閉，請重試')
+      } else if (firebaseError?.code === 'auth/popup-blocked') {
+        setError('瀏覽器阻擋了彈出視窗，請允許彈出視窗後重試')
+      } else if (firebaseError?.code === 'auth/cancelled-popup-request') {
+        setError('Google 登入被取消，請重試')
+      } else {
+        setError('Google 註冊失敗，請稍後再試')
+      }
     } finally {
       setIsLoading(false)
     }
