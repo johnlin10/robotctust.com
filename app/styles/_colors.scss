@@ -145,11 +145,11 @@
 
   // Border
   --border: var(--foreground-900);
-  --border-secondary: var(--gray-800);
-  --border-tertiary: var(--gray-700);
-  --border-hover: var(--gray-700);
-  --border-secondary-hover: var(--gray-600);
-  --border-tertiary-hover: var(--gray-500);
+  --border-secondary: var(--foreground-800);
+  --border-tertiary: var(--foreground-700);
+  --border-hover: var(--foreground-700);
+  --border-secondary-hover: var(--foreground-600);
+  --border-tertiary-hover: var(--foreground-500);
 
   // Shadow
   --shadow-color: #0000000e;

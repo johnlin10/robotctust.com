@@ -4,6 +4,7 @@
   @include mixins.flexbox(column, start, start);
   gap: var(--space);
   width: 100%;
+  margin-bottom: var(--space-4x);
 
   > .clubOfficerList {
     @include mixins.grid-layout(2, 1rem);

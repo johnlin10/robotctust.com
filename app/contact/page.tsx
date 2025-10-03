@@ -1,7 +1,14 @@
 import styles from './contact.module.scss'
-import Page from '../components/page/Page'
 import { Metadata } from 'next'
 import { metadata } from '../utils/metadata'
+import Link from 'next/link'
+// components
+import Page from '../components/page/Page'
+import OfficeLocationCard from '../components/OfficeLocationCard/OfficeLocationCard'
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
+import { faInstagram } from '@fortawesome/free-brands-svg-icons'
 
 function Contact() {
   return (
@@ -11,7 +18,35 @@ function Contact() {
         title: '聯絡我們',
       }}
     >
-      <div className={styles.contactContent}></div>
+      <div className={styles.contactContent}>
+        <OfficeLocationCard />
+        <div className={styles.contactInfo}>
+          <h2>聯絡資訊</h2>
+          <div className={styles.contactItems}>
+            <div className={styles.contactItem}>
+              <p className={styles.labelTitle}>
+                <FontAwesomeIcon icon={faEnvelope} />
+                Email
+              </p>
+              <Link href="mailto:robotctust@gmail.com" className="link">
+                robotctust@gmail.com
+              </Link>
+            </div>
+            <div className={styles.contactItem}>
+              <p className={styles.labelTitle}>
+                <FontAwesomeIcon icon={faInstagram} />
+                Instagram
+              </p>
+              <Link
+                href="https://www.instagram.com/robotctust/"
+                className="link"
+              >
+                @robotctust
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
     </Page>
   )
 }

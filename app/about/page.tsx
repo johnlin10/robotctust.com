@@ -1,8 +1,11 @@
 import styles from './about.module.scss'
 import Page from '../components/page/Page'
-import ClubOfficer from './ui/ClubOfficer/ClubOfficer'
 import { MarkdownRenderer } from '../components/Markdown'
 import { metadata } from '../utils/metadata'
+// components
+import ClubOfficer from './ui/ClubOfficer/ClubOfficer'
+import OfficeLocationCard from '../components/OfficeLocationCard/OfficeLocationCard'
+import Footer from '../components/Footer/Footer'
 
 export default function About() {
   return (
@@ -18,15 +21,9 @@ export default function About() {
       <div className={styles.aboutContent}>
         <MarkdownRenderer filePath="/assets/docs/about.md" />
         <ClubOfficer />
-        <div className={styles.contact}>
-          <h2>聯絡我們</h2>
-          <p>
-            <a href="mailto:robotctust@gmail.com" className="link">
-              robotctust@gmail.com
-            </a>
-          </p>
-        </div>
+        <OfficeLocationCard />
       </div>
+      <Footer />
     </Page>
   )
 }

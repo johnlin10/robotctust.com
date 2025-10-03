@@ -1,0 +1,40 @@
+@use '@/app/styles/mixins' as mixins;
+
+.contactContainer {
+  > .contactContent {
+    width: 100%;
+
+    > .contactInfo {
+      > h2 {
+        margin-bottom: var(--space-0-5x);
+      }
+      > .contactItems {
+        @include mixins.flexbox(column, start, start);
+        width: 100%;
+        gap: var(--space-0-5x);
+
+        > .contactItem {
+          @include mixins.flexbox(row, center, center);
+          gap: var(--space-0-5x);
+
+          > .labelTitle {
+            @include mixins.flexbox(row, start, center);
+            gap: var(--space-0-5x);
+            margin-right: var(--space-0-5x);
+            font-size: 1rem;
+            color: var(--foreground-tertiary);
+
+            > svg {
+              margin-top: 2px;
+              font-size: 1rem;
+            }
+          }
+
+          > a {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+@use '@/app/styles/mixins' as mixins;
+
+.contact {
+  @include mixins.flexbox(column, center, start);
+  width: 100%;
+  gap: var(--space-0-5x);
+
+  > h2.blockTitle > a {
+    @include mixins.flexbox(row, center, center);
+    gap: var(--space-0-5x);
+
+    &:hover {
+      > svg {
+        color: var(--foreground);
+        @include mixins.transform-container(translateX(3px) scale(1.1));
+      }
+    }
+
+    > svg {
+      margin-top: 2px;
+      font-size: 0.8rem;
+      color: var(--foreground-tertiary);
+      @include mixins.transition(var(--transition-default));
+    }
+  }
+
+  > .contactItem {
+    @include mixins.flexbox(row, center, center);
+    gap: var(--space-0-5x);
+
+    > a {
+      font-size: 0.8rem;
+    }
+
+    > p {
+      font-size: 0.8rem;
+
+      &.labelTitle {
+        color: var(--foreground-tertiary);
+      }
+    }
+  }
+}

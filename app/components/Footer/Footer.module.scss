@@ -2,7 +2,7 @@
 
 footer.footer {
   @include mixins.flexbox(column, center, center);
-  padding: var(--space-4x) var(--space) 0 var(--space-2x);
+  padding: var(--space-4x) var(--space-2x) 0 var(--space-2x);
   width: 100%;
   height: fit-content;
   background-color: var(--background);
@@ -16,12 +16,16 @@ footer.footer {
         @include mixins.flexbox(row, space-between, center);
         gap: var(--space);
 
+        @include mixins.respond-to('phone') {
+          @include mixins.flexbox(column, center, start);
+        }
+
         > .headerLeft {
           @include mixins.flexbox(row, center, center);
           gap: var(--space);
 
           > img {
-            margin-left: -12px;
+            margin-left: -6px;
             width: clamp(42px, 6vw, 60px);
             height: clamp(42px, 6vw, 60px);
           }
@@ -45,7 +49,42 @@ footer.footer {
 
         > .headerRight {
           @include mixins.flexbox(row, center, center);
+          height: 100%;
           gap: var(--space);
+
+          > .social {
+            @include mixins.flexbox(column, center, start);
+            width: 100%;
+            height: 100%;
+            gap: var(--space-0-5x);
+
+            > .socialItems {
+              @include mixins.flexbox(row, center, center);
+              gap: var(--space);
+              height: 100%;
+
+              > .socialItem {
+                @include mixins.flexbox(row, center, center);
+                gap: var(--space);
+                font-size: 1.75rem;
+                color: var(--foreground-900);
+                @include mixins.transition(var(--transition-default));
+
+                &:hover {
+                  @include mixins.transform-container(scale(1.1));
+                  &.instagram {
+                    color: var(--purple-300);
+                  }
+                  &.threads {
+                    color: var(--foreground-100);
+                  }
+                  &.twitter {
+                    color: var(--blue-300);
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -58,73 +97,6 @@ footer.footer {
     p.labelTitle {
       font-size: 0.8rem;
       color: var(--foreground-tertiary);
-    }
-
-    > .social {
-      @include mixins.flexbox(column, center, start);
-      margin-top: var(--space);
-      width: 100%;
-      gap: var(--space-0-5x);
-
-      > .socialItems {
-        @include mixins.flexbox(row, start, start);
-        gap: var(--space);
-
-        > .socialItem {
-          @include mixins.flexbox(row, center, center);
-          gap: var(--space);
-          font-size: 1.5rem;
-          color: var(--foreground-tertiary);
-          @include mixins.transition(var(--transition-default));
-
-          &:hover {
-            @include mixins.transform-container(scale(1.1));
-            &.instagram {
-              color: var(--purple-300);
-            }
-            &.threads {
-              color: var(--foreground-100);
-            }
-            &.twitter {
-              color: var(--blue-300);
-            }
-          }
-        }
-      }
-    }
-
-    > .contact {
-      @include mixins.flexbox(column, center, start);
-      width: 100%;
-      gap: var(--space-0-5x);
-
-      > h2.blockTitle > a {
-        @include mixins.flexbox(row, center, center);
-        gap: var(--space-0-5x);
-
-        &:hover {
-          > svg {
-            color: var(--foreground);
-            @include mixins.transform-container(translateX(3px) scale(1.1));
-          }
-        }
-
-        > svg {
-          margin-top: 2px;
-          font-size: 0.8rem;
-          color: var(--foreground-tertiary);
-          @include mixins.transition(var(--transition-default));
-        }
-      }
-
-      > .contactItem {
-        @include mixins.flexbox(row, center, center);
-        gap: var(--space-0-5x);
-
-        > a {
-          font-size: 0.8rem;
-        }
-      }
     }
 
     > .copyright {

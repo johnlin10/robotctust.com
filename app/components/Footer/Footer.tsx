@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import styles from './Footer.module.scss'
 import Image from 'next/image'
+// components
+import ContactUs from '../ContactUs/ContactUs'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -8,7 +10,6 @@ import {
   faThreads,
   faXTwitter,
 } from '@fortawesome/free-brands-svg-icons'
-// import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
 /**
  * [Component] 頁尾
@@ -32,64 +33,37 @@ export default function Footer() {
               />
               <h1>中臺機器人研究社</h1>
             </div>
-            <div className={styles.headerRight}></div>
+            <div className={styles.headerRight}>
+              <div className={styles.social}>
+                <div className={styles.socialItems}>
+                  <Link
+                    href="https://www.instagram.com/robotctust/"
+                    className={`${styles.socialItem} ${styles.instagram}`}
+                    target="_blank"
+                  >
+                    <FontAwesomeIcon icon={faInstagram} />
+                  </Link>
+                  <Link
+                    href="https://www.threads.net/@robotctust"
+                    className={`${styles.socialItem} ${styles.threads}`}
+                    target="_blank"
+                  >
+                    <FontAwesomeIcon icon={faThreads} />
+                  </Link>
+                  <Link
+                    href="https://x.com/robotctust"
+                    className={`${styles.socialItem} ${styles.twitter}`}
+                    target="_blank"
+                  >
+                    <FontAwesomeIcon icon={faXTwitter} />
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className={styles.social}>
-          <div className={styles.socialItems}>
-            <Link
-              href="https://www.instagram.com/robotctust/"
-              className={`${styles.socialItem} ${styles.instagram}`}
-              target="_blank"
-            >
-              <FontAwesomeIcon icon={faInstagram} />
-            </Link>
-            <Link
-              href="https://www.threads.net/@robotctust"
-              className={`${styles.socialItem} ${styles.threads}`}
-              target="_blank"
-            >
-              <FontAwesomeIcon icon={faThreads} />
-            </Link>
-            <Link
-              href="https://x.com/robotctust"
-              className={`${styles.socialItem} ${styles.twitter}`}
-              target="_blank"
-            >
-              <FontAwesomeIcon icon={faXTwitter} />
-            </Link>
-          </div>
-        </div>
-
-        <div className={styles.contact}>
-          <h2 className={styles.blockTitle}>
-            聯絡我們
-            {/* <Link href="/contact">
-              聯絡我們 <FontAwesomeIcon icon={faChevronRight} />
-            </Link> */}
-          </h2>
-          <div className={styles.contactItem}>
-            <p className={styles.labelTitle}>Email</p>
-            <Link
-              href="mailto:robotctust@gmail.com"
-              className="link"
-              target="_blank"
-            >
-              robotctust@gmail.com
-            </Link>
-          </div>
-          <div className={styles.contactItem}>
-            <p className={styles.labelTitle}>Instagram</p>
-            <Link
-              href="https://www.instagram.com/robotctust/"
-              className="link"
-              target="_blank"
-            >
-              @robotctust
-            </Link>
-          </div>
-        </div>
+        <ContactUs />
 
         <div className={styles.copyright}>
           <p>
