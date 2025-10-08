@@ -514,7 +514,7 @@
 
 //* 類別標示
 .classesDetail {
-  @include mixins.flexbox(row, start, center);
+  @include mixins.flexbox(column, start, start);
   flex-wrap: wrap;
   gap: var(--space-0-5x);
   margin: var(--space) 0;
@@ -524,7 +524,7 @@
     display: none;
 
     @include mixins.respond-by-max-width(859px) {
-      display: flex;
+      @include mixins.flexbox(row, start, center);
       margin: 0 0 var(--space-2x) 0;
 
       > .classesDetailItem {
@@ -539,7 +539,7 @@
     gap: var(--space-0-5x);
     padding: 0 var(--space-0-5x);
     font-size: 0.9rem;
-    color: var(--foreground-secondary);
+    color: var(--color-white);
     @include mixins.border-radius(6px);
 
     &.schoolEvent {

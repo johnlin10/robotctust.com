@@ -1,3 +1,5 @@
+@use '../../styles/mixins' as mixins;
+
 .markdownContent {
   line-height: 1.6;
 
@@ -217,5 +219,33 @@
   // 刪除線
   del {
     text-decoration: line-through;
+  }
+
+  // 圖片容器樣式
+  .imageWrapper {
+    display: block;
+    width: 100%;
+    margin: 2rem 0;
+    @include mixins.border-radius(12px);
+    overflow: hidden;
+    background: var(--theme-gray-50);
+    border: 1px solid var(--border);
+
+    // 避免圖片過大導致記憶體問題
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+  }
+
+  .markdownImage {
+    border-radius: 0.5rem;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.02);
+    }
   }
 }

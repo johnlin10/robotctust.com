@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
 import styles from './MarkdownRenderer.module.scss'
 // dependencies
 import ReactMarkdown from 'react-markdown'
@@ -165,6 +166,25 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
           },
           p({ children }) {
             return <p>{children}</p>
+          },
+          img({ src, alt }) {
+            // 如果沒有 src，返回空
+            if (!src) return null
+
+            // 使用 Next.js Image 元件優化圖片載入
+            return (
+              <span className={styles.imageWrapper}>
+                <Image
+                  src={typeof src === 'string' ? src : ''}
+                  alt={alt || ''}
+                  className={styles.markdownImage}
+                  width={1200}
+                  height={800}
+                  loading="lazy"
+                  quality={85}
+                />
+              </span>
+            )
           },
         }}
       >

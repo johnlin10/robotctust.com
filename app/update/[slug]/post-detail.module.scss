@@ -132,7 +132,7 @@
   color: var(--foreground);
 
   // 覆蓋 MarkdownRenderer 的樣式以適應文章頁面
-  :global(.markdown-renderer) {
+  article {
     h1,
     h2,
     h3,
@@ -171,6 +171,7 @@
     }
 
     p {
+      font-size: 1rem;
       margin-bottom: var(--space);
       line-height: 1.7;
     }
@@ -227,33 +228,51 @@
     img {
       max-width: 100%;
       height: auto;
-      @include mixins.border-radius(8px);
-      border: 1px solid var(--border);
-      margin: var(--space) 0;
+      @include mixins.border-radius(12px);
+      // margin: var(--space) 0;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: var(--space) 0;
+    div:global(.MarkdownRenderer_tableWrapper__zC7mz) {
       border: 1px solid var(--border);
-      @include mixins.border-radius(8px);
-      overflow: hidden;
+      @include mixins.border-radius(12px);
+      overflow-x: auto;
+      @include mixins.hide-scrollbar;
 
-      th,
-      td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid var(--border);
-      }
+      table {
+        width: 100%;
+        overflow: hidden;
 
-      th {
-        background: var(--background-secondary);
-        font-weight: 600;
-      }
+        th,
+        td {
+          min-width: 100px;
+          padding: 12px;
+          text-align: left;
+          border-bottom: 1px solid var(--border);
+        }
 
-      tr:last-child td {
-        border-bottom: none;
+        th {
+          background: var(--background-secondary);
+          font-weight: 600;
+          color: var(--foreground-tertiary);
+        }
+        tbody {
+          tr {
+            background: var(--background);
+
+            &:hover {
+              background: var(--background);
+            }
+            &:last-child td {
+              border-bottom: none;
+            }
+
+            td {
+              width: max-content;
+              max-width: 480px;
+              overflow: hidden;
+            }
+          }
+        }
       }
     }
 
@@ -264,12 +283,21 @@
     }
 
     a {
-      color: var(--primary);
+      text-decoration: none;
+      color: var(--theme-blue-600);
+
       text-decoration: underline;
-      @include mixins.transition(color 0.2s ease);
+      text-decoration-color: var(--theme-blue-600);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
 
       &:hover {
-        color: var(--primary-hover);
+        color: var(--theme-blue-500);
+        text-decoration-color: var(--theme-blue-500);
+      }
+      &:visited {
+        color: var(--theme-purple-600);
+        text-decoration-color: var(--theme-purple-600);
       }
     }
   }

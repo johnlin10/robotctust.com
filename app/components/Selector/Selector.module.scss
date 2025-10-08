@@ -222,10 +222,10 @@
 
   &.selected {
     background: var(--primary);
-    color: var(--primary);
 
     > .optionLabel {
       font-weight: 500;
+      color: var(--color-white);
     }
   }
 

@@ -16,13 +16,6 @@
 
 html {
   overflow-x: hidden;
-  // scroll-snap-type: y proximity;
-  // scroll-behavior: smooth;
-  // scroll-padding-top: 72px;
-
-  // &[data-compact-header='true'] {
-  //   scroll-padding-top: 48px;
-  // }
 }
 
 body {

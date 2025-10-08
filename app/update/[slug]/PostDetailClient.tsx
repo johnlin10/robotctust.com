@@ -124,7 +124,8 @@ export default function PostDetailClient({
               alt={post.title}
               className={styles.coverImage}
               width={1200}
-              height={1200}
+              height={800}
+              quality={85}
               priority
             />
           </div>
@@ -135,8 +136,6 @@ export default function PostDetailClient({
           <MarkdownRenderer content={post.contentMarkdown} />
         </div>
       </article>
-
-      {/* <footer className={styles.footer}></footer> */}
     </div>
   )
 }
