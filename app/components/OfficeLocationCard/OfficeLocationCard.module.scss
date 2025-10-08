@@ -11,18 +11,22 @@
   overflow: hidden;
   aspect-ratio: 16/9;
 
+  @include mixins.respond-to('phone') {
+    padding: var(--space-1-5x);
+  }
+
   > .title {
     z-index: 10;
     @include mixins.flexbox(column, end, start);
     gap: var(--space-0-5x);
 
     > h2 {
-      font-size: 1.5rem;
+      font-size: clamp(1.2rem, 3.25vw, 2rem);
       font-weight: bolder;
       color: var(--color-white);
     }
     > p {
-      font-size: 1rem;
+      font-size: clamp(0.7rem, 2vw, 1.2rem);
       color: var(--color-white);
     }
   }

@@ -7,7 +7,6 @@
   letter-spacing: 0.05rem;
   outline: none;
   border: 0 solid #00000000;
-
   transition: var(--transition-default);
   -webkit-transition: var(--transition-default);
   -moz-transition: var(--transition-default);
@@ -17,6 +16,13 @@
 
 html {
   overflow-x: hidden;
+  // scroll-snap-type: y proximity;
+  // scroll-behavior: smooth;
+  // scroll-padding-top: 72px;
+
+  // &[data-compact-header='true'] {
+  //   scroll-padding-top: 48px;
+  // }
 }
 
 body {

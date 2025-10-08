@@ -121,8 +121,6 @@ export default function SchedulesClient() {
 
   return (
     <div className={styles.schedules}>
-      <div className={styles.pageHeader}></div>
-
       {/* 行事曆內容 */}
       {!loading && !error && (
         <div className={styles.calendarSection}>

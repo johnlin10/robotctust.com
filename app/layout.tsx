@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import './globals.css'
+import './globals.scss'
 import './styles/_colors.scss'
 // font
 import { Noto_Sans_TC } from 'next/font/google'

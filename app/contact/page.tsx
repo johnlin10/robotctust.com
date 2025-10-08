@@ -22,7 +22,7 @@ function Contact() {
         <OfficeLocationCard />
         <div className={styles.contactInfo}>
           <h2>聯絡資訊</h2>
-          <div className={styles.contactItems}>
+          <address className={styles.contactItems}>
             <div className={styles.contactItem}>
               <p className={styles.labelTitle}>
                 <FontAwesomeIcon icon={faEnvelope} />
@@ -44,7 +44,7 @@ function Contact() {
                 @robotctust
               </Link>
             </div>
-          </div>
+          </address>
         </div>
       </div>
     </Page>

@@ -7,6 +7,10 @@ footer.footer {
   height: fit-content;
   background-color: var(--background);
 
+  &.removePaddingRL {
+    padding: var(--space-4x) 0 0 0;
+  }
+
   > .footerContainer {
     width: 100%;
     max-width: 720px;

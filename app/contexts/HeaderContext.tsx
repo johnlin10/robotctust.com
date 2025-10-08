@@ -77,6 +77,7 @@ export function HeaderProvider({ children, config }: HeaderProviderProps) {
 
       if (currentScrollY > config.SCROLL_DOWN_THRESHOLD && !isCompactHeader) {
         setIsCompactHeader(true)
+        document.documentElement.setAttribute('data-compact-header', 'true')
       }
     }
 
@@ -95,6 +96,7 @@ export function HeaderProvider({ children, config }: HeaderProviderProps) {
         isCompactHeader
       ) {
         setIsCompactHeader(false)
+        document.documentElement.setAttribute('data-compact-header', 'false')
         accumulatedScrollUp.current = 0
       }
     }

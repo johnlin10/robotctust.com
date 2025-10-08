@@ -85,7 +85,7 @@ export default function ClubOfficer() {
       name: '趙泰齡',
       position: '副社長',
       description: '副社長',
-      username: '',
+      username: 'fdsect',
     },
     {
       name: '王朝育',

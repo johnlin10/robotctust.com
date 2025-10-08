@@ -231,7 +231,7 @@
   -o-border-radius: $radius;
 }
 
-@mixin transition($transition) {
+@mixin transition($transition: var(--transition-default)) {
   transition: $transition;
   -webkit-transition: $transition;
   -moz-transition: $transition;

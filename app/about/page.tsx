@@ -22,8 +22,9 @@ export default function About() {
         <MarkdownRenderer filePath="/assets/docs/about.md" />
         <ClubOfficer />
         <OfficeLocationCard />
+        {/* <MarkdownRenderer filePath="/assets/docs/aboutWebsite.md" /> */}
       </div>
-      <Footer />
+      <Footer removePaddingRL />
     </Page>
   )
 }

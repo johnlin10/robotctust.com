@@ -150,12 +150,12 @@
           }
 
           &.active {
-            background: var(--primary);
-            border-color: var(--foreground-800);
+            background: var(--theme-gray-300);
+            border-color: var(--foreground-700);
             color: var(--color-white);
 
             &:hover {
-              background: var(--theme-purple-600);
+              background: var(--theme-gray-400);
             }
 
             > .monthNavContent {
@@ -223,6 +223,31 @@
             text-align: center;
           }
         }
+
+        > .todayButton {
+          z-index: 10;
+          position: sticky;
+          top: 0;
+          left: 0;
+          padding: var(--space-0-5x) var(--space) !important;
+          @include mixins.button('primary', 'small');
+          border: 1px solid var(--border);
+          @include mixins.border-radius(6px);
+          box-shadow: 0 0 12px 12px var(--background-secondary);
+          font-size: 1rem;
+          font-weight: 500;
+
+          @include mixins.respond-by-max-width(859px) {
+            margin-right: 12px;
+          }
+
+          @include mixins.respond-by-min-width(860px) {
+            margin-bottom: 12px;
+            box-shadow: 0 0 12px 12px var(--background);
+            top: 225px;
+            width: 100%;
+          }
+        }
       }
     }
 
@@ -243,29 +268,21 @@
         background: var(--background);
         max-width: 960px;
         overflow: hidden;
-        scroll-snap-align: start;
 
-        // 響應式布局 - 桌面：3列
         @include mixins.respond-to('desktop') {
-          // width: calc(50% - 10px);
           width: 100%;
           min-width: 300px;
         }
-
-        // 響應式布局 - 平板：2列
         @include mixins.respond-to('tablet') {
           width: 100%;
           min-width: 250px;
         }
-
-        // 響應式布局 - 手機：1列
         @include mixins.respond-to('phone') {
           width: 100%;
           min-width: 250px;
         }
 
         > .monthHeader {
-          // background: var(--background-secondary);
           padding: var(--space) 0;
           text-align: start;
           font-weight: 600;
@@ -495,6 +512,54 @@
   }
 }
 
+//* 類別標示
+.classesDetail {
+  @include mixins.flexbox(row, start, center);
+  flex-wrap: wrap;
+  gap: var(--space-0-5x);
+  margin: var(--space) 0;
+  @include mixins.transition(var(--transition-default));
+
+  &.mobileClassesDetail {
+    display: none;
+
+    @include mixins.respond-by-max-width(859px) {
+      display: flex;
+      margin: 0 0 var(--space-2x) 0;
+
+      > .classesDetailItem {
+        padding: var(--space-0-25x) var(--space-0-5x);
+        @include mixins.border-radius(6px);
+      }
+    }
+  }
+
+  > .classesDetailItem {
+    @include mixins.flexbox(row, center, center);
+    gap: var(--space-0-5x);
+    padding: 0 var(--space-0-5x);
+    font-size: 0.9rem;
+    color: var(--foreground-secondary);
+    @include mixins.border-radius(6px);
+
+    &.schoolEvent {
+      background: var(--theme-gray-400);
+    }
+    &.event {
+      background: var(--theme-red-400);
+    }
+    &.activity {
+      background: var(--theme-green-400);
+    }
+    &.class {
+      background: var(--theme-blue-400);
+    }
+    &.competition {
+      background: var(--theme-purple-400);
+    }
+  }
+}
+
 //* 日程詳細檢視器
 .calendarDayDetailContent {
   position: sticky;
@@ -502,33 +567,19 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  width: calc(100% - var(--space-2x));
+  width: 100%;
   height: 0;
   max-height: 320px;
   @include mixins.border-radius(12px 12px 0 0);
   overflow: hidden;
-  border: 1px solid #00000000;
+  border: none;
+  border-top: 1px solid #00000000;
   transform: translateY(100%);
   @include mixins.transition(var(--transition-default));
 
-  // 顯示狀態：從底部滑出
-  &.visible {
-    bottom: -24px;
-    height: 40vh;
-    border: 1px solid var(--border);
-    background: rgba(var(--background-rgb), 0.5);
-    @include mixins.glass-blur(24px);
-    @include mixins.transform-container(translateY(0 - 24px));
-
-    @include mixins.respond-to('phone') {
-      border-bottom: none;
-    }
-
-    @include mixins.respond-to('tablet') {
-      bottom: 0;
-      width: calc(100% - var(--space-4x));
-      @include mixins.border-radius(12px);
-    }
+  @include mixins.respond-to('tablet') {
+    width: calc(100% - var(--space-4x));
+    border: 1px solid #00000000;
   }
 
   // 響應式調整
@@ -539,8 +590,30 @@
     left: auto;
     right: auto;
     width: 100% !important;
-    border: 1px solid var(--border);
+    border: 1px solid #00000000;
     @include mixins.border-radius(12px);
+  }
+
+  // 顯示狀態：從底部滑出
+  &.visible {
+    bottom: -24px;
+    width: 100%;
+    height: 40vh;
+    border: 1px solid var(--border);
+    background: rgba(var(--background-rgb), 0.5);
+    @include mixins.glass-blur(24px);
+    @include mixins.transform-container(translateY(0 - 24px));
+
+    @include mixins.respond-to('phone') {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    @include mixins.respond-to('tablet') {
+      bottom: 0;
+      width: calc(100% - var(--space-4x));
+      @include mixins.border-radius(12px);
+    }
   }
 
   > .dayDetailHeader {

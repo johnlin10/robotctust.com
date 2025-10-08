@@ -15,8 +15,9 @@ import { useHeaderState } from '../../../contexts/HeaderContext'
 import { Selector } from '../../../components/Selector'
 import { SelectorOption } from '../../../components/Selector'
 import styles from './SchedulesCalendar.module.scss'
-import { useStickyDetection } from '../../../hooks/useStickyDetection'
-
+import { faCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import useStickyDetection from '@/app/hooks/useStickyDetection'
 interface SchedulesCalendarProps {
   events: ScheduleEvent[]
   selectedYear: number
@@ -47,6 +48,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
   onCloseDayDetail,
 }) => {
   const { isCompactHeader } = useHeaderState()
+
   const stickyState = useStickyDetection({
     topOffset: 60,
     enabled: true,
@@ -166,6 +168,11 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
       }
     }, 300)
   }
+  //* 滾動到今天
+  const scrollToToday = () => {
+    const today = new Date()
+    scrollToDate(today.toISOString())
+  }
 
   //* 生成學年度的所有月份
   const academicYearMonths = useMemo(() => {
@@ -233,7 +240,32 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
 
   return (
     <div className={styles.calendarContainer}>
-      {/* <div className={styles.yearTitle}>{formatAcademicYear(selectedYear)}</div> */}
+      <div
+        className={`${styles.classesDetail} ${styles.mobileClassesDetail} ${
+          isCompactHeader ? styles.headerCompact : ''
+        }`}
+      >
+        <div className={`${styles.classesDetailItem} ${styles.schoolEvent}`}>
+          <FontAwesomeIcon icon={faCircle} />
+          <span>學校活動</span>
+        </div>
+        <div className={`${styles.classesDetailItem} ${styles.event}`}>
+          <FontAwesomeIcon icon={faCircle} />
+          <span>社團行程</span>
+        </div>
+        <div className={`${styles.classesDetailItem} ${styles.activity}`}>
+          <FontAwesomeIcon icon={faCircle} />
+          <span>社團活動</span>
+        </div>
+        <div className={`${styles.classesDetailItem} ${styles.class}`}>
+          <FontAwesomeIcon icon={faCircle} />
+          <span>社團課程</span>
+        </div>
+        <div className={`${styles.classesDetailItem} ${styles.competition}`}>
+          <FontAwesomeIcon icon={faCircle} />
+          <span>競賽</span>
+        </div>
+      </div>
 
       {/* 學年度選擇器 */}
       <div className={styles.yearSelector}>
@@ -259,8 +291,42 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
           <div className={styles.asideHeader}>
             <h3>快速導航</h3>
             <span className={styles.eventCount}>共 {events.length} 個行程</span>
+
+            {/* 類別標示 */}
+            <div className={styles.classesDetail}>
+              <div
+                className={`${styles.classesDetailItem} ${styles.schoolEvent}`}
+              >
+                <FontAwesomeIcon icon={faCircle} />
+                <span>學校活動</span>
+              </div>
+              <div className={`${styles.classesDetailItem} ${styles.event}`}>
+                <FontAwesomeIcon icon={faCircle} />
+                <span>社團行程</span>
+              </div>
+              <div className={`${styles.classesDetailItem} ${styles.activity}`}>
+                <FontAwesomeIcon icon={faCircle} />
+                <span>社團活動</span>
+              </div>
+              <div className={`${styles.classesDetailItem} ${styles.class}`}>
+                <FontAwesomeIcon icon={faCircle} />
+                <span>社團課程</span>
+              </div>
+              <div
+                className={`${styles.classesDetailItem} ${styles.competition}`}
+              >
+                <FontAwesomeIcon icon={faCircle} />
+                <span>競賽</span>
+              </div>
+            </div>
           </div>
           <div className={styles.monthNavigation}>
+            <button
+              className={styles.todayButton}
+              onClick={() => scrollToToday()}
+            >
+              今天
+            </button>
             {academicYearMonths.map((monthInfo) => {
               const monthId = `month-${monthInfo.year}-${monthInfo.month}`
               const eventCount = getMonthEventCount(
@@ -300,7 +366,9 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
             <div
               key={`${monthInfo.year}-${monthInfo.month}`}
               id={`month-${monthInfo.year}-${monthInfo.month}`}
-              className={styles.monthContainer}
+              className={`${styles.monthContainer} ${
+                isCompactHeader ? styles.headerCompact : ''
+              } ${isDayDetailVisible ? styles.dayDetailVisible : ''}`}
             >
               <div className={styles.monthHeader}>
                 {monthInfo.date.toLocaleDateString('zh-TW', {

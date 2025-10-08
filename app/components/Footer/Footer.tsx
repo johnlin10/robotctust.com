@@ -13,14 +13,23 @@ import {
 
 /**
  * [Component] 頁尾
+ * @param widthLimited 頁尾內容的寬度是否有限制
  */
-export default function Footer() {
+export default function Footer({
+  removePaddingRL,
+}: {
+  removePaddingRL?: boolean
+}) {
   // 建立年份
   const firstYear = 2025
   // 目前年份
   const currentYear = new Date().getFullYear()
   return (
-    <footer className={styles.footer}>
+    <footer
+      className={`${styles.footer} ${
+        removePaddingRL ? styles.removePaddingRL : ''
+      }`}
+    >
       <div className={styles.footerContainer}>
         <div className={styles.footerContent}>
           <div className={styles.header}>

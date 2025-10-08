@@ -28,7 +28,17 @@ export function generateMetadata(): Metadata {
     title: '行事曆｜中臺機器人研究社',
     description: '檢視中臺機器人研究社的課程安排、競賽時程與社團活動。',
     image: '/assets/image/metadata-backgrounds/schedules.webp',
-    keywords: ['行事曆', '上課時間', '社團活動', '競賽時程', '社團上課時間'],
+    keywords: [
+      '行事曆',
+      '社團行事曆',
+      '課程安排',
+      '社團行程',
+      '社團課',
+      '上課時間',
+      '社團活動',
+      '社團上課時間',
+      '社團課程',
+    ],
     url: '/schedules',
     category: 'schedules',
   })
