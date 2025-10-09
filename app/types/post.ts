@@ -71,3 +71,47 @@ export const POST_CATEGORY_LABELS: Record<PostCategory | 'all', string> = {
   競賽資訊: '競賽資訊',
   網站更新: '網站更新',
 }
+
+/**
+ * 文章分類顏色配置
+ * 使用主題色彩變數以支援深淺色主題
+ */
+export const POST_CATEGORY_COLORS: Record<
+  PostCategory,
+  {
+    background: string
+    text: string
+    border: string
+  }
+> = {
+  社團活動: {
+    background: 'var(--green-400)',
+    text: 'var(--color-white)',
+    border: 'var(--green-500)',
+  },
+  即時消息: {
+    background: 'var(--red-400)',
+    text: 'var(--color-white)',
+    border: 'var(--red-500)',
+  },
+  新聞分享: {
+    background: 'var(--orange-400)',
+    text: 'var(--color-white)',
+    border: 'var(--orange-500)',
+  },
+  技術分享: {
+    background: 'var(--blue-400)',
+    text: 'var(--color-white)',
+    border: 'var(--blue-500)',
+  },
+  競賽資訊: {
+    background: 'var(--purple-400)',
+    text: 'var(--color-white)',
+    border: 'var(--purple-500)',
+  },
+  網站更新: {
+    background: 'var(--gray-400)',
+    text: 'var(--color-white)',
+    border: 'var(--gray-500)',
+  },
+}

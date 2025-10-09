@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import './styles/_colors.scss'
 // font
-import { Noto_Sans_TC } from 'next/font/google'
+import { Noto_Sans_TC, DM_Mono } from 'next/font/google'
 // analytics
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/next'
@@ -19,6 +19,12 @@ import { HEADER_SCROLL_CONFIG } from './components/Header/headerScrollConfig'
 
 const notoSansTC = Noto_Sans_TC({
   variable: '--font-noto-sans-tc',
+  subsets: ['latin'],
+})
+
+const dmMono = DM_Mono({
+  weight: ['500'],
+  variable: '--font-dm-mono',
   subsets: ['latin'],
 })
 
@@ -118,7 +124,7 @@ export default function RootLayout({
       <GoogleAnalytics gaId="G-GRP0752WNN" />
       <Analytics />
       <SpeedInsights />
-      <body className={`${notoSansTC.variable} antialiased`}>
+      <body className={`${notoSansTC.variable} ${dmMono.variable} antialiased`}>
         <ThemeProvider>
           <AuthProvider>
             <HeaderProvider config={HEADER_SCROLL_CONFIG}>

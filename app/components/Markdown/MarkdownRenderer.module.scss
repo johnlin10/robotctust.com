@@ -1,6 +1,7 @@
 @use '../../styles/mixins' as mixins;
 
 .markdownContent {
+  width: 100%;
   line-height: 1.6;
 
   // 標題樣式
@@ -118,12 +119,14 @@
 
   // 引用樣式
   blockquote {
-    border-left: 4px solid var(--primary);
-    padding-left: 1rem;
+    margin: 2rem 0;
+    padding: 1rem;
+    background: var(--background-secondary);
+    border-left: 3px solid var(--primary);
+    @include mixins.border-radius(12px);
     font-size: 0.9rem;
     font-style: italic;
-    color: var(--text-tertiary);
-    margin: 1rem 0;
+    color: var(--foreground-secondary);
 
     p {
       margin-bottom: 0;
@@ -133,15 +136,20 @@
   // 程式碼樣式
 
   pre {
-    background-color: var(--theme-gray-50);
+    width: 100%;
+    max-width: 100%;
+    background-color: var(--gray-900);
     border-radius: 0.5rem;
+    margin: 2rem 0;
+    font-family: var(--font-dm-mono);
+    @include mixins.border-radius(12px);
     overflow-x: auto;
-    margin: 1rem 0;
 
     code {
-      background-color: var(--theme-gray-50);
+      padding: 1rem 1.2rem !important;
+      background-color: var(--gray-900);
       border-radius: 0.25rem;
-      font-family: 'Courier New', Courier, monospace;
+      font-family: var(--font-dm-mono);
       font-size: 0.875rem;
     }
   }

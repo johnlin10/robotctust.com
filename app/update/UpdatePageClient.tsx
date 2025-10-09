@@ -25,6 +25,7 @@ import {
   PostCategory,
   POST_CATEGORY_LABELS,
   POST_CATEGORIES,
+  POST_CATEGORY_COLORS,
 } from '../types/post'
 
 // 篩選類型
@@ -235,21 +236,7 @@ export default function UpdatePageClient() {
         }}
       >
         <div className={styles.postCardContent}>
-          <div className={styles.postHeader}>
-            <div className={styles.postMeta}>
-              <h3 className={styles.postTitle}>{post.title}</h3>
-              <div className={styles.postInfo}>
-                <span className={styles.categoryBadge}>
-                  {POST_CATEGORY_LABELS[post.category]}
-                </span>
-                <span className={styles.postAuthor}>
-                  {post.authorDisplayName}
-                </span>
-                <span className={styles.postDate}>
-                  {formatPostDate(post.createdAt)}
-                </span>
-              </div>
-            </div>
+          <div className={styles.postCoverContainer}>
             {post.coverImageUrl && (
               <Image
                 src={post.coverImageUrl}
@@ -261,11 +248,54 @@ export default function UpdatePageClient() {
               />
             )}
           </div>
-          {post.contentMarkdown && (
-            <div className={styles.postContent}>
-              {getPostExcerpt(post.contentMarkdown)}
+          <div className={styles.mainContent}>
+            <div className={styles.postHeader}>
+              <div className={styles.postMeta}>
+                <div className={styles.postInfo}>
+                  <span
+                    className={styles.categoryBadge}
+                    data-category={post.category}
+                    style={
+                      {
+                        '--category-bg-color':
+                          POST_CATEGORY_COLORS[post.category].background,
+                        '--category-text-color':
+                          POST_CATEGORY_COLORS[post.category].text,
+                        '--category-border-color':
+                          POST_CATEGORY_COLORS[post.category].border,
+                      } as React.CSSProperties
+                    }
+                  >
+                    {POST_CATEGORY_LABELS[post.category]}
+                  </span>
+                  <span className={styles.postAuthor}>
+                    {post.authorDisplayName}
+                  </span>
+                  <span className={styles.postDate}>
+                    {formatPostDate(post.createdAt)}
+                  </span>
+                </div>
+                <h3 className={styles.postTitle}>{post.title}</h3>
+              </div>
             </div>
-          )}
+            <div className={styles.postContentContainer}>
+              {post.coverImageUrl && (
+                <Image
+                  src={post.coverImageUrl}
+                  alt={post.title}
+                  className={styles.postCover}
+                  width={120}
+                  height={90}
+                  priority
+                />
+              )}
+              {post.contentMarkdown && (
+                <div className={styles.postContent}>
+                  {getPostExcerpt(post.contentMarkdown)}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* 只有有權限的使用者才能看到刪除按鈕 */}
@@ -363,6 +393,17 @@ export default function UpdatePageClient() {
                 className={`${styles.filterButton} ${
                   currentFilter === category ? styles.active : ''
                 }`}
+                data-category={category}
+                style={
+                  {
+                    '--category-bg-color':
+                      POST_CATEGORY_COLORS[category].background,
+                    '--category-text-color':
+                      POST_CATEGORY_COLORS[category].text,
+                    '--category-border-color':
+                      POST_CATEGORY_COLORS[category].border,
+                  } as React.CSSProperties
+                }
               >
                 {POST_CATEGORY_LABELS[category]}
               </button>

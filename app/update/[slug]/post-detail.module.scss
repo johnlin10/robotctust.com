@@ -50,12 +50,16 @@
   gap: 6px;
   width: fit-content;
   padding: 6px 12px;
-  background: var(--primary);
+  background: var(--category-bg-color, var(--primary));
+  border: 1px solid var(--foreground-700);
   color: var(--color-white);
   @include mixins.border-radius(16px);
   font-size: 0.8rem;
   font-weight: 600;
 
+  span {
+    white-space: nowrap;
+  }
   svg {
     font-size: 0.7rem;
   }
@@ -184,44 +188,6 @@
       li {
         margin-bottom: 8px;
         line-height: 1.6;
-      }
-    }
-
-    blockquote {
-      margin: var(--space) 0;
-      padding: var(--space);
-      background: var(--background-secondary);
-      border-left: 4px solid var(--primary);
-      @include mixins.border-radius(0 8px 8px 0);
-      font-style: italic;
-      color: var(--foreground-secondary);
-    }
-
-    code {
-      padding: 2px 6px;
-      background: var(--background-secondary);
-      border: 1px solid var(--border);
-      @include mixins.border-radius(4px);
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      font-size: 0.9rem;
-      color: var(--primary);
-    }
-
-    pre {
-      margin: var(--space) 0;
-      padding: var(--space);
-      background: var(--background-secondary);
-      border: 1px solid var(--border);
-      @include mixins.border-radius(8px);
-      overflow-x: auto;
-      @include mixins.custom-scrollbar;
-
-      code {
-        padding: 0;
-        background: transparent;
-        border: none;
-        font-size: 0.85rem;
-        color: var(--foreground);
       }
     }
 

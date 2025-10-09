@@ -14,6 +14,31 @@
   -o-transition: var(--transition-default);
 }
 
+h1::selection,
+h2::selection,
+h3::selection,
+h4::selection,
+h5::selection,
+h6::selection,
+p::selection,
+li::selection,
+ol::selection,
+ul::selection,
+table::selection,
+tr::selection,
+td::selection,
+a::selection,
+blockquote::selection {
+  background: var(--theme-purple-400);
+  color: var(--color-white);
+}
+
+pre::selection,
+code::selection {
+  background: var(--theme-gray-300);
+  color: var(--color-white);
+}
+
 html {
   overflow-x: hidden;
 }

@@ -7,7 +7,6 @@ import {
   faArrowLeft,
   faCalendar,
   faUser,
-  faTag,
   faSpinner,
   faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons'
@@ -17,6 +16,7 @@ import { formatPostDate } from '../../utils/postService'
 import { POST_CATEGORY_LABELS } from '../../types/post'
 import { SerializedPost, deserializePost } from '../../types/serialized'
 import Image from 'next/image'
+import { POST_CATEGORY_COLORS } from '../../types/post'
 
 interface PostDetailClientProps {
   postId: string
@@ -87,8 +87,20 @@ export default function PostDetailClient({
         {/* Post Title Area */}
         <header className={styles.articleHeader}>
           {/* Post Category */}
-          <div className={styles.categoryBadge}>
-            <FontAwesomeIcon icon={faTag} />
+          <div
+            className={styles.categoryBadge}
+            data-category={post.category}
+            style={
+              {
+                '--category-bg-color':
+                  POST_CATEGORY_COLORS[post.category].background,
+                '--category-text-color':
+                  POST_CATEGORY_COLORS[post.category].text,
+                '--category-border-color':
+                  POST_CATEGORY_COLORS[post.category].border,
+              } as React.CSSProperties
+            }
+          >
             <span>{POST_CATEGORY_LABELS[post.category]}</span>
           </div>
 

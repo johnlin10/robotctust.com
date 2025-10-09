@@ -69,7 +69,7 @@
   --purple-900: oklch(0.1 0.2 290);
   --purple-950: oklch(0.05 0.19 290);
 
-  // purple
+  // yellow
   --yellow-50: oklch(0.95 0.09 100);
   --yellow-100: oklch(0.9 0.12 100);
   --yellow-200: oklch(0.8 0.15 100);
@@ -81,6 +81,19 @@
   --yellow-800: oklch(0.2 0.21 100);
   --yellow-900: oklch(0.1 0.2 100);
   --yellow-950: oklch(0.05 0.19 100);
+
+  // orange
+  --orange-50: oklch(0.95 0.09 65);
+  --orange-100: oklch(0.9 0.12 67);
+  --orange-200: oklch(0.8 0.15 69);
+  --orange-300: oklch(0.7 0.18 71);
+  --orange-400: oklch(0.6 0.21 73);
+  --orange-500: oklch(0.5 0.24 75);
+  --orange-600: oklch(0.4 0.23 73);
+  --orange-700: oklch(0.3 0.22 71);
+  --orange-800: oklch(0.2 0.21 69);
+  --orange-900: oklch(0.1 0.2 67);
+  --orange-950: oklch(0.05 0.19 65);
 
   // semantic color
   --color-success: #10b981;
@@ -232,6 +245,19 @@
   --theme-yellow-900: var(--yellow-900);
   --theme-yellow-950: var(--yellow-950);
 
+  // Orange
+  --theme-orange-50: var(--orange-50);
+  --theme-orange-100: var(--orange-100);
+  --theme-orange-200: var(--orange-200);
+  --theme-orange-300: var(--orange-300);
+  --theme-orange-400: var(--orange-400);
+  --theme-orange-500: var(--orange-500);
+  --theme-orange-600: var(--orange-600);
+  --theme-orange-700: var(--orange-700);
+  --theme-orange-800: var(--orange-800);
+  --theme-orange-900: var(--orange-900);
+  --theme-orange-950: var(--orange-950);
+
   --foreground-000: var(--foreground-light-000);
   --foreground-100: var(--foreground-light-100);
   --foreground-200: var(--foreground-light-200);
@@ -340,7 +366,7 @@
   --theme-green-700: var(--green-300);
   --theme-green-800: var(--green-200);
   --theme-green-900: var(--green-100);
-  --theme-green-950: var(--green-50); // 保持最深色
+  --theme-green-950: var(--green-50);
 
   // Red (深色模式下反轉順序)
   --theme-red-50: var(--red-950);
@@ -353,7 +379,7 @@
   --theme-red-700: var(--red-300);
   --theme-red-800: var(--red-200);
   --theme-red-900: var(--red-100);
-  --theme-red-950: var(--red-50); // 保持最深色
+  --theme-red-950: var(--red-50);
 
   // Purple (深色模式下反轉順序)
   --theme-purple-50: var(--purple-950);
@@ -366,9 +392,9 @@
   --theme-purple-700: var(--purple-300);
   --theme-purple-800: var(--purple-200);
   --theme-purple-900: var(--purple-100);
-  --theme-purple-950: var(--purple-50); // 保持最深色
+  --theme-purple-950: var(--purple-50);
 
-  // Yellow (深色模式下反轉順序)
+  // Yellow
   --theme-yellow-50: var(--yellow-950);
   --theme-yellow-100: var(--yellow-900);
   --theme-yellow-200: var(--yellow-800);
@@ -379,7 +405,20 @@
   --theme-yellow-700: var(--yellow-300);
   --theme-yellow-800: var(--yellow-200);
   --theme-yellow-900: var(--yellow-100);
-  --theme-yellow-950: var(--yellow-50); // 保持最深色
+  --theme-yellow-950: var(--yellow-50);
+
+  // Orange
+  --theme-orange-50: var(--orange-950);
+  --theme-orange-100: var(--orange-900);
+  --theme-orange-200: var(--orange-800);
+  --theme-orange-300: var(--orange-700);
+  --theme-orange-400: var(--orange-600);
+  --theme-orange-500: var(--orange-500);
+  --theme-orange-600: var(--orange-400);
+  --theme-orange-700: var(--orange-300);
+  --theme-orange-800: var(--orange-200);
+  --theme-orange-900: var(--orange-100);
+  --theme-orange-950: var(--orange-50); // 保持最深色
 
   --foreground-000: var(--foreground-dark-000);
   --foreground-100: var(--foreground-dark-100);

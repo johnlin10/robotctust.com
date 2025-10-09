@@ -121,5 +121,14 @@ footer.footer {
         font-size: 0.8rem;
       }
     }
+    > .version {
+      @include mixins.flexbox(row, center, center);
+      margin-top: var(--space);
+
+      > p {
+        font-size: 0.8rem;
+        color: var(--foreground-tertiary);
+      }
+    }
   }
 }

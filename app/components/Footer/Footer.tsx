@@ -98,6 +98,9 @@ export default function Footer({
             隱私權政策
           </Link>
         </div>
+        <div className={styles.version}>
+          <p>v{process.env.NEXT_PUBLIC_VERSION}</p>
+        </div>
       </div>
     </footer>
   )

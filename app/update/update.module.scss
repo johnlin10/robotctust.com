@@ -1,6 +1,10 @@
 @use '../styles/mixins' as mixins;
 
 .updateContainer {
+  @include mixins.respond-to('desktop') {
+    max-width: 1080px !important;
+  }
+
   > .updateContent {
     @include mixins.content-container;
     @include mixins.flexbox(column, start, stretch);
@@ -66,11 +70,29 @@
             &:first-child {
               background: var(--primary);
             }
+
+            //* 支援動態顏色的分類篩選按鈕
+            &[data-category] {
+              background: var(--category-bg-color, var(--purple-700));
+              color: var(--category-text-color, var(--color-white));
+              border-color: var(
+                --category-border-color,
+                var(--foreground-dark-900)
+              );
+            }
           }
 
           &:hover:not(.active) {
             background: var(--background-secondary);
             border-color: var(--border-hover);
+
+            //* 分類按鈕 hover 效果
+            &[data-category] {
+              background: var(--category-bg-color, var(--background-secondary));
+              color: var(--category-text-color, var(--foreground));
+              border-color: var(--category-border-color, var(--border-hover));
+              opacity: 0.8;
+            }
           }
         }
       }
@@ -80,15 +102,18 @@
     > .postsContainer {
       @include mixins.flexbox(row, start, stretch);
       flex-wrap: wrap;
-      gap: var(--space);
+
+      // @include mixins.respond-to('desktop') {
+      //   gap: 12px;
+      // }
 
       //* Post Card
       > .postCard {
         @include mixins.flexbox(row, start, center);
         gap: 12px;
         width: 100%;
-        border: 1px solid var(--border);
-        @include mixins.border-radius(12px);
+        padding: var(--space-2x) 0;
+        border-bottom: 1px solid var(--border);
         @include mixins.transition(all 0.2s ease);
         cursor: pointer;
         outline: none;
@@ -96,25 +121,74 @@
         @include mixins.hide-scrollbar;
         scroll-snap-type: x mandatory;
 
-        &:hover {
-          background: rgba(var(--background-secondary-rgb), 0.75);
-          border: 1px solid var(--border-hover);
-          @include mixins.hover-scale-effect(1.01);
+        @include mixins.respond-to('phone') {
+          &:hover {
+            border-color: var(--border-hover);
+          }
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+        @include mixins.respond-to('tablet') {
+          &:hover {
+            background: var(--background-secondary);
+          }
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+        @include mixins.respond-to('desktop') {
+          &:hover {
+            background: var(--background-secondary);
+          }
+        }
+
+        @include mixins.respond-to('desktop') {
+          width: calc(50% - 6px);
+
+          &:first-child {
+            width: 100%;
+
+            > .postCardContent {
+              > .postCoverContainer {
+                display: flex !important;
+              }
+              > .mainContent {
+                > .postHeader > .postMeta > .postTitle {
+                  font-size: 1.5rem;
+                }
+                > .postContentContainer {
+                  > .postContent {
+                    font-size: 1rem;
+                  }
+                  > .postCover {
+                    display: none;
+                  }
+                }
+              }
+            }
+          }
+          // 偶數
+          &:nth-child(even) {
+            margin-right: auto;
+          }
         }
 
         > .postCardContent {
           @include mixins.flexbox(column, start, stretch);
-          padding: var(--space-1-5x);
           min-width: 100%;
+          padding: 0 var(--space-2x);
           height: 100%;
-          background: var(--background);
-          @include mixins.border-radius(12px);
-          overflow-x: auto;
           scroll-snap-align: start;
+          @include mixins.border-radius(12px);
 
-          &:hover {
-            background: var(--background-secondary);
+          @include mixins.respond-to('phone') {
+            padding: 0;
           }
+          @include mixins.respond-to('desktop') {
+            @include mixins.flexbox(row, start, stretch);
+          }
+
           &:focus {
             border-color: var(--primary);
             @include mixins.box-shadow(8px);
@@ -124,96 +198,146 @@
             @include mixins.transform-container(translateY(0));
           }
 
-          //* Post Header
-          > .postHeader {
-            @include mixins.flexbox(row, space-between, start);
-            gap: 12px;
+          > .postCoverContainer {
+            @include mixins.flexbox(row, center, center);
+            display: none;
+            height: 100%;
+            @include mixins.border-radius(6px);
+            margin-right: var(--space-2x);
+            object-fit: cover;
+            object-position: top;
+            flex-shrink: 0;
+            aspect-ratio: 16/9;
 
-            > .postMeta {
-              @include mixins.flexbox(column, start, start);
-              gap: 4px;
-              flex: 1;
+            .postCover {
+              width: 100%;
+              height: 100%;
+              @include mixins.border-radius(6px);
+              object-fit: cover;
+              object-position: top;
+              flex-shrink: 0;
+              aspect-ratio: 16/9;
+            }
+          }
 
-              > .postTitle {
-                margin: 0;
-                font-size: 1.1rem;
-                font-weight: 600;
-                color: var(--foreground);
-                line-height: 1.4;
+          > .mainContent {
+            @include mixins.flexbox(column, start, stretch);
+            //* Post Header
+            > .postHeader {
+              @include mixins.flexbox(row, space-between, start);
+              gap: 12px;
+              margin-bottom: 12px;
 
-                // First Post
-                &:first-child {
-                  font-size: 1.2rem;
+              > .postMeta {
+                @include mixins.flexbox(column, start, start);
+                gap: 4px;
+                flex: 1;
+
+                > .postTitle {
+                  margin: 0;
+                  font-size: 1.1rem;
+                  font-weight: 600;
+                  color: var(--foreground);
+                  line-height: 1.4;
+
+                  @include mixins.respond-to('desktop') {
+                    font-size: 1.2rem;
+                  }
                 }
-              }
 
-              > div.postInfo {
-                @include mixins.flexbox(row, start, center);
-                gap: 8px;
-                font-size: 0.8rem;
-                color: var(--foreground-secondary);
+                > div.postInfo {
+                  @include mixins.flexbox(row, start, center);
+                  gap: 8px;
+                  font-size: 0.8rem;
+                  color: var(--foreground-secondary);
 
-                > .categoryBadge {
-                  padding: 2px 8px;
-                  background: var(--primary);
-                  color: var(--color-white);
-                  @include mixins.border-radius(12px);
-                  font-size: 0.7rem;
-                  font-weight: 500;
-                  white-space: nowrap;
-                }
+                  > .categoryBadge {
+                    padding: 2px 8px;
+                    background: var(--primary);
+                    border: 1px solid var(--foreground-700);
+                    color: var(--color-white);
+                    @include mixins.border-radius(12px);
+                    font-size: 0.7rem;
+                    font-weight: 500;
+                    white-space: nowrap;
 
-                > .postAuthor {
-                  font-weight: 500;
-                }
+                    //* 支援動態顏色的分類徽章
+                    &[data-category] {
+                      // 使用 CSS 自定義屬性來動態設定顏色
+                      background: var(--category-bg-color, var(--primary));
+                      color: var(--category-text-color, var(--color-white));
+                      border-color: var(
+                        --category-border-color,
+                        var(--foreground-700)
+                      );
+                    }
+                  }
 
-                .postDate {
-                  &::before {
-                    content: '•';
-                    margin-right: 7px;
-                    opacity: 0.5;
+                  > .postAuthor {
+                    white-space: nowrap;
+                    font-weight: 500;
+                  }
+
+                  > .postDate {
+                    white-space: nowrap;
+
+                    &::before {
+                      content: '•';
+                      margin-left: -5px;
+                      margin-right: 2px;
+                      opacity: 0.5;
+                    }
                   }
                 }
               }
             }
 
-            > .postCover {
-              margin-top: -6px;
-              margin-right: -6px;
-              width: 80px;
-              height: 60px;
-              @include mixins.border-radius(6px);
-              object-fit: cover;
-              object-position: top;
-              flex-shrink: 0;
+            //* Post Content Container
+            > .postContentContainer {
+              @include mixins.flexbox(row, start, center);
+              gap: 12px;
+
+              //* Post Cover
+              > .postCover {
+                max-width: 120px;
+                height: 100%;
+                @include mixins.border-radius(6px);
+                object-fit: cover;
+                object-position: top;
+                flex-shrink: 0;
+                aspect-ratio: 16/9;
+              }
+
+              //* Post Content
+              > .postContent {
+                font-size: 0.85rem;
+                line-height: 1.5;
+                color: var(--foreground-secondary);
+
+                // 限制顯示行數
+                display: box;
+                display: -webkit-box;
+                display: -moz-box;
+                display: -ms-box;
+                display: -o-box;
+
+                line-clamp: 3;
+                -webkit-line-clamp: 3;
+                -moz-line-clamp: 3;
+                -ms-line-clamp: 3;
+                -o-line-clamp: 3;
+
+                -webkit-box-orient: vertical;
+                -moz-box-orient: vertical;
+                -ms-box-orient: vertical;
+                -o-box-orient: vertical;
+                overflow: hidden;
+
+                @include mixins.respond-to('desktop') {
+                  font-size: 0.9rem;
+                }
+              }
             }
-          }
-
-          //* Post Content
-          .postContent {
-            margin-top: 9px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: var(--foreground-secondary);
-
-            // 限制顯示行數
-            display: box;
-            display: -webkit-box;
-            display: -moz-box;
-            display: -ms-box;
-            display: -o-box;
-
-            line-clamp: 3;
-            -webkit-line-clamp: 3;
-            -moz-line-clamp: 3;
-            -ms-line-clamp: 3;
-            -o-line-clamp: 3;
-
-            -webkit-box-orient: vertical;
-            -moz-box-orient: vertical;
-            -ms-box-orient: vertical;
-            -o-box-orient: vertical;
-            overflow: hidden;
           }
         }
 
