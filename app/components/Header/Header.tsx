@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import styles from './Header.module.scss'
 // components
-import { AuthModal } from '../Auth/AuthModal'
 import Menu from '../Menu/Menu'
 // contexts
 import { useAuth } from '../../contexts/AuthContext'
@@ -18,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 // configs
 import { NAV_AUTO_CENTER_CONFIG } from './headerScrollConfig'
+import Logo from '../Logo/Logo'
 
 /**
  * [Component] 導航列
@@ -26,11 +25,7 @@ export default function Header() {
   // 獲取當前路徑
   const pathname = usePathname()
   // 獲取登入資訊 與 驗證超級管理員權限
-  const { user, loading, isSuperAdmin } = useAuth()
-  // 登入模組狀態
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
-  // 登入模組的類型
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  const { isSuperAdmin } = useAuth()
   // 選單狀態
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   // Header 的縮放狀態
@@ -38,23 +33,6 @@ export default function Header() {
   // 導航自動居中功能
   const { containerRef, handleLinkClick, handleScroll, centerActiveItem } =
     useNavAutoCenter(`.${styles.active}`, NAV_AUTO_CENTER_CONFIG)
-
-  /**
-   * 開啟登入模組
-   * @returns void
-   */
-  const handleOpenLogin = () => {
-    setAuthMode('login')
-    setIsAuthModalOpen(true)
-  }
-
-  /**
-   * 關閉登入模組
-   * @returns void
-   */
-  const handleCloseModal = () => {
-    setIsAuthModalOpen(false)
-  }
 
   /**
    * 關閉選單
@@ -84,20 +62,20 @@ export default function Header() {
   return (
     <>
       {/* 選單 */}
-      <Menu isOpen={isMenuOpen} />
+      <Menu isOpen={isMenuOpen} onClose={handleCloseMenu} />
 
       {/* Header */}
       <header
         className={`${styles.header}${isMenuOpen ? ` ${styles.open}` : ''}${
           isCompactHeader ? ` ${styles.compact}` : ''
         }`}
+        data-header
       >
         <div className={styles.headerContainer}>
           {/* 選單按鈕 */}
-          <div className={styles.menu_button}>
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              <FontAwesomeIcon icon={faBars} />
-            </button>
+
+          <div className={styles.logo}>
+            <Logo isCompact={isCompactHeader} />
           </div>
 
           {/* 導航 */}
@@ -164,52 +142,22 @@ export default function Header() {
             )}
           </div>
 
-          {/* 帳號資訊與登入按鈕 */}
-          <div
-            className={`${styles.auth_section} ${
-              pathname === `/user/${user?.username}` ? styles.active : ''
-            }`}
-          >
-            {loading ? (
-              <div className={styles.loading}></div>
-            ) : user ? (
-              <Link
-                href={user ? `/user/${user.username}` : '/user'}
-                className={styles.user_info}
-                onClick={handleCloseMenu}
-              >
-                <Image
-                  src={user.photoURL || '/assets/image/userEmptyAvatar.webp'}
-                  alt={user.displayName}
-                  title={user.displayName}
-                  className={styles.user_avatar}
-                  width={32}
-                  height={32}
-                  priority
-                />
-              </Link>
-            ) : (
-              <div className={styles.auth_buttons}>
-                <button
-                  className={styles.login_button}
-                  onClick={handleOpenLogin}
-                >
-                  登入
-                </button>
-              </div>
-            )}
+          <div className={styles.menu_button}>
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} data-menu-toggle>
+              <FontAwesomeIcon icon={faBars} />
+            </button>
           </div>
         </div>
-      </header>
 
-      {/* 登入模組 */}
-      {isAuthModalOpen && (
-        <AuthModal
-          isOpen={isAuthModalOpen}
-          onClose={handleCloseModal}
-          initialMode={authMode}
-        />
-      )}
+        <div className={styles.gradient_blur}>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </header>
     </>
   )
 }

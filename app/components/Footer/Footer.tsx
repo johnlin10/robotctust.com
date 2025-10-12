@@ -10,6 +10,8 @@ import {
   faThreads,
   faXTwitter,
 } from '@fortawesome/free-brands-svg-icons'
+// utils
+import { SITE_CONFIG } from '@/app/utils/siteConfigs'
 
 /**
  * [Component] 頁尾
@@ -99,7 +101,7 @@ export default function Footer({
           </Link>
         </div>
         <div className={styles.version}>
-          <p>v{process.env.NEXT_PUBLIC_VERSION}</p>
+          <p>v{SITE_CONFIG.version}</p>
         </div>
       </div>
     </footer>

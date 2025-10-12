@@ -1,4 +1,4 @@
-@use '../../styles/mixins' as mixins;
+@use '@/app/styles/mixins' as mixins;
 
 .modal_overlay {
   z-index: 1000;
@@ -7,10 +7,12 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  // bottom: 0;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.15);
   padding: 12px;
-  @include mixins.glass-blur;
+  padding-top: var(--header-height);
+  // @include mixins.glass-blur;
   @include mixins.respond-to('phone') {
     padding: 0;
   }
@@ -39,6 +41,8 @@
         max-width: unset;
         border: 0 solid #00000000;
         @include mixins.border-radius(0);
+
+        padding-top: var(--header-height);
       }
     }
   }

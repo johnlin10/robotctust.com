@@ -11,6 +11,19 @@
   gap: $gap;
 }
 
+@mixin sticky-container($top: 0, $z-index: 100) {
+  position: sticky;
+  top: $top;
+  z-index: $z-index;
+}
+
+// 根據 header compact 狀態，調整 sticky 元素的 top 偏移量
+@mixin sticky-with-header-compact() {
+  @include sticky-container(var(--header-height), 100);
+  @include transition(var(--transition-default));
+  @content;
+}
+
 @mixin respond-to($breakpoint) {
   @if $breakpoint == 'phone' {
     @media (max-width: 600px) and (min-height: 600px) {
@@ -49,7 +62,7 @@
   min-width: max-content;
   text-decoration: none;
   cursor: pointer;
-  @include border-radius(9px);
+  @include border-radius(12px);
 
   svg {
     font-size: 0.9rem;

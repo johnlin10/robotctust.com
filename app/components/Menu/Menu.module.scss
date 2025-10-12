@@ -4,18 +4,151 @@
   z-index: 1000;
   @include mixins.flexbox(column, center, center);
   position: fixed;
-  padding-bottom: 72px;
+  padding-top: var(--header-height);
+  padding-bottom: var(--space);
   top: 0;
   left: 0;
   width: 100vw;
-  height: 144px;
+  height: fit-content;
   @include mixins.transform-container(translateY(calc(-100% + 72px)));
   @include mixins.transition(0.5s cubic-bezier(0.23, 1, 0.32, 1));
+  opacity: 0;
+  visibility: hidden;
 
   &.open {
     background-color: rgba(var(--background-secondary-rgb), 0.8);
     @include mixins.glass-blur(24px);
     @include mixins.transform-container(translateY(0));
     border-bottom: 1px solid var(--border);
+    box-shadow: 0 0 72px 0 rgba(var(--background-rgb), 0.5);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .menu_items {
+    @include mixins.flexbox(column, center, start);
+    gap: var(--space);
+    width: 100%;
+    max-width: 480px;
+    padding: 0 var(--space);
+
+    .menu_item {
+      @include mixins.border-radius(12px);
+      overflow: hidden;
+
+      &.theme_toggle {
+        // 主題切換樣式
+      }
+
+      &.auth_item {
+        width: 100%;
+        border: 1px solid var(--border);
+      }
+    }
+  }
+
+  //* Auth Section 樣式
+  .auth_section {
+    gap: 12px;
+    width: fit-content;
+    width: 100%;
+    @include mixins.transition(var(--transition-default));
+
+    .loading {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--border);
+      border-top: 2px solid var(--text-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    a.user_link {
+      @include mixins.flexbox(row, space-between, center);
+      gap: 12px;
+      width: 100%;
+      padding: var(--space);
+      @include mixins.transition(var(--transition-default));
+
+      &:hover {
+        background-color: rgba(var(--background-tertiary-rgb), 0.25);
+      }
+
+      > .user_info {
+        @include mixins.flexbox(row, start, center);
+        gap: 12px;
+
+        .user_name {
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: var(--foreground);
+        }
+
+        .user_avatar {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          object-fit: cover;
+          @include mixins.transition(var(--transition-default));
+        }
+      }
+
+      > .action_buttons {
+        @include mixins.flexbox(row, center, center);
+        gap: 12px;
+
+        .logout_button {
+          @include mixins.button;
+          @include mixins.border-radius(6px);
+
+          background: var(--theme-red-300);
+          color: var(--color-white);
+          border: 1px solid var(--border);
+
+          &:hover {
+            background: var(--theme-red-500);
+            border: 1px solid var(--border-hover);
+          }
+        }
+      }
+    }
+
+    .auth_login {
+      @include mixins.flexbox(row, space-between, center);
+      gap: 12px;
+      padding: var(--space);
+
+      p {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--foreground);
+      }
+
+      .auth_buttons {
+        @include mixins.flexbox(row, center, center);
+        gap: 12px;
+
+        .login_button {
+          @include mixins.button;
+          @include mixins.transition(var(--transition-default));
+          @include mixins.border-radius(6px);
+        }
+
+        .register_button {
+          @include mixins.button;
+          @include mixins.transition(var(--transition-default));
+          @include mixins.border-radius(6px);
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

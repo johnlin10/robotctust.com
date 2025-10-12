@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faFileAlt, faTrash } from '@fortawesome/free-solid-svg-icons'
 // contexts
 import { AuthContext } from '../contexts/AuthContext'
+import { useHeaderState } from '../contexts/HeaderContext'
 // utils
 import {
   checkUserPermission,
@@ -40,6 +41,8 @@ export default function UpdatePageClient() {
   const user = authContext?.user
   // 路由
   const router = useRouter()
+  // 獲取 Header 狀態
+  const { isCompactHeader } = useHeaderState()
 
   //* 狀態管理
   // 文章資料
@@ -376,7 +379,11 @@ export default function UpdatePageClient() {
     <>
       <div className={styles.updateContent}>
         {/* 篩選 */}
-        <div className={styles.filterSection}>
+        <div
+          className={`${styles.filterSection} ${
+            isCompactHeader ? styles.headerCompact : ''
+          }`}
+        >
           <div className={styles.filterButtons}>
             <button
               onClick={() => handleFilterChange('all')}

@@ -10,12 +10,15 @@ header.header {
   width: 100%;
   max-width: 100%;
   height: 72px;
-  background: linear-gradient(180deg, var(--background), #00000000);
+  background: linear-gradient(
+    180deg,
+    rgba(var(--background-rgb), 0.75),
+    #00000000
+  );
   overflow: hidden;
   @include mixins.transition(var(--transition-default));
 
   &.open {
-    top: calc(144px - 72px);
     background: #00000000;
 
     > .headerContainer > .nav_links {
@@ -32,6 +35,7 @@ header.header {
     }
   }
 
+  //* 非 hover 或 open 狀態
   &:not(:hover, .open) {
     &.compact {
       height: 48px;
@@ -57,6 +61,7 @@ header.header {
           @include mixins.border-radius(12px);
 
           > div.separator {
+            min-height: 0;
             opacity: 0;
           }
 
@@ -90,7 +95,7 @@ header.header {
 
   > .headerContainer {
     @include mixins.flexbox(row, space-between, center);
-    gap: 24px;
+    gap: 12px;
     padding: 12px;
     width: 100%;
     max-width: 100vw;
@@ -99,6 +104,15 @@ header.header {
 
     > * {
       min-width: 48px;
+    }
+
+    > .logo {
+      max-width: 48px;
+      height: 100%;
+    }
+
+    @include mixins.respond-to('desktop') {
+      gap: 24px;
     }
 
     > .menu_button {
@@ -119,7 +133,7 @@ header.header {
       border: 1px solid var(--border);
       background-color: rgba(var(--background-secondary-rgb), 0.25);
       @include mixins.glass-blur(12px);
-      @include mixins.border-radius(12px);
+      @include mixins.border-radius(18px);
       overflow-x: auto;
       overflow-y: hidden;
       scroll-snap-type: x mandatory;
@@ -129,14 +143,15 @@ header.header {
       @include mixins.hide-scrollbar;
 
       &:hover {
-        border: 1px solid var(--border-secondary);
+        // border: 1px solid var(--border-hover);
         background-color: rgba(var(--background-secondary-rgb), 0.5);
       }
 
       > div.separator {
-        width: 0;
-        min-height: 100%;
+        min-width: 1px;
+        min-height: 24px;
         border-left: 1px solid var(--border);
+        @include mixins.transition(var(--transition-default));
       }
 
       > a {
@@ -144,16 +159,17 @@ header.header {
         min-width: fit-content;
         border: 1px solid #ffffff00;
         @include mixins.transition(var(--transition-default));
-        @include mixins.border-radius(6px);
+        @include mixins.border-radius(12px);
         // scroll-snap-align: center;
 
         &:hover {
-          border: 1px solid var(--border-secondary);
+          background-color: rgba(var(--background-tertiary-rgb), 0.25);
+          // border: 1px solid var(--foreground-900);
         }
 
         &.active {
           background-color: rgba(var(--background-tertiary-rgb), 0.5);
-          border: 1px solid var(--border-secondary);
+          border: 1px solid var(--border);
 
           &:hover {
             background-color: rgba(var(--background-tertiary-rgb), 0.75);
@@ -208,6 +224,125 @@ header.header {
           @include mixins.transition(var(--transition-default));
         }
       }
+    }
+  }
+}
+
+.gradient_blur {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 0 auto;
+  height: calc(100% + 18px);
+  width: 100%;
+  pointer-events: none;
+  @include mixins.transform-container(translateY(-18px));
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    content: '';
+    z-index: 1;
+    backdrop-filter: blur(0.5px);
+    filter: blur(0.5px);
+    mask: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(255, 255, 255, 1) 12.5%,
+      rgba(255, 255, 255, 1) 25%,
+      rgba(0, 0, 0, 0) 37.5%
+    );
+  }
+  &::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+    z-index: 8;
+    backdrop-filter: blur(64px);
+    filter: blur(64px);
+    mask: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0) 87.5%,
+      rgba(255, 255, 255, 1) 100%
+    );
+  }
+
+  > div {
+    position: absolute;
+    inset: 0;
+  }
+
+  > div {
+    &:nth-of-type(1) {
+      z-index: 2;
+      backdrop-filter: blur(1px);
+      filter: blur(1px);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(255, 255, 255, 1) 25%,
+        rgba(255, 255, 255, 1) 37.5%,
+        rgba(0, 0, 0, 0) 50%
+      );
+    }
+    &:nth-of-type(2) {
+      z-index: 3;
+      backdrop-filter: blur(2px);
+      filter: blur(2px);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 25%,
+        rgba(255, 255, 255, 1) 37.5%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(0, 0, 0, 0) 62.5%
+      );
+    }
+    &:nth-of-type(3) {
+      z-index: 4;
+      backdrop-filter: blur(4px);
+      filter: blur(4px);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 37.5%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(255, 255, 255, 1) 62.5%,
+        rgba(0, 0, 0, 0) 75%
+      );
+    }
+    &:nth-of-type(4) {
+      z-index: 5;
+      backdrop-filter: blur(8px);
+      filter: blur(8px);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 50%,
+        rgba(255, 255, 255, 1) 62.5%,
+        rgba(255, 255, 255, 1) 75%,
+        rgba(0, 0, 0, 0) 87.5%
+      );
+    }
+    &:nth-of-type(5) {
+      z-index: 6;
+      backdrop-filter: blur(16px);
+      filter: blur(16px);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 62.5%,
+        rgba(255, 255, 255, 1) 75%,
+        rgba(255, 255, 255, 1) 87.5%,
+        rgba(0, 0, 0, 0) 100%
+      );
+    }
+    &:nth-of-type(6) {
+      z-index: 7;
+      backdrop-filter: blur(64px);
+      filter: blur(64px);
+      // background: rgba(255, 255, 255, 1);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 75%,
+        rgba(255, 255, 255, 1) 87.5%,
+        rgba(255, 255, 255, 1) 100%
+      );
     }
   }
 }

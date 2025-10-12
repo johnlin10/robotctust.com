@@ -1,32 +1,5 @@
 import { Metadata } from 'next'
-
-//* 網站基本資訊常數
-const SITE_CONFIG = {
-  name: '中臺機器人研究社',
-  shortName: '中臺機器人研究社',
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://robotctust.com',
-  locale: 'zh-TW',
-  creator: '中臺機器人研究社',
-  publisher: '中臺機器人研究社',
-  keywords: [
-    '中臺機器人研究社',
-    '社團網站',
-    '機器人研究',
-    '機器人社團',
-    '機器人社',
-    '機器人',
-    '中臺科技大學',
-    '中臺科大',
-    '研究社',
-    '機器人技術',
-    '學習平台',
-    'CTUST',
-    'Robot',
-    'Robot Research',
-    'Robot Research Club',
-    'Robot Research Club of CTUST',
-  ],
-} as const
+import { SITE_CONFIG } from './siteConfigs'
 
 //* metadata 函數選項介面
 export interface MetadataOptions {

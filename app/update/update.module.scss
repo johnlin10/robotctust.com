@@ -37,13 +37,19 @@
       margin-bottom: var(--space);
       width: calc(100% + 48px);
       @include mixins.border-radius(12px);
+      @include mixins.sticky-with-header-compact {
+        &.headerCompact {
+          top: var(--header-height-compact);
+          padding: 0;
+        }
+      }
 
       > .filterButtons {
         @include mixins.flexbox(row, start, center);
         gap: 8px;
         overflow-x: auto;
+        padding: 6px 0;
         max-width: 100%;
-        padding: 12px 0;
         @include mixins.hide-scrollbar;
 
         > .filterButton {
@@ -51,8 +57,9 @@
           font-size: 1rem;
           font-weight: 600;
           @include mixins.transition(all 0.2s ease);
-          background: var(--background);
+          background: rgba(var(--background-rgb), 0.5);
           border: 1px solid var(--border);
+          backdrop-filter: blur(12px);
 
           &:first-child {
             margin-left: 24px;
@@ -75,10 +82,10 @@
             &[data-category] {
               background: var(--category-bg-color, var(--purple-700));
               color: var(--category-text-color, var(--color-white));
-              border-color: var(
-                --category-border-color,
-                var(--foreground-dark-900)
-              );
+              // border-color: var(
+              //   --category-border-color,
+              //   var(--foreground-dark-900)
+              // );
             }
           }
 
@@ -91,7 +98,6 @@
               background: var(--category-bg-color, var(--background-secondary));
               color: var(--category-text-color, var(--foreground));
               border-color: var(--category-border-color, var(--border-hover));
-              opacity: 0.8;
             }
           }
         }
@@ -103,9 +109,9 @@
       @include mixins.flexbox(row, start, stretch);
       flex-wrap: wrap;
 
-      // @include mixins.respond-to('desktop') {
-      //   gap: 12px;
-      // }
+      @include mixins.respond-to('desktop') {
+        gap: 6px;
+      }
 
       //* Post Card
       > .postCard {
@@ -114,7 +120,7 @@
         width: 100%;
         padding: var(--space-2x) 0;
         border-bottom: 1px solid var(--border);
-        @include mixins.transition(all 0.2s ease);
+        @include mixins.transition(var(--transition-default));
         cursor: pointer;
         outline: none;
         overflow-x: auto;
@@ -137,15 +143,18 @@
             border-bottom: none;
           }
         }
-        @include mixins.respond-to('desktop') {
-          &:hover {
-            background: var(--background-secondary);
-          }
-        }
 
         @include mixins.respond-to('desktop') {
           width: calc(50% - 6px);
 
+          &:nth-child(even) {
+            margin-right: auto;
+          }
+
+          &:hover {
+            @include mixins.border-radius(12px);
+            background: var(--background-secondary);
+          }
           &:first-child {
             width: 100%;
 
@@ -167,10 +176,6 @@
                 }
               }
             }
-          }
-          // 偶數
-          &:nth-child(even) {
-            margin-right: auto;
           }
         }
 
@@ -380,6 +385,7 @@
   > .createButton {
     @include mixins.button('primary', 'normal');
     white-space: nowrap;
+    border: 1px solid var(--border);
     transition: all 0.2s ease;
     min-width: 120px;
 
