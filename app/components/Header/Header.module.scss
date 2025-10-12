@@ -12,7 +12,7 @@ header.header {
   height: 72px;
   background: linear-gradient(
     180deg,
-    rgba(var(--background-rgb), 0.75),
+    rgba(var(--background-rgb), 1),
     #00000000
   );
   overflow: hidden;
@@ -228,14 +228,19 @@ header.header {
   }
 }
 
+//* 模糊漸層效果
 .gradient_blur {
-  position: absolute;
-  z-index: -1;
+  position: fixed;
+  z-index: 0;
   inset: 0 0 0 auto;
-  height: calc(100% + 18px);
+  height: calc(var(--header-height) + 18px);
   width: 100%;
   pointer-events: none;
   @include mixins.transform-container(translateY(-18px));
+
+  &.compact {
+    height: calc(var(--header-height-compact) + 18px);
+  }
 
   &::before {
     position: absolute;

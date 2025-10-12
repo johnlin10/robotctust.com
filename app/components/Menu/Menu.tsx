@@ -171,7 +171,7 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
   })
 
   return (
-    <div className={`${styles.menu} ${isOpen ? styles.open : ''}`} data-menu>
+    <menu className={`${styles.menu} ${isOpen ? styles.open : ''}`} data-menu>
       <div className={styles.menu_items} data-menu>
         <div className={styles.menu_item + ' ' + styles.theme_toggle} data-menu>
           <ThemeToggle />
@@ -180,6 +180,6 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
           <AuthSection onClose={onClose} />
         </div>
       </div>
-    </div>
+    </menu>
   )
 }

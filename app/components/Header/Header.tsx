@@ -148,16 +148,19 @@ export default function Header() {
             </button>
           </div>
         </div>
-
-        <div className={styles.gradient_blur}>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
       </header>
+      <div
+        className={`${styles.gradient_blur} ${
+          isCompactHeader ? styles.compact : ''
+        }`}
+      >
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </>
   )
 }
