@@ -3,6 +3,9 @@
 import { useTheme } from '../../contexts/ThemeContext'
 import { useEffect, useState } from 'react'
 import styles from './ThemeToggle.module.scss'
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDesktop, faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
 
 export default function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
@@ -29,9 +32,13 @@ export default function ThemeToggle() {
 
   const getIcon = () => {
     if (theme === 'system') {
-      return '🖥️'
+      return <FontAwesomeIcon icon={faDesktop} />
     }
-    return resolvedTheme === 'dark' ? '🌙' : '☀️'
+    return resolvedTheme === 'dark' ? (
+      <FontAwesomeIcon icon={faMoon} />
+    ) : (
+      <FontAwesomeIcon icon={faSun} />
+    )
   }
 
   const getLabel = () => {

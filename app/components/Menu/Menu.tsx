@@ -8,6 +8,7 @@ import styles from './Menu.module.scss'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 // components
 import { AuthModal } from '../Auth/AuthModal'
+import WebsiteMap from '../WebsiteMap/WebsiteMap'
 // contexts
 import { useAuth } from '../../contexts/AuthContext'
 // hooks
@@ -173,11 +174,14 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
   return (
     <menu className={`${styles.menu} ${isOpen ? styles.open : ''}`} data-menu>
       <div className={styles.menu_items} data-menu>
-        <div className={styles.menu_item + ' ' + styles.theme_toggle} data-menu>
-          <ThemeToggle />
+        <div className={styles.menu_item + ' ' + styles.website_map} data-menu>
+          <WebsiteMap onClose={onClose} />
         </div>
         <div className={styles.menu_item + ' ' + styles.auth_item} data-menu>
           <AuthSection onClose={onClose} />
+        </div>
+        <div className={styles.menu_item + ' ' + styles.theme_toggle} data-menu>
+          <ThemeToggle />
         </div>
       </div>
     </menu>

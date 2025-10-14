@@ -4,8 +4,7 @@
   z-index: 1000;
   @include mixins.flexbox(column, center, center);
   position: fixed;
-  padding-top: var(--header-height);
-  padding-bottom: var(--space);
+  padding: var(--header-height) var(--space-2x) var(--space-2x) var(--space-2x);
   top: 0;
   left: 0;
   width: 100vw;
@@ -13,7 +12,7 @@
   @include mixins.transform-container(translateY(calc(-100% + 72px)));
   @include mixins.transition(0.5s cubic-bezier(0.23, 1, 0.32, 1));
   opacity: 0;
-  visibility: hidden;
+  visibility: visible;
 
   &.open {
     background-color: rgba(var(--background-secondary-rgb), 0.8);
@@ -30,14 +29,18 @@
     gap: var(--space);
     width: 100%;
     max-width: 480px;
-    padding: 0 var(--space);
 
     .menu_item {
       @include mixins.border-radius(12px);
-      overflow: hidden;
+
+      &.website_map {
+        width: 100%;
+      }
 
       &.theme_toggle {
-        // 主題切換樣式
+        &:hover {
+          background-color: var(--background-secondary);
+        }
       }
 
       &.auth_item {
@@ -52,7 +55,9 @@
     gap: 12px;
     width: fit-content;
     width: 100%;
+    background-color: var(--background-secondary);
     @include mixins.transition(var(--transition-default));
+    @include mixins.border-radius(12px);
 
     .loading {
       width: 32px;
@@ -69,10 +74,6 @@
       width: 100%;
       padding: var(--space);
       @include mixins.transition(var(--transition-default));
-
-      &:hover {
-        background-color: rgba(var(--background-tertiary-rgb), 0.25);
-      }
 
       > .user_info {
         @include mixins.flexbox(row, start, center);
@@ -101,12 +102,13 @@
           @include mixins.button;
           @include mixins.border-radius(6px);
 
-          background: var(--theme-red-300);
-          color: var(--color-white);
+          background: var(--background-secondary);
+          color: var(--foreground);
           border: 1px solid var(--border);
 
           &:hover {
-            background: var(--theme-red-500);
+            background: var(--theme-red-400);
+            color: var(--color-white);
             border: 1px solid var(--border-hover);
           }
         }

@@ -15,22 +15,46 @@ header.header {
     rgba(var(--background-rgb), 1),
     #00000000
   );
-  overflow: hidden;
+  overflow: visible;
   @include mixins.transition(var(--transition-default));
 
   &.open {
     background: #00000000;
 
-    > .headerContainer > .nav_links {
-      background-color: #00000000;
-      border: 0.5px solid #00000000;
-      @include mixins.glass-blur(0);
+    > .headerContainer {
+      > .menu_button {
+        > button {
+          background-color: var(--primary) !important;
+          border: 1px solid var(--border-hover) !important;
 
-      &:hover {
+          svg {
+            &.faBars {
+              opacity: 0;
+              @include mixins.transform-container(
+                translate(-50%, -50%) rotate(45deg)
+              );
+            }
+            &.faXmark {
+              opacity: 1;
+              @include mixins.transform-container(
+                translate(-50%, -50%) rotate(0deg)
+              );
+            }
+          }
+        }
+      }
+      > .nav_links {
         background-color: #00000000;
         border: 0.5px solid #00000000;
         @include mixins.glass-blur(0);
-        @include mixins.transform-container(scale(1));
+        opacity: 0.5;
+
+        &:hover {
+          background-color: #00000000;
+          border: 0.5px solid #00000000;
+          @include mixins.glass-blur(0);
+          @include mixins.transform-container(scale(1));
+        }
       }
     }
   }
@@ -66,7 +90,7 @@ header.header {
           }
 
           > a {
-            @include mixins.border-radius(9px);
+            @include mixins.border-radius(6px);
             padding: 3px 9px;
             font-size: 0.8rem;
 
@@ -116,6 +140,7 @@ header.header {
     }
 
     > .menu_button {
+      position: relative;
       @include mixins.flexbox(row, center, center);
       @include mixins.transition(var(--transition-default));
       height: 100%;
@@ -123,6 +148,33 @@ header.header {
       > button {
         height: 100%;
         width: 100%;
+        font-size: 18px;
+        border: 1px solid #00000000;
+        @include mixins.border-radius(12px);
+        @include mixins.transition(var(--transition-default));
+        cursor: pointer;
+
+        &:hover {
+          @include mixins.transform-container(scale(1.05));
+        }
+
+        svg {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          @include mixins.transition(var(--transition-default));
+
+          &.faBars {
+            @include mixins.transform-container(translate(-50%, -50%));
+          }
+          &.faXmark {
+            font-size: 20px;
+            @include mixins.transform-container(
+              translate(-50%, -50%) rotate(-45deg)
+            );
+            opacity: 0;
+          }
+        }
       }
     }
 
@@ -133,7 +185,7 @@ header.header {
       border: 1px solid var(--border);
       background-color: rgba(var(--background-secondary-rgb), 0.25);
       @include mixins.glass-blur(12px);
-      @include mixins.border-radius(18px);
+      @include mixins.border-radius(12px);
       overflow-x: auto;
       overflow-y: hidden;
       scroll-snap-type: x mandatory;
@@ -159,7 +211,7 @@ header.header {
         min-width: fit-content;
         border: 1px solid #ffffff00;
         @include mixins.transition(var(--transition-default));
-        @include mixins.border-radius(12px);
+        @include mixins.border-radius(6px);
         // scroll-snap-align: center;
 
         &:hover {

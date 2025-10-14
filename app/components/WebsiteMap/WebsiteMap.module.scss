@@ -1,0 +1,55 @@
+@use '@/app/styles/mixins' as mixins;
+
+.websiteMap {
+  @include mixins.flexbox(row, space-between, start);
+  flex-wrap: wrap;
+  gap: var(--space-2x);
+  padding: 0 var(--space) var(--space-2x) var(--space);
+  width: 100%;
+
+  > .websiteMap_group {
+    @include mixins.flexbox(column, center, start);
+    gap: var(--space-0-5x);
+    width: calc(50% - var(--space));
+
+    > p {
+      font-size: 0.8rem;
+      color: var(--foreground-tertiary);
+    }
+
+    > .websiteMap_group_items {
+      @include mixins.flexbox(column, center, start);
+      gap: var(--space-0-25x);
+
+      > a {
+        font-size: 1.1rem;
+        font-weight: 600;
+
+        &:hover {
+          color: var(--theme-purple-700);
+
+          > svg {
+            color: var(--theme-purple-700);
+            opacity: 1;
+            @include mixins.transform-container(translateX(3px));
+          }
+
+          &.blank {
+            > svg {
+              @include mixins.transform-container(
+                rotate(-45deg) translateX(3px)
+              );
+            }
+          }
+        }
+
+        > svg {
+          color: var(--foreground-tertiary);
+          opacity: 0;
+          @include mixins.transform-container(rotate(0deg));
+          @include mixins.transition(var(--transition-default));
+        }
+      }
+    }
+  }
+}

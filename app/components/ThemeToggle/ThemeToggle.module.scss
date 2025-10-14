@@ -1,16 +1,7 @@
-@use '../../styles/mixins' as mixins;
+@use '@/app/styles/mixins' as mixins;
 
 .toggle {
   @include mixins.button;
-
-  &:hover {
-    background: var(--background-tertiary);
-    border-color: var(--border-secondary);
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
 }
 
 .icon {

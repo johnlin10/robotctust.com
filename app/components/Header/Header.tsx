@@ -13,7 +13,7 @@ import { useNavAutoCenter } from './useNavAutoCenter'
 import { usePathname } from 'next/navigation'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
 // configs
 import { NAV_AUTO_CENTER_CONFIG } from './headerScrollConfig'
 import Logo from '../Logo/Logo'
@@ -106,22 +106,6 @@ export default function Header() {
               最新資訊
             </Link>
             <Link
-              href="/competitions"
-              onClick={handleNavLinkClick}
-              className={
-                pathname.startsWith('/competitions') ? styles.active : ''
-              }
-            >
-              競賽
-            </Link>
-            <Link
-              href="/docs"
-              onClick={handleNavLinkClick}
-              className={pathname.startsWith('/docs') ? styles.active : ''}
-            >
-              文檔
-            </Link>
-            <Link
               href="/about"
               onClick={handleNavLinkClick}
               className={pathname.startsWith('/about') ? styles.active : ''}
@@ -144,7 +128,8 @@ export default function Header() {
 
           <div className={styles.menu_button}>
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} data-menu-toggle>
-              <FontAwesomeIcon icon={faBars} />
+              <FontAwesomeIcon icon={faBars} className={styles.faBars} />
+              <FontAwesomeIcon icon={faXmark} className={styles.faXmark} />
             </button>
           </div>
         </div>
