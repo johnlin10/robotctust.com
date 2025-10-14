@@ -231,7 +231,7 @@ header.header {
 //* 模糊漸層效果
 .gradient_blur {
   position: fixed;
-  z-index: 0;
+  z-index: 900;
   inset: 0 0 0 auto;
   height: calc(var(--header-height) + 18px);
   width: 100%;
