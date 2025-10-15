@@ -52,11 +52,17 @@ export default function DocsPage() {
                         rel="noopener noreferrer"
                         title={`查看 ${doc.title} 文件`}
                       >
+                        {doc.icon && (
+                          <FontAwesomeIcon
+                            icon={doc.icon}
+                            className={styles.fileIcon}
+                          />
+                        )}
                         <h4 className={styles.subDocTitle}>{doc.title}</h4>
                         <span className={styles.subDocType}>{doc.type}</span>
                         <FontAwesomeIcon
                           icon={faArrowRight}
-                          className={styles.subDocIcon}
+                          className={styles.linkIcon}
                         />
                       </Link>
                     ))}
