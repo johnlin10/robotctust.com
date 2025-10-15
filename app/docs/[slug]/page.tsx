@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MarkdownRenderer } from '@/app/components/Markdown'
-import { getDocById, docs } from '../docs'
+import { getDocById, mainDocs } from '../docs'
 import styles from './doc-content.module.scss'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Page from '@/app/components/page/Page'
 
 export async function generateStaticParams() {
-  return docs.map((doc) => ({
+  return mainDocs.map((doc) => ({
     slug: doc.id,
   }))
 }

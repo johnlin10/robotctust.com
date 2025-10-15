@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styles from './docs.module.scss'
-import { docs } from './docs'
+import { mainDocs, subDocs } from './docs'
 import { Metadata } from 'next'
 import { metadata } from '../utils/metadata'
 import Page from '../components/page/Page'
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 
 export default function DocsPage() {
   return (
@@ -18,8 +19,8 @@ export default function DocsPage() {
       }}
     >
       <div className={styles.docsContent}>
-        <div className={styles.docsGrid}>
-          {docs.map((doc) => (
+        <div className={styles.mainDocs}>
+          {mainDocs.map((doc) => (
             <Link
               key={doc.id}
               href={`/docs/${doc.id}`}
@@ -32,6 +33,37 @@ export default function DocsPage() {
                 <span className={styles.docCategory}>{doc.category}</span>
               )}
             </Link>
+          ))}
+        </div>
+        <div className={styles.subDocs}>
+          {subDocs.map((docGroup) => (
+            <div className={styles.docGroup} key={docGroup.id}>
+              <h3>{docGroup.title}</h3>
+              {docGroup.docs.map((subDoc) => (
+                <div className={styles.subDoc} key={subDoc.id}>
+                  <h4 className={styles.subDocTitle}>{subDoc.title}</h4>
+                  <div className={styles.subDocDocs}>
+                    {subDoc.docs.map((doc) => (
+                      <Link
+                        key={doc.id}
+                        href={doc.filePath}
+                        className={styles.subDocLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={`查看 ${doc.title} 文件`}
+                      >
+                        <h4 className={styles.subDocTitle}>{doc.title}</h4>
+                        <span className={styles.subDocType}>{doc.type}</span>
+                        <FontAwesomeIcon
+                          icon={faArrowRight}
+                          className={styles.subDocIcon}
+                        />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           ))}
         </div>
       </div>

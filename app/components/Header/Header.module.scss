@@ -28,6 +28,8 @@ header.header {
           border: 1px solid var(--border-hover) !important;
 
           svg {
+            color: var(--color-white);
+
             &.faBars {
               opacity: 0;
               @include mixins.transform-container(

@@ -4,7 +4,7 @@
   @include mixins.flexbox(row, space-between, start);
   flex-wrap: wrap;
   gap: var(--space-2x);
-  padding: 0 var(--space) var(--space-2x) var(--space);
+  padding: var(--space) var(--space) var(--space-2x) var(--space);
   width: 100%;
 
   > .websiteMap_group {
@@ -26,10 +26,10 @@
         font-weight: 600;
 
         &:hover {
-          color: var(--theme-purple-700);
+          color: var(--theme-purple-600);
 
           > svg {
-            color: var(--theme-purple-700);
+            color: var(--theme-purple-600);
             opacity: 1;
             @include mixins.transform-container(translateX(3px));
           }
