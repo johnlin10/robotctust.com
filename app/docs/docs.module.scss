@@ -89,7 +89,7 @@
         gap: 12px;
 
         > .subDoc {
-          @include mixins.flexbox(row, space-between, center);
+          @include mixins.flexbox(row, space-between, start);
           border: 1px solid var(--border);
           @include mixins.border-radius(12px);
           overflow: hidden;

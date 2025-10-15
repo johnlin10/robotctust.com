@@ -85,11 +85,11 @@ export default function Header() {
             onScroll={handleScroll}
           >
             <Link
-              href="/"
+              href="/update"
               onClick={handleNavLinkClick}
-              className={pathname === '/' ? styles.active : ''}
+              className={pathname.startsWith('/update') ? styles.active : ''}
             >
-              首頁
+              最新資訊
             </Link>
             <Link
               href="/schedules"
@@ -99,11 +99,11 @@ export default function Header() {
               行事曆
             </Link>
             <Link
-              href="/update"
+              href="/docs"
               onClick={handleNavLinkClick}
-              className={pathname.startsWith('/update') ? styles.active : ''}
+              className={pathname.startsWith('/docs') ? styles.active : ''}
             >
-              最新資訊
+              文檔
             </Link>
             <Link
               href="/about"

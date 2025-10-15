@@ -84,11 +84,32 @@ export const subDocs: SubDocs[] = [
               'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/docs%2Frobot-assembly-circuit-diagram%2F%E6%A9%9F%E5%99%A8%E4%BA%BA%E6%8E%A5%E7%B7%9A%E5%9C%96.pdf?alt=media&token=cf1bace6-5ed8-4e51-8f38-91d2dfefe49d',
           },
           {
-            id: 'robot-assembly-circuit-diagram-2',
-            title: '社團機器人組裝指南',
+            id: 'robot-assembly-kit-list',
+            title: '社團機器人套件清單',
             type: 'Google Drive',
             filePath:
               'https://drive.google.com/file/d/12cWAfX7NYqm5dSxTtXfwliN7BkqgN4ua/view?usp=sharing',
+          },
+          {
+            id: 'arduino-nano-main-board-pinout',
+            title: 'Arduino Nano 主板腳位',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1d1pzAu7U5ny5EnC_VM-ETmBtmdfrXV_G/view?usp=sharing',
+          },
+          {
+            id: 'arduino-nano-extension-board-pinout',
+            title: 'Arduino Nano 擴展板腳位',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1GCzkVwx3AO1Q1PDgjWtqsq92GhJhHZsh/view?usp=sharing',
+          },
+          {
+            id: 'l9110s-motor-driver-board-pinout',
+            title: 'L9110S 馬達驅動板腳位',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1aGoymV4LQiIO21juWsIJ_zdaiNwoQqZ3/view?usp=sharing',
           },
         ],
       },
