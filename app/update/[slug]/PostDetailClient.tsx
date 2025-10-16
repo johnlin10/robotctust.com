@@ -7,7 +7,6 @@ import {
   faArrowLeft,
   faCalendar,
   faUser,
-  faSpinner,
   faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons'
 import styles from './post-detail.module.scss'
@@ -32,7 +31,6 @@ export default function PostDetailClient({
 
   // 使用預載的資料初始化狀態
   const post = initialPost ? deserializePost(initialPost) : null
-  const loading = false // server 已預載，不需要載入狀態
   const error = initialError
 
   const handleGoBack = () => {
@@ -41,18 +39,6 @@ export default function PostDetailClient({
 
   const handleGoToList = () => {
     router.push('/update')
-  }
-
-  // 載入中狀態
-  if (loading) {
-    return (
-      <div className={styles.postDetailContent}>
-        <div className={styles.loadingState}>
-          <FontAwesomeIcon icon={faSpinner} className={styles.spinner} spin />
-          <span>載入中...</span>
-        </div>
-      </div>
-    )
   }
 
   // 錯誤狀態

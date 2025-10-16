@@ -1,5 +1,6 @@
 import { Timestamp } from 'firebase/firestore'
 
+// 文章分類
 export type PostCategory =
   | '社團活動'
   | '即時消息'
@@ -8,6 +9,7 @@ export type PostCategory =
   | '競賽資訊'
   | '網站更新'
 
+// 文章資料
 export interface Post {
   id: string // Document ID
   title: string
@@ -24,6 +26,7 @@ export interface Post {
   updatedAt: Timestamp
 }
 
+// 建立文章資料
 export interface CreatePostData {
   title: string
   contentMarkdown: string
@@ -31,6 +34,7 @@ export interface CreatePostData {
   coverImageUrl?: string | null
 }
 
+// 更新文章資料
 export interface UpdatePostData {
   title?: string
   contentMarkdown?: string
@@ -44,6 +48,7 @@ export interface AuthorizedUser {
   active: boolean
 }
 
+// 權限管理資料
 export interface AccessControlDocument {
   authorizedUsers: AuthorizedUser[]
 }
@@ -72,10 +77,33 @@ export const POST_CATEGORY_LABELS: Record<PostCategory | 'all', string> = {
   網站更新: '網站更新',
 }
 
-/**
- * 文章分類顏色配置
- * 使用主題色彩變數以支援深淺色主題
- */
+export type CategorySlug =
+  | 'club-activity'
+  | 'instant-news'
+  | 'news-sharing'
+  | 'tech-sharing'
+  | 'competition-info'
+  | 'website-update'
+
+export const CATEGORY_TO_SLUG: Record<PostCategory, CategorySlug> = {
+  社團活動: 'club-activity',
+  即時消息: 'instant-news',
+  新聞分享: 'news-sharing',
+  技術分享: 'tech-sharing',
+  競賽資訊: 'competition-info',
+  網站更新: 'website-update',
+}
+
+export const SLUG_TO_CATEGORY: Record<CategorySlug, PostCategory> = {
+  'club-activity': '社團活動',
+  'instant-news': '即時消息',
+  'news-sharing': '新聞分享',
+  'tech-sharing': '技術分享',
+  'competition-info': '競賽資訊',
+  'website-update': '網站更新',
+}
+
+//文章分類顏色配置，使用主題色彩變數以支援深淺色主題
 export const POST_CATEGORY_COLORS: Record<
   PostCategory,
   {

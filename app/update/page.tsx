@@ -1,13 +1,27 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import styles from './update.module.scss'
 // components
 import Page from '../components/page/Page'
 import UpdatePageClient from './UpdatePageClient'
+import Loading from '../components/Loading/Loading'
 // utils
 import { metadata } from '../utils/metadata'
 import { getAllPosts } from '../utils/postService'
+import { SerializedPost, serializePost } from '../types/serialized'
+
+export const revalidate = 60
 
 export default async function UpdatePage() {
+  let initialPosts: SerializedPost[] = []
+
+  try {
+    const posts = await getAllPosts()
+    initialPosts = posts.map(serializePost)
+  } catch (error) {
+    console.error('Error loading posts:', error)
+    initialPosts = []
+  }
+
   return (
     <Page
       style={styles.updateContainer}
@@ -18,7 +32,9 @@ export default async function UpdatePage() {
         ],
       }}
     >
-      <UpdatePageClient />
+      <Suspense fallback={<Loading />}>
+        <UpdatePageClient initialPosts={initialPosts} />
+      </Suspense>
     </Page>
   )
 }

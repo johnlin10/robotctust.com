@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import styles from './update.module.scss'
 // components
 import CreatePostModal from '../components/CreatePostModal'
+import Loading from '../components/Loading/Loading'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faFileAlt, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -14,6 +15,7 @@ import { faPlus, faFileAlt, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { AuthContext } from '../contexts/AuthContext'
 import { useHeaderState } from '../contexts/HeaderContext'
 // utils
+import { useQueryState, parseAsString } from 'nuqs'
 import {
   checkUserPermission,
   formatPostDate,
@@ -27,15 +29,25 @@ import {
   POST_CATEGORY_LABELS,
   POST_CATEGORIES,
   POST_CATEGORY_COLORS,
+  CategorySlug,
+  CATEGORY_TO_SLUG,
+  SLUG_TO_CATEGORY,
 } from '../types/post'
+import { deserializePost, SerializedPost } from '../types/serialized'
 
 // 篩選類型
 type FilterType = PostCategory | 'all'
 
+interface UpdatePageClientProps {
+  initialPosts: SerializedPost[]
+}
+
 /**
  * 最新資訊頁面客戶端
  */
-export default function UpdatePageClient() {
+export default function UpdatePageClient({
+  initialPosts,
+}: UpdatePageClientProps) {
   // 獲取登入資訊
   const authContext = useContext(AuthContext)
   const user = authContext?.user
@@ -46,7 +58,9 @@ export default function UpdatePageClient() {
 
   //* 狀態管理
   // 文章資料
-  const [posts, setPosts] = useState<Post[]>([])
+  const [posts, setPosts] = useState<Post[]>(
+    initialPosts.map(deserializePost) as Post[]
+  )
   // 篩選後的文章資料
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([])
   // 載入狀態
@@ -54,7 +68,13 @@ export default function UpdatePageClient() {
   // 錯誤訊息
   const [error, setError] = useState<string | null>(null)
   // 當前篩選類型
-  const [currentFilter, setCurrentFilter] = useState<FilterType>('all')
+  const [categorySlug, setCategorySlug] = useQueryState(
+    'category',
+    parseAsString.withDefault('')
+  )
+  const currentFilter: FilterType = categorySlug
+    ? SLUG_TO_CATEGORY[categorySlug as CategorySlug] || 'all'
+    : 'all'
   // 是否可以發布文章
   const [canCreatePost, setCanCreatePost] = useState(false)
   // 是否顯示發布文章模態
@@ -81,8 +101,9 @@ export default function UpdatePageClient() {
 
   // 初次載入文章
   useEffect(() => {
-    loadPosts()
-  }, [])
+    setPosts(initialPosts.map(deserializePost) as Post[])
+    setLoading(false)
+  }, [initialPosts])
 
   // 檢查使用者權限
   useEffect(() => {
@@ -119,7 +140,12 @@ export default function UpdatePageClient() {
    * @returns void
    */
   const handleFilterChange = (filter: FilterType) => {
-    setCurrentFilter(filter)
+    if (filter === 'all') {
+      setCategorySlug(null)
+    } else {
+      const slug = CATEGORY_TO_SLUG[filter]
+      setCategorySlug(slug)
+    }
   }
 
   /**
@@ -137,8 +163,7 @@ export default function UpdatePageClient() {
    */
   const handleCreatePostSuccess = async (postId: string) => {
     console.log('Post created successfully:', postId)
-    // 重新載入文章資料以獲取最新內容（不需要重新整理頁面）
-    await loadPosts()
+    router.refresh()
   }
 
   /**
@@ -330,12 +355,7 @@ export default function UpdatePageClient() {
   const renderContent = () => {
     // 載入中
     if (loading) {
-      return (
-        <div className={styles.loadingState}>
-          <div className={styles.spinner}></div>
-          <span>載入文章中...</span>
-        </div>
-      )
+      return <Loading text="正在載入文章" />
     }
 
     // 錯誤

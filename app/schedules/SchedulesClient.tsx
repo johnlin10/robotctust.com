@@ -2,9 +2,14 @@
 
 import React, { useState, useEffect, useMemo } from 'react'
 import styles from './schedules.module.scss'
+
+// components
 import SchedulesCalendar from './components/SchedulesCalendar'
+import Loading from '../components/Loading/Loading'
+// type
 import { ScheduleEvent } from '../types/Schedule'
 import { Competition } from '../types/competition'
+// utils
 import { getPublishedClassEvents } from '../utils/classScheduleService'
 import { getAllCompetitions } from '../utils/competitionService'
 import { mergeClassAndCompetitionEvents } from './utils/calendarHelpers'
@@ -15,6 +20,9 @@ import {
   formatAcademicYear,
 } from './utils/academicYear'
 
+/**
+ * [Component] 行事曆頁面 Client 元件
+ */
 export default function SchedulesClient() {
   const [classEvents, setClassEvents] = useState<ScheduleEvent[]>([])
   const [competitions, setCompetitions] = useState<Competition[]>([])
@@ -156,12 +164,7 @@ export default function SchedulesClient() {
       )}
 
       {/* 載入狀態 */}
-      {loading && (
-        <div className={styles.loadingState}>
-          <div className={styles.spinner}></div>
-          <span>正在載入行事曆...</span>
-        </div>
-      )}
+      {loading && <Loading text="正在載入行事曆" />}
 
       {/* 無資料狀態 */}
       {!loading && !error && availableYears.length === 0 && (

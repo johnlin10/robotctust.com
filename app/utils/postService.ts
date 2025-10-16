@@ -28,6 +28,7 @@ import {
   PostCategory,
   AccessControlDocument,
 } from '../types/post'
+import { revalidateUpdatePage } from '../action/revalidate'
 
 const POSTS_COLLECTION = 'posts'
 const ACCESS_CONTROL_COLLECTION = 'accessControl'
@@ -245,6 +246,9 @@ export async function createPost(
     const docRef = await addDoc(collection(db, POSTS_COLLECTION), postDocData)
     console.log('Post created successfully with ID:', docRef.id)
 
+    //* 重新驗證更新頁面
+    await revalidateUpdatePage(docRef.id)
+
     return docRef.id
   } catch (error) {
     console.error('Error in createPost:', error)
@@ -317,6 +321,9 @@ export async function updatePost(
       Object.assign(updatePayload, { coverImageUrl })
     }
 
+    //* 重新驗證更新頁面
+    await revalidateUpdatePage(postId)
+
     await updateDoc(postRef, updatePayload)
   } catch (error) {
     console.error('Error updating post:', error)
@@ -350,6 +357,10 @@ export async function deletePost(
 
     // 刪除文章文件
     const postRef = doc(db, POSTS_COLLECTION, postId)
+
+    //* 重新驗證更新頁面
+    await revalidateUpdatePage(postId)
+
     await deleteDoc(postRef)
   } catch (error) {
     console.error('Error deleting post:', error)

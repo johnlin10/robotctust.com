@@ -1,0 +1,52 @@
+@use '@/app/styles/_mixins' as mixins;
+
+.loading {
+  @include mixins.flexbox(column, center, center);
+  gap: var(--space);
+  width: 100%;
+  height: fit-content;
+  padding: var(--space-2x);
+  color: var(--foreground-secondary);
+  font-size: 1rem;
+
+  &.left {
+    @include mixins.flexbox(row, flex-start, center);
+    padding: var(--space-2x) var(--space);
+  }
+  &.right {
+    @include mixins.flexbox(row-reverse, flex-start, center);
+    padding: var(--space-2x) var(--space);
+  }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 6px solid var(--border);
+    border-top: 6px solid var(--primary);
+    @include mixins.border-radius(50%);
+
+    @include mixins.animation-container(spin 1s linear infinite);
+  }
+
+  span {
+    color: var(--foreground-secondary);
+  }
+}
+
+@keyframes spin {
+  0% {
+    @include mixins.transform-container(rotate(0deg) scale(1.25));
+  }
+  15% {
+    @include mixins.transform-container(rotate(30deg) scale(1.25));
+  }
+  50% {
+    @include mixins.transform-container(rotate(270deg) scale(1));
+  }
+  65% {
+    @include mixins.transform-container(rotate(300deg) scale(1.1));
+  }
+  100% {
+    @include mixins.transform-container(rotate(360deg) scale(1.25));
+  }
+}

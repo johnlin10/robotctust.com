@@ -1,4 +1,4 @@
-@use '@/app/styles/mixins' as mixins;
+@use '@/app/styles/_mixins' as mixins;
 
 .websiteMap {
   @include mixins.flexbox(row, space-between, start);
@@ -21,9 +21,17 @@
       @include mixins.flexbox(column, center, start);
       gap: var(--space-0-25x);
 
+      @include mixins.respond-to('phone') {
+        gap: var(--space-0-5x);
+      }
+
       > a {
-        font-size: 1.1rem;
-        font-weight: 600;
+        font-size: 1.2rem;
+        font-weight: 500;
+
+        @include mixins.respond-to('phone') {
+          font-size: 1rem;
+        }
 
         &:hover {
           color: var(--theme-purple-600);

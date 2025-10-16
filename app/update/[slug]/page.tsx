@@ -15,6 +15,9 @@ import {
 } from '../../utils/metadata'
 import { getAllPosts, getPostById } from '../../utils/postService'
 
+export const revalidate = 60
+export const dynamicParams = true
+
 /**
  * 生成靜態參數
  * @returns 靜態參數
@@ -76,7 +79,7 @@ export async function generateMetadata({
     const { slug } = await params
     const post = await getPostById(slug)
 
-    //* 文章不存在的情況
+    //* 文章不存在
     if (!post) {
       return metadata({
         title: '文章不存在｜中臺機器人研究社',
@@ -100,7 +103,8 @@ export async function generateMetadata({
       '中臺機器人研究社',
       '文章',
       '最新消息',
-      ...post.title.split(/\s+/).slice(0, 3), // 從標題提取關鍵字
+      post.category,
+      ...post.title.split(/\s+/).slice(0, 3),
     ]
 
     return metadata({
@@ -130,7 +134,7 @@ export async function generateMetadata({
       description: '正在載入文章內容，請稍候...',
       keywords: ['載入中', '文章', '中臺機器人研究社'],
       url: `/update/${await params.then((p) => p.slug)}`,
-      noIndex: true, // 載入錯誤時不被索引
+      noIndex: true,
     })
   }
 }

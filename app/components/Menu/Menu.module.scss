@@ -1,4 +1,4 @@
-@use '../../styles/mixins.scss' as mixins;
+@use '@/app/styles/_mixins' as mixins;
 
 .menu {
   z-index: 1000;
@@ -28,7 +28,7 @@
     @include mixins.flexbox(column, center, start);
     gap: var(--space);
     width: 100%;
-    max-width: 480px;
+    max-width: 540px;
 
     .menu_item {
       @include mixins.border-radius(12px);

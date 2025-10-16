@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import styles from './competitions.module.scss'
 // component
 import CompetitionTimeline from '../components/CompetitionTimeline'
+import Loading from '../components/Loading/Loading'
 // type
 import { Competition } from '../types/competition'
 // util
@@ -76,12 +77,7 @@ export default function CompetitionsClient() {
           </button>
         </div>
       )}
-      {loading && (
-        <div className={styles.loadingState}>
-          <div className={styles.spinner}></div>
-          <span>載入競賽資料中...</span>
-        </div>
-      )}
+      {loading && <Loading text="正在載入競賽資料" />}
     </div>
   )
 }
