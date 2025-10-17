@@ -4,10 +4,11 @@ import React from 'react'
 import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faArrowLeft,
   faCalendar,
   faUser,
   faExclamationTriangle,
+  faCheck,
+  faShare,
 } from '@fortawesome/free-solid-svg-icons'
 import styles from './post-detail.module.scss'
 import MarkdownRenderer from '../../components/Markdown/MarkdownRenderer'
@@ -16,6 +17,8 @@ import { POST_CATEGORY_LABELS } from '../../types/post'
 import { SerializedPost, deserializePost } from '../../types/serialized'
 import Image from 'next/image'
 import { POST_CATEGORY_COLORS } from '../../types/post'
+import FloatingActions from '@/app/components/FloatingActions/FloatingActions'
+// import { faThreads, faXTwitter } from '@fortawesome/free-brands-svg-icons'
 
 interface PostDetailClientProps {
   postId: string
@@ -33,13 +36,36 @@ export default function PostDetailClient({
   const post = initialPost ? deserializePost(initialPost) : null
   const error = initialError
 
-  const handleGoBack = () => {
-    router.back()
-  }
-
   const handleGoToList = () => {
     router.push('/update')
   }
+
+  const handleShareUrl = async () => {
+    const url = window.location.href
+    // 檢查是否支援 Clipboard API
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(url)
+        return
+      } catch (err) {
+        console.warn('Clipboard API failed: ', err)
+      }
+    }
+  }
+
+  //* 開發中
+  // const handleShareToX = () => {
+  //   const url = window.location.href
+  //   window.open(`https://twitter.com/intent/tweet?text=${url}`, '_blank')
+  // }
+
+  // const handleShareToThreads = () => {
+  //   const url = window.location.href
+  //   window.open(
+  //     `https://threads.net/intent/post?text=https://robotctust.com/update/wNaUXr4aL3I9QaYWd2gM`,
+  //     '_blank'
+  //   )
+  // }
 
   // 錯誤狀態
   if (error || !post) {
@@ -53,10 +79,6 @@ export default function PostDetailClient({
           <h2>載入失敗</h2>
           <p>{error || '文章不存在'}</p>
           <div className={styles.errorActions}>
-            <button onClick={handleGoBack} className={styles.backButton}>
-              <FontAwesomeIcon icon={faArrowLeft} />
-              <span>返回上頁</span>
-            </button>
             <button onClick={handleGoToList} className={styles.listButton}>
               <span>回到文章列表</span>
             </button>
@@ -133,6 +155,41 @@ export default function PostDetailClient({
         <div className={styles.content}>
           <MarkdownRenderer content={post.contentMarkdown} />
         </div>
+
+        {/* Share Buttons */}
+        <FloatingActions
+          align="right"
+          actions={[
+            // {
+            //   icon: faThreads,
+            //   label: '分享到 Threads',
+            //   labelVisible: false,
+            //   onClick: () => {
+            //     handleShareToThreads()
+            //   },
+            // },
+            // {
+            //   icon: faXTwitter,
+            //   label: '分享到 X',
+            //   labelVisible: false,
+            //   onClick: () => {
+            //     handleShareToX()
+            //   },
+            // },
+            {
+              icon: faShare,
+              label: '分享網址',
+              labelVisible: true,
+              onClick: () => {
+                handleShareUrl()
+              },
+              clicked: {
+                icon: faCheck,
+                label: '已複製',
+              },
+            },
+          ]}
+        />
       </article>
     </div>
   )

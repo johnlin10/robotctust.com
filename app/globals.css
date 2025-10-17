@@ -119,6 +119,8 @@ p {
   --header-height-compact: 48px;
   --header-height: 72px;
 
+  --bottom-safe-area: 27px;
+
   --space-0-25x: 3px;
   --space-0-5x: 6px;
   --space-0-75x: 9px;

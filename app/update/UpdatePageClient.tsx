@@ -8,6 +8,7 @@ import styles from './update.module.scss'
 // components
 import CreatePostModal from '../components/CreatePostModal'
 import Loading from '../components/Loading/Loading'
+import FloatingActions from '../components/FloatingActions/FloatingActions'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faFileAlt, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -450,12 +451,25 @@ export default function UpdatePageClient({
 
       {/* 只有有權限的使用者才能看到發布文章按鈕 */}
       {canCreatePost && (
-        <div className={styles.actions}>
-          <button onClick={handleCreatePost} className={styles.createButton}>
-            <FontAwesomeIcon icon={faPlus} />
-            <span>發布文章</span>
-          </button>
-        </div>
+        // <div className={styles.actions}>
+        //   <button onClick={handleCreatePost} className={styles.createButton}>
+        //     <FontAwesomeIcon icon={faPlus} />
+        //     <span>發布文章</span>
+        //   </button>
+        // </div>
+
+        <FloatingActions
+          align="right"
+          actions={[
+            {
+              icon: faPlus,
+              label: '發布文章',
+              labelVisible: true,
+              variant: 'primary',
+              onClick: handleCreatePost,
+            },
+          ]}
+        />
       )}
     </>
   )

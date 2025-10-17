@@ -29,6 +29,39 @@
     @include mixins.flexbox(column, start, stretch);
     width: 100%;
     gap: var(--space-2x);
+
+    //* 錯誤狀態
+    > .errorState {
+      @include mixins.flexbox(column, center, center);
+      padding: var(--space-4x);
+      text-align: center;
+
+      > .errorIcon {
+        font-size: 96px;
+        max-width: 96px;
+        color: var(--foreground-tertiary);
+      }
+
+      > h2 {
+        margin: var(--space) 0;
+      }
+      > p {
+        color: var(--foreground-tertiary);
+      }
+
+      > .errorActions {
+        @include mixins.flexbox(row, center, center);
+        gap: var(--space);
+        margin: var(--space) 0;
+        margin-top: var(--space-2x);
+
+        > button {
+          @include mixins.button('normal', 'normal');
+          background: var(--background);
+          white-space: nowrap;
+        }
+      }
+    }
   }
 }
 
@@ -269,6 +302,18 @@
   }
 }
 
+//* Share Buttons
+.shareButtons {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  @include mixins.flexbox(row, start, center);
+  gap: var(--space);
+  padding: var(--space-2x);
+  background: var(--background);
+  box-shadow: 0 -4px 12px 12px var(--background);
+}
+
 .footer {
   position: fixed;
   @include mixins.flexbox(column, center, center);
@@ -292,27 +337,5 @@
     font-size: 2rem;
     margin-bottom: var(--space);
     color: var(--primary);
-  }
-}
-
-.errorState {
-  @include mixins.flexbox(column, center, center);
-  padding: var(--space-4x);
-  text-align: center;
-
-  .errorIcon {
-    font-size: 3rem;
-    color: var(--danger);
-    margin-bottom: var(--space);
-  }
-}
-
-.errorActions {
-  @include mixins.flexbox(row, center, center);
-  gap: var(--space);
-
-  @include mixins.respond-to('phone') {
-    @include mixins.flexbox(column, start, stretch);
-    width: 100%;
   }
 }
