@@ -29,14 +29,11 @@ export default function Page({
           <div className={styles.pageHeader}>
             {header?.title ? <h1>{header?.title}</h1> : null}
             {header?.descriptions ? (
-              <p>
+              <div className={styles.pageHeaderDescriptions}>
                 {header?.descriptions.map((description, index) => (
-                  <>
-                    <span key={index}>{description}</span>
-                    <br />
-                  </>
+                  <p key={index}>{description}</p>
                 ))}
-              </p>
+              </div>
             ) : null}
           </div>
         )}

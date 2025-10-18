@@ -26,7 +26,7 @@
 
 @mixin respond-to($breakpoint) {
   @if $breakpoint == 'phone' {
-    @media (max-width: 600px) and (min-height: 600px) {
+    @media (max-width: 600px) and (min-height: 300px) {
       @content;
     }
   } @else if $breakpoint == 'phone-landscape' {

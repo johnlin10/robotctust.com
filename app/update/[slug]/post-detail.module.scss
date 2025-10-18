@@ -186,31 +186,39 @@
     }
 
     h1 {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 1.75rem;
+      font-weight: 900;
       border-bottom: 2px solid var(--border);
       padding-bottom: 8px;
     }
 
     h2 {
-      font-size: 1.75rem;
-      font-weight: 600;
+      font-size: 1.5rem;
+      font-weight: 700;
     }
 
     h3 {
-      font-size: 1.5rem;
-      font-weight: 600;
+      font-size: 1.25rem;
+      font-weight: 700;
     }
 
     h4 {
-      font-size: 1.25rem;
-      font-weight: 600;
+      font-size: 1.15rem;
+      font-weight: 700;
     }
 
     p {
-      font-size: 1rem;
+      font-size: 1.1rem;
       margin-bottom: var(--space);
       line-height: 1.7;
+      text-align: justify;
+
+      @include mixins.respond-to('phone') {
+        font-size: 0.95rem;
+      }
+      @include mixins.respond-to('tablet') {
+        font-size: 1rem;
+      }
     }
 
     ul,
@@ -228,9 +236,38 @@
       max-width: 100%;
       height: auto;
       @include mixins.border-radius(12px);
-      // margin: var(--space) 0;
     }
 
+    blockquote {
+      position: relative;
+      margin: var(--space-4x) auto;
+      padding: var(--space-2x);
+      border: none;
+      width: fit-content;
+      height: fit-content;
+      background: var(--background);
+
+      &::before {
+        content: '“';
+        position: absolute;
+        left: -2rem;
+        top: calc(var(--space) * -1);
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--foreground-tertiary);
+      }
+      &::after {
+        content: '”';
+        position: absolute;
+        right: -1rem;
+        bottom: calc(var(--space) * -1 - 2rem);
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--foreground-tertiary);
+      }
+    }
+
+    //* 表格樣式
     div:global(.MarkdownRenderer_tableWrapper__zC7mz) {
       border: 1px solid var(--border);
       @include mixins.border-radius(12px);

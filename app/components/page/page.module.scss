@@ -28,11 +28,14 @@
         color: var(--foreground);
       }
 
-      p {
-        font-size: 0.9rem;
-        font-weight: normal;
-        letter-spacing: 0.05rem;
-        color: var(--foreground-secondary);
+      > .pageHeaderDescriptions {
+        > p {
+          margin: var(--space-0-5x) 0;
+          font-size: 0.9rem;
+          font-weight: normal;
+          letter-spacing: 0.05rem;
+          color: var(--foreground-secondary);
+        }
       }
     }
   }

@@ -5,17 +5,44 @@ import Link from 'next/link'
 // components
 import Page from '../components/page/Page'
 import OfficeLocationCard from '../components/OfficeLocationCard/OfficeLocationCard'
+import FloatingActionBar, {
+  ActionItem,
+} from '../components/FloatingActionBar/FloatingActionBar'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { faInstagram } from '@fortawesome/free-brands-svg-icons'
 
 function Contact() {
+  const floatingActionBarActions: ActionItem[] = [
+    {
+      type: 'link',
+      label: 'Email',
+      title: '使用 Email 聯絡我們',
+      icon: faEnvelope,
+      labelVisible: true,
+      href: 'mailto:robotctust@gmail.com',
+      target: '_blank',
+    },
+    {
+      type: 'link',
+      label: 'Instagram',
+      title: '到 Instagram 聯絡我們',
+      icon: faInstagram,
+      labelVisible: true,
+      href: 'https://www.instagram.com/robotctust/',
+      target: '_blank',
+    },
+  ]
   return (
     <Page
       style={styles.contactContainer}
       header={{
         title: '聯絡我們',
+        descriptions: [
+          '有事情要找我們嗎？',
+          '不管是社團課程、技術問題，還是有任何意見與建議，歡迎透過以下方式聯絡我們',
+        ],
       }}
     >
       <div className={styles.contactContent}>
@@ -47,6 +74,7 @@ function Contact() {
           </address>
         </div>
       </div>
+      <FloatingActionBar actions={floatingActionBarActions} />
     </Page>
   )
 }

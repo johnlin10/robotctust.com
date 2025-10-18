@@ -9,10 +9,12 @@
   left: 0;
   width: 100vw;
   height: fit-content;
+  max-height: 100vh;
+  overflow-y: auto;
   @include mixins.transform-container(translateY(calc(-100% + 72px)));
   @include mixins.transition(0.5s cubic-bezier(0.23, 1, 0.32, 1));
   opacity: 0;
-  visibility: visible;
+  visibility: hidden;
 
   &.open {
     background-color: rgba(var(--background-secondary-rgb), 0.8);
@@ -28,6 +30,7 @@
     @include mixins.flexbox(column, center, start);
     gap: var(--space);
     width: 100%;
+    height: fit-content;
     max-width: 540px;
 
     .menu_item {

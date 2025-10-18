@@ -15,9 +15,12 @@ import { useHeaderState } from '../../../contexts/HeaderContext'
 import { Selector } from '../../../components/Selector'
 import { SelectorOption } from '../../../components/Selector'
 import styles from './SchedulesCalendar.module.scss'
-import { faCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarDay, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import useStickyDetection from '@/app/hooks/useStickyDetection'
+import FloatingActionBar, {
+  ActionItem,
+} from '@/app/components/FloatingActionBar/FloatingActionBar'
 interface SchedulesCalendarProps {
   events: ScheduleEvent[]
   selectedYear: number
@@ -230,6 +233,19 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
     }
   }, [academicYearMonths])
 
+  //* 浮動操作列動作
+  const floatingActionBarActions: ActionItem[] = [
+    {
+      type: 'button',
+      icon: faCalendarDay,
+      label: '今天',
+      labelVisible: true,
+      variant: 'primary',
+      onClick: scrollToToday,
+    },
+  ]
+
+  //* 渲染頁面
   if (!yearConfig) {
     return (
       <div className={styles.errorContainer}>
@@ -321,12 +337,12 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
             </div>
           </div>
           <div className={styles.monthNavigation}>
-            <button
+            {/* <button
               className={styles.todayButton}
               onClick={() => scrollToToday()}
             >
               今天
-            </button>
+            </button> */}
             {academicYearMonths.map((monthInfo) => {
               const monthId = `month-${monthInfo.year}-${monthInfo.month}`
               const eventCount = getMonthEventCount(
@@ -513,6 +529,8 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
           </div>
         </div>
       </div>
+
+      <FloatingActionBar align="right" actions={floatingActionBarActions} />
     </div>
   )
 }

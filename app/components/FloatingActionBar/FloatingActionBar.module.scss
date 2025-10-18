@@ -6,22 +6,71 @@ $offsetPadding: 28px;
   z-index: 1000;
   position: fixed;
   @include mixins.flexbox(row, start, center);
+  gap: var(--space-0-5x);
   padding: 6px;
   height: 52px;
   max-width: calc(100% - $offsetPadding * 2);
   background: rgba(var(--background-rgb), 0.5);
   border: 1px solid var(--border);
   @include mixins.border-radius(26px);
-  @include mixins.glass-blur(6px);
+  @include mixins.glass-blur(12px);
   @include mixins.transition(var(--transition-default));
   @include mixins.hide-scrollbar;
   overflow: hidden;
   overflow-x: auto;
 
+  &.initialRender {
+    opacity: 0;
+    @include mixins.transition(var(--transition-default));
+
+    $scale: 0.5;
+    &.bottom {
+      &.right {
+        @include mixins.transform-container(
+          translateY(100%) translateX(calc(50% + $offsetPadding * 2))
+            scale($scale)
+        );
+      }
+      &.center {
+        @include mixins.transform-container(
+          translateY(100%) translateX(-50%) scale($scale)
+        );
+      }
+      &.left {
+        @include mixins.transform-container(
+          translateY(100%) translateX(calc((50% - $offsetPadding * 2) * -1))
+            scale($scale)
+        );
+      }
+    }
+    &.top {
+      &.right {
+        @include mixins.transform-container(
+          translateY(-100%) translateX($offsetPadding * 2) scale($scale)
+        );
+      }
+      &.center {
+        @include mixins.transform-container(
+          translateY(-100%) translateX(-50%) scale($scale)
+        );
+      }
+      &.left {
+        @include mixins.transform-container(
+          translateY(-100%) translateX(calc((50% - $offsetPadding * 2) * -1))
+            scale($scale)
+        );
+      }
+    }
+  }
+
   &.isCompactHeader:not(:hover) {
     gap: 0;
-    padding: 0;
+    padding: 3px;
     height: 32px !important;
+
+    &.top {
+      top: var(--header-height-compact);
+    }
 
     &.bottom {
       &.center {
@@ -32,7 +81,11 @@ $offsetPadding: 28px;
     }
 
     > .actionButton {
-      padding: 0 var(--space);
+      padding: 0 var(--space-0-75x);
+
+      &.noLabel {
+        padding: 0 var(--space-0-75x) !important;
+      }
 
       > svg {
         font-size: 0.8rem !important;
@@ -46,6 +99,14 @@ $offsetPadding: 28px;
   &.singleAction {
     padding: 0;
     height: 48px;
+
+    &.isCompactHeader {
+      padding: 0;
+
+      > .actionButton {
+        padding: 0 var(--space);
+      }
+    }
   }
 
   &.showBackground {
@@ -67,6 +128,13 @@ $offsetPadding: 28px;
   // Position
   &.top {
     top: var(--header-height);
+
+    &.right {
+      right: var(--space-2x);
+    }
+    &.left {
+      left: var(--space-2x);
+    }
   }
   &.bottom {
     bottom: $offsetPadding;
@@ -86,6 +154,8 @@ $offsetPadding: 28px;
     font-size: 1rem;
     border: 1px solid transparent;
     white-space: nowrap;
+    text-decoration: none;
+    color: inherit;
     @include mixins.border-radius(24px);
     @include mixins.transition(var(--transition-default));
 
@@ -94,21 +164,40 @@ $offsetPadding: 28px;
       background: rgba(var(--background-tertiary-rgb), 0.5);
     }
 
-    &:disabled {
+    &.noLabel {
+      padding: 0 var(--space);
+    }
+
+    // 禁用狀態
+    &:disabled,
+    &.disabled {
       opacity: 0.5;
       cursor: not-allowed;
+      pointer-events: none;
       @include mixins.transform-container(none);
 
       &:hover {
+        border: 1px solid transparent;
+        background: transparent;
         @include mixins.transform-container(none);
       }
     }
 
+    // 變體樣式
     &.primary {
       background: var(--primary);
+      color: var(--text-on-primary);
     }
+
     &.danger {
       background: var(--danger);
+      color: var(--text-on-danger);
+    }
+
+    // 自訂 action 樣式
+    &.customAction {
+      padding: 0;
+      overflow: visible;
     }
 
     svg {

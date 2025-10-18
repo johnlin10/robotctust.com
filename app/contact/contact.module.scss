@@ -16,6 +16,7 @@
         > .contactItem {
           @include mixins.flexbox(row, center, center);
           gap: var(--space-0-5x);
+          font-style: normal;
 
           > .labelTitle {
             @include mixins.flexbox(row, start, center);

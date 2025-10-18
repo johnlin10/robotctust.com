@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
 // configs
 import { NAV_AUTO_CENTER_CONFIG } from './headerScrollConfig'
-import Logo from '../Logo/Logo'
+import Image from 'next/image'
 
 /**
  * [Component] 導航列
@@ -51,6 +51,14 @@ export default function Header() {
     handleLinkClick()
   }
 
+  /**
+   * 處理 Logo 點擊事件
+   * @returns void
+   */
+  const handleLogoClick = () => {
+    window.location.href = '/'
+  }
+
   // 監聽 Header 模式變化，當從緊湊模式恢復時自動居中
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -75,7 +83,24 @@ export default function Header() {
           {/* 選單按鈕 */}
 
           <div className={styles.logo}>
-            <Logo isCompact={isCompactHeader} />
+            <div
+              className={`${styles.logoContainer} ${
+                isCompactHeader ? styles.compact : ''
+              }`}
+              onClick={handleLogoClick}
+            >
+              <Image
+                src="/assets/image/home/robotctust-home-image.png"
+                alt="中臺機器人研究社"
+                width={96}
+                height={96}
+                className={styles.logoImage}
+              />
+              <div className={styles.logoText}>
+                <h1>中臺機器人研究社</h1>
+                <p>Robot Research Club of CTUST</p>
+              </div>
+            </div>
           </div>
 
           {/* 導航 */}

@@ -8,6 +8,7 @@ import {
   faUser,
   faExclamationTriangle,
   faCheck,
+  faLink,
   faShare,
 } from '@fortawesome/free-solid-svg-icons'
 import styles from './post-detail.module.scss'
@@ -17,8 +18,11 @@ import { POST_CATEGORY_LABELS } from '../../types/post'
 import { SerializedPost, deserializePost } from '../../types/serialized'
 import Image from 'next/image'
 import { POST_CATEGORY_COLORS } from '../../types/post'
-import FloatingActions from '@/app/components/FloatingActions/FloatingActions'
-// import { faThreads, faXTwitter } from '@fortawesome/free-brands-svg-icons'
+import FloatingActionBar, {
+  ActionItem,
+} from '@/app/components/FloatingActionBar/FloatingActionBar'
+import { faThreads, faXTwitter } from '@fortawesome/free-brands-svg-icons'
+import useWebSupport from '@/app/hooks/useWebSupport'
 
 interface PostDetailClientProps {
   postId: string
@@ -32,8 +36,13 @@ export default function PostDetailClient({
 }: PostDetailClientProps) {
   const router = useRouter()
 
+  // 檢測瀏覽器功能支援
+  const supportsShare = useWebSupport('share')
+
   // 使用預載的資料初始化狀態
   const post = initialPost ? deserializePost(initialPost) : null
+  const postId = post?.id
+  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/update/${postId}`
   const error = initialError
 
   const handleGoToList = () => {
@@ -41,31 +50,90 @@ export default function PostDetailClient({
   }
 
   const handleShareUrl = async () => {
-    const url = window.location.href
     // 檢查是否支援 Clipboard API
-    if (navigator.clipboard && window.isSecureContext) {
-      try {
-        await navigator.clipboard.writeText(url)
-        return
-      } catch (err) {
-        console.warn('Clipboard API failed: ', err)
-      }
+    try {
+      await navigator.clipboard.writeText(postUrl)
+      return
+    } catch (err) {
+      console.warn('Clipboard API failed: ', err)
     }
   }
 
-  //* 開發中
-  // const handleShareToX = () => {
-  //   const url = window.location.href
-  //   window.open(`https://twitter.com/intent/tweet?text=${url}`, '_blank')
-  // }
+  // 使用系統控件分享
+  const handleShareSystem = async () => {
+    const url = `${process.env.NEXT_PUBLIC_SITE_URL}/update/${post?.id}`
+    const text =
+      post?.contentMarkdown
+        .replace(/#{1,6}\s+/g, '') // remove title
+        .replace(/\*\*(.+?)\*\*/g, '$1') // remove bold
+        .replace(/\*(.+?)\*/g, '$1') // remove italic
+        .replace(/`(.+?)`/g, '$1') // remove inline code
+        .replace(/\[(.+?)\]\(.+?\)/g, '$1') // remove link, keep text
+        .replace(/!\[.*?\]\(.+?\)/g, '') // remove image
+        .replace(/^\s*[-*+]\s+/gm, '') // remove list
+        .replace(/^\s*\d+\.\s+/gm, '') // remove ordered list
+        .replace(/^\s*>\s+/gm, '') // remove quote
+        .replace(/---/g, '') // remove divider
+        .trim()
+        .substring(0, 100) + '...'
 
-  // const handleShareToThreads = () => {
-  //   const url = window.location.href
-  //   window.open(
-  //     `https://threads.net/intent/post?text=https://robotctust.com/update/wNaUXr4aL3I9QaYWd2gM`,
-  //     '_blank'
-  //   )
-  // }
+    const shareData = {
+      title: post?.title,
+      text: text,
+      url: url,
+    }
+
+    await navigator.share(shareData).catch((err) => {
+      console.warn('Share API failed: ', err)
+    })
+  }
+
+  //* 浮動操作列動作
+  const floatingActionBarActions: ActionItem[] = [
+    {
+      type: 'link',
+      icon: faThreads,
+      label: '分享到 Threads',
+      labelVisible: false,
+      href: `https://threads.net/intent/post?text=${postUrl}`,
+      target: '_blank',
+    },
+    {
+      type: 'link',
+      icon: faXTwitter,
+      label: '分享到 X',
+      labelVisible: false,
+      href: `https://twitter.com/intent/tweet?text=${postUrl}`,
+      target: '_blank',
+    },
+    {
+      type: 'button',
+      icon: faLink,
+      label: '複製網址',
+      title: '複製文章網址',
+      labelVisible: false,
+      onClick: () => {
+        handleShareUrl()
+      },
+      clicked: {
+        icon: faCheck,
+        label: '已複製',
+      },
+    },
+    // 僅在支援 Web Share API 時顯示系統分享按鈕
+    ...(supportsShare
+      ? [
+          {
+            type: 'button' as const,
+            icon: faShare,
+            label: '分享',
+            labelVisible: true,
+            variant: 'primary' as const,
+            onClick: handleShareSystem,
+          },
+        ]
+      : []),
+  ]
 
   // 錯誤狀態
   if (error || !post) {
@@ -155,42 +223,14 @@ export default function PostDetailClient({
         <div className={styles.content}>
           <MarkdownRenderer content={post.contentMarkdown} />
         </div>
-
-        {/* Share Buttons */}
-        <FloatingActions
-          align="right"
-          actions={[
-            // {
-            //   icon: faThreads,
-            //   label: '分享到 Threads',
-            //   labelVisible: false,
-            //   onClick: () => {
-            //     handleShareToThreads()
-            //   },
-            // },
-            // {
-            //   icon: faXTwitter,
-            //   label: '分享到 X',
-            //   labelVisible: false,
-            //   onClick: () => {
-            //     handleShareToX()
-            //   },
-            // },
-            {
-              icon: faShare,
-              label: '分享網址',
-              labelVisible: true,
-              onClick: () => {
-                handleShareUrl()
-              },
-              clicked: {
-                icon: faCheck,
-                label: '已複製',
-              },
-            },
-          ]}
-        />
       </article>
+
+      {/* Share Buttons */}
+      <FloatingActionBar
+        align="center"
+        position="bottom"
+        actions={floatingActionBarActions}
+      />
     </div>
   )
 }

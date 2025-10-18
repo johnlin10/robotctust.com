@@ -8,7 +8,9 @@ import styles from './update.module.scss'
 // components
 import CreatePostModal from '../components/CreatePostModal'
 import Loading from '../components/Loading/Loading'
-import FloatingActions from '../components/FloatingActions/FloatingActions'
+import FloatingActionBar, {
+  ActionItem,
+} from '../components/FloatingActionBar/FloatingActionBar'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faFileAlt, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -392,6 +394,17 @@ export default function UpdatePageClient({
     )
   }
 
+  const floatingActionBarActions: ActionItem[] = [
+    {
+      type: 'button',
+      icon: faPlus,
+      label: '發布文章',
+      labelVisible: true,
+      variant: 'primary',
+      onClick: handleCreatePost,
+    },
+  ]
+
   /**
    * 渲染頁面
    * @returns 頁面元件
@@ -458,18 +471,7 @@ export default function UpdatePageClient({
         //   </button>
         // </div>
 
-        <FloatingActions
-          align="right"
-          actions={[
-            {
-              icon: faPlus,
-              label: '發布文章',
-              labelVisible: true,
-              variant: 'primary',
-              onClick: handleCreatePost,
-            },
-          ]}
-        />
+        <FloatingActionBar align="right" actions={floatingActionBarActions} />
       )}
     </>
   )

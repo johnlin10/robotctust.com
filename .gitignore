@@ -61,3 +61,4 @@ storage.rules
 *.module.css.map
 
 serializationTest.ts
+.env*.local

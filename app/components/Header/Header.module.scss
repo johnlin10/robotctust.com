@@ -61,7 +61,7 @@ header.header {
     }
   }
 
-  //* 非 hover 或 open 狀態
+  //* header compact 模式下，當 hover 或 open 時，會變回原始狀態
   &:not(:hover, .open) {
     &.compact {
       height: 48px;
@@ -75,6 +75,27 @@ header.header {
 
         > .menu_button {
           opacity: 0.5;
+        }
+
+        > .logo > .logoContainer {
+          > .logoImage {
+            height: 36px;
+            width: 36px;
+          }
+
+          > .logoText {
+            opacity: 0.75;
+
+            > h1 {
+              font-size: 0.96rem;
+            }
+
+            > p {
+              font-size: 0.5rem;
+              margin-top: -10%;
+              opacity: 0;
+            }
+          }
         }
 
         > .nav_links {
@@ -135,6 +156,49 @@ header.header {
     > .logo {
       max-width: 48px;
       height: 100%;
+
+      .logoContainer {
+        @include mixins.flexbox(row, center, center);
+        width: max-content;
+        height: 100%;
+        cursor: pointer;
+
+        @include mixins.respond-to('phone') {
+          > .logoText {
+            display: none !important;
+          }
+        }
+        @include mixins.respond-to('tablet') {
+          > .logoText {
+            display: none !important;
+          }
+        }
+
+        > .logoImage {
+          height: 48px;
+          width: 48px;
+          @include mixins.transition(var(--transition-default));
+        }
+
+        > .logoText {
+          margin-top: -3px;
+          @include mixins.flexbox(column, center, start);
+
+          > h1 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--theme-purple-600);
+            @include mixins.transition(var(--transition-default));
+          }
+
+          > p {
+            margin: 0;
+            font-size: 0.58rem;
+            color: var(--theme-purple-500);
+            @include mixins.transition(var(--transition-default));
+          }
+        }
+      }
     }
 
     @include mixins.respond-to('desktop') {
