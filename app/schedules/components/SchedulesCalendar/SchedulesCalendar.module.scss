@@ -538,9 +538,10 @@
     @include mixins.flexbox(row, center, center);
     gap: var(--space-0-5x);
     padding: 0 var(--space-0-5x);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--color-white);
     @include mixins.border-radius(6px);
+    border: 1px solid var(--border);
 
     &.schoolEvent {
       background: var(--theme-gray-400);
