@@ -36,7 +36,7 @@ blockquote::selection {
 
 pre::selection,
 code::selection {
-  background: var(--theme-gray-300);
+  background: var(--gray-600);
   color: var(--color-white);
 }
 

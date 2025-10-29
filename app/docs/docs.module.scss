@@ -9,172 +9,85 @@
     }
 
     > .mainDocs {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       width: 100%;
-      gap: 12px;
-      margin-top: 24px;
 
-      > .docCard {
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        padding: 1.5rem;
-        border: 1px solid var(--border);
-        text-decoration: none;
-        color: inherit;
-        overflow: hidden;
-        @include mixins.border-radius(12px);
+      > h2 {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
 
-        &:hover {
-          background: rgba(var(--background-secondary-rgb), 0.75);
-          border: 1px solid var(--border-hover);
-          @include mixins.hover-scale-effect(1.01);
+      > .mainDocsContent {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        width: 100%;
+        gap: 12px;
 
-          > .docCategory {
-            background-color: var(--background-tertiary);
-          }
-        }
-
-        .docIcon {
-          position: absolute;
-          top: 0;
-          right: 0;
-          font-size: 180px;
-          color: var(--gray-200);
-          margin-bottom: 1rem;
-          opacity: 0.5;
-        }
-
-        .docTitle {
-          z-index: 10;
-          font-size: 1.25rem;
-          font-weight: 600;
-          margin-bottom: 0.1rem;
-          color: var(--text-primary);
-        }
-
-        .docDescription {
-          z-index: 10;
-          color: var(--text-secondary);
-          font-size: 0.9rem;
-          line-height: 1.5;
-        }
-
-        .docCategory {
-          z-index: 10;
-          margin-top: 1rem;
-          padding: 3px 9px;
-          width: fit-content;
-          font-size: 0.8rem;
-          font-weight: 500;
-          color: var(--foreground-secondary);
+        > .docCard {
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          padding: 1.5rem;
           border: 1px solid var(--border);
-          background-color: var(--background-secondary);
-          @include mixins.border-radius(18px);
+          text-decoration: none;
+          color: inherit;
+          overflow: hidden;
+          @include mixins.border-radius(12px);
+
+          &:hover {
+            background: rgba(var(--background-secondary-rgb), 0.75);
+            border: 1px solid var(--border-hover);
+            @include mixins.hover-scale-effect(1.01);
+
+            > .docCategory {
+              background-color: var(--background-tertiary);
+            }
+          }
+
+          .docIcon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 180px;
+            color: var(--gray-200);
+            margin-bottom: 1rem;
+            opacity: 0.5;
+          }
+
+          .docTitle {
+            z-index: 10;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.1rem;
+            color: var(--text-primary);
+          }
+
+          .docDescription {
+            z-index: 10;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+          }
+
+          .docCategory {
+            z-index: 10;
+            margin-top: 1rem;
+            padding: 3px 9px;
+            width: fit-content;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--foreground-secondary);
+            border: 1px solid var(--border);
+            background-color: var(--background-secondary);
+            @include mixins.border-radius(18px);
+          }
         }
       }
     }
 
     > .subDocs {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       width: 100%;
-      gap: 12px;
-      margin-top: 24px;
-
-      > .docGroup {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-
-        > .subDoc {
-          @include mixins.flexbox(row, space-between, start);
-          border: 1px solid var(--border);
-          @include mixins.border-radius(12px);
-          overflow: hidden;
-
-          @include mixins.respond-to('phone') {
-            @include mixins.flexbox(column, start, start);
-          }
-
-          // 左側文檔標題
-          > h4 {
-            min-width: 180px;
-            white-space: nowrap;
-            padding: var(--space) var(--space-1-5x);
-          }
-
-          // 右側文檔列表
-          > .subDocDocs {
-            @include mixins.flexbox(column, start, stretch);
-            width: 100%;
-            background: var(--background-secondary);
-            @include mixins.transition(var(--transition-default));
-            overflow: hidden;
-            border-left: 1px solid var(--border);
-
-            @include mixins.respond-to('phone') {
-              border-left: none;
-              border-top: 1px solid var(--border);
-            }
-
-            > a.subDocLink {
-              @include mixins.flexbox(row, space-between, center);
-              gap: var(--space);
-              padding: var(--space) var(--space);
-              width: 100%;
-
-              &:not(:last-child) {
-                border-bottom: 1px solid var(--border);
-              }
-
-              &:hover {
-                background: var(--primary);
-                color: var(--color-white);
-
-                > .subDocType {
-                  color: var(--foreground-dark-700);
-                }
-
-                > .linkIcon {
-                  color: var(--color-white);
-                  @include mixins.transform-container(
-                    scale(1.2) rotate(-45deg)
-                  );
-                }
-              }
-
-              > .fileIcon {
-                font-size: 1rem;
-                max-height: 18px;
-                color: var(--foreground);
-              }
-
-              > .subDocTitle {
-                font-size: 0.9rem;
-                flex: 1;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-              }
-
-              > .subDocType {
-                font-size: 0.8rem;
-                color: var(--foreground-700);
-              }
-
-              > .linkIcon {
-                font-size: 0.8rem;
-                max-width: 12px;
-                color: var(--foreground-tertiary);
-                @include mixins.transition(var(--transition-default));
-                @include mixins.transform-container(rotate(-45deg));
-              }
-            }
-          }
-        }
-      }
     }
   }
 }

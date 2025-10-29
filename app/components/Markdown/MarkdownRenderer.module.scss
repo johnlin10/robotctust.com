@@ -56,6 +56,16 @@
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
     line-height: 1.7;
+    text-align: justify;
+    overflow-wrap: break-word;
+    text-wrap: pretty;
+    hyphens: auto;
+
+    > code {
+      padding: 2px 5px;
+      background-color: var(--foreground-950);
+      @include mixins.border-radius(6px);
+    }
   }
 
   // 強調樣式
@@ -69,8 +79,8 @@
     list-style-type: decimal;
     list-style-position: outside;
     padding-left: 1.5rem;
-    margin-left: 1rem;
-    margin-bottom: 1rem;
+    margin-left: 0;
+    margin-bottom: var(--space);
 
     li {
       margin-bottom: 0.25rem;
@@ -99,7 +109,7 @@
     margin: 1rem 0;
 
     li {
-      margin-bottom: 0.25rem;
+      margin-bottom: 1rem;
       line-height: 1.6;
       padding-left: 0.25rem;
       font-size: 0.9rem;
@@ -138,19 +148,25 @@
   pre {
     width: 100%;
     max-width: 100%;
+    max-height: calc(100vh - 72px - 52px - 28px - 96px);
     background-color: var(--gray-900);
     border-radius: 0.5rem;
-    margin: 2rem 0;
+    margin: var(--space) 0;
     font-family: var(--font-dm-mono);
     @include mixins.border-radius(12px);
+    border: 1px solid var(--border);
     overflow-x: auto;
 
     code {
       padding: 1rem 1.2rem !important;
       background-color: var(--gray-900);
-      border-radius: 0.25rem;
       font-family: var(--font-dm-mono);
       font-size: 0.875rem;
+
+      ::selection {
+        background: var(--gray-600) !important;
+        color: var(--color-white) !important;
+      }
     }
   }
 
@@ -158,6 +174,47 @@
   .tableWrapper {
     overflow-x: auto;
     margin: 1rem 0;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(12px);
+    overflow-x: auto;
+    @include mixins.hide-scrollbar;
+
+    table {
+      width: 100%;
+      overflow: hidden;
+
+      th,
+      td {
+        min-width: 100px;
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        background: var(--background-secondary);
+        font-weight: 600;
+        color: var(--foreground-tertiary);
+      }
+      tbody {
+        tr {
+          background: var(--background);
+
+          &:hover {
+            background: var(--background);
+          }
+          &:last-child td {
+            border-bottom: none;
+          }
+
+          td {
+            width: max-content;
+            max-width: 480px;
+            overflow: hidden;
+          }
+        }
+      }
+    }
   }
 
   table {
@@ -244,6 +301,7 @@
       max-width: 100%;
       height: auto;
       display: block;
+      @include mixins.border-radius(12px);
     }
   }
 
@@ -255,5 +313,18 @@
     &:hover {
       transform: scale(1.02);
     }
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    margin: var(--space-2x) 0;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(12px);
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    object-position: top;
+    flex-shrink: 0;
+    overflow: hidden;
   }
 }

@@ -1,0 +1,121 @@
+@use '@/app/styles/mixins' as mixins;
+
+.subDocs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  width: 100%;
+  gap: 12px;
+
+  > .docGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space);
+
+    > h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    > .subDoc {
+      @include mixins.flexbox(column, start, start);
+      border: 1px solid var(--border);
+      @include mixins.border-radius(12px);
+      overflow: hidden;
+
+      // 左側文檔標題
+      > h4 {
+        @include mixins.flexbox(row, start, stretch);
+        gap: var(--space);
+        height: 100%;
+        min-width: 180px;
+        padding: var(--space);
+        width: 100%;
+        background: var(--background-secondary);
+
+        > .subDocDate {
+          padding: 3px 9px;
+          font-size: 0.8rem;
+          color: var(--foreground-secondary);
+          font-weight: 500;
+          border: 1px solid var(--border);
+          background: var(--background);
+          @include mixins.border-radius(6px);
+
+          &.subDocToday {
+            background: var(--primary);
+            color: var(--color-white);
+          }
+          &.subDocTomorrow {
+            background: var(--theme-orange-500);
+            color: var(--color-white);
+          }
+        }
+      }
+
+      // 右側文檔列表
+      > .subDocDocs {
+        @include mixins.flexbox(column, start, stretch);
+        width: 100%;
+        min-height: 100%;
+        background: var(--background);
+        @include mixins.transition(var(--transition-default));
+        overflow: hidden;
+        border-top: 1px solid var(--border);
+
+        > a.subDocLink {
+          @include mixins.flexbox(row, space-between, center);
+          gap: var(--space);
+          padding: var(--space) var(--space);
+          width: 100%;
+
+          &:not(:last-child) {
+            border-bottom: 1px solid var(--border);
+          }
+
+          &:hover {
+            background: var(--primary);
+            color: var(--color-white);
+
+            > .subDocType {
+              color: var(--foreground-dark-700);
+            }
+
+            > .linkIcon {
+              color: var(--color-white);
+              @include mixins.transform-container(scale(1.2) rotate(-45deg));
+            }
+          }
+
+          > .fileIcon {
+            font-size: 1rem;
+            max-height: 18px;
+            color: var(--foreground);
+          }
+
+          > .subDocTitle {
+            font-size: 0.9rem;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          > .subDocType {
+            font-size: 0.8rem;
+            color: var(--foreground-700);
+          }
+
+          > .linkIcon {
+            font-size: 0.8rem;
+            max-width: 12px;
+            color: var(--foreground-tertiary);
+            @include mixins.transition(var(--transition-default));
+            @include mixins.transform-container(rotate(-45deg));
+          }
+        }
+      }
+    }
+  }
+}

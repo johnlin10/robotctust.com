@@ -6,6 +6,7 @@ import {
   faSitemap,
   faFlag,
   faFilePdf,
+  faFileZipper,
 } from '@fortawesome/free-solid-svg-icons'
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons'
 
@@ -21,6 +22,7 @@ export interface MainDoc {
 interface SubDoc {
   id: string
   title: string
+  date: string
   docs: {
     id: string
     title: string
@@ -77,8 +79,47 @@ export const subDocs: SubDocs[] = [
     title: '課程資料',
     docs: [
       {
+        id: '',
+        title: '社團課程二：自走車 DIY 程式',
+        date: '2025-10-29',
+        docs: [
+          {
+            id: 'course-files',
+            title: '課程檔案',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/160gQWxHVaPKHgnUntrqarZjABug6BFP6/view',
+            icon: faGoogleDrive,
+          },
+          {
+            id: 'course-files-backup',
+            title: '課程檔案 - 備用',
+            type: 'zip',
+            filePath:
+              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/docs%2Fcourse-2%2F%E4%B8%AD%E8%87%BA%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%B8%E6%A9%9F%E5%99%A8%E4%BA%BA%E7%A0%94%E7%A9%B6%E7%A4%BE.zip?alt=media&token=3a485f28-4c74-4c3d-bc44-04d45d4d220b',
+            icon: faFileZipper,
+          },
+          {
+            id: 'arduino-ide-installation-and-usage-youtube',
+            title: 'Arduino IDE 安裝及使用 - 影片',
+            type: 'YouTube',
+            filePath: 'https://youtu.be/8ex5UKQ1Ycc',
+            icon: faYoutube,
+          },
+          {
+            id: 'arduino-ide-installation-and-usage-google-drive',
+            title: 'Arduino IDE 安裝及使用 - 簡報',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1E9K2VmNAzUmeRdLW2MdOmULmKpawgEBK/view?usp=sharing',
+            icon: faGoogleDrive,
+          },
+        ],
+      },
+      {
         id: 'self-driving-car-diy',
-        title: '自走車 DIY',
+        title: '活動一：自走車 DIY',
+        date: '2025-10-15',
         docs: [
           {
             id: 'robot-assembly-video',

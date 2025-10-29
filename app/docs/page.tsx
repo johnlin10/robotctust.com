@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styles from './docs.module.scss'
-import { mainDocs, subDocs } from './docs'
+import { mainDocs } from './docs'
 import { Metadata } from 'next'
 import { metadata } from '../utils/metadata'
 import Page from '../components/page/Page'
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import SubDocsClient from './ui/SubDocsClient/SubDocsClient'
 
 export default function DocsPage() {
   return (
@@ -14,63 +14,32 @@ export default function DocsPage() {
       header={{
         title: '社團文檔',
         descriptions: [
-          '這裡包含了中臺機器人研究社的各種重要文件，包括組織章程、管理辦法及發展規劃等。',
+          '這裡包含了中臺機器人研究社的各種重要文件，以及課程需要使用的資料。',
         ],
       }}
     >
       <div className={styles.docsContent}>
-        <div className={styles.mainDocs}>
-          {mainDocs.map((doc) => (
-            <Link
-              key={doc.id}
-              href={`/docs/${doc.id}`}
-              className={styles.docCard}
-            >
-              <FontAwesomeIcon icon={doc.icon} className={styles.docIcon} />
-              <h3 className={styles.docTitle}>{doc.title}</h3>
-              <p className={styles.docDescription}>{doc.description}</p>
-              {doc.category && (
-                <span className={styles.docCategory}>{doc.category}</span>
-              )}
-            </Link>
-          ))}
-        </div>
         <div className={styles.subDocs}>
-          {subDocs.map((docGroup) => (
-            <div className={styles.docGroup} key={docGroup.id}>
-              <h3>{docGroup.title}</h3>
-              {docGroup.docs.map((subDoc) => (
-                <div className={styles.subDoc} key={subDoc.id}>
-                  <h4 className={styles.subDocTitle}>{subDoc.title}</h4>
-                  <div className={styles.subDocDocs}>
-                    {subDoc.docs.map((doc) => (
-                      <Link
-                        key={doc.id}
-                        href={doc.filePath}
-                        className={styles.subDocLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title={`查看 ${doc.title} 文件`}
-                      >
-                        {doc.icon && (
-                          <FontAwesomeIcon
-                            icon={doc.icon}
-                            className={styles.fileIcon}
-                          />
-                        )}
-                        <h4 className={styles.subDocTitle}>{doc.title}</h4>
-                        <span className={styles.subDocType}>{doc.type}</span>
-                        <FontAwesomeIcon
-                          icon={faArrowRight}
-                          className={styles.linkIcon}
-                        />
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))}
+          <SubDocsClient />
+        </div>
+        <div className={styles.mainDocs}>
+          <h2>社團文件</h2>
+          <div className={styles.mainDocsContent}>
+            {mainDocs.map((doc) => (
+              <Link
+                key={doc.id}
+                href={`/docs/${doc.id}`}
+                className={styles.docCard}
+              >
+                <FontAwesomeIcon icon={doc.icon} className={styles.docIcon} />
+                <h3 className={styles.docTitle}>{doc.title}</h3>
+                <p className={styles.docDescription}>{doc.description}</p>
+                {doc.category && (
+                  <span className={styles.docCategory}>{doc.category}</span>
+                )}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </Page>
