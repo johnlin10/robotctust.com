@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import styles from './RegisterForm.module.scss'
@@ -43,7 +43,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   onClose,
 }) => {
   // AuthContext
-  const { register: registerUser, getUserProfile } = useAuth()
+  const { register: registerUser, getUserProfile, signOut } = useAuth()
   // 註冊狀態
   const [isLoading, setIsLoading] = useState(false)
   // 錯誤訊息
@@ -56,6 +56,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   )
   // 頭像上傳 ref
   const fileInputRef = useRef<HTMLInputElement>(null)
+  // Username 檢查狀態
+  const [usernameChecking, setUsernameChecking] = useState(false)
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(
+    null
+  )
 
   // 表單狀態
   const {
@@ -65,7 +70,53 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     setValue,
     reset,
     setError: setFieldError,
+    watch,
   } = useForm<FormData>()
+
+  // 監聽 username 變化
+  const watchedUsername = watch('username')
+
+  //* 檢查 username 是否可用（防抖處理）
+  const checkUsernameAvailability = useCallback(
+    async (username: string) => {
+      if (!username || username.length < 3) {
+        setUsernameAvailable(null)
+        return
+      }
+
+      // 驗證格式
+      if (!/^[a-zA-Z0-9_.-]+$/.test(username)) {
+        setUsernameAvailable(null)
+        return
+      }
+
+      try {
+        setUsernameChecking(true)
+        const existingProfile = await getUserProfileByUsername(username)
+        setUsernameAvailable(!existingProfile)
+      } catch (error) {
+        console.error('檢查使用者名稱失敗:', error)
+        setUsernameAvailable(null)
+      } finally {
+        setUsernameChecking(false)
+      }
+    },
+    [getUserProfileByUsername]
+  )
+
+  // 防抖處理 username 檢查
+  useEffect(() => {
+    if (!watchedUsername) {
+      setUsernameAvailable(null)
+      return
+    }
+
+    const timeoutId = setTimeout(() => {
+      checkUsernameAvailability(watchedUsername)
+    }, 500) // 500ms 防抖
+
+    return () => clearTimeout(timeoutId)
+  }, [watchedUsername, checkUsernameAvailability])
 
   /**
    * [Function] 手動驗證函數
@@ -79,13 +130,19 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     if (!data.username) {
       setFieldError('username', { message: '請輸入帳號名稱' })
       isValid = false
-    } else if (!/^[a-zA-Z0-9_-]+$/.test(data.username)) {
+    } else if (!/^[a-zA-Z0-9_.-]+$/.test(data.username)) {
       setFieldError('username', {
-        message: '帳號名稱只能包含英文字母、數字、底線和連字號',
+        message: '帳號名稱只能包含英文字母、數字、底線、點和連字號',
       })
       isValid = false
     } else if (data.username.length < 3 || data.username.length > 20) {
       setFieldError('username', { message: '帳號名稱需要 3-20 個字元' })
+      isValid = false
+    } else if (usernameAvailable === false) {
+      setFieldError('username', { message: '此帳號名稱已被使用' })
+      isValid = false
+    } else if (usernameChecking) {
+      setFieldError('username', { message: '正在檢查帳號名稱...' })
       isValid = false
     }
 
@@ -169,9 +226,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         setValue('displayName', user.displayName)
       }
 
-      // 生成建議的使用者名稱
+      // 生成建議的使用者名稱（允許點號）
       const suggestedUsername = user.email
-        ? user.email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_')
+        ? user.email.split('@')[0].replace(/[^a-zA-Z0-9_.-]/g, '_')
         : `user_${user.uid.slice(0, 8)}`
       setValue('username', suggestedUsername)
     } catch (error) {
@@ -253,6 +310,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       }
       // 執行註冊
       await registerUser(registerData)
+      // 註冊成功後，重置 Google 註冊狀態
+      setIsGoogleRegister(false)
       onClose()
     } catch (error) {
       console.error('註冊失敗:', error)
@@ -273,6 +332,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     if (errorMessage.includes('使用者名稱已存在')) {
       return '此帳號名稱已被使用，請選擇其他名稱'
     }
+    if (errorMessage.includes('建立使用者資料失敗')) {
+      return '註冊失敗，資料建立時發生錯誤，請稍後再試'
+    }
     switch (errorMessage) {
       case 'auth/email-already-in-use':
         return '此電子郵件已被註冊'
@@ -281,7 +343,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       case 'auth/weak-password':
         return '密碼強度不足'
       default:
-        return '註冊失敗，請稍後再試'
+        return errorMessage || '註冊失敗，請稍後再試'
     }
   }
 
@@ -290,7 +352,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       {/* 表單標題 */}
       <div className={styles.form_header}>
         <h2>註冊</h2>
-        <button className={styles.close_button} onClick={onClose}>
+        <button
+          className={styles.close_button}
+          onClick={async () => {
+            // 如果是 Google 註冊且未完成，關閉時登出
+            if (isGoogleRegister) {
+              await signOut()
+            }
+            onClose()
+          }}
+        >
           <FontAwesomeIcon icon={faXmark} />
         </button>
       </div>
@@ -408,8 +479,17 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             type="text"
             {...register('username')}
             className={errors.username ? styles.error : ''}
-            placeholder="英文字母、數字、_、- (3-20字元)"
+            placeholder="英文字母、數字、_、.、- (3-20字元)"
           />
+          {usernameChecking && (
+            <span className={styles.field_info}>正在檢查...</span>
+          )}
+          {!usernameChecking && usernameAvailable === true && (
+            <span className={styles.field_success}>✓ 此帳號名稱可用</span>
+          )}
+          {!usernameChecking && usernameAvailable === false && (
+            <span className={styles.field_error}>此帳號名稱已被使用</span>
+          )}
           {errors.username && (
             <span className={styles.field_error}>
               {errors.username.message}

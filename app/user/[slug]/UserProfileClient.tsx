@@ -10,6 +10,7 @@ import {
 import styles from '../User.module.scss'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import EditProfileModal from '@/app/components/Profile/EditProfileModal'
 
 interface UserProfileClientProps {
   slug: string
@@ -26,6 +27,7 @@ export default function UserProfileClient({
     initialUserProfile ? deserializeUserProfile(initialUserProfile) : null
   )
   const [isOwnProfile, setIsOwnProfile] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   useEffect(() => {
     //* 檢查是否為登入者本人的資料
@@ -59,40 +61,64 @@ export default function UserProfileClient({
   }
 
   return (
-    <div
-      className={`${styles.user_info} ${isOwnProfile && styles.own_profile}`}
-    >
-      <div className={styles.user_info_container}>
-        {isOwnProfile && (
-          <div className={styles.own_profile_badge}>
-            <span>你的帳號</span>
-          </div>
-        )}
-        <div className={styles.user_info_header}>
-          <div className={styles.user_info_header_avatar}>
-            <Image
-              src={displayUserInfo.photoURL}
-              alt={displayUserInfo.displayName}
-              width={60}
-              height={60}
-              priority
-            />
-          </div>
-          <div className={styles.user_info_content}>
-            <div className={styles.user_info_name}>
-              {displayUserInfo.displayName}
+    <>
+      <div
+        className={`${styles.user_info} ${isOwnProfile && styles.own_profile}`}
+      >
+        <div className={styles.user_info_container}>
+          {isOwnProfile && (
+            <div className={styles.own_profile_badge}>
+              <span>你的帳號</span>
             </div>
-            <div className={styles.user_info_username}>
-              @{displayUserInfo.username}
+          )}
+          <div className={styles.user_info_header}>
+            <div className={styles.user_info_header_avatar}>
+              <Image
+                src={displayUserInfo.photoURL}
+                alt={displayUserInfo.displayName}
+                width={60}
+                height={60}
+                priority
+              />
+            </div>
+            <div className={styles.user_info_content}>
+              <div className={styles.user_info_name}>
+                {displayUserInfo.displayName}
+              </div>
+              <div className={styles.user_info_username}>
+                @{displayUserInfo.username}
+              </div>
+              {displayUserInfo.bio && (
+                <div className={styles.user_info_bio}>
+                  {displayUserInfo.bio}
+                </div>
+              )}
             </div>
           </div>
+          {isOwnProfile && (
+            <div className={styles.user_actions}>
+              <button
+                onClick={() => setIsEditModalOpen(true)}
+                className={styles.edit_button}
+              >
+                編輯個人資料
+              </button>
+              <button onClick={handleLogout} className={styles.logout_button}>
+                登出
+              </button>
+            </div>
+          )}
         </div>
-        {isOwnProfile && (
-          <div className={styles.logout}>
-            <button onClick={handleLogout}>登出</button>
-          </div>
-        )}
       </div>
-    </div>
+
+      {/* 編輯個人資料 Modal */}
+      {isOwnProfile && displayUserInfo && (
+        <EditProfileModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          userProfile={displayUserInfo}
+        />
+      )}
+    </>
   )
 }

@@ -17,7 +17,7 @@ export interface SerializedUserProfile {
   provider: 'email' | 'google'
   createdAt: string // Date -> string
   updatedAt: string // Date -> string
-  role: 'super_admin' | 'admin' | 'user'
+  role: 'super_admin' | 'info_admin' | 'club_officer' | 'user'
   permissions: UserPermissions
   // 新增社群功能相關欄位
   bio?: string

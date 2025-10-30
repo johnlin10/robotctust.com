@@ -6,11 +6,15 @@ import { useAuth } from '../../contexts/AuthContext'
 import {
   getUserStats,
   advancedSearchUsers,
+  getAllUsers,
   toggleUserAccount,
   verifyUserAccount,
   deleteUserData,
+  updateUserRole,
+  updateUserPermissions,
 } from '../../utils/userManagementService'
-import { UserSearchResult } from '../../types/user'
+import { UserProfile, UserPermissions } from '../../types/user'
+import { canManageUserRole } from '../../utils/permissionService'
 import styles from './UserManagement.module.scss'
 
 /**
@@ -25,15 +29,16 @@ export const UserManagement: React.FC = () => {
     newUsersThisMonth: 0,
     verifiedUsers: 0,
   })
-  const [users, setUsers] = useState<UserSearchResult[]>([])
+  const [users, setUsers] = useState<UserProfile[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState({
-    role: undefined as 'super_admin' | 'admin' | 'user' | undefined,
+    role: undefined as 'super_admin' | 'info_admin' | 'club_officer' | 'user' | undefined,
     isActive: undefined as boolean | undefined,
     isVerified: undefined as boolean | undefined,
     provider: undefined as 'email' | 'google' | undefined,
   })
   const [loading, setLoading] = useState(false)
+  const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set())
 
   //* 載入統計資料
   const loadStats = useCallback(async () => {
@@ -49,8 +54,39 @@ export const UserManagement: React.FC = () => {
   const searchUsers = useCallback(async () => {
     try {
       setLoading(true)
-      const results = await advancedSearchUsers(searchTerm, filters)
-      setUsers(results)
+      // 使用 getAllUsers 獲取完整使用者資料（包含權限）
+      const allUsers = await getAllUsers(100)
+      
+      // 應用篩選
+      let filteredUsers = allUsers
+      
+      if (filters.role) {
+        filteredUsers = filteredUsers.filter((u) => u.role === filters.role)
+      }
+      
+      if (filters.isActive !== undefined) {
+        filteredUsers = filteredUsers.filter((u) => u.isActive === filters.isActive)
+      }
+      
+      if (filters.isVerified !== undefined) {
+        filteredUsers = filteredUsers.filter((u) => u.isVerified === filters.isVerified)
+      }
+      
+      if (filters.provider) {
+        filteredUsers = filteredUsers.filter((u) => u.provider === filters.provider)
+      }
+      
+      // 應用文字搜尋
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase()
+        filteredUsers = filteredUsers.filter((u) =>
+          u.username.toLowerCase().includes(searchLower) ||
+          u.displayName.toLowerCase().includes(searchLower) ||
+          (u.bio && u.bio.toLowerCase().includes(searchLower))
+        )
+      }
+      
+      setUsers(filteredUsers)
     } catch (error) {
       console.error('搜尋使用者失敗:', error)
     } finally {
@@ -63,11 +99,13 @@ export const UserManagement: React.FC = () => {
     if (!user) return
 
     try {
-      await toggleUserAccount(uid, isActive, user.uid)
+      await toggleUserAccount(user, uid, isActive)
       await searchUsers() // 重新載入使用者列表
     } catch (error) {
       console.error('切換帳號狀態失敗:', error)
-      alert('操作失敗，請稍後再試')
+      alert(
+        error instanceof Error ? error.message : '操作失敗，請稍後再試'
+      )
     }
   }
 
@@ -76,11 +114,13 @@ export const UserManagement: React.FC = () => {
     if (!user) return
 
     try {
-      await verifyUserAccount(uid, user.uid)
+      await verifyUserAccount(user, uid)
       await searchUsers() // 重新載入使用者列表
     } catch (error) {
       console.error('驗證帳號失敗:', error)
-      alert('操作失敗，請稍後再試')
+      alert(
+        error instanceof Error ? error.message : '操作失敗，請稍後再試'
+      )
     }
   }
 
@@ -93,12 +133,98 @@ export const UserManagement: React.FC = () => {
     }
 
     try {
-      await deleteUserData(uid, user.uid)
+      await deleteUserData(user, uid)
       await searchUsers() // 重新載入使用者列表
     } catch (error) {
       console.error('刪除使用者失敗:', error)
-      alert('操作失敗，請稍後再試')
+      alert(
+        error instanceof Error ? error.message : '操作失敗，請稍後再試'
+      )
     }
+  }
+
+  //* 更新使用者身份
+  const handleUpdateRole = async (
+    targetUid: string,
+    newRole: UserProfile['role']
+  ) => {
+    if (!user) return
+
+    try {
+      await updateUserRole(user, targetUid, newRole)
+      await searchUsers() // 重新載入使用者列表
+    } catch (error) {
+      console.error('更新使用者身份失敗:', error)
+      alert(
+        error instanceof Error ? error.message : '操作失敗，請稍後再試'
+      )
+    }
+  }
+
+  //* 更新使用者權限
+  const handleUpdatePermission = async (
+    targetUid: string,
+    permission: keyof UserPermissions,
+    value: boolean
+  ) => {
+    if (!user) return
+
+    try {
+      await updateUserPermissions(user, targetUid, {
+        [permission]: value,
+      })
+      await searchUsers() // 重新載入使用者列表
+    } catch (error) {
+      console.error('更新使用者權限失敗:', error)
+      alert(
+        error instanceof Error ? error.message : '操作失敗，請稍後再試'
+      )
+    }
+  }
+
+  //* 切換使用者展開狀態
+  const toggleUserExpand = (uid: string) => {
+    setExpandedUsers((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(uid)) {
+        newSet.delete(uid)
+      } else {
+        newSet.add(uid)
+      }
+      return newSet
+    })
+  }
+
+  //* 獲取身份顯示名稱
+  const getRoleDisplayName = (role: UserProfile['role']): string => {
+    switch (role) {
+      case 'super_admin':
+        return '超級管理員'
+      case 'info_admin':
+        return '資訊管理員'
+      case 'club_officer':
+        return '社團幹部'
+      case 'user':
+        return '一般使用者'
+      default:
+        return role
+    }
+  }
+
+  //* 獲取權限顯示名稱
+  const getPermissionDisplayName = (
+    permission: keyof UserPermissions
+  ): string => {
+    const permissionNames: Record<keyof UserPermissions, string> = {
+      unrestricted: '不受任何限制 (A)',
+      manageAllPermissions: '管理所有帳號權限 (B)',
+      manageAllPosts: '管理所有帳號個人貼文 (C)',
+      managePermissions: '管理帳號權限 (D)',
+      viewInternalPages: '查看社團內部頁面、資料 (E)',
+      createPersonalPosts: '發表個人文章 (F)',
+      createOfficialPosts: '發表社團官方文章 (G)',
+    }
+    return permissionNames[permission] || permission
   }
 
   // 初始載入
@@ -174,7 +300,7 @@ export const UserManagement: React.FC = () => {
               setFilters({
                 ...filters,
                 role:
-                  (e.target.value as 'super_admin' | 'admin' | 'user') ||
+                  (e.target.value as 'super_admin' | 'info_admin' | 'club_officer' | 'user') ||
                   undefined,
               })
             }
@@ -182,7 +308,8 @@ export const UserManagement: React.FC = () => {
           >
             <option value="">所有角色</option>
             <option value="user">一般使用者</option>
-            <option value="admin">管理員</option>
+            <option value="club_officer">社團幹部</option>
+            <option value="info_admin">資訊管理員</option>
             <option value="super_admin">超級管理員</option>
           </select>
 
@@ -227,60 +354,148 @@ export const UserManagement: React.FC = () => {
           <div className={styles.loading}>載入中...</div>
         ) : (
           <div className={styles.users_grid}>
-            {users.map((user) => (
-              <div key={user.uid} className={styles.user_card}>
-                <div className={styles.user_info}>
-                  <Image
-                    src={user.photoURL}
-                    alt={user.displayName}
-                    className={styles.user_avatar}
-                    width={50}
-                    height={50}
-                  />
-                  <div className={styles.user_details}>
-                    <h4>{user.displayName}</h4>
-                    <p>@{user.username}</p>
-                    {user.bio && <p className={styles.user_bio}>{user.bio}</p>}
-                    {user.isVerified && (
-                      <span className={styles.verified_badge}>已驗證</span>
+            {users.map((userItem) => {
+              const isExpanded = expandedUsers.has(userItem.uid)
+              const canManage = user ? canManageUserRole(user, userItem.role) : false
+
+              return (
+                <div key={userItem.uid} className={styles.user_card}>
+                  <div className={styles.user_info}>
+                    <Image
+                      src={userItem.photoURL}
+                      alt={userItem.displayName}
+                      className={styles.user_avatar}
+                      width={50}
+                      height={50}
+                    />
+                    <div className={styles.user_details}>
+                      <div className={styles.user_name_row}>
+                        <h4>{userItem.displayName}</h4>
+                        <span className={styles.user_role_badge}>
+                          {getRoleDisplayName(userItem.role)}
+                        </span>
+                      </div>
+                      <p>@{userItem.username}</p>
+                      {userItem.bio && (
+                        <p className={styles.user_bio}>{userItem.bio}</p>
+                      )}
+                      <div className={styles.user_status}>
+                        {userItem.isVerified && (
+                          <span className={styles.verified_badge}>已驗證</span>
+                        )}
+                        {!userItem.isActive && (
+                          <span className={styles.inactive_badge}>已停用</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 展開/收合按鈕 */}
+                  <button
+                    onClick={() => toggleUserExpand(userItem.uid)}
+                    className={styles.expand_button}
+                  >
+                    {isExpanded ? '收起' : '展開'}
+                  </button>
+
+                  {/* 展開的權限詳細資訊 */}
+                  {isExpanded && (
+                    <div className={styles.user_permissions}>
+                      <h5>權限設定</h5>
+                      
+                      {/* 身份選擇 */}
+                      <div className={styles.role_select}>
+                        <label>身份：</label>
+                        <select
+                          value={userItem.role}
+                          onChange={(e) =>
+                            handleUpdateRole(
+                              userItem.uid,
+                              e.target.value as UserProfile['role']
+                            )
+                          }
+                          disabled={!canManage || userItem.role === 'super_admin'}
+                          className={styles.role_select_input}
+                        >
+                          <option value="user">一般使用者</option>
+                          <option value="club_officer">社團幹部</option>
+                          <option value="info_admin">資訊管理員</option>
+                          <option value="super_admin">超級管理員</option>
+                        </select>
+                      </div>
+
+                      {/* 權限列表 */}
+                      <div className={styles.permissions_list}>
+                        <label>權限：</label>
+                        {(Object.keys(userItem.permissions) as Array<
+                          keyof UserPermissions
+                        >).map((permission) => (
+                          <label
+                            key={permission}
+                            className={styles.permission_item}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={userItem.permissions[permission]}
+                              onChange={(e) =>
+                                handleUpdatePermission(
+                                  userItem.uid,
+                                  permission,
+                                  e.target.checked
+                                )
+                              }
+                              disabled={
+                                !canManage ||
+                                userItem.role === 'super_admin'
+                              }
+                            />
+                            <span>
+                              {getPermissionDisplayName(permission)}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={styles.user_actions}>
+                    <button
+                      onClick={() => handleVerifyAccount(userItem.uid)}
+                      className={styles.verify_button}
+                      disabled={userItem.isVerified || !canManage}
+                    >
+                      {userItem.isVerified ? '已驗證' : '驗證'}
+                    </button>
+
+                    <button
+                      onClick={() => handleToggleAccount(userItem.uid, true)}
+                      className={styles.activate_button}
+                      disabled={userItem.isActive || !canManage}
+                    >
+                      啟用
+                    </button>
+
+                    <button
+                      onClick={() => handleToggleAccount(userItem.uid, false)}
+                      className={styles.deactivate_button}
+                      disabled={!userItem.isActive || !canManage}
+                    >
+                      停用
+                    </button>
+
+                    {isSuperAdmin && canManage && (
+                      <button
+                        onClick={() => handleDeleteUser(userItem.uid)}
+                        className={styles.delete_button}
+                        disabled={userItem.role === 'super_admin'}
+                      >
+                        刪除
+                      </button>
                     )}
                   </div>
                 </div>
-
-                <div className={styles.user_actions}>
-                  <button
-                    onClick={() => handleVerifyAccount(user.uid)}
-                    className={styles.verify_button}
-                    disabled={user.isVerified}
-                  >
-                    {user.isVerified ? '已驗證' : '驗證'}
-                  </button>
-
-                  <button
-                    onClick={() => handleToggleAccount(user.uid, true)}
-                    className={styles.activate_button}
-                  >
-                    啟用
-                  </button>
-
-                  <button
-                    onClick={() => handleToggleAccount(user.uid, false)}
-                    className={styles.deactivate_button}
-                  >
-                    停用
-                  </button>
-
-                  {isSuperAdmin && (
-                    <button
-                      onClick={() => handleDeleteUser(user.uid)}
-                      className={styles.delete_button}
-                    >
-                      刪除
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
 

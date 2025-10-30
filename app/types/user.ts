@@ -9,12 +9,13 @@ export interface UserProfile extends Record<string, unknown> {
   provider: 'email' | 'google'
   createdAt: Date
   updatedAt: Date
-  role: 'super_admin' | 'admin' | 'user'
+  role: 'super_admin' | 'info_admin' | 'club_officer' | 'user'
   permissions: UserPermissions
   // 新增社群功能相關欄位
   bio?: string // 個人簡介
   location?: string // 所在地
   website?: string // 個人網站
+  tags?: string[] // 個性標籤（未來擴展）
   socialLinks?: {
     github?: string
     linkedin?: string
@@ -40,26 +41,36 @@ export interface UserProfile extends Record<string, unknown> {
   lastLoginAt?: Date // 最後登入時間
 }
 
+/**
+ * 使用者權限介面
+ * 對應權限系統文件中的 A-G 權限：
+ * A. 不受任何限制 (unrestricted)
+ * B. 管理所有帳號權限 (manageAllPermissions)
+ * C. 管理所有帳號個人貼文（僅刪除）(manageAllPosts)
+ * D. 管理帳號權限（除了超級管理員）(managePermissions)
+ * E. 查看社團內部頁面、資料 (viewInternalPages)
+ * F. 發表個人文章 (createPersonalPosts)
+ * G. 發表社團官方文章 (createOfficialPosts)
+ */
 export interface UserPermissions {
-  announcements: {
-    canCreate: boolean
-    canEdit: boolean
-    canDelete: boolean
-  }
-  downloads: {
-    canManage: boolean
-  }
+  unrestricted: boolean // A. 不受任何限制
+  manageAllPermissions: boolean // B. 管理所有帳號權限
+  manageAllPosts: boolean // C. 管理所有帳號個人貼文（僅刪除）
+  managePermissions: boolean // D. 管理帳號權限（除了超級管理員）
+  viewInternalPages: boolean // E. 查看社團內部頁面、資料
+  createPersonalPosts: boolean // F. 發表個人文章
+  createOfficialPosts: boolean // G. 發表社團官方文章
 }
 
+//* 預設使用者權限（一般使用者：F）
 export const DEFAULT_USER_PERMISSIONS: UserPermissions = {
-  announcements: {
-    canCreate: false,
-    canEdit: false,
-    canDelete: false,
-  },
-  downloads: {
-    canManage: false,
-  },
+  unrestricted: false,
+  manageAllPermissions: false,
+  manageAllPosts: false,
+  managePermissions: false,
+  viewInternalPages: false,
+  createPersonalPosts: true, // F. 發表個人文章
+  createOfficialPosts: false,
 }
 
 //* 預設使用者統計資料
@@ -77,27 +88,41 @@ export const DEFAULT_PRIVACY_SETTINGS = {
   showStats: true,
 }
 
-export const ADMIN_PERMISSIONS: UserPermissions = {
-  announcements: {
-    canCreate: true,
-    canEdit: true,
-    canDelete: true,
-  },
-  downloads: {
-    canManage: true,
-  },
+//* 社團幹部權限（EF）
+export const CLUB_OFFICER_PERMISSIONS: UserPermissions = {
+  unrestricted: false,
+  manageAllPermissions: false,
+  manageAllPosts: false,
+  managePermissions: false,
+  viewInternalPages: true, // E. 查看社團內部頁面、資料
+  createPersonalPosts: true, // F. 發表個人文章
+  createOfficialPosts: false,
 }
 
-export const SUPER_ADMIN_PERMISSIONS: UserPermissions = {
-  announcements: {
-    canCreate: true,
-    canEdit: true,
-    canDelete: true,
-  },
-  downloads: {
-    canManage: true,
-  },
+//* 資訊管理員權限（DEFG）
+export const INFO_ADMIN_PERMISSIONS: UserPermissions = {
+  unrestricted: false,
+  manageAllPermissions: false,
+  manageAllPosts: false,
+  managePermissions: true, // D. 管理帳號權限（除了超級管理員）
+  viewInternalPages: true, // E. 查看社團內部頁面、資料
+  createPersonalPosts: true, // F. 發表個人文章
+  createOfficialPosts: true, // G. 發表社團官方文章
 }
+
+//* 超級管理員權限（ABCDEFG - 全部）
+export const SUPER_ADMIN_PERMISSIONS: UserPermissions = {
+  unrestricted: true, // A. 不受任何限制
+  manageAllPermissions: true, // B. 管理所有帳號權限
+  manageAllPosts: true, // C. 管理所有帳號個人貼文（僅刪除）
+  managePermissions: true, // D. 管理帳號權限（除了超級管理員）
+  viewInternalPages: true, // E. 查看社團內部頁面、資料
+  createPersonalPosts: true, // F. 發表個人文章
+  createOfficialPosts: true, // G. 發表社團官方文章
+}
+
+//* 向後相容：保留舊的 ADMIN_PERMISSIONS（映射到 INFO_ADMIN_PERMISSIONS）
+export const ADMIN_PERMISSIONS: UserPermissions = INFO_ADMIN_PERMISSIONS
 
 export interface RegisterFormData {
   email?: string
@@ -139,7 +164,7 @@ export interface AuthContextType {
 export interface UpdateUserPermissionsData {
   uid: string
   permissions?: Partial<UserPermissions>
-  role?: 'super_admin' | 'admin' | 'user'
+  role?: 'super_admin' | 'info_admin' | 'club_officer' | 'user'
 }
 
 //* 更新使用者個人資料的資料結構
@@ -162,11 +187,34 @@ export interface UserSearchResult {
   isVerified: boolean
 }
 
+//* 根據身份獲取對應權限
+export const getPermissionsByRole = (
+  role: UserProfile['role']
+): UserPermissions => {
+  switch (role) {
+    case 'super_admin':
+      return SUPER_ADMIN_PERMISSIONS
+    case 'info_admin':
+      return INFO_ADMIN_PERMISSIONS
+    case 'club_officer':
+      return CLUB_OFFICER_PERMISSIONS
+    case 'user':
+    default:
+      return DEFAULT_USER_PERMISSIONS
+  }
+}
+
 //* 建立完整使用者資料的輔助函數
 export const createDefaultUserProfile = (
   firebaseUser: User,
   additionalData: Partial<UserProfile>
 ): UserProfile => {
+  // 確定身份（優先使用 additionalData 中的 role，否則預設為 'user'）
+  const role = additionalData.role || 'user'
+  
+  // 根據身份設定對應權限
+  const permissions = additionalData.permissions || getPermissionsByRole(role)
+
   return {
     uid: firebaseUser.uid,
     email: firebaseUser.email || '',
@@ -177,15 +225,20 @@ export const createDefaultUserProfile = (
       firebaseUser.photoURL ||
       '/assets/image/userEmptyAvatar.png',
     provider: additionalData.provider || 'email',
-    role: 'user',
-    permissions: DEFAULT_USER_PERMISSIONS,
-    stats: DEFAULT_USER_STATS,
-    privacy: DEFAULT_PRIVACY_SETTINGS,
-    isActive: true,
-    isVerified: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    lastLoginAt: new Date(),
-    ...additionalData,
+    role,
+    permissions,
+    stats: additionalData.stats || DEFAULT_USER_STATS,
+    privacy: additionalData.privacy || DEFAULT_PRIVACY_SETTINGS,
+    isActive: additionalData.isActive !== undefined ? additionalData.isActive : true,
+    isVerified: additionalData.isVerified !== undefined ? additionalData.isVerified : false,
+    createdAt: additionalData.createdAt || new Date(),
+    updatedAt: additionalData.updatedAt || new Date(),
+    lastLoginAt: additionalData.lastLoginAt || new Date(),
+    // 保留其他額外資料
+    bio: additionalData.bio,
+    location: additionalData.location,
+    website: additionalData.website,
+    tags: additionalData.tags,
+    socialLinks: additionalData.socialLinks,
   }
 }

@@ -3,6 +3,7 @@ import {
   getDocs,
   doc,
   setDoc,
+  getDoc,
   query,
   where,
   orderBy,
@@ -13,7 +14,11 @@ import {
   UserProfile,
   UpdateUserProfileData,
   UserSearchResult,
+  UserPermissions,
 } from '../types/user'
+import { getPermissionsByRole } from '../types/user'
+import { canManageUserRole } from './permissionService'
+import { processFirestoreDoc } from './firestoreHelpers'
 
 /**
  * 使用者管理服務
@@ -122,7 +127,7 @@ export const getUserStats = async (): Promise<{
 export const advancedSearchUsers = async (
   searchTerm: string,
   filters: {
-    role?: 'super_admin' | 'admin' | 'user'
+    role?: 'super_admin' | 'info_admin' | 'club_officer' | 'user'
     isActive?: boolean
     isVerified?: boolean
     provider?: 'email' | 'google'
@@ -250,12 +255,28 @@ export const updateUserProfileSafe = async (
 
 //* 停用/啟用使用者帳號
 export const toggleUserAccount = async (
+  adminUser: UserProfile,
   uid: string,
-  isActive: boolean,
-  adminUid: string
+  isActive: boolean
 ): Promise<void> => {
   try {
-    // 檢查管理員權限（這裡需要實際的權限檢查邏輯）
+    // 獲取目標使用者資料
+    const targetUserDoc = await getDoc(doc(db, 'users', uid))
+    if (!targetUserDoc.exists()) {
+      throw new Error('使用者不存在')
+    }
+
+    const targetUserData = targetUserDoc.data() as UserProfile
+
+    // 檢查是否可以管理目標使用者
+    if (!canManageUserRole(adminUser, targetUserData.role)) {
+      throw new Error('沒有權限管理此使用者')
+    }
+
+    // 超級管理員不可被停用
+    if (targetUserData.role === 'super_admin' && !isActive) {
+      throw new Error('超級管理員不可被停用')
+    }
 
     await setDoc(
       doc(db, 'users', uid),
@@ -263,7 +284,7 @@ export const toggleUserAccount = async (
         isActive,
         updatedAt: new Date(),
         // 記錄操作者
-        lastModifiedBy: adminUid,
+        lastModifiedBy: adminUser.uid,
       },
       { merge: true }
     )
@@ -275,16 +296,29 @@ export const toggleUserAccount = async (
 
 //* 驗證使用者帳號
 export const verifyUserAccount = async (
-  uid: string,
-  adminUid: string
+  adminUser: UserProfile,
+  uid: string
 ): Promise<void> => {
   try {
+    // 獲取目標使用者資料
+    const targetUserDoc = await getDoc(doc(db, 'users', uid))
+    if (!targetUserDoc.exists()) {
+      throw new Error('使用者不存在')
+    }
+
+    const targetUserData = targetUserDoc.data() as UserProfile
+
+    // 檢查是否可以管理目標使用者
+    if (!canManageUserRole(adminUser, targetUserData.role)) {
+      throw new Error('沒有權限管理此使用者')
+    }
+
     await setDoc(
       doc(db, 'users', uid),
       {
         isVerified: true,
         updatedAt: new Date(),
-        verifiedBy: adminUid,
+        verifiedBy: adminUser.uid,
         verifiedAt: new Date(),
       },
       { merge: true }
@@ -295,28 +329,135 @@ export const verifyUserAccount = async (
   }
 }
 
-//* 刪除使用者資料（僅 Firestore，不刪除 Firebase Auth）
-export const deleteUserData = async (
-  uid: string,
-  adminUid: string
+/**
+ * 更新使用者身份
+ * @param adminUser 管理員使用者資料
+ * @param targetUid 目標使用者 ID
+ * @param newRole 新的身份
+ */
+export const updateUserRole = async (
+  adminUser: UserProfile,
+  targetUid: string,
+  newRole: UserProfile['role']
 ): Promise<void> => {
   try {
-    // 檢查管理員權限
+    // 檢查管理員是否可以管理此身份
+    if (!canManageUserRole(adminUser, newRole)) {
+      throw new Error('沒有權限設定此身份')
+    }
 
-    // 軟刪除：標記為已刪除而不是真正刪除
+    // 獲取目標使用者資料
+    const targetUserDoc = await getDoc(doc(db, 'users', targetUid))
+    if (!targetUserDoc.exists()) {
+      throw new Error('使用者不存在')
+    }
+
+    const targetUserData = targetUserDoc.data() as UserProfile
+
+    // 檢查是否可以管理目標使用者
+    if (!canManageUserRole(adminUser, targetUserData.role)) {
+      throw new Error('沒有權限管理此使用者')
+    }
+
+    // 超級管理員身份不可被修改（即便是超級管理員自己）
+    if (targetUserData.role === 'super_admin' && newRole !== 'super_admin') {
+      throw new Error('超級管理員身份不可被修改')
+    }
+
+    // 根據新身份設定對應權限
+    const newPermissions = getPermissionsByRole(newRole)
+
+    // 更新 Firestore
     await setDoc(
-      doc(db, 'users', uid),
+      doc(db, 'users', targetUid),
       {
-        isActive: false,
-        isDeleted: true,
-        deletedAt: new Date(),
-        deletedBy: adminUid,
+        role: newRole,
+        permissions: newPermissions,
         updatedAt: new Date(),
+        lastModifiedBy: adminUser.uid,
       },
       { merge: true }
     )
   } catch (error) {
-    console.error('刪除使用者資料時發生錯誤:', error)
+    console.error('更新使用者身份失敗:', error)
+    throw error
+  }
+}
+
+/**
+ * 更新使用者權限
+ * @param adminUser 管理員使用者資料
+ * @param targetUid 目標使用者 ID
+ * @param permissions 新的權限
+ */
+export const updateUserPermissions = async (
+  adminUser: UserProfile,
+  targetUid: string,
+  permissions: Partial<UserPermissions>
+): Promise<void> => {
+  try {
+    // 獲取目標使用者資料
+    const targetUserDoc = await getDoc(doc(db, 'users', targetUid))
+    if (!targetUserDoc.exists()) {
+      throw new Error('使用者不存在')
+    }
+
+    const targetUserData = targetUserDoc.data() as UserProfile
+
+    // 檢查是否可以管理目標使用者
+    if (!canManageUserRole(adminUser, targetUserData.role)) {
+      throw new Error('沒有權限管理此使用者')
+    }
+
+    // 超級管理員權限不可被修改
+    if (targetUserData.role === 'super_admin') {
+      throw new Error('超級管理員權限不可被修改')
+    }
+
+    // 合併權限（保留現有權限，只更新提供的部分）
+    const updatedPermissions: UserPermissions = {
+      ...targetUserData.permissions,
+      ...permissions,
+    }
+
+    // 更新 Firestore
+    await setDoc(
+      doc(db, 'users', targetUid),
+      {
+        permissions: updatedPermissions,
+        updatedAt: new Date(),
+        lastModifiedBy: adminUser.uid,
+      },
+      { merge: true }
+    )
+  } catch (error) {
+    console.error('更新使用者權限失敗:', error)
+    throw error
+  }
+}
+
+/**
+ * 獲取所有使用者列表（完整資料，包含權限）
+ * @param limitCount 限制數量
+ * @returns 使用者列表
+ */
+export const getAllUsers = async (
+  limitCount: number = 50
+): Promise<UserProfile[]> => {
+  try {
+    const q = query(
+      collection(db, 'users'),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    )
+    const querySnapshot = await getDocs(q)
+
+    return querySnapshot.docs.map((doc) => {
+      const data = doc.data()
+      return processFirestoreDoc<UserProfile>(data)
+    })
+  } catch (error) {
+    console.error('獲取所有使用者失敗:', error)
     throw error
   }
 }

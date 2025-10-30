@@ -91,9 +91,14 @@ export function LoginForm({ onSwitchToRegister, onClose }: LoginFormProps) {
       ) {
         setError('此 Google 帳號尚未註冊，請先完成註冊流程')
         onSwitchToRegister()
+      } else if (
+        (error as { message?: string })?.message === 'REGISTRATION_INCOMPLETE'
+      ) {
+        setError('此帳號尚未完成註冊，請先完成註冊流程')
+        onSwitchToRegister()
       } else {
         setError(
-          getErrorMessage((error as { code?: string })?.code || 'unknown')
+          getErrorMessage((error as { code?: string; message?: string })?.code || (error as { message?: string })?.message || 'unknown')
         )
       }
     } finally {
@@ -120,8 +125,10 @@ export function LoginForm({ onSwitchToRegister, onClose }: LoginFormProps) {
         return '登入嘗試次數過多，請稍後再試'
       case 'auth/invalid-credential':
         return '帳號或密碼錯誤'
+      case 'REGISTRATION_INCOMPLETE':
+        return '此帳號尚未完成註冊，請先完成註冊流程'
       default:
-        return '登入失敗，請稍後再試'
+        return errorCode || '登入失敗，請稍後再試'
     }
   }
 

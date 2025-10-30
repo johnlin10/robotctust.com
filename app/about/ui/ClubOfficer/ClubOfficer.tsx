@@ -91,7 +91,7 @@ export default function ClubOfficer() {
       name: '王朝育',
       position: '活動',
       description: '活動',
-      username: '',
+      username: 'wangchaoyu555',
     },
     {
       name: '林廷亘',

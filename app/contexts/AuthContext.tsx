@@ -14,6 +14,7 @@ import {
   signOut as firebaseSignOut,
   onAuthStateChanged,
   User,
+  deleteUser,
 } from 'firebase/auth'
 import {
   doc,
@@ -136,15 +137,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const result = await signInWithEmailAndPassword(auth, email, password)
       const userProfile = await getUserProfile(result.user.uid)
 
-      // 更新最後登入時間
-      if (userProfile) {
-        await setDoc(
-          doc(db, 'users', result.user.uid),
-          { lastLoginAt: new Date(), updatedAt: new Date() },
-          { merge: true }
-        )
-        userProfile.lastLoginAt = new Date()
+      // 如果 Firebase Auth 有帳號但 Firestore 沒有資料，視為未完成註冊
+      if (!userProfile) {
+        // 登出 Firebase Auth，強制使用者重新完成註冊流程
+        await firebaseSignOut(auth)
+        throw new Error('REGISTRATION_INCOMPLETE')
       }
+
+      // 更新最後登入時間
+      await setDoc(
+        doc(db, 'users', result.user.uid),
+        { lastLoginAt: new Date(), updatedAt: new Date() },
+        { merge: true }
+      )
+      userProfile.lastLoginAt = new Date()
 
       setUser(userProfile)
     } catch (error) {
@@ -155,73 +161,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
-  //* 自動修復孤兒帳號（Firebase Auth 有帳號但 Firestore 沒有資料）
-  const _autoRepairOrphanAccount = useCallback(
-    async (firebaseUser: User): Promise<UserProfile> => {
-      try {
-        console.log('偵測到孤兒帳號，正在自動修復...', firebaseUser.uid)
-
-        // 生成預設的使用者名稱（基於 email 或 uid）
-        const defaultUsername = firebaseUser.email
-          ? firebaseUser.email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_')
-          : `user_${firebaseUser.uid.slice(0, 8)}`
-
-        // 檢查使用者名稱是否已存在，如果存在則加上隨機後綴
-        let username = defaultUsername
-        let counter = 1
-        while (await checkUsernameExists(username)) {
-          username = `${defaultUsername}_${counter}`
-          counter++
-        }
-
-        // 創建使用者資料
-        const userProfile = await createUserProfile(firebaseUser, {
-          username,
-          displayName: firebaseUser.displayName || username,
-          photoURL:
-            firebaseUser.photoURL || '/assets/image/userEmptyAvatar.png',
-          provider: 'google',
-        })
-
-        console.log('孤兒帳號修復完成:', userProfile.username)
-        return userProfile
-      } catch (error) {
-        console.error('自動修復孤兒帳號失敗:', error)
-        throw new Error('帳號資料同步失敗，請聯繫管理員')
-      }
-    },
-    [checkUsernameExists, createUserProfile]
-  )
-
-  //* Google 登入（修復版本）
+  //* Google 登入
   const signInWithGoogle = async () => {
     try {
       setLoading(true)
       const result = await signInWithPopup(auth, googleProvider)
 
       // 檢查是否為新使用者
-      let userProfile = await getUserProfile(result.user.uid)
+      const userProfile = await getUserProfile(result.user.uid)
 
+      // 如果 Firebase Auth 有帳號但 Firestore 沒有資料，視為未完成註冊
       if (!userProfile) {
-        // 嘗試自動修復孤兒帳號
-        try {
-          userProfile = await _autoRepairOrphanAccount(result.user)
-        } catch (repairError) {
-          // 如果自動修復失敗，則要求完成註冊流程
-          console.error('自動修復失敗，需要手動註冊:', repairError)
-          throw new Error('NEW_USER_NEEDS_REGISTRATION')
-        }
+        // 登出 Firebase Auth，強制使用者重新完成註冊流程
+        await firebaseSignOut(auth)
+        throw new Error('REGISTRATION_INCOMPLETE')
       }
 
       // 更新最後登入時間
-      if (userProfile) {
-        await setDoc(
-          doc(db, 'users', result.user.uid),
-          { lastLoginAt: new Date(), updatedAt: new Date() },
-          { merge: true }
-        )
-        userProfile.lastLoginAt = new Date()
-      }
+      await setDoc(
+        doc(db, 'users', result.user.uid),
+        { lastLoginAt: new Date(), updatedAt: new Date() },
+        { merge: true }
+      )
+      userProfile.lastLoginAt = new Date()
 
       setUser(userProfile)
     } catch (error) {
@@ -234,6 +196,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   //* 註冊新使用者
   const register = async (data: RegisterFormData) => {
+    let firebaseUser: User | null = null
+    let firebaseAuthCreated = false
+
     try {
       setLoading(true)
 
@@ -243,36 +208,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         throw new Error('使用者名稱已存在')
       }
 
-      let firebaseUser: User
-
       if (data.email && data.password) {
-        // 電子郵件註冊
+        // 電子郵件註冊：建立 Firebase Auth 帳號
         const result = await createUserWithEmailAndPassword(
           auth,
           data.email,
           data.password
         )
         firebaseUser = result.user
+        firebaseAuthCreated = true
       } else {
         // Google 註冊（已經通過 Google 登入）
         if (!auth.currentUser) {
           throw new Error('請先完成 Google 登入')
         }
         firebaseUser = auth.currentUser
+        firebaseAuthCreated = true
       }
 
-      // 創建使用者資料
-      const userProfile = await createUserProfile(firebaseUser, {
-        username: data.username,
-        displayName: data.displayName,
-        photoURL:
-          data.photoURL ||
-          firebaseUser.photoURL ||
-          '/assets/image/userEmptyAvatar.png',
-        provider: data.email ? 'email' : 'google',
-      })
+      // 創建使用者資料到 Firestore
+      // 如果這步失敗，需要刪除已建立的 Firebase Auth 帳號
+      try {
+        const userProfile = await createUserProfile(firebaseUser, {
+          username: data.username,
+          displayName: data.displayName,
+          photoURL:
+            data.photoURL ||
+            firebaseUser.photoURL ||
+            '/assets/image/userEmptyAvatar.png',
+          provider: data.email ? 'email' : 'google',
+        })
 
-      setUser(userProfile)
+        setUser(userProfile)
+      } catch (firestoreError) {
+        // Firestore 建立失敗，刪除 Firebase Auth 帳號
+        console.error(
+          'Firestore 建立失敗，刪除 Firebase Auth 帳號:',
+          firestoreError
+        )
+        if (firebaseAuthCreated && firebaseUser) {
+          try {
+            await deleteUser(firebaseUser)
+          } catch (deleteError) {
+            console.error('刪除 Firebase Auth 帳號失敗:', deleteError)
+            // 繼續拋出原始錯誤
+          }
+        }
+        throw new Error('建立使用者資料失敗，請稍後再試')
+      }
     } catch (error) {
       console.error('註冊失敗:', error)
       throw error
@@ -360,20 +343,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const featurePermissions = user.permissions[
       feature
     ] as UserPermissions[keyof UserPermissions]
-    return (
+    const permission =
       featurePermissions?.[
         action as keyof UserPermissions[keyof UserPermissions]
-      ] || false
-    )
+      ]
+    return typeof permission === 'function' ? permission() : !!permission
   }
-
-  // const isAdmin = (): boolean => {
-  //   return user?.role === 'admin' || user?.role === 'super_admin'
-  // }
-
-  // const isSuperAdmin = (): boolean => {
-  //   return user?.role === 'super_admin'
-  // }
 
   //* 檢查是否為超級管理員（基於環境變數）
   const checkSuperAdmin = useCallback((firebaseUser: User | null): boolean => {
@@ -390,21 +365,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setFirebaseUser(currentFirebaseUser)
 
         if (currentFirebaseUser) {
-          let userProfile = await getUserProfile(currentFirebaseUser.uid)
+          const userProfile = await getUserProfile(currentFirebaseUser.uid)
 
-          // 如果 Firebase Auth 有帳號但 Firestore 沒有資料，嘗試自動修復
+          // 如果 Firebase Auth 有帳號但 Firestore 沒有資料，視為未完成註冊
+          // 自動登出，強制使用者完成註冊流程
           if (!userProfile) {
-            try {
-              console.log(
-                '偵測到孤兒帳號，嘗試自動修復...',
-                currentFirebaseUser.uid
-              )
-              userProfile = await _autoRepairOrphanAccount(currentFirebaseUser)
-            } catch (error) {
-              console.error('自動修復孤兒帳號失敗:', error)
-              // 如果自動修復失敗，設定為 null，讓使用者重新註冊
-              userProfile = null
-            }
+            console.warn(
+              '偵測到未完成註冊的帳號，自動登出:',
+              currentFirebaseUser.uid
+            )
+            await firebaseSignOut(auth)
+            setUser(null)
+            setIsAdmin(false)
+            setIsSuperAdmin(false)
+            setLoading(false)
+            return
           }
 
           setUser(userProfile)
@@ -416,8 +391,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           // 檢查一般管理員權限
           setIsAdmin(
             isSuperAdminUser ||
-              userProfile?.role === 'admin' ||
-              userProfile?.role === 'super_admin'
+              userProfile.role === 'info_admin' ||
+              userProfile.role === 'club_officer' ||
+              userProfile.role === 'super_admin'
           )
         } else {
           setUser(null)
@@ -429,7 +405,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     )
 
     return () => unsubscribe()
-  }, [getUserProfile, _autoRepairOrphanAccount, checkSuperAdmin])
+  }, [getUserProfile, checkSuperAdmin])
 
   const value: AuthContextType = {
     user,
