@@ -133,6 +133,12 @@
         @include mixins.flexbox(row, center, center);
         gap: 12px;
 
+        > p.auth_login_text {
+          font-size: 0.8rem;
+          color: var(--foreground-tertiary);
+          text-align: right;
+        }
+
         .login_button {
           @include mixins.button;
           @include mixins.transition(var(--transition-default));

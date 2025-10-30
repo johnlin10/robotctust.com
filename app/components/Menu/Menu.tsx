@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import styles from './Menu.module.scss'
 // import { useTheme } from 'next-themes'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 // components
-import { AuthModal } from '../Auth/AuthModal'
+// import { AuthModal } from '../Auth/AuthModal'
 import WebsiteMap from '../WebsiteMap/WebsiteMap'
 // contexts
 import { useAuth } from '../../contexts/AuthContext'
@@ -32,35 +32,35 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
   // 獲取登入資訊
   const { user, loading } = useAuth()
   // 登入模組狀態
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+  // const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
   // 登入模組的類型
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  // const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
 
   /**
    * 開啟登入模組
    * @returns void
    */
-  const handleOpenLogin = () => {
-    setAuthMode('login')
-    setIsAuthModalOpen(true)
-  }
+  // const handleOpenLogin = () => {
+  //   setAuthMode('login')
+  //   setIsAuthModalOpen(true)
+  // }
 
   /**
    * 開啟註冊模組
    * @returns void
    */
-  const handleOpenRegister = () => {
-    setAuthMode('register')
-    setIsAuthModalOpen(true)
-  }
+  // const handleOpenRegister = () => {
+  //   setAuthMode('register')
+  //   setIsAuthModalOpen(true)
+  // }
 
   /**
    * 關閉登入模組
    * @returns void
    */
-  const handleCloseModal = () => {
-    setIsAuthModalOpen(false)
-  }
+  // const handleCloseModal = () => {
+  //   setIsAuthModalOpen(false)
+  // }
 
   /**
    * 處理使用者頭像點擊
@@ -125,7 +125,7 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
               探索機器人世界！
             </p>
             <div className={styles.auth_buttons}>
-              <button className={styles.login_button} onClick={handleOpenLogin}>
+              {/* <button className={styles.login_button} onClick={handleOpenLogin}>
                 登入
               </button>
               <button
@@ -133,20 +133,25 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
                 onClick={handleOpenRegister}
               >
                 註冊
-              </button>
+              </button> */}
+              <p className={styles.auth_login_text}>
+                帳號功能
+                <br />
+                內部測試中
+              </p>
             </div>
           </div>
         )}
       </div>
 
       {/* 登入模組 */}
-      {isAuthModalOpen && (
+      {/* {isAuthModalOpen && (
         <AuthModal
           isOpen={isAuthModalOpen}
           onClose={handleCloseModal}
           initialMode={authMode}
         />
-      )}
+      )} */}
     </>
   )
 }
