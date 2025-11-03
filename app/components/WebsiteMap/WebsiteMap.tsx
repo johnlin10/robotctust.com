@@ -69,7 +69,7 @@ export default function WebsiteMap({ onClose }: { onClose?: () => void }) {
             文檔
           </LinkWithIcon>
           <LinkWithIcon href="/terms" onClick={handleLinkClick}>
-            使用條款
+            服務條款
           </LinkWithIcon>
           <LinkWithIcon href="/privacy" onClick={handleLinkClick}>
             隱私權政策

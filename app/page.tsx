@@ -57,5 +57,6 @@ export async function generateMetadata() {
     image: '/assets/image/metadata-backgrounds/global.webp',
     url: '/',
     type: 'website',
+    category: 'home',
   })
 }
