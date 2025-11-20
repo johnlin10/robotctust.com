@@ -34,8 +34,8 @@ export default function HeroSection() {
             <span className="nowrap">親手打造未來可能性的實作基地。</span>
           </p>
         </FadeInUp>
-        <span className={styles.floatingText}>ROBOTCTUST</span>
       </div>
+      <span className={styles.floatingText}>ROBOTCTUST</span>
     </section>
   )
 }

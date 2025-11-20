@@ -1,11 +1,12 @@
 @use '@/app/styles/mixins' as mixins;
 
 .heroSection {
+  position: relative;
   @include mixins.flexbox(column, center, center);
   padding: var(--space-2x);
   width: 100%;
   height: calc(100vh - 72px);
-  max-width: calc(240px + 60vw);
+  overflow: hidden;
 
   @include mixins.respond-to('desktop') {
     @include mixins.flexbox(row, center, center);
@@ -27,7 +28,7 @@
   > .firstRow {
     @include mixins.flexbox(column, center, center);
     width: 100%;
-    max-width: 1080px;
+    max-width: 100%;
     z-index: 1;
 
     .homeImage {
@@ -71,22 +72,22 @@
       line-height: 1.6;
       margin-top: var(--space-2x);
     }
+  }
 
-    > .floatingText {
-      z-index: -1;
-      position: absolute;
-      top: 30%;
-      left: 50%;
-      font-size: clamp(4rem, 16vw, 12rem);
-      font-family: var(--font-dm-mono);
-      font-weight: 900;
-      letter-spacing: 0.1rem;
-      color: var(--foreground);
-      opacity: 0.03;
-      @include mixins.transform-container(translateX(-50%));
-      white-space: nowrap;
-      pointer-events: none;
-    }
+  > .floatingText {
+    z-index: -1;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    font-size: clamp(4rem, 16vw, 12rem);
+    font-family: var(--font-dm-mono);
+    font-weight: 900;
+    letter-spacing: 0.1rem;
+    color: var(--foreground);
+    opacity: 0.03;
+    @include mixins.transform-container(translateX(-50%));
+    white-space: nowrap;
+    pointer-events: none;
   }
 }
 
