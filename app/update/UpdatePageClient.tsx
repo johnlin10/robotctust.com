@@ -13,7 +13,7 @@ import FloatingActionBar, {
 } from '../components/FloatingActionBar/FloatingActionBar'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faFileAlt, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faFileAlt, faTrash, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 // contexts
 import { AuthContext } from '../contexts/AuthContext'
 import { useHeaderState } from '../contexts/HeaderContext'
@@ -75,6 +75,11 @@ export default function UpdatePageClient({
     'category',
     parseAsString.withDefault('')
   )
+  // 搜尋關鍵字
+  const [searchQuery, setSearchQuery] = useQueryState(
+    'q',
+    parseAsString.withDefault('')
+  )
   const currentFilter: FilterType = categorySlug
     ? SLUG_TO_CATEGORY[categorySlug as CategorySlug] || 'all'
     : 'all'
@@ -128,13 +133,27 @@ export default function UpdatePageClient({
 
   // 篩選文章
   useEffect(() => {
-    if (currentFilter === 'all') {
-      setFilteredPosts(posts)
-    } else {
-      const filtered = posts.filter((post) => post.category === currentFilter)
-      setFilteredPosts(filtered)
+    let result = posts
+
+    // 1. 分類篩選
+    if (currentFilter !== 'all') {
+      result = result.filter((post) => post.category === currentFilter)
     }
-  }, [posts, currentFilter])
+
+    // 2. 關鍵字搜尋
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase().trim()
+      result = result.filter((post) => {
+        const titleMatch = post.title.toLowerCase().includes(query)
+        const contentMatch = post.contentMarkdown
+          ? post.contentMarkdown.toLowerCase().includes(query)
+          : false
+        return titleMatch || contentMatch
+      })
+    }
+
+    setFilteredPosts(result)
+  }, [posts, currentFilter, searchQuery])
 
   //* 事件處理
   /**
@@ -149,6 +168,21 @@ export default function UpdatePageClient({
       const slug = CATEGORY_TO_SLUG[filter]
       setCategorySlug(slug)
     }
+  }
+
+  /**
+   * 處理搜尋變更
+   * @param e 輸入事件
+   */
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value || null)
+  }
+
+  /**
+   * 處理清除搜尋
+   */
+  const handleClearSearch = () => {
+    setSearchQuery(null)
   }
 
   /**
@@ -449,6 +483,30 @@ export default function UpdatePageClient({
                 {POST_CATEGORY_LABELS[category]}
               </button>
             ))}
+          </div>
+
+
+          {/* 搜尋欄位 */}
+          <div className={styles.searchContainer}>
+            <div className={styles.searchInputWrapper}>
+              <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+              <input
+                type="text"
+                placeholder="搜尋文章..."
+                value={searchQuery || ''}
+                onChange={handleSearchChange}
+                className={styles.searchInput}
+              />
+              {searchQuery && (
+                <button
+                  onClick={handleClearSearch}
+                  className={styles.clearButton}
+                  aria-label="清除搜尋"
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 

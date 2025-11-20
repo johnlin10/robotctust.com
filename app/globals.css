@@ -95,6 +95,10 @@ p {
   letter-spacing: 0.05rem;
 }
 
+span.nowrap {
+  white-space: nowrap;
+}
+
 .page {
   height: 100%;
   width: 100%;

@@ -64,7 +64,7 @@
         left: 50%;
         right: 0;
         width: fit-content;
-        background: var(--background);
+        background: var(--background-secondary);
         padding: 0 1rem;
         color: var(--foreground);
         font-size: 0.875rem;
@@ -141,7 +141,7 @@
     > label {
       display: block;
       margin-bottom: 0.5rem;
-      color: #374151;
+      color: var(--foreground);
       font-weight: 500;
       font-size: 0.875rem;
     }
@@ -190,7 +190,6 @@
     cursor: pointer;
     @include mixins.transition(var(--transition-default));
     @include mixins.hover-scale-effect(1.01);
-    margin-bottom: 1rem;
 
     &:hover:not(:disabled) {
       background: var(--theme-purple-600);

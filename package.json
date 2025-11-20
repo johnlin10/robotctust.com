@@ -11,6 +11,7 @@
     "deploy": "vercel --prod"
   },
   "dependencies": {
+    "@awesome.me/webawesome": "^3.0.0",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
@@ -22,6 +23,7 @@
     "@fullcalendar/timegrid": "^6.1.19",
     "@hookform/resolvers": "^5.0.1",
     "@next/third-parties": "^15.1.8",
+    "@react-spring/web": "^10.0.3",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.3.0",
     "@tailwindcss/typography": "^0.5.16",

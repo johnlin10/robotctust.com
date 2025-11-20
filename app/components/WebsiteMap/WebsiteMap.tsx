@@ -52,17 +52,6 @@ export default function WebsiteMap({ onClose }: { onClose?: () => void }) {
         </div>
       </div>
       <div className={styles.websiteMap_group}>
-        <p>關於</p>
-        <div className={styles.websiteMap_group_items}>
-          <LinkWithIcon href="/about" onClick={handleLinkClick}>
-            關於我們
-          </LinkWithIcon>
-          <LinkWithIcon href="/contact" onClick={handleLinkClick}>
-            聯絡我們
-          </LinkWithIcon>
-        </div>
-      </div>
-      <div className={styles.websiteMap_group}>
         <p>資料</p>
         <div className={styles.websiteMap_group_items}>
           <LinkWithIcon href="/docs" onClick={handleLinkClick}>
@@ -73,6 +62,17 @@ export default function WebsiteMap({ onClose }: { onClose?: () => void }) {
           </LinkWithIcon>
           <LinkWithIcon href="/privacy" onClick={handleLinkClick}>
             隱私權政策
+          </LinkWithIcon>
+        </div>
+      </div>
+      <div className={styles.websiteMap_group}>
+        <p>關於</p>
+        <div className={styles.websiteMap_group_items}>
+          <LinkWithIcon href="/about" onClick={handleLinkClick}>
+            關於我們
+          </LinkWithIcon>
+          <LinkWithIcon href="/contact" onClick={handleLinkClick}>
+            聯絡我們
           </LinkWithIcon>
         </div>
       </div>

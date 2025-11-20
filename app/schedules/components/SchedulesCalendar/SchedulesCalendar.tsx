@@ -337,12 +337,6 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
             </div>
           </div>
           <div className={styles.monthNavigation}>
-            {/* <button
-              className={styles.todayButton}
-              onClick={() => scrollToToday()}
-            >
-              今天
-            </button> */}
             {academicYearMonths.map((monthInfo) => {
               const monthId = `month-${monthInfo.year}-${monthInfo.month}`
               const eventCount = getMonthEventCount(

@@ -93,12 +93,12 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    border: 1px solid var(--border-tertiary);
+    border: 1px solid var(--border);
     @include mixins.border-radius(6px);
     @include mixins.hover-scale-effect(1.01);
 
     &:hover:not(:disabled) {
-      border-color: var(--border-tertiary-hover);
+      border-color: var(--border-hover);
       background: var(--primary-hover);
     }
 
@@ -130,7 +130,7 @@
       left: 50%;
       right: 0;
       width: fit-content;
-      background: var(--background);
+      background: var(--background-secondary);
       padding: 0 1rem;
       color: var(--foreground);
       font-size: 0.875rem;

@@ -77,7 +77,7 @@ export const schedules: ScheduleEvent[] = [
     location: '天機大樓廣場',
     instructor: '',
     priority: 1,
-    published: true,
+    published: false,
     createdAt: {
       date: '2025-09-23',
       time: '13:00',
@@ -103,7 +103,7 @@ export const schedules: ScheduleEvent[] = [
     location: '天機大樓 2323',
     instructor: '',
     priority: 1,
-    published: true,
+    published: false,
     createdAt: {
       date: '2025-09-23',
       time: '13:00',
@@ -129,7 +129,7 @@ export const schedules: ScheduleEvent[] = [
     location: '天機大樓 2323',
     instructor: '',
     priority: 1,
-    published: true,
+    published: false,
     createdAt: {
       date: '2025-09-23',
       time: '13:00',
@@ -167,86 +167,6 @@ export const schedules: ScheduleEvent[] = [
       time: '13:00',
     },
   },
-
-  // 競賽
-  // {
-  //   id: 'club-activity-2025-10-15',
-  //   title: '自走車 DIY',
-  //   description: '',
-  //   type: 'activity',
-  //   startDateTime: {
-  //     date: '2025-10-15',
-  //     time: '14:00',
-  //   },
-  //   endDateTime: {
-  //     date: '2025-10-15',
-  //     time: '16:00',
-  //   },
-  //   location: '天機大樓 2314',
-  //   instructor: '',
-  //   priority: 1,
-  //   published: true,
-  //   createdAt: {
-  //     date: '2025-09-23',
-  //     time: '13:00',
-  //   },
-  //   updatedAt: {
-  //     date: '2025-09-23',
-  //     time: '13:00',
-  //   },
-  // },
-  // {
-  //   id: 'club-activity-2025-11-12',
-  //   title: '機器人避障比賽',
-  //   description: '',
-  //   type: 'activity',
-  //   startDateTime: {
-  //     date: '2025-11-12',
-  //     time: '14:00',
-  //   },
-  //   endDateTime: {
-  //     date: '2025-11-12',
-  //     time: '16:00',
-  //   },
-  //   location: '天機大樓 2314',
-  //   instructor: '',
-  //   priority: 1,
-  //   published: true,
-  //   createdAt: {
-  //     date: '2025-09-23',
-  //     time: '13:00',
-  //   },
-  //   updatedAt: {
-  //     date: '2025-09-23',
-  //     time: '13:00',
-  //   },
-  // },
-  // {
-  //   id: 'club-activity-2025-12-31',
-  //   title: '機器人循線比賽',
-  //   description: '',
-  //   type: 'activity',
-  //   startDateTime: {
-  //     date: '2025-12-31',
-  //     time: '14:00',
-  //   },
-  //   endDateTime: {
-  //     date: '2025-12-31',
-  //     time: '16:00',
-  //   },
-  //   location: '天機大樓 2314',
-  //   instructor: '',
-  //   priority: 1,
-  //   published: true,
-  //   createdAt: {
-  //     date: '2025-09-23',
-  //     time: '13:00',
-  //   },
-  //   updatedAt: {
-  //     date: '2025-09-23',
-  //     time: '13:00',
-  //   },
-  // },
 
   // 上課時間
   {
@@ -302,16 +222,16 @@ export const schedules: ScheduleEvent[] = [
     },
   },
   {
-    id: 'regular-class-2025-11-26',
+    id: 'regular-class-2025-12-03',
     title: '社團課程三',
     description: '',
     type: 'class',
     startDateTime: {
-      date: '2025-11-26',
+      date: '2025-12-03',
       time: '14:00',
     },
     endDateTime: {
-      date: '2025-11-26',
+      date: '2025-12-03',
       time: '16:00',
     },
     location: '天機大樓 2314',
@@ -323,8 +243,8 @@ export const schedules: ScheduleEvent[] = [
       time: '13:00',
     },
     updatedAt: {
-      date: '2025-09-23',
-      time: '13:00',
+      date: '2025-11-14',
+      time: '10:46',
     },
   },
   {

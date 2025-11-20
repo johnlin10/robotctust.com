@@ -1,0 +1,100 @@
+@use '../styles/_mixins.scss' as *;
+
+.login_page_wrapper {
+  width: 100%;
+
+  .auth_page {
+    @include flexbox(column, center, center);
+    width: 100%;
+
+    @include respond-to('phone') {
+      padding: 0;
+    }
+  }
+}
+
+.auth_panel {
+  width: 100%;
+  @include border-radius(24px);
+  position: relative;
+
+  @include respond-to('phone') {
+    padding: 0;
+  }
+}
+
+.tab_header {
+  @include flexbox(row, center, center);
+  gap: var(--space);
+  margin-bottom: var(--space);
+}
+
+.tab_button {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  @include border-radius(999px);
+  @include transition();
+
+  &.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--color-white);
+    border-color: var(--border);
+  }
+}
+
+.form_container {
+  background: var(--background-secondary);
+  border: 1px solid var(--border);
+  @include border-radius(18px);
+  padding: var(--space-2x);
+  animation: fadeInPanel 0.3s ease forwards;
+}
+
+.status_card {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  border: 1px solid var(--border);
+  @include border-radius(18px);
+  padding: var(--space-0-5x) var(--space);
+  margin-bottom: var(--space);
+  color: var(--text-primary);
+  animation: fadeInPanel 0.3s ease forwards;
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+}
+
+@keyframes fadeInPanel {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

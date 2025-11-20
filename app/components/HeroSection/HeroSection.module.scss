@@ -1,7 +1,7 @@
 @use '@/app/styles/mixins' as mixins;
 
 .heroSection {
-  @include mixins.flexbox(column, flex-end, center);
+  @include mixins.flexbox(column, center, center);
   padding: var(--space-2x);
   width: 100%;
   height: calc(100vh - 72px);
@@ -10,6 +10,11 @@
   @include mixins.respond-to('desktop') {
     @include mixins.flexbox(row, center, center);
   }
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(var(--theme-purple-100-rgb), 0.3) 0%,
+    rgba(var(--background-rgb), 0) 70%
+  );
 
   > .heroScene {
     position: absolute;
@@ -20,69 +25,79 @@
   }
 
   > .firstRow {
+    @include mixins.flexbox(column, center, center);
     width: 100%;
+    max-width: 1080px;
+    z-index: 1;
 
-    @include mixins.respond-to('phone') {
-      margin-bottom: 10vh;
-    }
-    @include mixins.respond-to('tablet') {
-      margin-bottom: 10vh;
-    }
-
-    > .homeImage {
-      margin-left: -18px;
-      width: clamp(96px, 12vw, 180px);
+    .homeImage {
+      margin-bottom: var(--space-2x);
+      width: clamp(96px, 12vw, 160px);
+      height: auto;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+      animation: float 6s ease-in-out infinite;
     }
 
-    > h1 {
-      font-size: clamp(2rem, 4vw, 3.5rem);
+    .clubName {
+      font-size: clamp(1rem, 1.5vw, 1.5rem);
+      color: var(--primary);
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space);
+      text-transform: uppercase;
     }
-    > p {
-      font-size: clamp(1rem, 1.75vw, 2.75rem);
+
+    h1 {
+      margin: var(--space) 0;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1.2;
+      text-align: center;
+      color: var(--foreground);
+      font-weight: 900;
+      background: linear-gradient(
+        135deg,
+        var(--foreground) 0%,
+        var(--foreground-secondary) 100%
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      font-size: clamp(1rem, 1.5vw, 1.25rem);
+      color: var(--foreground-secondary);
+      text-align: center;
+      line-height: 1.6;
+      margin-top: var(--space-2x);
     }
 
     > .floatingText {
-      font-size: clamp(5rem, 10vw, 10rem);
+      z-index: -1;
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      font-size: clamp(4rem, 16vw, 12rem);
       font-family: var(--font-dm-mono);
       font-weight: 900;
       letter-spacing: 0.1rem;
       color: var(--foreground);
-      // 文字描邊
-      -webkit-text-stroke: 1px var(--foreground);
-      -webkit-text-fill-color: transparent;
+      opacity: 0.03;
+      @include mixins.transform-container(translateX(-50%));
+      white-space: nowrap;
+      pointer-events: none;
     }
   }
+}
 
-  // > .secondRow {
-  // }
-
-  > .robotContainer {
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-
-    > .robotImage {
-      position: absolute;
-      top: 50%;
-      right: 8vw;
-      opacity: 0.95;
-      @include mixins.transform-container(translateY(-50%));
-
-      @include mixins.respond-to('phone') {
-        right: 50%;
-        @include mixins.transform-container(translateX(50%) translateY(-50%));
-      }
-    }
-
-    > .robotBackground {
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
-      object-position: right;
-      opacity: 0.3;
-    }
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
   }
 }

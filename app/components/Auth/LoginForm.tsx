@@ -29,7 +29,8 @@ const loginSchema = yup.object({
 
 interface LoginFormProps {
   onSwitchToRegister: () => void
-  onClose: () => void
+  onClose?: () => void
+  showCloseButton?: boolean
 }
 
 /**
@@ -38,7 +39,11 @@ interface LoginFormProps {
  * @param onClose 關閉模組
  * @returns
  */
-export function LoginForm({ onSwitchToRegister, onClose }: LoginFormProps) {
+export function LoginForm({
+  onSwitchToRegister,
+  onClose,
+  showCloseButton = true,
+}: LoginFormProps) {
   // AuthContext
   const { signInWithEmail, signInWithGoogle } = useAuth()
   // 登入狀態
@@ -64,7 +69,7 @@ export function LoginForm({ onSwitchToRegister, onClose }: LoginFormProps) {
       setIsLoading(true)
       setError('')
       await signInWithEmail(data.email, data.password)
-      onClose()
+      onClose?.()
     } catch (error) {
       console.error('登入失敗:', error)
       setError(getErrorMessage((error as { code?: string })?.code || 'unknown'))
@@ -82,7 +87,7 @@ export function LoginForm({ onSwitchToRegister, onClose }: LoginFormProps) {
       setIsLoading(true)
       setError('')
       await signInWithGoogle()
-      onClose()
+      onClose?.()
     } catch (error) {
       console.error('Google 登入失敗:', error)
       if (
@@ -130,9 +135,11 @@ export function LoginForm({ onSwitchToRegister, onClose }: LoginFormProps) {
       {/* 表單標題 */}
       <div className={styles.form_header}>
         <h2>登入</h2>
-        <button className={styles.close_button} onClick={onClose}>
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
+        {showCloseButton && (
+          <button className={styles.close_button} onClick={onClose}>
+            <FontAwesomeIcon icon={faXmark} />
+          </button>
+        )}
       </div>
 
       {/* 錯誤訊息 */}
@@ -194,14 +201,6 @@ export function LoginForm({ onSwitchToRegister, onClose }: LoginFormProps) {
         disabled={isLoading}
         mode="login"
       />
-
-      {/* 切換到註冊模式 */}
-      <div className={styles.switch_form}>
-        <span>還沒有帳號？</span>
-        <button type="button" onClick={onSwitchToRegister}>
-          立即註冊
-        </button>
-      </div>
     </>
   )
 }

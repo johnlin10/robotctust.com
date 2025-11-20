@@ -1,0 +1,76 @@
+@use '@/app/styles/mixins' as mixins;
+
+.clubFeaturesSection {
+  background: linear-gradient(
+    135deg,
+    var(--theme-purple-300),
+    var(--theme-red-200)
+  );
+
+  > .container {
+    @include mixins.flexbox(column, center, center);
+    gap: var(--space-2x);
+    padding: var(--space-6x) var(--space-2x);
+    width: clamp(360px, 100vw, 1080px);
+    height: fit-content;
+
+    > h1 {
+      color: var(--foreground);
+      font-size: 2.5rem;
+      margin-bottom: var(--space-2x);
+    }
+
+    > .featuresContainer {
+      @include mixins.flexbox(row, center, stretch);
+      gap: var(--space-2x);
+      width: 100%;
+
+      @include mixins.respond-to('phone') {
+        @include mixins.flexbox(column, center, center);
+      }
+
+      > .featureCard {
+        @include mixins.flexbox(column, center, start);
+        gap: var(--space);
+        padding: var(--space-3x);
+        background-color: rgba(var(--background-secondary-rgb), 0.5);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border);
+        cursor: default;
+        @include mixins.border-radius(16px);
+        transition: background-color 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+          box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+          border-color 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+
+        &:hover {
+          z-index: 10;
+          background-color: rgba(var(--background-tertiary-rgb), 0.5);
+          @include mixins.box-shadow(54px);
+        }
+
+        > .featureIcon {
+          @include mixins.flexbox(column, center, center);
+          width: 60px;
+          height: 60px;
+          background-color: var(--primary);
+          border: 1px solid var(--border-secondary);
+          @include mixins.border-radius(30px);
+          color: var(--color-white);
+          font-size: 1.5rem;
+          margin-bottom: var(--space);
+        }
+
+        > h2 {
+          margin: 0;
+          color: var(--theme-purple-600);
+          font-size: 1.5rem;
+        }
+
+        > p {
+          color: var(--foreground-secondary);
+          line-height: 1.6;
+        }
+      }
+    }
+  }
+}

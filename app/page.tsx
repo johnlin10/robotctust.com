@@ -1,12 +1,19 @@
+import { Suspense } from 'react'
 import styles from './home.module.scss'
 // components
 import Page from './components/page/Page'
 import Footer from './components/Footer/Footer'
+import HeroSection from './components/HeroSection/HeroSection'
+import ClubFeaturesSection from './components/home/ClubFeaturesSection'
+import LatestUpdatesSection from './components/home/LatestUpdatesSection'
+import UpcomingCompetitionsSection from './components/home/UpcomingCompetitionsSection'
+import Loading from './components/Loading/Loading'
 // data
 import { howWeLearn } from './messages/howWeLearn'
 // utils
 import { metadata } from './utils/metadata'
-import HeroSection from './components/HeroSection/HeroSection'
+import { TiltCard } from './components/TiltCard'
+import FadeInUp from './competitions/animation/FadeInUp/FadeInUp'
 
 /**
  * 首頁
@@ -15,6 +22,11 @@ export default function Home() {
   return (
     <Page style={styles.homeContainer} maxWidth="none">
       <HeroSection />
+
+      <OurMissionSection />
+
+      <ClubFeaturesSection />
+
       <section className={styles.howWeLearnSection}>
         <div className={styles.howWeLearnContainer}>
           <div className={styles.headerContainer}>
@@ -27,7 +39,7 @@ export default function Home() {
           </div>
           <div className={styles.cardContainer}>
             {howWeLearn.map((item) => (
-              <div className={styles.card} key={item.title}>
+              <TiltCard className={styles.card} key={item.title}>
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
                 <div className={styles.points}>
@@ -38,13 +50,39 @@ export default function Home() {
                     ))}
                   </ul>
                 </div>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </div>
       </section>
+
+      <Suspense fallback={<Loading />}>
+        <LatestUpdatesSection />
+      </Suspense>
+
+      <Suspense fallback={<Loading />}>
+        <UpcomingCompetitionsSection />
+      </Suspense>
       <Footer />
     </Page>
+  )
+}
+
+// 我們的使命
+const OurMissionSection = () => {
+  return (
+    <section className={styles.ourMissionSection}>
+      <div className={styles.container}>
+        <FadeInUp>
+          <h1>我們的使命</h1>
+        </FadeInUp>
+        <FadeInUp delay={100}>
+          <p>
+            我們的宗旨是推廣機器人技術，培養學生的動手實作能力、邏輯思維與團隊協作精神。我們致力於提供一個開放、資源共享的學習環境，讓社員不僅能精進專業技能，更能學會如何解決複雜的實際問題。
+          </p>
+        </FadeInUp>
+      </div>
+    </section>
   )
 }
 

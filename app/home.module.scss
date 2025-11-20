@@ -5,16 +5,16 @@
   height: fit-content !important;
   width: 100% !important;
 
+  > section {
+    @include mixins.flexbox(column, center, center);
+    width: 100%;
+  }
+
   > section.howWeLearnSection {
     @include mixins.flexbox(column, center, center);
     width: 100%;
     height: fit-content;
-    background: linear-gradient(
-      120deg,
-      var(--theme-purple-300),
-      var(--theme-purple-100),
-      var(--theme-blue-100)
-    );
+    background: var(--background);
 
     > .howWeLearnContainer {
       padding: var(--space-6x) var(--space-2x);
@@ -51,9 +51,15 @@
           width: 70%;
           min-width: 580px;
           border: 1px solid var(--border);
-          background-color: var(--background);
+          background-color: rgba(var(--background-secondary-rgb), 0.5);
           @include mixins.border-radius(12px);
           @include mixins.box-shadow(36px);
+          @include mixins.glass-blur;
+          @include mixins.hover-scale-effect(1.025);
+
+          &:hover {
+            background-color: rgba(var(--background-tertiary-rgb), 0.5);
+          }
 
           // 偶數
           &:nth-child(even) {
@@ -125,5 +131,89 @@
 
   > h1 {
     color: var(--text-primary);
+  }
+}
+
+.ourMissionSection {
+  @include mixins.flexbox(column, center, center);
+  width: 100%;
+  background: linear-gradient(
+    120deg,
+    var(--theme-purple-100),
+    var(--theme-purple-100)
+  );
+
+  > .container {
+    @include mixins.flexbox(row, center, center);
+    gap: var(--space-2x);
+    padding: var(--space-6x) var(--space-2x);
+    width: clamp(360px, 100vw, 1080px);
+    height: fit-content;
+    max-width: 900px;
+
+    @include mixins.respond-by-max-width(760px) {
+      @include mixins.flexbox(column, center, center);
+    }
+
+    h1 {
+      margin: 0;
+      min-width: 25%;
+      white-space: nowrap;
+      color: var(--foreground);
+    }
+    p {
+      font-size: 1rem;
+      color: var(--foreground-secondary);
+    }
+  }
+}
+
+.clubFeaturesSection {
+  width: 100%;
+  background: linear-gradient(
+    120deg,
+    var(--theme-orange-300),
+    var(--theme-purple-300)
+  );
+
+  > .container {
+    @include mixins.flexbox(column, center, center);
+    gap: var(--space-2x);
+    padding: var(--space-6x) var(--space-2x);
+    width: clamp(360px, 100vw, 1080px);
+    height: fit-content;
+
+    > .featuresContainer {
+      @include mixins.flexbox(row, center, stretch);
+      gap: var(--space-2x);
+
+      @include mixins.respond-to('phone') {
+        @include mixins.flexbox(column, center, center);
+      }
+
+      > .featureCard {
+        @include mixins.flexbox(column, center, start);
+        gap: var(--space);
+        padding: var(--space-2x);
+        background-color: rgba(var(--background-secondary-rgb), 0.5);
+        border: 1px solid var(--border);
+        @include mixins.border-radius(12px);
+
+        > .featureIcon {
+          @include mixins.flexbox(column, center, center);
+          width: 60px;
+          height: 60px;
+          background-color: var(--primary);
+          border: 1px solid var(--border-secondary);
+          @include mixins.border-radius(30px);
+          color: var(--foreground);
+          font-size: 1.5rem;
+        }
+
+        > h2 {
+          margin: 0;
+        }
+      }
+    }
   }
 }

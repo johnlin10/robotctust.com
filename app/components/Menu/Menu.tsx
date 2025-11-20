@@ -7,7 +7,6 @@ import styles from './Menu.module.scss'
 // import { useTheme } from 'next-themes'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 // components
-// import { AuthModal } from '../Auth/AuthModal'
 import WebsiteMap from '../WebsiteMap/WebsiteMap'
 // contexts
 import { useAuth } from '../../contexts/AuthContext'
@@ -31,36 +30,6 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
   const pathname = usePathname()
   // 獲取登入資訊
   const { user, loading } = useAuth()
-  // 登入模組狀態
-  // const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
-  // 登入模組的類型
-  // const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
-
-  /**
-   * 開啟登入模組
-   * @returns void
-   */
-  // const handleOpenLogin = () => {
-  //   setAuthMode('login')
-  //   setIsAuthModalOpen(true)
-  // }
-
-  /**
-   * 開啟註冊模組
-   * @returns void
-   */
-  // const handleOpenRegister = () => {
-  //   setAuthMode('register')
-  //   setIsAuthModalOpen(true)
-  // }
-
-  /**
-   * 關閉登入模組
-   * @returns void
-   */
-  // const handleCloseModal = () => {
-  //   setIsAuthModalOpen(false)
-  // }
 
   /**
    * 處理使用者頭像點擊
@@ -125,15 +94,20 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
               探索機器人世界！
             </p>
             <div className={styles.auth_buttons}>
-              {/* <button className={styles.login_button} onClick={handleOpenLogin}>
+              <Link
+                href="/login"
+                className={styles.login_button}
+                onClick={onClose}
+              >
                 登入
-              </button>
-              <button
+              </Link>
+              <Link
+                href={{ pathname: '/login', query: { mode: 'register' } }}
                 className={styles.register_button}
-                onClick={handleOpenRegister}
+                onClick={onClose}
               >
                 註冊
-              </button> */}
+              </Link>
               <p className={styles.auth_login_text}>
                 帳號功能
                 <br />
@@ -143,15 +117,6 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
           </div>
         )}
       </div>
-
-      {/* 登入模組 */}
-      {/* {isAuthModalOpen && (
-        <AuthModal
-          isOpen={isAuthModalOpen}
-          onClose={handleCloseModal}
-          initialMode={authMode}
-        />
-      )} */}
     </>
   )
 }
@@ -164,8 +129,6 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
     isOpen,
     onClose: onClose || (() => {}),
     excludeSelectors: [
-      '.auth_modal',
-      '.auth_modal *',
       '[data-theme-toggle]',
       '[data-theme-toggle] *',
       '[data-menu-toggle]',
@@ -182,11 +145,11 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
         <div className={styles.menu_item + ' ' + styles.website_map} data-menu>
           <WebsiteMap onClose={onClose} />
         </div>
-        <div className={styles.menu_item + ' ' + styles.auth_item} data-menu>
-          <AuthSection onClose={onClose} />
-        </div>
         <div className={styles.menu_item + ' ' + styles.theme_toggle} data-menu>
           <ThemeToggle />
+        </div>
+        <div className={styles.menu_item + ' ' + styles.auth_item} data-menu>
+          <AuthSection onClose={onClose} />
         </div>
       </div>
     </menu>
