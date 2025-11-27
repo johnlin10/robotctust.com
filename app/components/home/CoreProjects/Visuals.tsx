@@ -5,16 +5,13 @@ import { useSpring, animated, config } from '@react-spring/web'
 import styles from './CoreProjects.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faGear,
-  faCode,
-  faTerminal,
   faBell,
   faCheckCircle,
   faBars,
   faMicrochip,
   faBatteryFull,
 } from '@fortawesome/free-solid-svg-icons'
-import { faReact, faApple } from '@fortawesome/free-brands-svg-icons'
+import { faApple } from '@fortawesome/free-brands-svg-icons'
 
 export const WebVisual = () => {
   const props = useSpring({
@@ -85,7 +82,7 @@ export const RoboticsVisual = () => {
   })
 
   // 模擬 PID 修正動作 (左右擺動 + 旋轉)
-  const { x, r, leftSensor, rightSensor } = useSpring({
+  const { x, r } = useSpring({
     from: { x: 0, r: 0, leftSensor: 0, rightSensor: 0 },
     to: async (next) => {
       while (true) {

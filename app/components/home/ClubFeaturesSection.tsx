@@ -8,7 +8,6 @@ import {
   faUsers,
   faWrench,
 } from '@fortawesome/free-solid-svg-icons'
-import { TiltCard } from '../TiltCard'
 import ScrollAnimation from '../animation/ScrollAnimation/ScrollAnimation'
 
 const ClubFeaturesSection = () => {

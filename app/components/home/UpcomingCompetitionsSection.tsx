@@ -7,7 +7,6 @@ import {
   getCompetitionKeyDate,
 } from '@/app/utils/competitionService'
 import { Competition } from '@/app/types/competition'
-import { TiltCard } from '../TiltCard'
 import ScrollAnimation from '../animation/ScrollAnimation/ScrollAnimation'
 
 const UpcomingCompetitionsSection = async () => {

@@ -7,7 +7,7 @@ import HeroSection from './components/HeroSection/HeroSection'
 import ClubFeaturesSection from './components/home/ClubFeaturesSection'
 import CoreProjects from './components/home/CoreProjects/CoreProjects'
 import LatestUpdatesSection from './components/home/LatestUpdatesSection'
-import UpcomingCompetitionsSection from './components/home/UpcomingCompetitionsSection'
+// import UpcomingCompetitionsSection from './components/home/UpcomingCompetitionsSection'
 import Loading from './components/Loading/Loading'
 // data
 // import { howWeLearn } from './messages/howWeLearn'

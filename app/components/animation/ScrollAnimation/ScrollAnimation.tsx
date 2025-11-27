@@ -21,8 +21,8 @@ type AnimationType =
 
 // 動畫預設值的結構
 interface AnimationPreset {
-  from: React.CSSProperties | { [key: string]: any }
-  to: React.CSSProperties | { [key: string]: any }
+  from: React.CSSProperties | Record<string, string | number | undefined>
+  to: React.CSSProperties | Record<string, string | number | undefined>
 }
 
 // 組件 Props
@@ -164,17 +164,21 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
     config: duration ? { duration, ...springConfig.default } : config,
   })
 
+  // 靜態樣式（不參與動畫）
+  const staticStyles: React.CSSProperties = {
+    contain: 'layout',
+    ...style,
+  }
+
+  // 合併樣式，使用類型斷言以相容 React Spring 的類型系統
+  const combinedStyles = {
+    ...staticStyles,
+    ...springProps,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any
+
   return (
-    <animated.div
-      ref={ref}
-      style={{
-        willChange: isVisible ? 'transform, opacity' : 'auto',
-        contain: 'layout',
-        ...style,
-        ...springProps,
-      }}
-      className={className}
-    >
+    <animated.div ref={ref} style={combinedStyles} className={className}>
       {children}
     </animated.div>
   )
