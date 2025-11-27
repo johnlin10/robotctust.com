@@ -2,11 +2,8 @@
 
 .latestUpdatesSection {
   width: 100%;
-  background: linear-gradient(
-    120deg,
-    var(--theme-blue-300),
-    var(--theme-blue-100)
-  );
+  border-top: 1px solid var(--border);
+  background: rgba(var(--background-secondary-rgb), 0.25);
 
   > .container {
     @include mixins.flexbox(column, center, center);
@@ -19,7 +16,7 @@
       @include mixins.flexbox(row, space-between, center);
       width: 100%;
 
-      > h2 {
+      h2 {
         color: var(--foreground);
         font-size: 2rem;
         margin: 0;
@@ -38,7 +35,7 @@
         grid-template-columns: 1fr;
       }
 
-      > .card {
+      .card {
         @include mixins.flexbox(column, start, stretch);
         gap: var(--space-0-5x);
         height: 100%;
@@ -47,12 +44,12 @@
         text-decoration: none;
         border: 1px solid var(--border);
         @include mixins.border-radius(18px);
+        @include mixins.hover-scale-effect(1.05);
         overflow: hidden;
 
         &:hover {
           background: rgba(var(--background-tertiary-rgb), 0.5);
-          border-color: var(--border-hover);
-          @include mixins.hover-scale-effect(1.05);
+          @include mixins.box-shadow(54px);
         }
 
         > .cardContent {

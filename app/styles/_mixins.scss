@@ -63,13 +63,10 @@
   text-decoration: none;
   cursor: pointer;
   @include border-radius(12px);
+  @include hover-scale-effect;
 
   svg {
     font-size: 0.9rem;
-  }
-
-  &:hover {
-    @include hover-scale-effect;
   }
 
   // size
@@ -196,7 +193,9 @@
 }
 
 @mixin hover-scale-effect($scale: 1.05) {
-  @include transition(all 0.3s cubic-bezier(0.23, 1, 0.32, 1));
+  @include transition(
+    all var(--transition-duration) var(--transition-bezier-fast)
+  );
   &:hover {
     transform: scale($scale);
   }
@@ -230,10 +229,13 @@
   }
 }
 
-@mixin background-blur($background: var(--background-color-rgb)) {
+@mixin background-blur($background: var(--background-color-rgb), $blur: 8px) {
   background: rgba($background, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+  -moz-backdrop-filter: blur($blur);
+  -ms-backdrop-filter: blur($blur);
+  -o-backdrop-filter: blur($blur);
 }
 
 @mixin border-radius($radius: 12px) {

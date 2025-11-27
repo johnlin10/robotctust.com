@@ -74,20 +74,37 @@
     }
   }
 
-  > .floatingText {
+  .floatingText {
     z-index: -1;
     position: absolute;
+    width: 100vw;
     top: 30%;
-    left: 50%;
-    font-size: clamp(4rem, 16vw, 12rem);
-    font-family: var(--font-dm-mono);
-    font-weight: 900;
-    letter-spacing: 0.1rem;
-    color: var(--foreground);
-    opacity: 0.03;
+    text-align: center;
     @include mixins.transform-container(translateX(-50%));
-    white-space: nowrap;
-    pointer-events: none;
+
+    @include mixins.respond-to('phone') {
+      top: 15%;
+    }
+    @include mixins.respond-to('tablet') {
+      top: 20%;
+    }
+
+    > span {
+      max-width: 100%;
+      font-size: clamp(8rem, 32vw, 24rem);
+      font-family: var(--font-dm-mono);
+      font-weight: 900;
+      letter-spacing: 0.1rem;
+      line-height: 1;
+      word-break: break-all;
+      color: var(--foreground);
+      opacity: 0.03;
+      pointer-events: none;
+
+      @include mixins.respond-to('desktop') {
+        font-size: clamp(4rem, 16vw, 12rem);
+      }
+    }
   }
 }
 

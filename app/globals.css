@@ -14,22 +14,7 @@
   -o-transition: var(--transition-default);
 }
 
-h1::selection,
-h2::selection,
-h3::selection,
-h4::selection,
-h5::selection,
-h6::selection,
-p::selection,
-li::selection,
-ol::selection,
-ul::selection,
-table::selection,
-tr::selection,
-td::selection,
-a::selection,
-span::selection,
-blockquote::selection {
+*:not(img)::selection {
   background: var(--theme-purple-400);
   color: var(--color-white);
 }
@@ -76,7 +61,7 @@ h1 {
   margin-bottom: 1rem;
   font-size: 2rem;
   font-weight: bold;
-  letter-spacing: 0.1rem;
+  letter-spacing: 0.05rem;
 }
 h2 {
   font-size: 1.25rem;
@@ -135,14 +120,16 @@ span.nowrap {
   --space-4x: 48px;
   --space-5x: 60px;
   --space-6x: 72px;
+  --space-8x: 96px;
 
   --safe-area-left: 0;
   --safe-area-right: 0;
   --safe-area-top: 0;
   --safe-area-bottom: 0;
 
-  --transition-duration: 0.5s;
-  --transition-bezier: cubic-bezier(0.23, 1, 0.32, 1);
+  --transition-duration: 0.35s;
+  --transition-bezier: cubic-bezier(0.23, 0.1, 0.32, 1);
+  --transition-bezier-fast: cubic-bezier(0.25, 0, 0, 1);
   --transition-default: all var(--transition-duration) var(--transition-bezier);
 }
 @supports (bottom: env(safe-area-inset-top)) {

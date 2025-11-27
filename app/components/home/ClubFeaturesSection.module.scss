@@ -1,12 +1,6 @@
 @use '@/app/styles/mixins' as mixins;
 
 .clubFeaturesSection {
-  background: linear-gradient(
-    135deg,
-    var(--theme-purple-300),
-    var(--theme-red-200)
-  );
-
   > .container {
     @include mixins.flexbox(column, center, center);
     gap: var(--space-2x);
@@ -14,10 +8,10 @@
     width: clamp(360px, 100vw, 1080px);
     height: fit-content;
 
-    > h1 {
+    h1 {
+      margin: 0;
       color: var(--foreground);
       font-size: 2.5rem;
-      margin-bottom: var(--space-2x);
     }
 
     > .featuresContainer {
@@ -29,7 +23,7 @@
         @include mixins.flexbox(column, center, center);
       }
 
-      > .featureCard {
+      .featureCard {
         @include mixins.flexbox(column, center, start);
         gap: var(--space);
         padding: var(--space-3x);
@@ -41,6 +35,7 @@
         transition: background-color 0.3s cubic-bezier(0.23, 1, 0.32, 1),
           box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1),
           border-color 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        @include mixins.hover-scale-effect(1.05);
 
         &:hover {
           z-index: 10;

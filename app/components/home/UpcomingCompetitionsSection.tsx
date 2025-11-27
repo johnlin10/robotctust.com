@@ -8,6 +8,7 @@ import {
 } from '@/app/utils/competitionService'
 import { Competition } from '@/app/types/competition'
 import { TiltCard } from '../TiltCard'
+import ScrollAnimation from '../animation/ScrollAnimation/ScrollAnimation'
 
 const UpcomingCompetitionsSection = async () => {
   let competitions: Competition[] = []
@@ -23,13 +24,15 @@ const UpcomingCompetitionsSection = async () => {
     <section className={styles.upcomingCompetitionsSection}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h2>近期競賽</h2>
+          <ScrollAnimation animation="fadeInUp" threshold={0.5}>
+            <h2>近期競賽</h2>
+          </ScrollAnimation>
         </div>
 
         {competitions.length > 0 ? (
           <>
             <div className={styles.competitionsList}>
-              {competitions.map((competition) => {
+              {competitions.map((competition, index) => {
                 const date = getCompetitionKeyDate(competition, 'competition')
                 const dateObj = date
                   ? {
@@ -46,7 +49,12 @@ const UpcomingCompetitionsSection = async () => {
                     className={styles.competitionCardContainer}
                   >
                     <div className={styles.timeLine}>
-                      <div className={styles.dateText}>
+                      <ScrollAnimation
+                        animation="fadeInLeft"
+                        threshold={0.7}
+                        className={styles.dateText}
+                        delay={index * 100}
+                      >
                         {dateObj ? (
                           <>
                             <span className={styles.month}>
@@ -57,36 +65,53 @@ const UpcomingCompetitionsSection = async () => {
                         ) : (
                           <span className={styles.pending}>待定</span>
                         )}
-                      </div>
+                      </ScrollAnimation>
                       <div className={styles.visual}>
-                        <div className={styles.line} />
-                        <div className={styles.circle} />
+                        <ScrollAnimation
+                          animation="fadeInLeft"
+                          threshold={0.5}
+                          delay={200}
+                          className={styles.line}
+                        />
+                        <ScrollAnimation
+                          animation="fadeInLeft"
+                          threshold={0.5}
+                          className={styles.circle}
+                          delay={index * 100}
+                        />
                       </div>
                     </div>
-                    <TiltCard className={styles.competitionCard}>
-                      {competition.image && (
-                        <div className={styles.coverImageContainer}>
-                          <Image
-                            src={competition.image}
-                            alt={competition.title}
-                            width={400}
-                            height={200}
-                          />
+                    <ScrollAnimation
+                      animation="fadeInUp"
+                      threshold={0.5}
+                      className={styles.competitionCardContainer}
+                      delay={index * 100}
+                    >
+                      <div className={styles.competitionCard}>
+                        {competition.image && (
+                          <div className={styles.coverImageContainer}>
+                            <Image
+                              src={competition.image}
+                              alt={competition.title}
+                              width={400}
+                              height={200}
+                            />
+                          </div>
+                        )}
+                        <div className={styles.content}>
+                          <h3>{competition.title}</h3>
+                          <p>{competition.description}</p>
                         </div>
-                      )}
-                      <div className={styles.content}>
-                        <h3>{competition.title}</h3>
-                        <p>{competition.description}</p>
+                        <div className={styles.actions}>
+                          <Link
+                            href={`/competitions/${competition.id}`}
+                            className={styles.viewDetails}
+                          >
+                            查看詳情
+                          </Link>
+                        </div>
                       </div>
-                      <div className={styles.actions}>
-                        <Link
-                          href={`/competitions/${competition.id}`}
-                          className={styles.viewDetails}
-                        >
-                          查看詳情
-                        </Link>
-                      </div>
-                    </TiltCard>
+                    </ScrollAnimation>
                   </div>
                 )
               })}

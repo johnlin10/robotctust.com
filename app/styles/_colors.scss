@@ -14,8 +14,8 @@
   --gray-600: oklch(0.4 0.025 300); // 74, 69, 83
   --gray-700: oklch(0.3 0.025 300); // 48, 43, 57
   --gray-800: oklch(0.2 0.03 300); // 24, 19, 34
-  --gray-900: oklch(0.1 0.03 300);
-  --gray-950: oklch(0.05 0.03 300);
+  --gray-900: oklch(0.15 0.03 300);
+  --gray-950: oklch(0.1 0.03 300);
 
   // blue
   --blue-50: oklch(0.95 0.09 230);
@@ -157,12 +157,15 @@
   --text-tertiary: var(--foreground-tertiary);
 
   // Border
-  --border: var(--foreground-900);
-  --border-secondary: var(--foreground-800);
-  --border-tertiary: var(--foreground-700);
-  --border-hover: var(--foreground-700);
-  --border-secondary-hover: var(--foreground-600);
-  --border-tertiary-hover: var(--foreground-500);
+  --border: var(--foreground-950);
+  --border-secondary: var(--foreground-900);
+  --border-tertiary: var(--foreground-800);
+  --border-hover: var(--foreground-800);
+  --border-secondary-hover: var(--foreground-700);
+  --border-tertiary-hover: var(--foreground-600);
+
+  // Background Grid
+  --background-grid-color: rgba(0, 0, 0, 0.03);
 
   // Shadow
   --shadow-color: #0000000e;
@@ -179,6 +182,7 @@
   --theme-gray-700: var(--gray-700);
   --theme-gray-800: var(--gray-800);
   --theme-gray-900: var(--gray-900);
+  --theme-gray-950: var(--gray-950);
 
   // Blue
   --theme-blue-50: var(--blue-50);
@@ -319,28 +323,32 @@
   --text-tertiary: var(--foreground-tertiary);
 
   // Border
-  --border: var(--foreground-900);
-  --border-secondary: var(--foreground-800);
-  --border-tertiary: var(--foreground-700);
-  --border-hover: var(--foreground-700);
-  --border-secondary-hover: var(--foreground-600);
-  --border-tertiary-hover: var(--foreground-500);
+  --border: var(--foreground-950);
+  --border-secondary: var(--foreground-900);
+  --border-tertiary: var(--foreground-800);
+  --border-hover: var(--foreground-800);
+  --border-secondary-hover: var(--foreground-700);
+  --border-tertiary-hover: var(--foreground-600);
+
+  // Background Grid
+  --background-grid-color: rgba(255, 255, 255, 0.03);
 
   // Shadow
-  --shadow-color: #ffffff0e;
+  --shadow-color: #ffffff0a;
 
   //* Dynamic Colors (深色模式 - 顏色反轉)
   // Gray (深色模式下反轉順序)
-  --theme-gray-50: var(--gray-900);
-  --theme-gray-100: var(--gray-800);
-  --theme-gray-200: var(--gray-700);
-  --theme-gray-300: var(--gray-600);
-  --theme-gray-400: var(--gray-500);
-  --theme-gray-500: var(--gray-400);
-  --theme-gray-600: var(--gray-300);
-  --theme-gray-700: var(--gray-200);
-  --theme-gray-800: var(--gray-100);
-  --theme-gray-900: var(--gray-50);
+  --theme-gray-50: var(--gray-950);
+  --theme-gray-100: var(--gray-900);
+  --theme-gray-200: var(--gray-800);
+  --theme-gray-300: var(--gray-700);
+  --theme-gray-400: var(--gray-600);
+  --theme-gray-500: var(--gray-500);
+  --theme-gray-600: var(--gray-400);
+  --theme-gray-700: var(--gray-300);
+  --theme-gray-800: var(--gray-200);
+  --theme-gray-900: var(--gray-100);
+  --theme-gray-950: var(--gray-50);
 
   // Blue (深色模式下反轉順序)
   --theme-blue-50: var(--blue-950);

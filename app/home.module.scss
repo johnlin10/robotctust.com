@@ -6,6 +6,7 @@
   width: 100% !important;
 
   > section {
+    position: relative;
     @include mixins.flexbox(column, center, center);
     width: 100%;
   }
@@ -14,7 +15,6 @@
     @include mixins.flexbox(column, center, center);
     width: 100%;
     height: fit-content;
-    background: var(--background);
 
     > .howWeLearnContainer {
       padding: var(--space-6x) var(--space-2x);
@@ -45,7 +45,7 @@
         width: 100%;
         height: fit-content;
 
-        > .card {
+        .card {
           @include mixins.flexbox(column, start, start);
           padding: var(--space-6x) var(--space-4x);
           width: 70%;
@@ -53,12 +53,12 @@
           border: 1px solid var(--border);
           background-color: rgba(var(--background-secondary-rgb), 0.5);
           @include mixins.border-radius(12px);
-          @include mixins.box-shadow(36px);
           @include mixins.glass-blur;
           @include mixins.hover-scale-effect(1.025);
 
           &:hover {
             background-color: rgba(var(--background-tertiary-rgb), 0.5);
+            @include mixins.box-shadow(72px);
           }
 
           // 偶數
@@ -137,13 +137,13 @@
 .ourMissionSection {
   @include mixins.flexbox(column, center, center);
   width: 100%;
-  background: linear-gradient(
-    120deg,
-    var(--theme-purple-100),
-    var(--theme-purple-100)
-  );
+  overflow: hidden;
+  background-color: rgba(var(--background-rgb), 0.25);
+  border: 1px solid var(--border);
+  @include mixins.glass-blur;
 
   > .container {
+    position: relative;
     @include mixins.flexbox(row, center, center);
     gap: var(--space-2x);
     padding: var(--space-6x) var(--space-2x);
@@ -151,8 +151,21 @@
     height: fit-content;
     max-width: 900px;
 
+    > .missionIcon {
+      position: absolute;
+      top: calc(50% - 180px);
+      left: -72px;
+      height: 360px;
+      color: var(--foreground-950);
+    }
+
     @include mixins.respond-by-max-width(760px) {
       @include mixins.flexbox(column, center, center);
+
+      > .missionIcon {
+        top: -80px;
+        left: calc(50% - 180px);
+      }
     }
 
     h1 {
@@ -170,11 +183,6 @@
 
 .clubFeaturesSection {
   width: 100%;
-  background: linear-gradient(
-    120deg,
-    var(--theme-orange-300),
-    var(--theme-purple-300)
-  );
 
   > .container {
     @include mixins.flexbox(column, center, center);

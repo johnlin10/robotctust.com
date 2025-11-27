@@ -1,0 +1,156 @@
+@use '@/app/styles/mixins' as mixins;
+
+//* Marquee 滾動條組件樣式
+// 支援 1-3 條滾動軌道
+
+//* 主容器
+.container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: fit-content;
+  margin: clamp(24px, 5vw, 60px) 0;
+  cursor: default;
+
+  // 單條模式：標準水平滾動
+  &.single {
+    border-top: 1px solid var(--foreground-950);
+    border-bottom: 1px solid var(--foreground-950);
+
+    .track {
+      transform: none;
+      position: relative; // 確保單條模式下是相對定位
+      width: 100%;
+      left: auto;
+      right: auto;
+    }
+  }
+
+  // 雙條模式：X 交叉
+  &.double {
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+
+    .track {
+      position: absolute;
+      left: 0%;
+      right: 0%;
+      width: 120%;
+
+      &:first-child {
+        top: 20%;
+      }
+
+      &:last-child {
+        bottom: 20%;
+      }
+    }
+  }
+
+  // 三條模式：兩條平行 + 一條反向
+  &.triple {
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .track {
+      position: absolute;
+      left: -10%;
+      right: -10%;
+      width: 120%;
+
+      &:nth-child(1) {
+        top: 0;
+      }
+
+      &:nth-child(2) {
+        top: 70%;
+        transform: translateY(-50%) rotate(-6deg);
+      }
+
+      &:nth-child(3) {
+        top: 20%;
+      }
+    }
+  }
+}
+
+//* 軌道樣式
+.track {
+  display: flex;
+  padding: 0.75rem 0;
+  background: var(--background);
+  border-top: 1px solid var(--foreground-950);
+  border-bottom: 1px solid var(--foreground-950);
+  overflow: hidden;
+  width: 100%;
+}
+
+//* 多軌傾斜樣式
+.skew_right {
+  transform: rotate(-6deg);
+}
+.skew_left {
+  transform: rotate(6deg);
+}
+
+//* 內容項目樣式
+.scroll_content {
+  flex-grow: 0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-right: 1.5rem;
+  width: fit-content;
+  white-space: nowrap;
+
+  animation: scroll var(--speed, 20s) linear infinite;
+  animation-direction: var(--direction, normal);
+
+  // 當滑鼠懸停在當前軌道時，只暫停該軌道的動畫
+  .track:hover & {
+    animation-play-state: paused;
+  }
+}
+
+.item_text {
+  color: var(--foreground-500);
+  font-family: var(--font-dm-mono);
+  font-size: 1.2rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  transition: opacity 0.3s ease, color 0.3s ease;
+
+  // Hover effect 可以在整個 track 上觸發
+  .track:hover & {
+    opacity: 1;
+    color: var(--foreground-300);
+  }
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  background-color: var(--foreground-700);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+// ==========================================
+// 動畫
+// ==========================================
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
