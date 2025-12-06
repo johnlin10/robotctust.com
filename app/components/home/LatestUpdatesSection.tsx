@@ -1,16 +1,19 @@
 import React from 'react'
 import Link from 'next/link'
 import styles from './LatestUpdatesSection.module.scss'
+// utils
 import { getAllPosts } from '@/app/utils/postService'
 import { formatPostDate } from '@/app/utils/postService'
-// import { POST_CATEGORY_COLORS } from '@/app/types/post'
-// import { TiltCard } from '../TiltCard'
-import { Post } from '@/app/types/post'
+// components
 import Image from 'next/image'
 import ScrollAnimation from '../animation/ScrollAnimation/ScrollAnimation'
+// types
+import { Post } from '@/app/types/post'
 
 const LatestUpdatesSection = async () => {
   let posts: Post[] = []
+
+  // 獲取最新資訊
   try {
     const allPosts = await getAllPosts()
     posts = allPosts.slice(0, 3)
@@ -23,7 +26,7 @@ const LatestUpdatesSection = async () => {
       <div className={styles.container}>
         <div className={styles.header}>
           <ScrollAnimation animation="fadeInUp" threshold={0.5}>
-            <h2>最新資訊</h2>
+            <h1>最新資訊</h1>
           </ScrollAnimation>
         </div>
         <div className={styles.cardsContainer}>
@@ -34,7 +37,11 @@ const LatestUpdatesSection = async () => {
               delay={index * 100}
               key={post.id}
             >
-              <div className={styles.card}>
+              <Link
+                href={`/update/${post.id}`}
+                className={styles.card}
+                role="link"
+              >
                 <div className={styles.cardContent}>
                   {post.coverImageUrl && (
                     <div className={styles.coverImageContainer}>
@@ -60,15 +67,9 @@ const LatestUpdatesSection = async () => {
                     <span className={styles.date}>
                       {formatPostDate(post.createdAt)}
                     </span>
-                    <Link
-                      href={`/update/${post.id}`}
-                      className={styles.viewFull}
-                    >
-                      查看全文
-                    </Link>
                   </div>
                 </div>
-              </div>
+              </Link>
             </ScrollAnimation>
           ))}
         </div>

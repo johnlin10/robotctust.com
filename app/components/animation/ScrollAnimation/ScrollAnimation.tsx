@@ -123,8 +123,8 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
   delay = 0,
   duration,
   className = '',
-  threshold = 0.1,
-  rootMargin = '0px 0px -10% 0px',
+  threshold = 0,
+  rootMargin = '15% 0px -20% 0px',
   once = true,
   config = { mass: 3, tension: 300, friction: 35 },
   style,
@@ -132,11 +132,13 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
   const [isVisible, setIsVisible] = useState<boolean>(false)
   const ref = useRef<HTMLDivElement>(null)
 
+  // 獲取動畫樣式
   const animationPreset = useMemo(
     () => getAnimationStyles(animation, distance),
     [animation, distance]
   )
 
+  // 檢測元素是否進入視窗
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -157,6 +159,7 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
     return () => observer.disconnect()
   }, [threshold, rootMargin, once])
 
+  //* 動畫效果
   const springProps = useSpring({
     from: animationPreset.from,
     to: isVisible ? animationPreset.to : animationPreset.from,
@@ -164,13 +167,13 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
     config: duration ? { duration, ...springConfig.default } : config,
   })
 
-  // 靜態樣式（不參與動畫）
+  // 靜態樣式
   const staticStyles: React.CSSProperties = {
     contain: 'layout',
     ...style,
   }
 
-  // 合併樣式，使用類型斷言以相容 React Spring 的類型系統
+  // 合併樣式
   const combinedStyles = {
     ...staticStyles,
     ...springProps,

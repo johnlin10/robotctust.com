@@ -7,7 +7,6 @@ import HeroSection from './components/HeroSection/HeroSection'
 import ClubFeaturesSection from './components/home/ClubFeaturesSection'
 import CoreProjects from './components/home/CoreProjects/CoreProjects'
 import LatestUpdatesSection from './components/home/LatestUpdatesSection'
-// import UpcomingCompetitionsSection from './components/home/UpcomingCompetitionsSection'
 import Loading from './components/Loading/Loading'
 // data
 // import { howWeLearn } from './messages/howWeLearn'
@@ -120,7 +119,7 @@ const OurMissionSection = () => {
 
 export async function generateMetadata() {
   return metadata({
-    title: '中臺機器人研究社｜Robot Research Club of CTUST',
+    title: '中臺機器人研究社｜Robotics Research Club of CTUST',
     description:
       '中臺機器人研究社是一個由中臺科技大學學生組成的社團，主要研究機器人技術，並且提供學生一個學習機器人技術的平台。',
     keywords: ['首頁', '主頁', '官方網站'],

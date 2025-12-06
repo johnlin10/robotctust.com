@@ -23,6 +23,10 @@
       width: 100%;
       left: auto;
       right: auto;
+
+      &:hover {
+        transform: scale(1.05);
+      }
     }
   }
 
@@ -68,12 +72,11 @@
       }
 
       &:nth-child(2) {
-        top: 70%;
-        transform: translateY(-50%) rotate(-6deg);
+        top: 50%;
       }
 
       &:nth-child(3) {
-        top: 20%;
+        top: 25%;
       }
     }
   }
@@ -88,14 +91,27 @@
   border-bottom: 1px solid var(--foreground-950);
   overflow: hidden;
   width: 100%;
+  @include mixins.transition(var(--transition-default));
+
+  &:hover {
+    transform: scale(1.05);
+  }
 }
 
 //* 多軌傾斜樣式
 .skew_right {
   transform: rotate(-6deg);
+
+  &:hover {
+    transform: rotate(-6deg) scale(1.05) !important;
+  }
 }
 .skew_left {
   transform: rotate(6deg);
+
+  &:hover {
+    transform: rotate(6deg) scale(1.05) !important;
+  }
 }
 
 //* 內容項目樣式

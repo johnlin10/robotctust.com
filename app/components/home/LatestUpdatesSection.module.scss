@@ -13,12 +13,11 @@
     height: fit-content;
 
     > .header {
-      @include mixins.flexbox(row, space-between, center);
+      @include mixins.flexbox(row, center, center);
       width: 100%;
 
-      h2 {
+      h1 {
         color: var(--foreground);
-        font-size: 2rem;
         margin: 0;
         font-weight: 800;
         letter-spacing: 0.05rem;
@@ -44,7 +43,7 @@
         text-decoration: none;
         border: 1px solid var(--border);
         @include mixins.border-radius(18px);
-        @include mixins.hover-scale-effect(1.05);
+        @include mixins.hover-scale-effect;
         overflow: hidden;
 
         &:hover {
@@ -118,10 +117,8 @@
 
           > .footer {
             @include mixins.flexbox(row, space-between, center);
-            height: 48px;
-            padding: var(--space);
+            padding: var(--space-1-5x);
             padding-top: 0;
-            padding-left: var(--space-1-5x);
 
             > .date {
               color: var(--foreground-tertiary);

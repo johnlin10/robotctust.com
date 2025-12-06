@@ -2,14 +2,22 @@
 
 import React from 'react'
 import styles from './ClubFeaturesSection.module.scss'
+
+// components
+import ScrollAnimation from '@/app/components/animation/ScrollAnimation/ScrollAnimation'
+
+// icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faHandshake,
   faUsers,
   faWrench,
 } from '@fortawesome/free-solid-svg-icons'
-import ScrollAnimation from '../animation/ScrollAnimation/ScrollAnimation'
 
+/**
+ * [component] 社團特色區域
+ * @returns {JSX.Element} ClubFeaturesSection
+ */
 const ClubFeaturesSection = () => {
   return (
     <section className={styles.clubFeaturesSection}>
