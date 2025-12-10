@@ -7,7 +7,6 @@ import {
   faFlag,
   faFilePdf,
   faFileZipper,
-  faFileCode,
 } from '@fortawesome/free-solid-svg-icons'
 import { faGoogleDrive } from '@fortawesome/free-brands-svg-icons'
 
@@ -89,8 +88,8 @@ export const subDocs: SubDocs[] = [
             title: '循線字走車程式',
             type: '.ino',
             filePath:
-              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/docs%2Fcourse-3%2Fv1-2.ino?alt=media&token=17da0b93-62cc-4002-bc41-d943e7f889bd',
-            icon: faFileCode,
+              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/docs%2Fcourse-3%2Ffollowline.zip?alt=media&token=fe9c7b40-cfbc-4ef1-95f1-300b486b20c4',
+            icon: faFileZipper,
           },
         ],
       },
