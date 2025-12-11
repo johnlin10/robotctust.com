@@ -80,6 +80,21 @@ export const subDocs: SubDocs[] = [
     docs: [
       {
         id: '',
+        title: '社團課程三：循線自走車',
+        date: '2025-12-10',
+        docs: [
+          {
+            id: 'course-files',
+            title: '循線字走車程式',
+            type: '.ino',
+            filePath:
+              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/docs%2Fcourse-3%2Ffollowline.zip?alt=media&token=fe9c7b40-cfbc-4ef1-95f1-300b486b20c4',
+            icon: faFileZipper,
+          },
+        ],
+      },
+      {
+        id: '',
         title: '社團課程二：自走車 DIY 程式',
         date: '2025-10-29',
         docs: [
