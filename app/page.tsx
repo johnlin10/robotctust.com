@@ -16,6 +16,7 @@ import ScrollAnimation from './components/animation/ScrollAnimation/ScrollAnimat
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBullseye } from '@fortawesome/free-solid-svg-icons'
 import Marquee from './components/home/Marquee/Marquee'
+import LessonIntro from './components/home/LessonIntro/LessonIntro'
 
 /**
  * 首頁
@@ -51,7 +52,7 @@ export default function Home() {
         speed={60}
       />
       <ClubFeaturesSection />
-
+      <LessonIntro />
       {/* <section className={styles.howWeLearnSection}>
         <div className={styles.howWeLearnContainer}>
           <div className={styles.headerContainer}>

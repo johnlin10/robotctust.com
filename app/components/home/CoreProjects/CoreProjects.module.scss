@@ -130,6 +130,15 @@
             font-size: 0.8rem;
             margin-bottom: var(--space);
             @include mixins.border-radius(6px);
+
+            &.planning {
+              background-color: var(--foreground-900);
+              color: var(--foreground-secondary);
+            }
+            &.online {
+              background-color: var(--theme-green-600);
+              color: var(--color-white);
+            }
           }
 
           > .title {

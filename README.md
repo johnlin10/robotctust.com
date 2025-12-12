@@ -1,299 +1,99 @@
-# 中臺機器人研究社 | Robot Research Club of CTUST
+# 中臺機器人研究社 (Robot Research Club of CTUST)
 
-<div align="center">
-  <img src="public/assets/image/home/robotctust-home-image.png" alt="中臺機器人研究社" width="128" height="128">
-  <h3>從創意到實戰，打造你的機器人宇宙</h3>
-  <p>一個由中臺科技大學學生組成的社團，主要研究機器人技術，並且提供學生一個學習機器人技術的平台。</p>
-</div>
+歡迎來到中臺機器人研究社的官方網站專案。本專案旨在為社團提供一個資訊整合、教學資源分享以及活動發布的平台。我們致力於透過現代化的 Web 技術，打造一個高效、美觀且易於維護的社團網站。
 
----
+## 技術架構
 
-## 🚀 專案概覽
+本專案採用現代化的前端技術棧進行開發，主要核心技術如下：
 
-這是一個現代化的社團網站，採用 **Next.js 15** + **TypeScript** 構建，提供完整的社團資訊展示、活動管理、用戶互動等功能。網站具備響應式設計、深色模式、多語系支援等現代化特性。
+### 核心框架
 
-### 🌟 主要特色
+- **Next.js 16 (App Router)**: 使用最新的 React 框架，提供伺服器端渲染 (SSR) 與靜態生成 (SSG) 能力，優化 SEO 與載入效能。
+- **TypeScript**: 全面採用 TypeScript 進行開發，確保程式碼的型別安全與可維護性。
+- **React 19**: 利用最新的 React 特性，包括 Hooks 與 Server Components。
 
-- **現代化設計** - 採用 SCSS 模組化樣式，支援深色/淺色主題切換
-- **響應式佈局** - 完美適配桌面、平板、手機等各種設備
-- **完整認證系統** - 整合 Firebase Authentication，支援 Google 登入
-- **即時資料管理** - 使用 Firestore 資料庫進行即時資料同步
-- **行事曆系統** - 整合 FullCalendar 提供豐富的日程管理功能
-- **競賽管理** - 完整的競賽資訊展示與時間軸追蹤
-- **Markdown 編輯器** - 支援即時預覽的內容編輯系統
-- **PWA** - 漸進式網頁應用程式
-- 🔍 **SEO 優化** - 完整的 meta 標籤、sitemap 生成
-- ⚡ **效能監控** - 整合 Vercel Analytics 和 Speed Insights
-- 🌍 **國際化支援** - 使用 next-intl 實現多語系功能
+### 樣式與 UI
 
----
+- **SCSS Modules**: 用於更複雜的元件樣式封裝，支援巢狀選擇器與變數管理。
+- **FontAwesome**: 提供豐富的圖示支援。
+- **React Spring / Framer Motion**: 處理流暢的動畫效果。
+- **Tailwind CSS**: 實用優先 (Utility-first) 的 CSS 框架，用於快速構建版面。
 
-## 🛠️ 技術棧
+### 3D 與互動
 
-### 核心技術
+- **React Three Fiber (R3F)**: 在 React 中宣告式地使用 Three.js，用於網頁中的 3D 模型展示。
+- **Drei**: R3F 的實用工具庫。
 
-- **框架**: [Next.js 15](https://nextjs.org/) - React 全端框架
-- **語言**: [TypeScript](https://www.typescriptlang.org/) - 型別安全的 JavaScript
-- **樣式**: [SCSS](https://sass-lang.com/) + [Tailwind CSS 4](https://tailwindcss.com/) - 模組化樣式解決方案
-- **資料庫**: [Firebase Firestore](https://firebase.google.com/products/firestore) - NoSQL 雲端資料庫
+### 資料與狀態管理
 
-### UI/UX 增強
+- **Firebase**: 作為後端服務，處理使用者認證 (Authentication) 與資料庫 (Firestore) 需求。
+- **React Hook Form + Yup**: 處理表單驗證與狀態管理。
+- **Nuqs**: URL 查詢參數狀態管理。
 
-- **字體**: [Noto Sans TC](https://fonts.google.com/noto/specimen/Noto+Sans+TC) - 繁體中文優化字體
-- **圖示**: [FontAwesome](https://fontawesome.com/) - 豐富的圖示庫
-- **主題**: [next-themes](https://github.com/pacocoursey/next-themes) - 深色模式支援
-- **動效**: [liquid-glass-react](https://www.npmjs.com/package/liquid-glass-react) - 玻璃擬態效果
+### 功能模組
 
-### 功能性套件
+- **Next-Intl**: 處理多語系 (i18n) 支援。
+- **FullCalendar**: 整合行事曆功能，用於展示社團課程與活動。
+- **React Markdown**: 用於渲染 Markdown 格式的文件內容。
 
-- **認證**: [Firebase Authentication](https://firebase.google.com/products/auth) - 用戶認證系統
-- **表單**: [React Hook Form](https://react-hook-form.com/) + [Yup](https://github.com/jquense/yup) - 表單驗證
-- **日期**: [Moment.js](https://momentjs.com/) - 日期時間處理
-- **日曆**: [FullCalendar](https://fullcalendar.io/) - 專業日曆組件
-- **Markdown**: [React Markdown](https://github.com/remarkjs/react-markdown) - Markdown 渲染
-- **國際化**: [next-intl](https://next-intl-docs.vercel.app/) - 多語系支援
+### 部署與分析
 
-### 開發工具
+- **Vercel**: 專案部署平台。
+- **Vercel Analytics & Speed Insights**: 網站流量與效能分析。
 
-- **程式碼品質**: [ESLint](https://eslint.org/) - 程式碼檢查
-- **部署**: [Vercel](https://vercel.com/) - 自動化部署
-- **分析**: [Vercel Analytics](https://vercel.com/analytics) + [Speed Insights](https://vercel.com/docs/speed-insights) + [Google Analytics](https://analytics.google.com)
-- **SEO**: [next-sitemap](https://github.com/iamvishnusankar/next-sitemap) - 自動 sitemap 生成 + 結構化 Metadata 生成(/app/utils/metadata.ts)
+## 專案結構
 
----
+本專案遵循 Feature-based 的架構設計，主要目錄結構說明如下：
 
-## 📁 專案結構
+- **`app/`**: Next.js App Router 的主要目錄。
+  - **`components/`**: 共用元件，按功能分類 (如 `Header`, `Footer`, `Auth` 等)。
+  - **`hooks/`**: 自定義 React Hooks。
+  - **`contexts/`**: React Context (如 `AuthContext`, `ThemeContext`)。
+  - **`utils/`**: 工具函式與服務層 (如 Firebase 服務、資料處理)。
+  - **`styles/`**: 全域樣式變數與 Mixins。
+  - **`(routes)`**: 各個頁面的路由目錄 (如 `about`, `blog`, `competitions` 等)。
+- **`public/`**: 靜態資源檔案。
+  - **`assets/`**: 包含圖片、圖示以及 Markdown 文件 (docs)。
+- **`i18n/`**: 國際化設定與路由處理。
+- **`types/`**: TypeScript 型別定義檔案。
 
-```txt
-robot-ctust/
-├── app/                          # Next.js App Router
-│   ├── components/               # 可重用元件
-│   │   ├── Auth/                # 認證相關元件
-│   │   ├── CompetitionCard/     # 競賽卡片元件
-│   │   ├── CompetitionTimeline/ # 競賽時間軸
-│   │   ├── CreatePostModal/     # 文章建立模組
-│   │   ├── Footer/              # 頁尾元件
-│   │   ├── Header/              # 導航列元件
-│   │   ├── Markdown/            # Markdown 編輯器
-│   │   ├── Menu/                # 行動版選單
-│   │   ├── Selector/            # 選擇器元件
-│   │   └── ThemeToggle/         # 主題切換器
-│   ├── contexts/                # React Context
-│   │   ├── AuthContext.tsx      # 認證狀態管理
-│   │   ├── HeaderContext.tsx    # 導航列狀態
-│   │   └── ThemeContext.tsx     # 主題狀態管理
-│   ├── hooks/                   # 自訂 Hooks
-│   ├── types/                   # TypeScript 型別定義
-│   ├── utils/                   # 工具函數
-│   ├── styles/                  # 全域樣式
-│   ├── about/                   # 關於頁面
-│   ├── admin/                   # 管理後台
-│   ├── blog/                    # 部落格系統
-│   ├── competitions/            # 競賽管理
-│   ├── docs/                    # 文檔系統
-│   ├── schedules/               # 行事曆
-│   ├── update/                  # 最新資訊
-│   └── user/                    # 用戶頁面
-├── public/                      # 靜態資源
-│   ├── assets/                  # 圖片、圖示
-│   └── docs/                    # 文檔檔案
-├── i18n/                        # 國際化設定
-├── messages/                    # 多語系訊息
-└── 設定檔案                      # 各種配置文件
-```
+## 核心功能
+
+1. **資訊公告與部落格**: 支援 Markdown 渲染，方便發布社團公告、教學文章與競賽資訊。
+2. **活動行事曆**: 整合 FullCalendar，清楚展示社團課程時間與重要活動。
+3. **會員系統**: 整合 Firebase Auth，提供社員登入與個人資料管理功能。
+4. **文件中心**: 集中管理社團章程、借用規則等重要文件。
+5. **響應式設計**: 支援各種裝置尺寸，並提供深色/淺色主題切換。
+
+## 開發指南
+
+若您是社團成員並希望參與網站開發，請依照以下步驟在本地端啟動專案：
+
+1. **安裝依賴套件**:
+
+    ```bash
+    npm install
+    ```
+
+2. **設定環境變數**:
+    請參考專案中的環境變數範本 (如有)，並確保您擁有 Firebase 的相關設定金鑰。
+
+3. **啟動開發伺服器**:
+
+    ```bash
+    npm run dev
+    ```
+
+    伺服器啟動後，請在瀏覽器中開啟 `http://localhost:3000`。
+
+## 參與貢獻
+
+我們非常歡迎社團成員參與網站的維護與開發！無論是修復 Bug、新增功能或是改善文件，您的貢獻都能讓社團網站變得更好。
+
+在進行程式碼修改時，請遵循專案既定的程式碼風格與規範 (如模組化 CSS、TypeScript 型別定義等)。
 
 ---
 
-## 🎯 核心功能
+© 中臺機器人研究社 Robot Research Club of CTUST
 
-### 🏠 首頁展示
 
-- **社團介紹** - 展示社團理念與學習方式
-- **視覺設計** - 機器人主題的現代化設計
-- **響應式佈局** - 適配各種螢幕尺寸
-
-### 👤 用戶系統
-
-- **Google 登入** - 整合 Google OAuth 認證
-- **用戶資料管理** - 個人資訊與頭像展示
-- **權限控制** - 超級管理員權限管理
-
-### 📅 行事曆系統
-
-- **FullCalendar 整合** - 專業的日曆顯示
-- **多視圖模式** - 月視圖、週視圖、日視圖
-- **活動管理** - 新增、編輯、刪除活動
-- **即時同步** - Firestore 即時資料更新
-
-### 🏆 競賽管理
-
-- **競賽展示** - 卡片式競賽資訊展示
-- **時間軸追蹤** - 詳細的競賽進程時間軸
-- **狀態管理** - 報名中、進行中、已完成等狀態
-- **分類篩選** - 依據層級、狀態等條件篩選
-
-### 📝 內容管理
-
-- **Markdown 編輯器** - 支援即時預覽
-- **語法高亮** - 程式碼區塊語法高亮
-- **圖片上傳** - Firebase Storage 圖片管理
-- **SEO 優化** - 自動生成 meta 標籤
-
-### 📚 文檔系統
-
-- **結構化文檔** - 清晰的文檔分類
-- **搜尋功能** - 快速找到所需內容
-- **版本控制** - 文檔更新歷史追蹤
-
-### 🎨 主題系統
-
-- **深色/淺色模式** - 自動適應系統偏好
-- **顏色變數** - CSS 變數統一管理
-- **動態主題色** - 根據主題調整 meta 標籤
-
----
-
-## 📱 響應式設計
-
-網站採用行動優先的響應式設計，確保在各種設備上都有良好的使用體驗：
-
-- 桌面版 (≥1025px)
-- 平板版 (600px - 1024px)
-- 手機版 (<600px)
-
----
-
-## 🎨 設計系統
-
-### 色彩系統
-
-使用 oklch 色彩系統。
-
-- **主色調**: 水晶紫 (oklch(0.5 0.24 290))
-- **輔助色**: 科技藍 (oklch(0.5 0.24 230))
-- **中性色**: 現代灰階系統
-
-### 字體系統
-
-- **字體**: Noto Sans TC
-
-### 間距系統
-
-- 採用 6px 基準網格
-- 一致的內外邊距規範
-- 響應式間距調整
-
----
-
-## 🔒 安全性
-
-### 認證安全
-
-- Firebase Authentication 託管認證
-- JWT Token 自動管理
-- 安全的使用者資料同步
-
-### 資料安全
-
-- Firestore 安全規則
-- 使用者權限驗證
-- 敏感資料過濾
-
----
-
-## ⚡ 效能優化
-
-### 載入優化
-
-- Next.js 自動程式碼分割
-- 圖片懶載入與優化
-- 字體預載入策略
-
-### 快取策略
-
-- 靜態資源快取
-- API 回應快取
-- 瀏覽器快取優化
-
-### 監控分析
-
-- Vercel Analytics 使用分析
-- Speed Insights 效能監控
-- Core Web Vitals 追蹤
-
----
-
-## 🌍 國際化（規劃中）
-
-### 支援語言
-
-- 繁體中文 (zh-TW) - 預設
-- 英文 (en) - 規劃中
-
-### 預計實作
-
-- next-intl 完整整合
-- 動態語言切換
-- SEO 友善的多語系 URL
-
----
-
-## 📈 SEO 優化
-
-### 技術 SEO
-
-- 自動 sitemap 生成
-- 結構化資料標記
-- 語意化 HTML 結構
-
-### 內容 SEO
-
-- 動態 meta 標籤
-- Open Graph 標籤
-- Twitter Card 支援
-
-### 效能 SEO
-
-- Core Web Vitals 優化
-- 圖片最佳化
-- 載入速度優化
-
----
-
-## 🤝 貢獻指南
-
-我們歡迎所有形式的貢獻！請參考以下步驟：
-
-1. **Fork 專案**
-2. **建立功能分支** (`git checkout -b feature/AmazingFeature`)
-3. **提交變更** (`git commit -m 'Add some AmazingFeature'`)
-4. **推送到分支** (`git push origin feature/AmazingFeature`)
-5. **開啟 Pull Request**
-
-### 開發規範
-
-- 遵循 TypeScript 嚴格模式
-- 使用 ESLint 程式碼檢查
-- 撰寫清晰的提交訊息
-- 添加適當的測試
-
----
-
-## 📞 聯絡資訊
-
-- **社團**: 中臺機器人研究社
-- **學校**: 中臺科技大學
-- **網站**: [中臺機器人研究社｜Robot Research Club of CTUST](https://robotctust.com/)
-
----
-
-## 📄 授權條款
-
-本專案採用 MIT 授權條款 - 詳見 [LICENSE](LICENSE) 檔案
-
----
-
-<div align="center">
-  <p>Made with passion by John Lin</p>
-  <p>© 2025 Robot Research Club of CTUST. All rights reserved.</p>
-</div>

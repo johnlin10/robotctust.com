@@ -85,7 +85,7 @@ export default function CoreProjects() {
             <div className={styles.staticContent}>
               {activeTab === 'web' && (
                 <div className={styles.webContent}>
-                  <div className={styles.statusBadge}>
+                  <div className={`${styles.statusBadge} ${styles.online}`}>
                     <span>上線中</span>
                   </div>
                   <h1 className={styles.title}>Web Platform</h1>
@@ -142,7 +142,7 @@ export default function CoreProjects() {
               )}
               {activeTab === 'rrc-tracer-v2' && (
                 <div className={styles.roboticsContent}>
-                  <div className={styles.statusBadge}>
+                  <div className={`${styles.statusBadge} ${styles.planning}`}>
                     <span>規劃中</span>
                   </div>
                   <h1 className={styles.title}>Robot Pathfinder</h1>
@@ -178,7 +178,7 @@ export default function CoreProjects() {
               )}
               {activeTab === 'ios' && (
                 <div className={styles.iosContent}>
-                  <div className={styles.statusBadge}>
+                  <div className={`${styles.statusBadge} ${styles.planning}`}>
                     <span>開發中</span>
                   </div>
                   <h1 className={styles.title}>iOS App</h1>
