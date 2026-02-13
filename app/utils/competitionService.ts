@@ -347,37 +347,80 @@ export async function deleteCompetition(id: string): Promise<void> {
   }
 }
 
+// === 輔助函數 ===
+
+/**
+ * 從時間線獲取競賽的具體日期
+ * 優先順序：決賽 > 初賽 > 報名截止
+ */
+const getCompetitionDate = (comp: Competition): Date => {
+  const timeline = comp.timeline
+
+  // 尋找決賽
+  const finalStep = timeline.find((step) => step.step === 'final')
+  if (finalStep?.startDateTime?.date) {
+    return new Date(
+      `${finalStep.startDateTime.date}T${
+        finalStep.startDateTime.time || '00:00'
+      }:00`
+    )
+  }
+
+  // 尋找初賽
+  const preStep = timeline.find((step) => step.step === 'pre')
+  if (preStep?.startDateTime?.date) {
+    return new Date(
+      `${preStep.startDateTime.date}T${
+        preStep.startDateTime.time || '00:00'
+      }:00`
+    )
+  }
+
+  // 尋找報名
+  const regStep = timeline.find((step) => step.step === 'registration')
+  if (regStep?.endDateTime?.date) {
+    return new Date(
+      `${regStep.endDateTime.date}T${regStep.endDateTime.time || '00:00'}:00`
+    )
+  }
+
+  // 預設為一個很久以前的時間，確保排在最後
+  return new Date(0)
+}
+
 /**
  * 取得即將開始的競賽
+ * 邏輯調整：
+ * 1. 獲取所有已發布的競賽
+ * 2. 過濾出尚未結束的競賽（基於決賽或初賽日期）
+ * 3. 根據日期排序（由近到遠）
+ * 4. 取前 N 個
  */
 export async function getUpcomingCompetitions(
   limitCount: number = 5
 ): Promise<Competition[]> {
   try {
-    // 嘗試使用索引查詢
-    return await getAllCompetitions(
-      {
-        status: ['upcoming', 'registration-open'],
-        published: true,
-      },
-      { field: 'priority', direction: 'asc' },
-      limitCount
-    )
-  } catch (error) {
-    console.warn(
-      'Indexed query failed, falling back to client-side filtering:',
-      error
-    )
-    // 如果索引查詢失敗，回退到客戶端過濾
-    const allCompetitions = await getAllCompetitions()
+    const allCompetitions = await getAllCompetitions({ published: true })
+
     return allCompetitions
-      .filter(
-        (comp) =>
-          comp.published &&
-          ['upcoming', 'registration-open'].includes(comp.status)
-      )
-      .sort((a, b) => a.priority - b.priority)
+      .filter((comp) => {
+        const compDate = getCompetitionDate(comp)
+        // 過濾掉已經過去的競賽（日期在今天之前）
+        // 設定比較時間為今天的 00:00:00，這樣今天的比賽也會顯示
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        return compDate >= today
+      })
+      .sort((a, b) => {
+        const dateA = getCompetitionDate(a)
+        const dateB = getCompetitionDate(b)
+        // 改為正序排序：日期越近的在越前面
+        return dateA.getTime() - dateB.getTime()
+      })
       .slice(0, limitCount)
+  } catch (error) {
+    console.error('Error fetching upcoming competitions:', error)
+    return []
   }
 }
 

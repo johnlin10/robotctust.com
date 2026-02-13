@@ -29,7 +29,8 @@ interface FormData {
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void
-  onClose: () => void
+  onClose?: () => void
+  showCloseButton?: boolean
 }
 
 /**
@@ -39,8 +40,9 @@ interface RegisterFormProps {
  * @returns
  */
 export const RegisterForm: React.FC<RegisterFormProps> = ({
-  onSwitchToLogin,
+  // onSwitchToLogin,
   onClose,
+  showCloseButton = true,
 }) => {
   // AuthContext
   const { register: registerUser, getUserProfile } = useAuth()
@@ -253,7 +255,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       }
       // 執行註冊
       await registerUser(registerData)
-      onClose()
+      onClose?.()
     } catch (error) {
       console.error('註冊失敗:', error)
       setError(
@@ -290,9 +292,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       {/* 表單標題 */}
       <div className={styles.form_header}>
         <h2>註冊</h2>
-        <button className={styles.close_button} onClick={onClose}>
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
+        {showCloseButton && (
+          <button className={styles.close_button} onClick={onClose}>
+            <FontAwesomeIcon icon={faXmark} />
+          </button>
+        )}
       </div>
 
       {/* Google 註冊按鈕 */}
@@ -446,14 +450,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         {/* 錯誤訊息 */}
         {error && <div className={styles.error_message}>{error}</div>}
       </form>
-
-      {/* 切換到登入模式 */}
-      <div className={styles.switch_form}>
-        <span>已經有帳號了？</span>
-        <button type="button" onClick={onSwitchToLogin}>
-          立即登入
-        </button>
-      </div>
     </>
   )
 }

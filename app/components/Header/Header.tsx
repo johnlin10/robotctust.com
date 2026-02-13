@@ -98,7 +98,7 @@ export default function Header() {
               />
               <div className={styles.logoText}>
                 <h1>中臺機器人研究社</h1>
-                <p>Robot Research Club of CTUST</p>
+                <p>Robotics Research Club of CTUST</p>
               </div>
             </div>
           </div>

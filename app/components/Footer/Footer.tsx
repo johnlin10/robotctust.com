@@ -9,6 +9,7 @@ import {
   faInstagram,
   faThreads,
   faXTwitter,
+  faGithub,
 } from '@fortawesome/free-brands-svg-icons'
 // utils
 import { SITE_CONFIG } from '@/app/utils/siteConfigs'
@@ -67,6 +68,13 @@ export default function Footer({
                     target="_blank"
                   >
                     <FontAwesomeIcon icon={faXTwitter} />
+                  </Link>
+                  <Link
+                    href="https://github.com/robotctust"
+                    className={`${styles.socialItem} ${styles.github}`}
+                    target="_blank"
+                  >
+                    <FontAwesomeIcon icon={faGithub} />
                   </Link>
                 </div>
               </div>

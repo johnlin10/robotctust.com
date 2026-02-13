@@ -2,10 +2,11 @@
 
 footer.footer {
   @include mixins.flexbox(column, center, center);
-  padding: var(--space-4x) var(--space-2x) 0 var(--space-2x);
+  padding: var(--space-4x) var(--space-2x) var(--space-4x) var(--space-2x);
+  border-top: 1px solid var(--border);
   width: 100%;
   height: fit-content;
-  background-color: var(--background);
+  background-color: rgba(var(--background-rgb), 0.75);
 
   &.removePaddingRL {
     padding: var(--space-4x) 0 0 0;
@@ -84,6 +85,9 @@ footer.footer {
                   }
                   &.twitter {
                     color: var(--blue-300);
+                  }
+                  &.github {
+                    color: var(--foreground-100);
                   }
                 }
               }

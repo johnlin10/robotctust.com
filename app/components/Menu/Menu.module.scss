@@ -1,8 +1,8 @@
 @use '@/app/styles/_mixins' as mixins;
 
 .menu {
-  z-index: 1000;
-  @include mixins.flexbox(column, center, center);
+  z-index: 4900;
+  @include mixins.flexbox(column, start, center);
   position: fixed;
   padding: var(--header-height) var(--space-2x) var(--space-2x) var(--space-2x);
   top: 0;
@@ -15,6 +15,10 @@
   @include mixins.transition(0.5s cubic-bezier(0.23, 1, 0.32, 1));
   opacity: 0;
   visibility: hidden;
+
+  @include mixins.respond-to('phone') {
+    height: 100vh;
+  }
 
   &.open {
     background-color: rgba(var(--background-secondary-rgb), 0.8);

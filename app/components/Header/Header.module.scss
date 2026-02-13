@@ -1,7 +1,7 @@
-@use '../../styles/mixins' as mixins;
+@use '@/app/styles/_mixins' as mixins;
 
 header.header {
-  z-index: 1000;
+  z-index: 5000;
   position: fixed;
   top: 0;
   left: 0;

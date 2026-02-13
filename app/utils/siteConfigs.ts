@@ -20,8 +20,8 @@ export const SITE_CONFIG = {
     '學習平台',
     'CTUST',
     'Robot',
-    'Robot Research',
-    'Robot Research Club',
-    'Robot Research Club of CTUST',
+    'Robotics Research',
+    'Robotics Research Club',
+    'Robotics Research Club of CTUST',
   ],
 } as const

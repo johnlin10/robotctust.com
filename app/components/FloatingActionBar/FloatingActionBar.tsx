@@ -410,13 +410,29 @@ export default function FloatingActionBar({
   }
 
   return (
-    <div
-      className={containerClasses}
-      style={dynamicStyles}
-      onMouseEnter={handleContainerMouseEnter}
-      onMouseLeave={handleContainerMouseLeave}
-    >
-      {actions.map((action, index) => renderAction(action, index))}
-    </div>
+    <>
+      <div
+        className={containerClasses}
+        style={dynamicStyles}
+        onMouseEnter={handleContainerMouseEnter}
+        onMouseLeave={handleContainerMouseLeave}
+      >
+        {actions.map((action, index) => renderAction(action, index))}
+      </div>
+
+      <div
+        className={`${styles.gradient_blur}${
+          isCompactHeader ? ` ${styles.compact}` : ''
+        }${position === 'bottom' ? ` ${styles.bottom}` : ''}`}
+      >
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div className={styles.gradient_background}></div>
+      </div>
+    </>
   )
 }

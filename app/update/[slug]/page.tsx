@@ -44,6 +44,7 @@ export default async function PostDetailPage({
   try {
     // 在 server side 預載文章資料
     const post = await getPostById(slug)
+    console.log('post', post)
     if (post) {
       // 序列化資料以便傳遞給 client component
       initialPost = serializePost(post)

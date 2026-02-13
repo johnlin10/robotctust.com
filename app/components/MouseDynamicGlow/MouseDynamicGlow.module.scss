@@ -1,0 +1,19 @@
+.mouseDynamicGlow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 400px;
+  height: 400px;
+  background-color: var(--theme-purple-500);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.2;
+  filter: blur(120px);
+  -webkit-filter: blur(120px);
+  -moz-filter: blur(120px);
+  -ms-filter: blur(120px);
+  -o-filter: blur(120px);
+  will-change: transform;
+  // transform 會在 JavaScript 中動態設定
+}
