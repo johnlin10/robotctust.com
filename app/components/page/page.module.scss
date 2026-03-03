@@ -8,7 +8,7 @@
   height: fit-content;
   min-height: 100vh;
   padding-top: 72px;
-  overflow: hidden;
+  overflow-x: clip;
 
   > .pageContainer {
     @include mixins.flexbox(column, start, center);

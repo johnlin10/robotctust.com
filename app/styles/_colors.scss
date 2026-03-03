@@ -461,7 +461,8 @@
 
 //* 主題切換動畫
 * {
-  transition: background-color 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+  transition:
+    background-color 0.3s cubic-bezier(0.23, 1, 0.32, 1),
     color 0.3s cubic-bezier(0.23, 1, 0.32, 1),
     border-color 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }

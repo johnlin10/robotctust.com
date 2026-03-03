@@ -52,13 +52,13 @@ export default function CoreProjects() {
                 <FontAwesomeIcon icon={faRobot} />
                 <span className={styles.buttonText}>啟蒙者</span>
               </button>
-              <button
+              {/* <button
                 className={activeTab === 'rrc-tracer-v2' ? styles.active : ''}
                 onClick={() => setActiveTab('rrc-tracer-v2')}
               >
                 <FontAwesomeIcon icon={faRobot} />
                 <span className={styles.buttonText}>拓荒者</span>
-              </button>
+              </button> */}
               <button
                 className={activeTab === 'web' ? styles.active : ''}
                 onClick={() => setActiveTab('web')}
@@ -107,7 +107,7 @@ export default function CoreProjects() {
                       onClick={() => {
                         window.open(
                           'https://github.com/johnlin10/robotctust.com',
-                          '_blank'
+                          '_blank',
                         )
                       }}
                     >

@@ -179,9 +179,8 @@
 }
 
 @mixin glass-blur($blur: 6px) {
-  backdrop-filter: blur($blur) !important;
-  -webkit-backdrop-filter: blur($blur) !important;
-  -moz-backdrop-filter: blur($blur) !important;
+  -webkit-backdrop-filter: blur($blur);
+  backdrop-filter: blur($blur);
 }
 
 @mixin box-shadow($blur: 12px) {

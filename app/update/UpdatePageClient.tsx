@@ -13,7 +13,13 @@ import FloatingActionBar, {
 } from '../components/FloatingActionBar/FloatingActionBar'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faFileAlt, faTrash, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
+import {
+  faPlus,
+  faFileAlt,
+  faTrash,
+  faSearch,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons'
 // contexts
 import { AuthContext } from '../contexts/AuthContext'
 import { useHeaderState } from '../contexts/HeaderContext'
@@ -62,7 +68,7 @@ export default function UpdatePageClient({
   //* 狀態管理
   // 文章資料
   const [posts, setPosts] = useState<Post[]>(
-    initialPosts.map(deserializePost) as Post[]
+    initialPosts.map(deserializePost) as Post[],
   )
   // 篩選後的文章資料
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([])
@@ -73,12 +79,12 @@ export default function UpdatePageClient({
   // 當前篩選類型
   const [categorySlug, setCategorySlug] = useQueryState(
     'category',
-    parseAsString.withDefault('')
+    parseAsString.withDefault(''),
   )
   // 搜尋關鍵字
   const [searchQuery, setSearchQuery] = useQueryState(
     'q',
-    parseAsString.withDefault('')
+    parseAsString.withDefault(''),
   )
   const currentFilter: FilterType = categorySlug
     ? SLUG_TO_CATEGORY[categorySlug as CategorySlug] || 'all'
@@ -232,7 +238,7 @@ export default function UpdatePageClient({
     }
 
     const confirmDelete = window.confirm(
-      '確定要刪除這篇文章嗎？此操作無法復原。'
+      '確定要刪除這篇文章嗎？此操作無法復原。',
     )
     if (!confirmDelete) {
       return
@@ -485,9 +491,8 @@ export default function UpdatePageClient({
             ))}
           </div>
 
-
           {/* 搜尋欄位 */}
-          <div className={styles.searchContainer}>
+          {/* <div className={styles.searchContainer}>
             <div className={styles.searchInputWrapper}>
               <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
               <input
@@ -507,7 +512,7 @@ export default function UpdatePageClient({
                 </button>
               )}
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* 文章列表 */}

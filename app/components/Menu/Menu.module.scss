@@ -22,12 +22,12 @@
 
   &.open {
     background-color: rgba(var(--background-secondary-rgb), 0.8);
-    @include mixins.glass-blur(24px);
     @include mixins.transform-container(translateY(0));
     border-bottom: 1px solid var(--border);
     box-shadow: 0 0 72px 0 rgba(var(--background-rgb), 0.5);
     opacity: 1;
     visibility: visible;
+    @include mixins.glass-blur(24px);
   }
 
   .menu_items {
