@@ -145,7 +145,7 @@ export default function Header() {
                   onClick={handleNavLinkClick}
                   className={pathname.startsWith('/admin') ? styles.active : ''}
                 >
-                  權限管理
+                  控制台
                 </Link>
               </>
             )}

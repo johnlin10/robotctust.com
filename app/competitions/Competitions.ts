@@ -5,6 +5,7 @@ import { Competition } from '../types/competition'
  * 用於開發測試和初始資料
  */
 export const competitions: Competition[] = [
+  // 114-1
   {
     id: 'obstacle-avoidance-2025-11-26',
     title: '機器人避障競賽',
@@ -47,7 +48,7 @@ export const competitions: Competition[] = [
 
 ![比賽場地](https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fobstacle-avoidance-2025-11-12%2FSCR-20250916-tjqm.png?alt=media&token=cec28647-6068-4477-b4fa-be5124243473)
     `,
-    status: 'upcoming',
+    status: 'completed',
     position: 'club',
     timeline: [
       {
@@ -193,7 +194,7 @@ export const competitions: Competition[] = [
 2. 本規則對場地所描述或註記的尺寸均為概略值，實際尺寸以比賽現場的配置為準。
 3. 出發和終點以黑色膠帶貼出長方形。
     `,
-    status: 'upcoming',
+    status: 'completed',
     position: 'club',
     timeline: [
       {
@@ -299,7 +300,7 @@ export const competitions: Competition[] = [
 
 本賽事不僅是速度的比拚，更是 **感測器整合、控制策略與臨場應變** 的全面挑戰，歡迎各路高手前來挑戰！
     `,
-    status: 'upcoming',
+    status: 'completed',
     position: 'national',
     timeline: [
       {
@@ -433,7 +434,7 @@ export const competitions: Competition[] = [
 
 這項比賽不僅考驗速度，更強調 **程式規劃能力、障礙應對策略與臨場穩定性**，是綜合性極高的挑戰！
     `,
-    status: 'upcoming',
+    status: 'completed',
     position: 'national',
     timeline: [
       {
@@ -530,6 +531,315 @@ export const competitions: Competition[] = [
       email: '',
       phone: '',
       person: '',
+    },
+  },
+
+  // 114-2
+  // 社內競賽
+  {
+    id: 'line-following-2026-04-15-club',
+    title: '機器人循線競賽',
+    description: '暫無簡介',
+    detailMarkdown: '',
+    status: 'upcoming',
+    position: 'club',
+    timeline: [
+      {
+        id: 'line-following-2026-04-15-club-registration',
+        step: 'registration',
+        stepName: '報名階段',
+        startDateTime: {
+          date: null,
+          time: null,
+        },
+        endDateTime: {
+          date: '2026-04-15',
+          time: '12:00',
+        },
+        description: '報名階段',
+        required: true,
+        order: 1,
+      },
+      {
+        id: 'line-following-2026-04-15-club-final',
+        step: 'final',
+        stepName: '決賽',
+        startDateTime: {
+          date: '2026-04-15',
+          time: '14:00',
+        },
+        endDateTime: {
+          date: '2026-04-15',
+          time: '15:50',
+        },
+        // timeline: [
+        //   {
+        //     stepName: '比賽規則講解',
+        //     startTime: '14:00',
+        //     endTime: '14:10',
+        //   },
+        //   {
+        //     stepName: '比賽練習',
+        //     startTime: '14:10',
+        //     endTime: '15:10',
+        //   },
+        //   {
+        //     stepName: '正式比賽',
+        //     startTime: '15:10',
+        //     endTime: '15:50',
+        //   },
+        //   {
+        //     stepName: '公布成績',
+        //     startTime: '15:50',
+        //     endTime: '16:00',
+        //   },
+        // ],
+        description: '最終挑戰，避開障礙物！',
+        required: true,
+        order: 1,
+      },
+      {
+        id: 'line-following-2026-04-15-club-result-announcement',
+        step: 'result',
+        stepName: '成績公布',
+        startDateTime: {
+          date: '2026-04-15',
+          time: '15:50',
+        },
+        endDateTime: {
+          date: null,
+          time: null,
+        },
+        description: '公布成績',
+        required: true,
+        order: 2,
+      },
+    ],
+    link: '',
+    image: '',
+    tags: ['競賽', '機器人', '循線', '循線感測器'],
+    priority: 2,
+    createdAt: {
+      date: '2026-03-04',
+      time: '14:00',
+    },
+    updatedAt: {
+      date: '2026-03-04',
+      time: '14:00',
+    },
+    published: true,
+    estimatedParticipants: 30,
+    registrationFee: 0,
+    rewards: ['獲得排列名次及佳作的隊伍依本大賽辦法發給選手獎品'],
+    contact: {
+      email: 'robotctust@gmail.com',
+      phone: '',
+      person: '中臺機器人研究社',
+    },
+  },
+  {
+    id: 'remote-control-obstacle-avoidance-2026-05-13-club',
+    title: '遙控避障挑戰賽',
+    description: '暫無簡介',
+    detailMarkdown: `
+![比賽場地](https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fobstacle-avoidance-2025-11-12%2FSCR-20250916-tjqm.png?alt=media&token=cec28647-6068-4477-b4fa-be5124243473)
+    `,
+    status: 'upcoming',
+    position: 'club',
+    timeline: [
+      {
+        id: 'remote-control-obstacle-avoidance-2026-05-13-club-registration',
+        step: 'registration',
+        stepName: '報名階段',
+        startDateTime: {
+          date: null,
+          time: null,
+        },
+        endDateTime: {
+          date: '2026-05-13',
+          time: '12:00',
+        },
+        description: '報名階段',
+        required: true,
+        order: 1,
+      },
+      {
+        id: 'remote-control-obstacle-avoidance-2026-05-13-club-final',
+        step: 'final',
+        stepName: '決賽',
+        startDateTime: {
+          date: '2026-05-13',
+          time: '14:00',
+        },
+        endDateTime: {
+          date: '2026-05-13',
+          time: '15:50',
+        },
+        // timeline: [
+        //   {
+        //     stepName: '比賽規則講解',
+        //     startTime: '14:00',
+        //     endTime: '14:10',
+        //   },
+        //   {
+        //     stepName: '比賽練習',
+        //     startTime: '14:10',
+        //     endTime: '15:10',
+        //   },
+        //   {
+        //     stepName: '正式比賽',
+        //     startTime: '15:10',
+        //     endTime: '15:50',
+        //   },
+        //   {
+        //     stepName: '公布成績',
+        //     startTime: '15:50',
+        //     endTime: '16:00',
+        //   },
+        // ],
+        description: '最終挑戰，避開障礙物！',
+        required: true,
+        order: 1,
+      },
+      {
+        id: 'remote-control-obstacle-avoidance-2026-05-13-club-result-announcement',
+        step: 'result',
+        stepName: '成績公布',
+        startDateTime: {
+          date: '2026-05-13',
+          time: '15:50',
+        },
+        endDateTime: {
+          date: null,
+          time: null,
+        },
+        description: '公布成績',
+        required: true,
+        order: 2,
+      },
+    ],
+    link: '',
+    image:
+      'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fobstacle-avoidance-2025-11-12%2FSCR-20250916-tjqm.png?alt=media&token=cec28647-6068-4477-b4fa-be5124243473',
+    tags: ['競賽', '機器人', '避障', '障礙挑戰', '遙控', '超音波感測器'],
+    priority: 2,
+    createdAt: {
+      date: '2026-03-04',
+      time: '14:00',
+    },
+    updatedAt: {
+      date: '2026-03-04',
+      time: '14:00',
+    },
+    published: true,
+    estimatedParticipants: 30,
+    registrationFee: 0,
+    rewards: ['獲得排列名次及佳作的隊伍依本大賽辦法發給選手獎品'],
+    contact: {
+      email: 'robotctust@gmail.com',
+      phone: '',
+      person: '中臺機器人研究社',
+    },
+  },
+  {
+    id: 'robot-combat-2026-05-27-club',
+    title: '機器人對抗賽',
+    description: '暫無簡介',
+    detailMarkdown: '',
+    status: 'upcoming',
+    position: 'club',
+    timeline: [
+      {
+        id: 'robot-combat-2026-05-27-club-registration',
+        step: 'registration',
+        stepName: '報名階段',
+        startDateTime: {
+          date: null,
+          time: null,
+        },
+        endDateTime: {
+          date: '2026-05-27',
+          time: '12:00',
+        },
+        description: '報名階段',
+        required: true,
+        order: 1,
+      },
+      {
+        id: 'robot-combat-2026-05-27-club-final',
+        step: 'final',
+        stepName: '決賽',
+        startDateTime: {
+          date: '2026-05-27',
+          time: '14:00',
+        },
+        endDateTime: {
+          date: '2026-05-27',
+          time: '15:50',
+        },
+        // timeline: [
+        //   {
+        //     stepName: '比賽規則講解',
+        //     startTime: '14:00',
+        //     endTime: '14:10',
+        //   },
+        //   {
+        //     stepName: '比賽練習',
+        //     startTime: '14:10',
+        //     endTime: '15:10',
+        //   },
+        //   {
+        //     stepName: '正式比賽',
+        //     startTime: '15:10',
+        //     endTime: '15:50',
+        //   },
+        //   {
+        //     stepName: '公布成績',
+        //     startTime: '15:50',
+        //     endTime: '16:00',
+        //   },
+        // ],
+        description: '最終挑戰，避開障礙物！',
+        required: true,
+        order: 1,
+      },
+      {
+        id: 'robot-combat-2026-05-27-club-result-announcement',
+        step: 'result',
+        stepName: '成績公布',
+        startDateTime: {
+          date: '2026-05-27',
+          time: '15:50',
+        },
+        endDateTime: {
+          date: null,
+          time: null,
+        },
+        description: '公布成績',
+        required: true,
+        order: 2,
+      },
+    ],
+    link: '',
+    image: '',
+    tags: ['競賽', '機器人', '對抗', '對戰'],
+    priority: 2,
+    createdAt: {
+      date: '2026-03-04',
+      time: '14:00',
+    },
+    updatedAt: {
+      date: '2026-03-04',
+      time: '14:00',
+    },
+    published: true,
+    estimatedParticipants: 30,
+    registrationFee: 0,
+    rewards: ['獲得排列名次及佳作的隊伍依本大賽辦法發給選手獎品'],
+    contact: {
+      email: 'robotctust@gmail.com',
+      phone: '',
+      person: '中臺機器人研究社',
     },
   },
 ]

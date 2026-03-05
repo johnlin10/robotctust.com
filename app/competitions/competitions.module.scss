@@ -3,12 +3,8 @@
 .competitionsContainer {
   > .competitionsContent {
     @include mixins.content-container;
-    @include mixins.flexbox(column, start, stretch);
+    @include mixins.flexbox(column, start, center);
     gap: var(--space-2x);
-
-    @include mixins.respond-to('tablet') {
-      @include mixins.content-container;
-    }
   }
 }
 

@@ -70,7 +70,7 @@ function _createTimestamp(dateTime: CompetitionDateTime): CompetitionDateTime {
 function _toFirestoreDocument(competition: Competition): CompetitionDocument {
   return {
     ...competition,
-    timeline: competition.timeline.map((step) => ({
+    timeline: (competition.timeline ?? []).map((step) => ({
       ...step,
       startDateTime: _createTimestamp(step.startDateTime),
       endDateTime: _createTimestamp(step.endDateTime),
@@ -354,7 +354,7 @@ export async function deleteCompetition(id: string): Promise<void> {
  * 優先順序：決賽 > 初賽 > 報名截止
  */
 const getCompetitionDate = (comp: Competition): Date => {
-  const timeline = comp.timeline
+  const timeline = comp.timeline ?? []
 
   // 尋找決賽
   const finalStep = timeline.find((step) => step.step === 'final')
@@ -506,7 +506,7 @@ export function getCompetitionKeyDate(
   competition: Competition,
   type: 'competition' | 'registration'
 ): Date | null {
-  const timeline = competition.timeline
+  const timeline = competition.timeline ?? []
 
   if (type === 'competition') {
     // 尋找決賽或初賽的開始時間

@@ -7,6 +7,7 @@ import { ScheduleEvent } from '../types/Schedule'
 export const schedules: ScheduleEvent[] = [
   //* 114 學年度上學期
   // 校務行事曆
+  // 114-1
   {
     id: 'school-event-2025-09-05',
     title: '開學日',
@@ -26,15 +27,69 @@ export const schedules: ScheduleEvent[] = [
     published: true,
     createdAt: {
       date: '2025-09-23',
-      time: '13:00',
+      time: '00:00',
     },
     updatedAt: {
       date: '2025-09-23',
-      time: '13:00',
+      time: '23:59',
+    },
+  },
+  // 114-2
+  {
+    id: 'school-event-2026-02-24',
+    title: '開學日',
+    description: '',
+    type: 'school-event',
+    startDateTime: {
+      date: '2026-02-24',
+      time: '00:00',
+    },
+    endDateTime: {
+      date: '2026-02-24',
+      time: '23:59',
+    },
+    location: '',
+    instructor: '',
+    priority: 1,
+    published: true,
+    createdAt: {
+      date: '2026-02-20',
+      time: '16:00',
+    },
+    updatedAt: {
+      date: '2026-02-20',
+      time: '15:00',
+    },
+  },
+  {
+    id: 'school-event-2026-03-04',
+    title: '社團博覽會',
+    description: '',
+    type: 'school-event',
+    startDateTime: {
+      date: '2026-03-04',
+      time: '12:00',
+    },
+    endDateTime: {
+      date: '2026-03-04',
+      time: '15:00',
+    },
+    location: '',
+    instructor: '',
+    priority: 1,
+    published: true,
+    createdAt: {
+      date: '2026-03-04',
+      time: '14:00',
+    },
+    updatedAt: {
+      date: '2026-03-04',
+      time: '14:00',
     },
   },
 
   // 社團行程
+  // 114-1
   {
     id: 'club-event-2025-09-05-01',
     title: '社團博覽會',
@@ -141,6 +196,7 @@ export const schedules: ScheduleEvent[] = [
   },
 
   // 社團活動
+  // 114-1
   {
     id: 'club-activity-2025-10-15',
     title: '自走車 DIY',
@@ -167,8 +223,62 @@ export const schedules: ScheduleEvent[] = [
       time: '13:00',
     },
   },
+  // 114-2
+  {
+    id: 'club-activity-2026-04-01',
+    title: '自走車組裝和程式設計',
+    description: '',
+    type: 'activity',
+    startDateTime: {
+      date: '2026-04-01',
+      time: '14:00',
+    },
+    endDateTime: {
+      date: '2026-04-01',
+      time: '16:00',
+    },
+    location: '天機大樓 2314',
+    instructor: '',
+    priority: 1,
+    published: true,
+    createdAt: {
+      date: '2025-03-04',
+      time: '14:00',
+    },
+    updatedAt: {
+      date: '2025-03-04',
+      time: '14:00',
+    },
+  },
+  {
+    id: 'club-activity-2026-06-10',
+    title: '期末成果發表會',
+    description: '',
+    type: 'activity',
+    startDateTime: {
+      date: '2026-06-10',
+      time: '14:00',
+    },
+    endDateTime: {
+      date: '2026-06-10',
+      time: '16:00',
+    },
+    location: '天機大樓 2314',
+    instructor: '',
+    priority: 1,
+    published: true,
+    createdAt: {
+      date: '2025-03-04',
+      time: '14:00',
+    },
+    updatedAt: {
+      date: '2025-03-04',
+      time: '14:00',
+    },
+  },
 
   // 上課時間
+  // 114-1
   {
     id: 'regular-class-2025-10-08',
     title: '社團課程一（社員大會）',
@@ -297,6 +407,85 @@ export const schedules: ScheduleEvent[] = [
     updatedAt: {
       date: '2025-09-23',
       time: '13:00',
+    },
+  },
+  // 114-2
+  {
+    id: 'regular-class-first',
+    title: '社團課程一',
+    description: '',
+    type: 'class',
+    startDateTime: {
+      date: '2026-03-18',
+      time: '14:00',
+    },
+    endDateTime: {
+      date: '2026-03-18',
+      time: '16:00',
+    },
+    location: '天機大樓 2314',
+    instructor: '',
+    priority: 1,
+    published: true,
+    createdAt: {
+      date: '2025-03-04',
+      time: '14:00',
+    },
+    updatedAt: {
+      date: '2025-03-04',
+      time: '14:00',
+    },
+  },
+  {
+    id: 'regular-class-second',
+    title: '社團課程二',
+    description: '',
+    type: 'class',
+    startDateTime: {
+      date: '2026-04-08',
+      time: '14:00',
+    },
+    endDateTime: {
+      date: '2026-04-08',
+      time: '16:00',
+    },
+    location: '天機大樓 2314',
+    instructor: '',
+    priority: 1,
+    published: true,
+    createdAt: {
+      date: '2025-03-04',
+      time: '14:00',
+    },
+    updatedAt: {
+      date: '2025-03-04',
+      time: '14:00',
+    },
+  },
+  {
+    id: 'regular-class-third',
+    title: '社團課程三',
+    description: '',
+    type: 'class',
+    startDateTime: {
+      date: '2026-05-20',
+      time: '14:00',
+    },
+    endDateTime: {
+      date: '2026-05-20',
+      time: '16:00',
+    },
+    location: '天機大樓 2314',
+    instructor: '',
+    priority: 1,
+    published: true,
+    createdAt: {
+      date: '2025-03-04',
+      time: '14:00',
+    },
+    updatedAt: {
+      date: '2025-03-04',
+      time: '14:00',
     },
   },
 ]

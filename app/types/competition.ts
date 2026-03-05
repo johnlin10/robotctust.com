@@ -84,7 +84,7 @@ export interface Competition {
   /** 競賽狀態 */
   status: CompetitionStatus
   /** 時間線 */
-  timeline: TimelineStep[]
+  timeline?: TimelineStep[]
   /** 相關連結 */
   link: string | null
   /** 競賽圖片 URL */
@@ -135,8 +135,7 @@ export interface CreateCompetitionInput {
 }
 
 //* 用於更新競賽的輸入型別
-export interface UpdateCompetitionInput
-  extends Partial<CreateCompetitionInput> {
+export interface UpdateCompetitionInput extends Partial<CreateCompetitionInput> {
   id: string
   status?: CompetitionStatus
   published?: boolean
@@ -161,8 +160,10 @@ export interface CompetitionSort {
 }
 
 //* Firestore 文件結構（用於資料庫操作）
-export interface CompetitionDocument
-  extends Omit<Competition, 'createdAt' | 'updatedAt' | 'timeline'> {
+export interface CompetitionDocument extends Omit<
+  Competition,
+  'createdAt' | 'updatedAt' | 'timeline'
+> {
   timeline: (Omit<TimelineStep, 'startDateTime' | 'endDateTime'> & {
     startDateTime: {
       date: string | null

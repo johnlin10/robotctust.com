@@ -20,6 +20,8 @@
   }
 
   > .yearSelector {
+    z-index: 1100;
+    position: relative;
     margin-bottom: var(--space-2x);
     padding: var(--space);
     border: 1px solid var(--border);
@@ -121,6 +123,7 @@
 
         @include mixins.respond-by-max-width(859px) {
           flex-direction: row;
+          align-items: center;
           gap: var(--space-0-5x);
           padding: var(--space-0-5x);
           margin-left: calc(var(--space-1-5x) * -1);
@@ -129,9 +132,21 @@
           @include mixins.hide-scrollbar;
         }
 
+        > p.year {
+          font-size: 0.9rem;
+          color: var(--foreground-500);
+          margin-top: var(--space);
+
+          @include mixins.respond-by-max-width(859px) {
+            margin-top: 0;
+            margin-left: var(--space);
+            height: fit-content;
+          }
+        }
+
         > .monthNavButton {
           @include mixins.flexbox(row, space-between, center);
-          padding: var(--space);
+          padding: var(--space-0-5x) var(--space);
           background: var(--background-secondary);
           border: 1px solid var(--border);
           @include mixins.border-radius(6px);
@@ -141,7 +156,6 @@
           @include mixins.hover-scale-effect;
 
           @include mixins.respond-by-max-width(860px) {
-            padding: var(--space-0-5x) var(--space);
             gap: var(--space-0-5x);
           }
 
@@ -150,24 +164,20 @@
           }
 
           &.active {
-            background: var(--theme-gray-300);
-            border-color: var(--foreground-700);
-            color: var(--color-white);
-
-            &:hover {
-              background: var(--theme-gray-400);
-            }
+            background: var(--background-tertiary);
+            border-color: var(--foreground-800);
+            color: var(--foreground);
 
             > .monthNavContent {
               > .monthName,
               > .monthYear {
-                color: var(--color-white);
+                color: var(--foreground);
               }
             }
 
             > .monthEventCount {
-              background: var(--color-white);
-              color: var(--primary);
+              background: var(--theme-purple-500);
+              color: var(--color-white);
             }
           }
 
@@ -212,8 +222,9 @@
           }
 
           > .monthEventCount {
-            background: var(--primary);
-            color: var(--color-white);
+            background: var(--background-tertiary);
+            border: 1px solid var(--foreground-800);
+            color: var(--foreground);
             font-size: 0.75rem;
             font-weight: 600;
             width: 20px;
@@ -304,6 +315,13 @@
     font-family: inherit;
     font-size: 0.9rem;
 
+    :global(.fc-scrollgrid-section-header) {
+      border: none;
+      > th {
+        background: var(--background) !important;
+        border: none;
+      }
+    }
     // 月檢視樣式
     :global(.fc-dayGridMonth-view) {
       // 移除預設邊框
@@ -314,7 +332,7 @@
           border: none;
         }
 
-        > thead {
+        thead {
           & > tr > th {
             padding-bottom: 6px;
             background: var(--background);
@@ -364,6 +382,11 @@
           :global(.fc-daygrid-event-harness) {
             pointer-events: none;
           }
+        }
+
+        &.dayHighlighted {
+          background-color: var(--theme-purple-500) !important;
+          box-shadow: inset 0 0 0 1px var(--theme-purple-600) !important;
         }
 
         // 日期數字

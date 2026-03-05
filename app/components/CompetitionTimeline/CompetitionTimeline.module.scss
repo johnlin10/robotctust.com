@@ -104,7 +104,7 @@
         z-index: 10;
         @include mixins.flexbox(row, start, start);
         gap: var(--space);
-        min-width: 200px;
+        min-width: 240px;
         min-height: 100%;
         position: sticky;
         top: 72px;
