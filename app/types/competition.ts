@@ -84,7 +84,7 @@ export interface Competition {
   /** 競賽狀態 */
   status: CompetitionStatus
   /** 時間線 */
-  timeline?: TimelineStep[]
+  timeline: TimelineStep[]
   /** 相關連結 */
   link: string | null
   /** 競賽圖片 URL */

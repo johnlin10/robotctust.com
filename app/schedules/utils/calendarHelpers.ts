@@ -36,7 +36,7 @@ export const EVENT_COLORS = {
  * 將課程事件轉換為 FullCalendar 格式
  */
 export const convertScheduleEventToCalendarEvent = (
-  event: ScheduleEvent
+  event: ScheduleEvent,
 ): CalendarEvent => {
   const colors = EVENT_COLORS[event.type]
 
@@ -62,13 +62,13 @@ export const convertScheduleEventToCalendarEvent = (
  * 將競賽資料轉換為課程事件格式
  */
 export const convertCompetitionToScheduleEvent = (
-  competition: Competition
+  competition: Competition,
 ): ScheduleEvent[] => {
   if (!competition.published) return []
 
   return competition.timeline
     .filter(
-      (timeline) => timeline.startDateTime.date && timeline.endDateTime.date
+      (timeline) => timeline.startDateTime.date && timeline.endDateTime.date,
     )
     .map((timeline) => ({
       id: `competition-${timeline.id}`,
@@ -105,10 +105,10 @@ export const convertCompetitionToScheduleEvent = (
  */
 export const mergeClassAndCompetitionEvents = (
   classEvents: ScheduleEvent[],
-  competitions: Competition[]
+  competitions: Competition[],
 ): ScheduleEvent[] => {
   const competitionEvents = competitions.flatMap(
-    convertCompetitionToScheduleEvent
+    convertCompetitionToScheduleEvent,
   )
 
   return [...classEvents, ...competitionEvents]
@@ -131,7 +131,7 @@ export const mergeClassAndCompetitionEvents = (
  * 將事件列表轉換為 FullCalendar 格式
  */
 export const convertEventsToCalendarFormat = (
-  events: ScheduleEvent[]
+  events: ScheduleEvent[],
 ): CalendarEvent[] => {
   return events.map(convertScheduleEventToCalendarEvent)
 }
@@ -181,7 +181,7 @@ export const isToday = (date: string): boolean => {
 export const isUpcoming = (event: ScheduleEvent): boolean => {
   const now = new Date()
   const eventDate = new Date(
-    `${event.startDateTime.date}T${event.startDateTime.time}`
+    `${event.startDateTime.date}T${event.startDateTime.time}`,
   )
   const diffTime = eventDate.getTime() - now.getTime()
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))

@@ -42,14 +42,14 @@ function CompetitionTimeline({
    * @returns 格式化後的日期時間
    */
   const formatDateTime = (
-    dateTime: Competition['timeline'][0]['startDateTime']
+    dateTime: Competition['timeline'][0]['startDateTime'],
   ) => {
     if (!dateTime.date) return '未設定'
     const date = new Date(dateTime.date)
     const timeStr = dateTime.time || ''
     return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(
       2,
-      '0'
+      '0',
     )}/${String(date.getDate()).padStart(2, '0')} ${timeStr}`
   }
 
@@ -59,7 +59,7 @@ function CompetitionTimeline({
    * @returns 格式化後的日期顯示
    */
   const formatDateOnly = (
-    dateTime: Competition['timeline'][0]['startDateTime']
+    dateTime: Competition['timeline'][0]['startDateTime'],
   ) => {
     if (!dateTime.date) return ''
     const date = new Date(dateTime.date)
