@@ -97,25 +97,41 @@ export const getAcademicYearConfig = (
 }
 
 /**
+ * 快取的學期時間範圍 (Unix timestamp)
+ * 避免在渲染日曆時重複解析 Date 物件建立效能瓶頸
+ */
+const semesterTimeCache = new Map<number, {
+  fsStart: number; fsEnd: number; 
+  ssStart: number; ssEnd: number;
+}>()
+
+/**
  * 檢查日期是否在學期範圍內
+ * 已經針對效能進行最佳化，會快取該學年的毫秒時間區間
  */
 export const isDateInSemester = (
   date: Date | string,
   academicYear: number
 ): boolean => {
-  const targetDate = typeof date === 'string' ? new Date(date) : date
-  const yearConfig = getAcademicYearConfig(academicYear)
+  const targetTime = typeof date === 'string' ? new Date(date).getTime() : date.getTime()
+  
+  let cache = semesterTimeCache.get(academicYear)
+  if (!cache) {
+    const yearConfig = getAcademicYearConfig(academicYear)
+    if (!yearConfig) return false
 
-  if (!yearConfig) return false
-
-  const firstSemesterStart = new Date(yearConfig.firstSemester.start)
-  const firstSemesterEnd = new Date(yearConfig.firstSemester.end)
-  const secondSemesterStart = new Date(yearConfig.secondSemester.start)
-  const secondSemesterEnd = new Date(yearConfig.secondSemester.end)
+    cache = {
+      fsStart: new Date(yearConfig.firstSemester.start).getTime(),
+      fsEnd: new Date(yearConfig.firstSemester.end).getTime(),
+      ssStart: new Date(yearConfig.secondSemester.start).getTime(),
+      ssEnd: new Date(yearConfig.secondSemester.end).getTime(),
+    }
+    semesterTimeCache.set(academicYear, cache)
+  }
 
   return (
-    (targetDate >= firstSemesterStart && targetDate <= firstSemesterEnd) ||
-    (targetDate >= secondSemesterStart && targetDate <= secondSemesterEnd)
+    (targetTime >= cache.fsStart && targetTime <= cache.fsEnd) ||
+    (targetTime >= cache.ssStart && targetTime <= cache.ssEnd)
   )
 }
 

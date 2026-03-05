@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import styles from './schedules.module.scss'
 
 // components
@@ -85,37 +85,45 @@ export default function SchedulesClient() {
     loadData()
   }, [])
 
-  //* 過濾特定日期的事件
-  const getEventsForDate = (date: string): ScheduleEvent[] => {
+  //* 取得特定日期的事件
+  // 使用 useCallback 避免元件重新渲染時重建函式
+  // 將目標日期的解析移出 filter 迴圈，避免每次迭代都重新 createdAt Date 物件，提升效能
+  const getEventsForDate = useCallback((date: string): ScheduleEvent[] => {
+    const clickedDate = new Date(date)
+    const clickedYear = clickedDate.getFullYear()
+    const clickedMonth = clickedDate.getMonth()
+    const clickedDateNum = clickedDate.getDate()
+
     return filteredEvents.filter((event) => {
       const eventDate = new Date(event.startDateTime.date)
-      const clickedDate = new Date(date)
       return (
-        eventDate.getFullYear() === clickedDate.getFullYear() &&
-        eventDate.getMonth() === clickedDate.getMonth() &&
-        eventDate.getDate() === clickedDate.getDate()
+        eventDate.getFullYear() === clickedYear &&
+        eventDate.getMonth() === clickedMonth &&
+        eventDate.getDate() === clickedDateNum
       )
     })
-  }
+  }, [filteredEvents])
 
   //* 處理事件點擊
-  const handleEventClick = (eventId: string) => {
+  // 點擊事件卡片時的處理邏輯，使用 useCallback 確保函式參考穩定
+  const handleEventClick = useCallback((eventId: string) => {
     console.log('Event clicked:', eventId)
-  }
+  }, [])
 
   //* 處理日期點擊
-  const handleDateClick = (date: string) => {
+  // 記錄選中的日期，並開啟日程詳細檢視面板
+  const handleDateClick = useCallback((date: string) => {
     console.log('Date clicked:', date)
     setSelectedDate(date)
     setIsDayDetailVisible(true)
-  }
+  }, [])
 
   //* 關閉日程詳細檢視
-  const handleCloseDayDetail = () => {
+  // 隱藏詳細檢視面板，並延遲 300ms 清除選中日期以等待關閉動畫完成
+  const handleCloseDayDetail = useCallback(() => {
     setIsDayDetailVisible(false)
-    // 延遲清除選中日期，讓動畫完成
     setTimeout(() => setSelectedDate(null), 300)
-  }
+  }, [])
 
   // 如果沒有可用的學年度，設定為當前學年度
   useEffect(() => {

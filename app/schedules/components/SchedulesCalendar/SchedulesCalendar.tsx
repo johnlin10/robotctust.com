@@ -107,20 +107,30 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
   }
 
   //* 處理事件點擊
-  const handleEventClick = (clickInfo: { event: { id: string } }) => {
-    if (onEventClick) {
-      onEventClick(clickInfo.event.id)
-    }
-  }
+  // 使用 useCallback 包裝以維持函式參考一致性，減少 FullCalendar 重繪
+  const handleEventClick = React.useCallback(
+    (clickInfo: { event: { id: string } }) => {
+      if (onEventClick) {
+        onEventClick(clickInfo.event.id)
+      }
+    },
+    [onEventClick],
+  )
+
   //* 處理日期點擊
-  const handleDateClick = (clickInfo: { dateStr: string }) => {
-    if (onDateClick) {
-      onDateClick(clickInfo.dateStr)
-    }
-  }
+  // 使用 useCallback 包裝
+  const handleDateClick = React.useCallback(
+    (clickInfo: { dateStr: string }) => {
+      if (onDateClick) {
+        onDateClick(clickInfo.dateStr)
+      }
+    },
+    [onDateClick],
+  )
 
   //* 滾動到指定月份
-  const scrollToMonth = (year: number, month: number) => {
+  // 使用 useCallback 包裝並確保參考穩定
+  const scrollToMonth = React.useCallback((year: number, month: number) => {
     const monthId = `month-${year}-${month}`
 
     // 先瞬間滾動到 calendarContent 區域，避免從頂部 smooth 滾動卡住
@@ -146,24 +156,36 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
         setActiveMonth(monthId)
       }
     }, 50)
-  }
+  }, [])
 
-  //* 統計每個月的事件數量
-  const getMonthEventCount = (year: number, month: number): number => {
-    return events.filter((event) => {
+  //* 計算並快取當下學期每個月的事件數量，大幅減低在 render 時多次 filter 及產生 Date 物件的資源消耗
+  const monthEventCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    events.forEach((event) => {
       const eventDate = new Date(event.startDateTime.date)
-      return eventDate.getFullYear() === year && eventDate.getMonth() === month
-    }).length
-  }
+      const key = `${eventDate.getFullYear()}-${eventDate.getMonth()}`
+      counts[key] = (counts[key] || 0) + 1
+    })
+    return counts
+  }, [events])
 
-  //* 計算選中日期事件的時間範圍
-  const calculateTimeRange = (dateEvents: ScheduleEvent[]) => {
-    if (dateEvents.length === 0) {
+  //* 根據預先計算好的月事件數來獲取，這原本在側邊欄 map 中會被多次呼叫
+  const getMonthEventCount = React.useCallback(
+    (year: number, month: number): number => {
+      return monthEventCounts[`${year}-${month}`] || 0
+    },
+    [monthEventCounts],
+  )
+
+  //* 將「選中日期事件的時間範圍計算」提取為 useMemo，
+  //* 因為 FullCalendar 的 props 有 3 處依賴此結果，預先計算好避免每次 render 都重建
+  const selectedDateTimeRange = useMemo(() => {
+    if (!selectedDateEvents || selectedDateEvents.length === 0) {
       return { start: '08:00:00', end: '18:00:00' }
     }
 
     // 取得所有事件的開始和結束時間
-    const times = dateEvents.flatMap((event) => [
+    const times = selectedDateEvents.flatMap((event) => [
       event.startDateTime.time || '08:00:00',
       event.endDateTime?.time || event.startDateTime.time || '18:00:00',
     ])
@@ -181,7 +203,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
       start: `${startHour.toString().padStart(2, '0')}:00:00`,
       end: `${endHour.toString().padStart(2, '0')}:59:59`,
     }
-  }
+  }, [selectedDateEvents])
 
   //* 自定義日期樣式 - 學期外日期暗淡（暫時註解，未來可能會用到）
   // const dayClassNames = (date: { date: Date }) => {
@@ -192,60 +214,68 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
   // }
 
   //* 滾動到指定日期
-  const scrollToDate = (dateStr: string) => {
-    const targetDate = new Date(dateStr)
-    const year = targetDate.getFullYear()
-    const month = targetDate.getMonth()
+  // 使用 useCallback 包裝並確保參考穩定
+  const scrollToDate = React.useCallback(
+    (dateStr: string) => {
+      const targetDate = new Date(dateStr)
+      const year = targetDate.getFullYear()
+      const month = targetDate.getMonth()
 
-    // 先瞬間滾動到 calendarContent 區域
-    const calendarContent = document.querySelector(`.${styles.calendarContent}`)
-    if (calendarContent) {
-      window.scrollTo({
-        top: calendarContent.getBoundingClientRect().top + window.scrollY - 200,
-        behavior: 'smooth',
-      })
-    }
+      // 先瞬間滾動到 calendarContent 區域
+      const calendarContent = document.querySelector(
+        `.${styles.calendarContent}`,
+      )
+      if (calendarContent) {
+        window.scrollTo({
+          top:
+            calendarContent.getBoundingClientRect().top + window.scrollY - 200,
+          behavior: 'smooth',
+        })
+      }
 
-    // 短暫延遲後滾動到對應月份
-    setTimeout(() => {
-      scrollToMonth(year, month)
-
-      // 延遲後查詢並高亮該日期（等待滾動動畫和 DOM 更新）
+      // 短暫延遲後滾動到對應月份
       setTimeout(() => {
-        const dateCell = document.querySelector(`[data-date="${dateStr}"]`)
-        if (dateCell) {
-          // 使用 IntersectionObserver 監聽元素進入視圖
-          const observer = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  // 進入視圖後延遲 500ms 高亮
-                  setTimeout(() => {
-                    dateCell.classList.add(styles.dayHighlighted)
+        scrollToMonth(year, month)
+
+        // 延遲後查詢並高亮該日期（等待滾動動畫和 DOM 更新）
+        setTimeout(() => {
+          const dateCell = document.querySelector(`[data-date="${dateStr}"]`)
+          if (dateCell) {
+            // 使用 IntersectionObserver 監聽元素進入視圖
+            const observer = new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting) {
+                    // 進入視圖後延遲 500ms 高亮
                     setTimeout(() => {
-                      dateCell.classList.remove(styles.dayHighlighted)
-                    }, 1000)
-                  }, 500)
-                  observer.disconnect()
-                }
-              })
-            },
-            {
-              threshold: 0.5, // 元素至少 50% 可見時觸發
-            },
-          )
-          observer.observe(dateCell)
-        }
-      }, 400)
-    }, 50)
-  }
+                      dateCell.classList.add(styles.dayHighlighted)
+                      setTimeout(() => {
+                        dateCell.classList.remove(styles.dayHighlighted)
+                      }, 1000)
+                    }, 500)
+                    observer.disconnect()
+                  }
+                })
+              },
+              {
+                threshold: 0.5, // 元素至少 50% 可見時觸發
+              },
+            )
+            observer.observe(dateCell)
+          }
+        }, 400)
+      }, 50)
+    },
+    [scrollToMonth],
+  )
+
   //* 滾動到今天
-  const scrollToToday = () => {
+  const scrollToToday = React.useCallback(() => {
     const today = new Date()
     // 使用 local date 格式，避免 toISOString() 的 UTC 時區偏移
     const localDateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
     scrollToDate(localDateStr)
-  }
+  }, [scrollToDate])
 
   //* 生成學年度的所有月份
   const academicYearMonths = useMemo(() => {
@@ -635,13 +665,13 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
                       height="300px"
                       locale="zh-tw"
                       events={convertEventsToCalendarFormat(selectedDateEvents)}
-                      slotMinTime={calculateTimeRange(selectedDateEvents).start}
-                      slotMaxTime={calculateTimeRange(selectedDateEvents).end}
+                      slotMinTime={selectedDateTimeRange.start}
+                      slotMaxTime={selectedDateTimeRange.end}
                       slotDuration="01:00:00"
                       slotLabelInterval="01:00"
                       allDaySlot={false}
                       nowIndicator={true}
-                      scrollTime={calculateTimeRange(selectedDateEvents).start}
+                      scrollTime={selectedDateTimeRange.start}
                       eventClick={handleEventClick}
                       headerToolbar={false}
                       dayHeaders={false}
