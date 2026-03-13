@@ -40,6 +40,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false)
   const [loading, setLoading] = useState(true)
 
+  //* 避免資料查詢卡住造成整個 UI 一直 loading
+  const resolveWithTimeout = useCallback(
+    async <T,>(promise: Promise<T>, timeoutMs: number, fallback: T): Promise<T> => {
+      let timerId: ReturnType<typeof setTimeout> | null = null
+      try {
+        return await Promise.race<T>([
+          promise,
+          new Promise<T>((resolve) => {
+            timerId = setTimeout(() => {
+              resolve(fallback)
+            }, timeoutMs)
+          }),
+        ])
+      } finally {
+        if (timerId) clearTimeout(timerId)
+      }
+    },
+    []
+  )
+
   //* 從 Supabase 獲取使用者資料並做對應的轉換
   const getUserProfile = useCallback(
     async (uid: string): Promise<UserProfile | null> => {
@@ -340,39 +360,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const syncAuthState = async (session: Session | null) => {
       if (!isMounted) return
 
-      const currentSupabaseUser = session?.user || null
-      setSupabaseUser(currentSupabaseUser)
+      try {
+        const currentSupabaseUser = session?.user || null
+        setSupabaseUser(currentSupabaseUser)
 
-      if (currentSupabaseUser) {
-        const userProfile = await getUserProfile(currentSupabaseUser.id)
+        if (currentSupabaseUser) {
+          const userProfile = await resolveWithTimeout<UserProfile | null>(
+            getUserProfile(currentSupabaseUser.id),
+            8000,
+            null,
+          )
+          if (!isMounted) return
+
+          setUser(userProfile)
+
+          const isSuperAdminUser = checkSuperAdmin(currentSupabaseUser)
+          setIsSuperAdmin(isSuperAdminUser)
+          setIsAdmin(
+            isSuperAdminUser ||
+              userProfile?.role === 'admin' ||
+              userProfile?.role === 'super_admin'
+          )
+        } else {
+          setUser(null)
+          setIsAdmin(false)
+          setIsSuperAdmin(false)
+        }
+      } catch (error) {
+        console.error('同步使用者狀態時發生錯誤:', error)
         if (!isMounted) return
-
-        setUser(userProfile)
-
-        const isSuperAdminUser = checkSuperAdmin(currentSupabaseUser)
-        setIsSuperAdmin(isSuperAdminUser)
-        setIsAdmin(
-          isSuperAdminUser ||
-            userProfile?.role === 'admin' ||
-            userProfile?.role === 'super_admin'
-        )
-      } else {
         setUser(null)
+        setSupabaseUser(null)
         setIsAdmin(false)
         setIsSuperAdmin(false)
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
       }
-
-      setLoading(false)
     }
 
     const initAuthState = async () => {
       try {
-        const { data, error } = await supabase.auth.getSession()
-        if (error) {
-          console.error('初始化使用者狀態失敗:', error.message)
-          if (isMounted) setLoading(false)
-          return
-        }
+        const { data } = await resolveWithTimeout(
+          supabase.auth.getSession(),
+          8000,
+          { data: { session: null }, error: null },
+        )
 
         await syncAuthState(data.session)
       } catch (error) {
@@ -386,8 +420,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
-      async (_event: AuthChangeEvent, session: Session | null) => {
-        await syncAuthState(session)
+      (_event: AuthChangeEvent, session: Session | null) => {
+        void syncAuthState(session)
       }
     )
 
@@ -395,7 +429,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       isMounted = false
       subscription.unsubscribe()
     }
-  }, [getUserProfile, checkSuperAdmin, supabase])
+  }, [getUserProfile, checkSuperAdmin, supabase, resolveWithTimeout])
 
   const value: AuthContextType = {
     user,
