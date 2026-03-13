@@ -1,0 +1,93 @@
+@use '../../styles/mixins' as mixins;
+
+.toast {
+  z-index: 9999;
+  position: fixed;
+  @include mixins.flexbox(row, center, center);
+  top: calc(var(--header-height) + var(--space));
+  left: 50%;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(var(--background-rgb), 0.5);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  @include mixins.border-radius(12px);
+  @include mixins.glass-blur(12px);
+  @include mixins.transform-container(translateX(-50%));
+
+  min-width: 280px;
+  max-width: 90vw;
+
+  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &.exit {
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  &.success {
+    .icon {
+      color: var(--theme-green-500);
+    }
+  }
+
+  &.error {
+    .icon {
+      color: var(--theme-red-500);
+    }
+  }
+
+  &.info {
+    .icon {
+      color: var(--theme-purple-500);
+    }
+  }
+
+  .icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .message {
+    flex-grow: 1;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  .close {
+    background: none;
+    border: none;
+    color: var(--foreground-tertiary);
+    cursor: pointer;
+    padding: 0.25rem;
+    @include mixins.transition(var(--transition-default));
+
+    &:hover {
+      color: var(--foreground);
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+}

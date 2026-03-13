@@ -1,25 +1,43 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 import styles from './Header.module.scss'
-// components
+
+// component
 import Menu from '../Menu/Menu'
+
 // contexts
 import { useAuth } from '../../contexts/AuthContext'
 import { useHeaderState } from '../../contexts/HeaderContext'
+
 // hooks
 import { useNavAutoCenter } from './useNavAutoCenter'
-import { usePathname } from 'next/navigation'
+
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
+
 // configs
 import { NAV_AUTO_CENTER_CONFIG } from './headerScrollConfig'
-import Image from 'next/image'
+
+//* 需要隱藏 Header 的頁面路徑列表
+const HIDDEN_HEADER_PATHS = ['/login', '/register', '/auth/callback']
 
 /**
- * [Component] 導航列
+ * 檢查當前路徑是否需要隱藏 Header
+ * @param {string} pathname 當前路徑
+ * @returns {boolean} 是否需要隱藏
+ */
+const shouldHideHeader = (pathname: string): boolean => {
+  return HIDDEN_HEADER_PATHS.some((path) => pathname.startsWith(path))
+}
+
+/**
+ * [Component] Header 元件
+ * @returns {JSX.Element} Header 元件
  */
 export default function Header() {
   // 獲取當前路徑
@@ -36,7 +54,7 @@ export default function Header() {
 
   /**
    * 關閉選單
-   * @returns void
+   * @returns {void}
    */
   const handleCloseMenu = () => {
     setIsMenuOpen(false)
@@ -44,7 +62,7 @@ export default function Header() {
 
   /**
    * 處理導航連結點擊事件
-   * @returns void
+   * @returns {void}
    */
   const handleNavLinkClick = () => {
     handleCloseMenu()
@@ -53,7 +71,7 @@ export default function Header() {
 
   /**
    * 處理 Logo 點擊事件
-   * @returns void
+   * @returns {void}
    */
   const handleLogoClick = () => {
     window.location.href = '/'
@@ -66,6 +84,11 @@ export default function Header() {
     }, 250)
     return () => clearTimeout(timeoutId)
   }, [isCompactHeader, centerActiveItem])
+
+  // 如果當前頁面需要隱藏 Header，則不渲染
+  if (shouldHideHeader(pathname)) {
+    return null
+  }
 
   return (
     <>
@@ -114,7 +137,16 @@ export default function Header() {
               onClick={handleNavLinkClick}
               className={pathname.startsWith('/update') ? styles.active : ''}
             >
-              最新資訊
+              新聞
+            </Link>
+            <Link
+              href="/competitions"
+              onClick={handleNavLinkClick}
+              className={
+                pathname.startsWith('/competitions') ? styles.active : ''
+              }
+            >
+              競賽
             </Link>
             <Link
               href="/schedules"

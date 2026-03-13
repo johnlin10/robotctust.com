@@ -1,15 +1,183 @@
 @use '../styles/_mixins.scss' as *;
 
 .login_page_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center !important;
   width: 100%;
+  min-height: calc(100vh - var(--header-height));
 
   .auth_page {
-    @include flexbox(column, center, center);
     width: 100%;
+  }
+
+  .back_to_home {
+    position: fixed;
+    top: var(--space-2x);
+    left: var(--space-2x);
+    @include flexbox(row, center, center);
+    gap: var(--space-0-5x);
+    width: fit-content;
+    padding: var(--space-0-25x) var(--space-0-75x);
+    background: rgba(var(--background-rgb), 0.5);
+    border: 1px solid var(--border);
+    @include border-radius(32px);
+    @include glass-blur(12px);
+    @include hover-scale-effect;
+
+    img {
+      height: 24px;
+      width: 24px;
+    }
+    p {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+  }
+}
+
+.auth_container {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-2x);
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  padding: 0 var(--space-4x);
+
+  > * {
+    flex: 1;
+  }
+
+  @include respond-to('phone') {
+    flex-direction: column;
+    padding: 0;
+  }
+  @include respond-to('tablet') {
+    flex-direction: column;
+    padding: 0;
+  }
+}
+
+.welcome_section {
+  width: 100%;
+
+  @include respond-to('phone') {
+    padding-bottom: var(--space-2x);
+    text-align: center;
+  }
+  @include respond-to('tablet') {
+    padding-bottom: var(--space-2x);
+    text-align: center;
+    max-width: 600px;
+  }
+}
+
+.welcome_content {
+  margin: 0 auto;
+}
+
+.welcome_title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-bottom: var(--space);
+  letter-spacing: -0.02em;
+
+  @include respond-to('phone') {
+    font-size: 1.75rem;
+  }
+}
+
+.welcome_subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4x);
+}
+
+.features_list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2x);
+
+  @include respond-to('phone') {
+    width: fit-content;
+    margin: 0 auto;
+  }
+
+  @include respond-to('tablet') {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-2x);
+    width: 100%;
+  }
+
+  .feature_item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1-5x);
+    text-align: left;
 
     @include respond-to('phone') {
-      padding: 0;
+      max-width: 320px;
     }
+    @include respond-to('tablet') {
+      width: calc(50% - var(--space));
+    }
+  }
+}
+
+.feature_icon_wrapper {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--background-secondary);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.1rem;
+  margin-top: 2px;
+}
+
+.feature_text {
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+.auth_form_wrapper {
+  z-index: 100;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  padding: var(--space-2x);
+  background: rgba(var(--background-secondary-rgb), 0.5);
+  border: 1px solid var(--border);
+  @include border-radius(24px);
+  @include glass-blur(12px);
+
+  @include respond-to('tablet') {
+    max-width: 600px;
+  }
+  @include respond-to('desktop') {
+    min-width: 400px;
+    max-width: 600px;
+    padding: var(--space-4x);
   }
 }
 
@@ -23,40 +191,8 @@
   }
 }
 
-.tab_header {
-  @include flexbox(row, center, center);
-  gap: var(--space);
-  margin-bottom: var(--space);
-}
-
-.tab_button {
-  flex: 1;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-secondary);
-  padding: 6px 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  @include border-radius(999px);
-  @include transition();
-
-  &.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: var(--color-white);
-    border-color: var(--border);
-  }
-}
-
 .form_container {
-  background: var(--background-secondary);
-  border: 1px solid var(--border);
-  @include border-radius(18px);
-  padding: var(--space-2x);
-  animation: fadeInPanel 0.3s ease forwards;
+  position: relative;
 }
 
 .status_card {

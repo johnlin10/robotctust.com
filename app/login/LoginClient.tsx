@@ -1,12 +1,16 @@
 'use client'
 
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useQueryState, parseAsStringLiteral } from 'nuqs'
 import styles from './login.module.scss'
+
+// third-party utils
+import { useQueryState, parseAsStringLiteral, parseAsString } from 'nuqs'
+
 // components
 import { LoginForm } from '../components/Auth/LoginForm'
 import { RegisterForm } from '../components/Auth/RegisterForm'
+
 // contexts
 import { useAuth } from '../contexts/AuthContext'
 
@@ -15,66 +19,65 @@ import { useAuth } from '../contexts/AuthContext'
  * @returns JSX.Element
  */
 export default function LoginClient() {
+  // 路由器
   const router = useRouter()
+  // 使用者狀態
   const { user, loading } = useAuth()
+  // 模式
   const [mode, setMode] = useQueryState(
     'mode',
     parseAsStringLiteral(['login', 'register'] as const)
       .withDefault('login')
-      .withOptions({ clearOnDefault: true, scroll: false })
+      .withOptions({ clearOnDefault: true, scroll: false }),
+  )
+  // 電子郵件
+  const [email, setEmail] = useQueryState(
+    'email',
+    parseAsString
+      .withDefault('')
+      .withOptions({ clearOnDefault: true, scroll: false }),
   )
 
-  //* 若使用者已登入則導向個人頁面
+  /**
+   * [Effect] 若使用者已登入則導向個人頁面
+   * @returns {void}
+   */
   useEffect(() => {
     if (user?.username) {
-      router.replace(`/user/${user.username}`)
+      router.replace('/profile')
     }
   }, [router, user])
 
   /**
    * 切換至登入模式
-   * @returns void
+   * @param email 可選的預填電子郵件
+   * @returns {void}
    */
-  const handleSwitchToLogin = useCallback(() => {
-    setMode('login')
-  }, [setMode])
+  const handleSwitchToLogin = useCallback(
+    (emailToSet?: string) => {
+      setMode('login')
+      if (typeof emailToSet === 'string') {
+        setEmail(emailToSet)
+      }
+    },
+    [setMode, setEmail],
+  )
 
   /**
    * 切換至註冊模式
-   * @returns void
+   * @returns {void}
    */
   const handleSwitchToRegister = useCallback(() => {
     setMode('register')
-  }, [setMode])
+    setEmail(null) // 切換到註冊時清空 email param
+  }, [setMode, setEmail])
 
+  // 是否為登入模式
   const isLoginMode = mode === 'login'
 
   return (
     <section className={styles.auth_page} data-testid="login-page">
       <div className={styles.auth_panel}>
-        <div className={styles.tab_header}>
-          <button
-            type="button"
-            className={`${styles.tab_button} ${
-              isLoginMode ? styles.active : ''
-            }`}
-            onClick={handleSwitchToLogin}
-            aria-pressed={isLoginMode}
-          >
-            登入
-          </button>
-          <button
-            type="button"
-            className={`${styles.tab_button} ${
-              !isLoginMode ? styles.active : ''
-            }`}
-            onClick={handleSwitchToRegister}
-            aria-pressed={!isLoginMode}
-          >
-            註冊
-          </button>
-        </div>
-
         {loading && (
           <div className={styles.status_card} aria-live="polite">
             <p>正在載入使用者狀態...</p>

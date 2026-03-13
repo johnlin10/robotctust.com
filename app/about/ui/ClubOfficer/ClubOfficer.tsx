@@ -1,43 +1,51 @@
 import Link from 'next/link'
-import styles from './ClubOfficer.module.scss'
 import Image from 'next/image'
+import styles from './ClubOfficer.module.scss'
+
 // utils
 import { getUserProfileByUsernameServer } from '@/app/utils/userService'
 
 interface ClubOfficer {
-  name: string
-  position: string
-  description: string
-  username: string
+  name: string // 名稱
+  position: string // 職位
+  description: string // 描述
+  username: string // 帳號名稱
 }
 
 /**
- * 社團幹部項目元件
+ * [Component] 社團幹部項目元件
+ * @param clubOfficer - 社團幹部資料
+ * @returns JSX.Element
  */
 async function ClubOfficerItem({ clubOfficer }: { clubOfficer: ClubOfficer }) {
-  //* 取得使用者頭像
+  // 取得使用者頭像
   let avatarUrl = '/assets/image/userEmptyAvatar.png' // 預設頭像
-
   if (clubOfficer.username) {
     try {
+      // 取得使用者資料
       const userProfile = await getUserProfileByUsernameServer(
-        clubOfficer.username
+        clubOfficer.username,
       )
+      // 如果使用者頭像存在，則設定頭像 URL
       if (userProfile?.photoURL) {
         avatarUrl = userProfile.photoURL
-      } else {
-        console.log(userProfile)
       }
     } catch (error) {
       console.error('獲取使用者頭像時發生錯誤:', error)
     }
   }
 
+  /**
+   * [Component] 社團幹部項目連結元件
+   * @param children - 子元件
+   * @returns JSX.Element
+   */
   const ClubOfficerItemLink = ({ children }: { children: React.ReactNode }) => {
+    // 如果帳號名稱存在，則設定連結
     if (clubOfficer.username) {
       return (
         <Link
-          href={`/user/${clubOfficer.username}`}
+          href={`/@${clubOfficer.username}`}
           className={`${styles.clubOfficerItem} ${styles.clubOfficerItemLink}`}
         >
           {children}
@@ -85,7 +93,7 @@ export default function ClubOfficer() {
       name: '趙泰齡',
       position: '副社長',
       description: '副社長',
-      username: 'fdsect',
+      username: '',
     },
     {
       name: '王朝育',

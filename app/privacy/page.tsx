@@ -6,13 +6,16 @@ import { metadata } from '../utils/metadata'
 import Page from '../components/page/Page'
 import { MarkdownRenderer } from '../components/Markdown'
 
+/**
+ * [Page] 隱私權政策頁面
+ * @returns {JSX.Element}
+ */
 export default function Privacy() {
   return (
     <Page
-      // style={styles.privacyContainer}
       header={{
         title: '隱私權政策',
-        descriptions: ['最後更新：2025/10/02'],
+        descriptions: ['最後更新：2026/03/12'],
       }}
     >
       <MarkdownRenderer filePath="/assets/docs/privacy.md" />
@@ -20,6 +23,10 @@ export default function Privacy() {
   )
 }
 
+/**
+ * [Function] 生成隱私權政策頁面的 Metadata
+ * @returns {Metadata}
+ */
 export async function generateMetadata(): Promise<Metadata> {
   return metadata({
     title: '隱私權政策｜中臺機器人研究社',
@@ -29,6 +36,6 @@ export async function generateMetadata(): Promise<Metadata> {
     url: '/privacy',
     category: 'privacy',
     publishedTime: '2025-10-02',
-    modifiedTime: '2025-10-02',
+    modifiedTime: '2026-03-12',
   })
 }

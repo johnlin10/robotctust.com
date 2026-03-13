@@ -1,20 +1,19 @@
 'use client'
 
-import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import styles from './Menu.module.scss'
-// import { useTheme } from 'next-themes'
-import ThemeToggle from '../ThemeToggle/ThemeToggle'
-// components
-import WebsiteMap from '../WebsiteMap/WebsiteMap'
-// contexts
-import { useAuth } from '../../contexts/AuthContext'
-// hooks
 import { usePathname } from 'next/navigation'
+import styles from './Menu.module.scss'
+
+// components
+import ThemeToggle from '../ThemeToggle/ThemeToggle'
+import WebsiteMap from '../WebsiteMap/WebsiteMap'
+
+// context
+import { useAuth } from '../../contexts/AuthContext'
+
+// hook
 import { useMenuAutoClose } from '../../hooks/useMenuAutoClose'
-import { signOut } from 'firebase/auth'
-import { auth } from '@/app/utils/firebase'
 
 interface MenuProps {
   isOpen: boolean
@@ -25,15 +24,20 @@ interface AuthSectionProps {
   onClose?: () => void
 }
 
+/**
+ * [Component] 登入區塊
+ * @param {AuthSectionProps} onClose - 關閉選單
+ * @returns {JSX.Element}
+ */
 const AuthSection = ({ onClose }: AuthSectionProps) => {
   // 獲取當前路徑
   const pathname = usePathname()
   // 獲取登入資訊
-  const { user, loading } = useAuth()
+  const { user, loading, signOut } = useAuth()
 
   /**
    * 處理使用者頭像點擊
-   * @returns void
+   * @returns {void}
    */
   const handleUserClick = () => {
     if (onClose) {
@@ -43,10 +47,14 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
 
   /**
    * 處理登出
-   * @returns void
+   * @returns {void}
    */
-  const handleLogout = () => {
-    signOut(auth)
+  const handleLogout = async () => {
+    try {
+      await signOut()
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
 
     if (onClose) {
       onClose()
@@ -64,7 +72,7 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
           <div className={styles.loading}></div>
         ) : user ? (
           <Link
-            href={user ? `/user/${user.username}` : '/user'}
+            href="/profile"
             className={styles.user_link}
             onClick={handleUserClick}
           >
@@ -94,24 +102,24 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
               探索機器人世界！
             </p>
             <div className={styles.auth_buttons}>
-              <Link
+              {/* <Link
                 href="/login"
                 className={styles.login_button}
                 onClick={onClose}
               >
                 登入
-              </Link>
-              <Link
+              </Link> */}
+              {/* <Link
                 href={{ pathname: '/login', query: { mode: 'register' } }}
                 className={styles.register_button}
                 onClick={onClose}
               >
                 註冊
-              </Link>
+              </Link> */}
               <p className={styles.auth_login_text}>
-                帳號功能
+                登入系統內部測試中
                 <br />
-                內部測試中
+                敬請期待
               </p>
             </div>
           </div>
@@ -121,9 +129,13 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
   )
 }
 
+/**
+ * [Component] 選單
+ * @param {MenuProps} isOpen - 是否開啟
+ * @param {MenuProps['onClose']} onClose - 關閉選單
+ * @returns {JSX.Element}
+ */
 export default function Menu({ isOpen, onClose }: MenuProps) {
-  // const { theme, setTheme, resolvedTheme } = useTheme()
-
   // 自動關閉選單功能
   useMenuAutoClose({
     isOpen,

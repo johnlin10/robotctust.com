@@ -1,8 +1,3 @@
-/**
- * 競賽資料管理服務
- * 提供 Firestore 資料庫操作和資料轉換功能
- */
-
 import {
   collection,
   doc,
@@ -36,6 +31,8 @@ const COLLECTION_NAME = 'competitions'
 
 /**
  * 將日期時間字串轉換為 Firestore Timestamp
+ * @param {CompetitionDateTime} dateTime - 日期時間
+ * @returns {CompetitionDateTime} 日期時間
  */
 function _createTimestamp(dateTime: CompetitionDateTime): CompetitionDateTime {
   if (!dateTime.date || !dateTime.time) {
@@ -66,6 +63,8 @@ function _createTimestamp(dateTime: CompetitionDateTime): CompetitionDateTime {
 
 /**
  * 將 Competition 轉換為 Firestore 文件格式
+ * @param {Competition} competition - 競賽
+ * @returns {CompetitionDocument} Firestore 文件格式
  */
 function _toFirestoreDocument(competition: Competition): CompetitionDocument {
   return {
@@ -84,6 +83,8 @@ function _toFirestoreDocument(competition: Competition): CompetitionDocument {
 
 /**
  * 將 Firestore 文件轉換為 Competition 格式
+ * @param {DocumentData} doc - Firestore 文件
+ * @returns {Competition} 競賽
  */
 function _fromFirestoreDocument(doc: DocumentData): Competition {
   const data = doc.data()
@@ -129,11 +130,15 @@ function _fromFirestoreDocument(doc: DocumentData): Competition {
 
 /**
  * 建立查詢條件
+ * @param {CompetitionFilter} filter - 競賽過濾條件
+ * @param {CompetitionSort} sort - 競賽排序條件
+ * @param {number} limitCount - 限制數量
+ * @returns {QueryConstraint[]} 查詢條件
  */
 function _buildQueryConstraints(
   filter?: CompetitionFilter,
   sort?: CompetitionSort,
-  limitCount?: number
+  limitCount?: number,
 ): QueryConstraint[] {
   const constraints: QueryConstraint[] = []
 
@@ -161,7 +166,7 @@ function _buildQueryConstraints(
     // 日期範圍過濾（需要複合索引）
     if (filter.dateRange) {
       const startTimestamp = Timestamp.fromDate(
-        new Date(filter.dateRange.start)
+        new Date(filter.dateRange.start),
       )
       const endTimestamp = Timestamp.fromDate(new Date(filter.dateRange.end))
       constraints.push(where('createdAt', '>=', startTimestamp))
@@ -188,6 +193,8 @@ function _buildQueryConstraints(
 
 /**
  * 生成唯一 ID
+ * @param {string} title - 競賽標題
+ * @returns {string} 唯一 ID
  */
 function _generateId(title: string): string {
   const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '')
@@ -200,15 +207,17 @@ function _generateId(title: string): string {
   return `${slug}-${timestamp}`
 }
 
-// === 公開 API ===
-
 /**
  * 取得所有競賽
+ * @param {CompetitionFilter} filter - 競賽過濾條件
+ * @param {CompetitionSort} sort - 競賽排序條件
+ * @param {number} limitCount - 限制數量
+ * @returns {Promise<Competition[]>} 競賽列表
  */
 export async function getAllCompetitions(
   filter?: CompetitionFilter,
   sort?: CompetitionSort,
-  limitCount?: number
+  limitCount?: number,
 ): Promise<Competition[]> {
   try {
     const constraints = _buildQueryConstraints(filter, sort, limitCount)
@@ -226,7 +235,7 @@ export async function getAllCompetitions(
  * 依 ID 取得單一競賽
  */
 export async function getCompetitionById(
-  id: string
+  id: string,
 ): Promise<Competition | null> {
   try {
     const docRef = doc(db, COLLECTION_NAME, id)
@@ -244,10 +253,13 @@ export async function getCompetitionById(
 
 /**
  * 建立新競賽
+ * @param {CreateCompetitionInput} input - 競賽輸入
+ * @param {string} userId - 使用者 ID
+ * @returns {Promise<string>} 競賽 ID
  */
 export async function createCompetition(
   input: CreateCompetitionInput,
-  userId?: string
+  userId?: string,
 ): Promise<string> {
   try {
     const now = new Date()
@@ -296,10 +308,13 @@ export async function createCompetition(
 
 /**
  * 更新競賽
+ * @param {UpdateCompetitionInput} input - 競賽輸入
+ * @param {string} userId - 使用者 ID
+ * @returns {Promise<void>} 更新競賽結果
  */
 export async function updateCompetition(
   input: UpdateCompetitionInput,
-  userId?: string
+  userId?: string,
 ): Promise<void> {
   try {
     const docRef = doc(db, COLLECTION_NAME, input.id)
@@ -336,6 +351,8 @@ export async function updateCompetition(
 
 /**
  * 刪除競賽
+ * @param {string} id - 競賽 ID
+ * @returns {Promise<void>} 刪除競賽結果
  */
 export async function deleteCompetition(id: string): Promise<void> {
   try {
@@ -352,8 +369,10 @@ export async function deleteCompetition(id: string): Promise<void> {
 /**
  * 從時間線獲取競賽的具體日期
  * 優先順序：決賽 > 初賽 > 報名截止
+ * @param {Competition} comp - 競賽
+ * @returns {Date} 競賽日期
  */
-const getCompetitionDate = (comp: Competition): Date => {
+export function getCompetitionDate(comp: Competition): Date {
   const timeline = comp.timeline ?? []
 
   // 尋找決賽
@@ -362,7 +381,7 @@ const getCompetitionDate = (comp: Competition): Date => {
     return new Date(
       `${finalStep.startDateTime.date}T${
         finalStep.startDateTime.time || '00:00'
-      }:00`
+      }:00`,
     )
   }
 
@@ -372,7 +391,7 @@ const getCompetitionDate = (comp: Competition): Date => {
     return new Date(
       `${preStep.startDateTime.date}T${
         preStep.startDateTime.time || '00:00'
-      }:00`
+      }:00`,
     )
   }
 
@@ -380,7 +399,7 @@ const getCompetitionDate = (comp: Competition): Date => {
   const regStep = timeline.find((step) => step.step === 'registration')
   if (regStep?.endDateTime?.date) {
     return new Date(
-      `${regStep.endDateTime.date}T${regStep.endDateTime.time || '00:00'}:00`
+      `${regStep.endDateTime.date}T${regStep.endDateTime.time || '00:00'}:00`,
     )
   }
 
@@ -395,9 +414,11 @@ const getCompetitionDate = (comp: Competition): Date => {
  * 2. 過濾出尚未結束的競賽（基於決賽或初賽日期）
  * 3. 根據日期排序（由近到遠）
  * 4. 取前 N 個
+ * @param {number} limitCount - 限制數量
+ * @returns {Promise<Competition[]>} 競賽列表
  */
 export async function getUpcomingCompetitions(
-  limitCount: number = 5
+  limitCount: number = 5,
 ): Promise<Competition[]> {
   try {
     const allCompetitions = await getAllCompetitions({ published: true })
@@ -426,6 +447,7 @@ export async function getUpcomingCompetitions(
 
 /**
  * 取得進行中的競賽
+ * @returns {Promise<Competition[]>} 競賽列表
  */
 export async function getOngoingCompetitions(): Promise<Competition[]> {
   return getAllCompetitions(
@@ -433,32 +455,37 @@ export async function getOngoingCompetitions(): Promise<Competition[]> {
       status: ['ongoing'],
       published: true,
     },
-    { field: 'priority', direction: 'asc' }
+    { field: 'priority', direction: 'asc' },
   )
 }
 
 /**
  * 依標籤搜尋競賽
+ * @param {string[]} tags - 標籤列表
+ * @returns {Promise<Competition[]>} 競賽列表
  */
 export async function searchCompetitionsByTags(
-  tags: string[]
+  tags: string[],
 ): Promise<Competition[]> {
   return getAllCompetitions(
     {
       tags,
       published: true,
     },
-    { field: 'createdAt', direction: 'desc' }
+    { field: 'createdAt', direction: 'desc' },
   )
 }
 
 /**
  * 批量同步競賽資料到 Firestore
  * 用於將本地 Competitions.ts 的資料同步到雲端資料庫
+ * @param {Competition[]} competitions - 競賽列表
+ * @param {string} userId - 使用者 ID
+ * @returns {Promise<{ success: number; errors: string[] }>} 同步結果
  */
 export async function batchSyncCompetitions(
   competitions: Competition[],
-  userId?: string
+  userId?: string,
 ): Promise<{ success: number; errors: string[] }> {
   const batch = writeBatch(db)
   const errors: string[] = []
@@ -501,10 +528,13 @@ export async function batchSyncCompetitions(
 
 /**
  * 取得競賽的關鍵日期（用於時間線排序）
+ * @param {Competition} competition - 競賽
+ * @param {'competition' | 'registration'} type - 類型
+ * @returns {Date | null} 關鍵日期
  */
 export function getCompetitionKeyDate(
   competition: Competition,
-  type: 'competition' | 'registration'
+  type: 'competition' | 'registration',
 ): Date | null {
   const timeline = competition.timeline ?? []
 
@@ -516,13 +546,13 @@ export function getCompetitionKeyDate(
 
     if (targetStep?.startDateTime.date && targetStep?.startDateTime.time) {
       return new Date(
-        `${targetStep.startDateTime.date}T${targetStep.startDateTime.time}:00`
+        `${targetStep.startDateTime.date}T${targetStep.startDateTime.time}:00`,
       )
     }
   } else if (type === 'registration') {
     // 尋找報名階段的結束時間
     const registrationStep = timeline.find(
-      (step) => step.step === 'registration'
+      (step) => step.step === 'registration',
     )
 
     if (
@@ -530,7 +560,7 @@ export function getCompetitionKeyDate(
       registrationStep?.endDateTime.time
     ) {
       return new Date(
-        `${registrationStep.endDateTime.date}T${registrationStep.endDateTime.time}:00`
+        `${registrationStep.endDateTime.date}T${registrationStep.endDateTime.time}:00`,
       )
     }
   }
@@ -540,10 +570,13 @@ export function getCompetitionKeyDate(
 
 /**
  * 根據時間線排序競賽
+ * @param {Competition[]} competitions - 競賽列表
+ * @param {'competition' | 'registration'} sortBy - 排序方式
+ * @returns {Competition[]} 排序後的競賽列表
  */
 export function sortCompetitionsByTimeline(
   competitions: Competition[],
-  sortBy: 'competition' | 'registration' = 'competition'
+  sortBy: 'competition' | 'registration' = 'competition',
 ): Competition[] {
   return [...competitions].sort((a, b) => {
     const dateA = getCompetitionKeyDate(a, sortBy)

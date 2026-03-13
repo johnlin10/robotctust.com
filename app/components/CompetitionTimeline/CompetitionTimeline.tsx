@@ -1,17 +1,23 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import styles from './CompetitionTimeline.module.scss'
+
 // utils
 import {
   getCompetitionKeyDate,
   sortCompetitionsByTimeline,
 } from '../../utils/competitionService'
+
+// hook
 import useStickyDetection from '../../hooks/useStickyDetection'
-// component
+
+// components
 import CompetitionCard from '../CompetitionCard'
+
 // context
 import { useHeaderState } from '../../contexts/HeaderContext'
+
 // type
 import { Competition } from '../../types/competition'
 
@@ -34,7 +40,9 @@ interface DateSectionProps {
 }
 
 /**
- * 格式化日期顯示
+ * [Function] 格式化日期顯示
+ * @param {Date} date - 日期
+ * @returns {string} 格式化後的日期
  */
 function formatDate(date: Date): string {
   return date.toLocaleDateString('zh-TW', {
@@ -46,7 +54,9 @@ function formatDate(date: Date): string {
 }
 
 /**
- * 取得日期的簡短格式（用於分組）
+ * [Function] 取得日期的簡短格式（用於分組）
+ * @param {Date} date - 日期
+ * @returns {string} 格式化後的日期
  */
 function getDateKey(date: Date): string {
   return date.toISOString().split('T')[0] // YYYY-MM-DD
@@ -54,10 +64,11 @@ function getDateKey(date: Date): string {
 
 /**
  * 日期區塊元件 (單獨處理 sticky 檢測)
- * @param group 日期分組
- * @param groupIndex 日期分組索引
- * @param totalGroups 日期分組總數
- * @param sortBy 排序方式
+ * @param {TimelineGroup} group - 日期分組
+ * @param {number} groupIndex - 日期分組索引
+ * @param {number} totalGroups - 日期分組總數
+ * @param {DateSectionProps['sortBy']} sortBy - 排序方式
+ * @returns {JSX.Element}
  */
 function DateSection({
   group,
@@ -99,13 +110,13 @@ function DateSection({
 
 /**
  * 將競賽按日期分組
- * @param competitions 競賽列表
- * @param sortBy 排序方式
- * @returns 日期分組列表
+ * @param {Competition[]} competitions - 競賽列表
+ * @param {'competition' | 'registration'} sortBy - 排序方式
+ * @returns {TimelineGroup[]} 日期分組列表
  */
 function groupCompetitionsByDate(
   competitions: Competition[],
-  sortBy: 'competition' | 'registration'
+  sortBy: 'competition' | 'registration',
 ): TimelineGroup[] {
   const groups = new Map<string, Competition[]>()
 
@@ -143,19 +154,23 @@ function groupCompetitionsByDate(
 
 /**
  * 競賽時間線元件
- * @param competitions 競賽列表
- * @param defaultSortBy 預設排序方式
- * @returns 競賽時間線
+ * @param {CompetitionTimelineProps} competitions - 競賽列表
+ * @param {CompetitionTimelineProps['defaultSortBy']} defaultSortBy - 預設排序方式
+ * @returns {JSX.Element} 競賽時間線
  */
 export default function CompetitionTimeline({
   competitions,
   defaultSortBy = 'competition',
 }: CompetitionTimelineProps) {
+  // 排序方式
   const [sortBy, setSortBy] = useState<'competition' | 'registration'>(
-    defaultSortBy
+    defaultSortBy,
   )
 
-  // 處理排序和分組
+  /**
+   * [Function] 處理排序和分組
+   * @returns {TimelineGroup[]} 日期分組列表
+   */
   const timelineGroups = useMemo(() => {
     const sortedCompetitions = sortCompetitionsByTimeline(competitions, sortBy)
     return groupCompetitionsByDate(sortedCompetitions, sortBy)
@@ -227,7 +242,7 @@ export default function CompetitionTimeline({
       {/* 沒有有效日期的競賽 */}
       {(() => {
         const competitionsWithoutDate = competitions.filter(
-          (comp) => !getCompetitionKeyDate(comp, sortBy)
+          (comp) => !getCompetitionKeyDate(comp, sortBy),
         )
 
         if (competitionsWithoutDate.length > 0) {

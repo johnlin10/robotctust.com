@@ -1,0 +1,343 @@
+@use '../styles/_mixins.scss' as mixins;
+
+.user_page {
+  > .user_page_container {
+    @include mixins.flexbox(column, center, center);
+    margin: 0 auto;
+    width: calc(100% - var(--space-2x));
+    max-width: 720px;
+  }
+}
+
+// 帳號起始 User
+.user {
+  @include mixins.flexbox(column, center, center);
+  height: 100vh;
+  width: 100vw;
+
+  > .user_login {
+    > .button_container {
+      @include mixins.flexbox(row, center, center);
+      gap: var(--space);
+
+      > button {
+        &.user_login_button {
+          @include mixins.button;
+        }
+
+        &.user_register_button {
+          @include mixins.button('primary');
+        }
+      }
+    }
+  }
+}
+
+// 私人帳號提示
+.user_private {
+  @include mixins.flexbox(column, center, center);
+  min-height: calc(100vh - var(--header-height));
+
+  > .user-private-content {
+    @include mixins.flexbox(column, center, center);
+    gap: 0.75rem;
+    text-align: center;
+
+    > .user-private-icon {
+      font-size: 2.5rem;
+    }
+
+    > h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    > p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+  }
+}
+
+// 帳號資訊頁面 User[slug] page
+.user_contents {
+  @include mixins.flexbox(column, center, center);
+
+  > .feature_coming_soon {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+  }
+}
+
+// 帳號資訊 UserProfileClient
+.user_info {
+  position: relative;
+  @include mixins.flexbox(column, center, center);
+  gap: 1rem;
+  margin-bottom: var(--space-2x);
+  padding: 24px;
+  width: 100%;
+  max-width: 720px;
+  background-color: var(--background-secondary);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(24px);
+  overflow: hidden;
+
+  @include mixins.respond-to('desktop') {
+    margin: var(--space-2x) 0;
+  }
+
+  &.has_background {
+    aspect-ratio: 2/1;
+    @include mixins.flexbox(column, flex-end, center);
+
+    @include mixins.respond-to('phone') {
+      aspect-ratio: 3/2;
+    }
+  }
+
+  > .background {
+    z-index: 5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    img {
+      height: 100%;
+      object-fit: cover;
+      user-select: none;
+      pointer-events: none;
+    }
+  }
+
+  > .user_info_container {
+    z-index: 10;
+    position: relative;
+    @include mixins.flexbox(column, space-between, flex-start);
+    gap: var(--space);
+    width: 100%;
+    height: 100%;
+
+    > .own_profile_header {
+      @include mixins.flexbox(row, space-between, center);
+      width: 100%;
+
+      > .badge {
+        padding: 3px 9px;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        background: rgba(var(--background-secondary-rgb), 0.3);
+        border: 1px solid var(--border);
+        @include mixins.border-radius(24px);
+        @include mixins.glass-blur(6px);
+      }
+
+      > .actions {
+        @include mixins.flexbox(row, center, center);
+        gap: 0.5rem;
+
+        > .edit_profile {
+          @include mixins.flexbox(row, center, center);
+
+          > button {
+            @include mixins.button(normal, small);
+            padding: 3px 9px;
+            font-size: 0.75rem;
+            background: rgba(var(--background-rgb), 0.3);
+          }
+        }
+        > .logout {
+          @include mixins.flexbox(row, center, center);
+
+          > button {
+            @include mixins.button(danger, small);
+            padding: 3px 9px;
+            font-size: 0.75rem;
+          }
+        }
+      }
+    }
+
+    > .user_info_content {
+      @include mixins.flexbox(column, flex-start, flex-start);
+      gap: var(--space);
+
+      > .user_info_header {
+        @include mixins.flexbox(row, flex-start, center);
+        gap: var(--space);
+
+        > .user_info_header_avatar {
+          @include mixins.flexbox(column, center, center);
+          height: 60px;
+          width: 60px;
+          @include mixins.border-radius(50%);
+          overflow: hidden;
+
+          > img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        > .user_info_content {
+          @include mixins.flexbox(column, center, flex-start);
+
+          > .user_info_name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--text-primary);
+          }
+
+          > .user_info_username {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+          }
+        }
+      }
+
+      > .user_info_bio {
+        > p {
+          font-size: 0.8rem;
+          color: var(--text-secondary);
+          white-space: pre-wrap;
+        }
+      }
+    }
+  }
+}
+
+.gradient_blur {
+  position: absolute;
+  bottom: 0;
+  z-index: 6;
+  inset: auto 0 0 0;
+  height: 180px;
+  min-height: 180px;
+  width: 100%;
+  pointer-events: none;
+  @include mixins.transform-container(translateY(10%) rotate(180deg));
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    content: '';
+    z-index: 1;
+    backdrop-filter: blur(0.5px);
+    filter: blur(0.5px);
+    mask: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(255, 255, 255, 1) 12.5%,
+      rgba(255, 255, 255, 1) 25%,
+      rgba(0, 0, 0, 0) 37.5%
+    );
+  }
+  &::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+    z-index: 8;
+    backdrop-filter: blur(64px);
+    filter: blur(64px);
+    mask: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0) 87.5%,
+      rgba(255, 255, 255, 1) 100%
+    );
+  }
+
+  > div {
+    position: absolute;
+    inset: 0;
+
+    &.gradient_background {
+      z-index: 100;
+      bottom: 0;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        rgba(var(--background-rgb), 1),
+        #00000000
+      );
+    }
+  }
+
+  > div {
+    &:nth-of-type(1) {
+      z-index: 2;
+      backdrop-filter: blur(1px);
+      filter: blur(1px);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(255, 255, 255, 1) 25%,
+        rgba(255, 255, 255, 1) 37.5%,
+        rgba(0, 0, 0, 0) 50%
+      );
+    }
+    &:nth-of-type(2) {
+      z-index: 3;
+      backdrop-filter: blur(2px);
+      filter: blur(2px);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 25%,
+        rgba(255, 255, 255, 1) 37.5%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(0, 0, 0, 0) 62.5%
+      );
+    }
+    &:nth-of-type(3) {
+      z-index: 4;
+      backdrop-filter: blur(4px);
+      filter: blur(4px);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 37.5%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(255, 255, 255, 1) 62.5%,
+        rgba(0, 0, 0, 0) 75%
+      );
+    }
+    &:nth-of-type(4) {
+      z-index: 5;
+      backdrop-filter: blur(8px);
+      filter: blur(8px);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 50%,
+        rgba(255, 255, 255, 1) 62.5%,
+        rgba(255, 255, 255, 1) 75%,
+        rgba(0, 0, 0, 0) 87.5%
+      );
+    }
+    &:nth-of-type(5) {
+      z-index: 6;
+      backdrop-filter: blur(16px);
+      filter: blur(16px);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 62.5%,
+        rgba(255, 255, 255, 1) 75%,
+        rgba(255, 255, 255, 1) 87.5%,
+        rgba(0, 0, 0, 0) 100%
+      );
+    }
+    &:nth-of-type(6) {
+      z-index: 7;
+      backdrop-filter: blur(64px);
+      filter: blur(64px);
+      // background: rgba(255, 255, 255, 1);
+      mask: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 75%,
+        rgba(255, 255, 255, 1) 87.5%,
+        rgba(255, 255, 255, 1) 100%
+      );
+    }
+  }
+}

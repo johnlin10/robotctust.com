@@ -2,18 +2,18 @@
 
 .menu {
   z-index: 4900;
-  @include mixins.flexbox(column, start, center);
   position: fixed;
-  padding: var(--header-height) var(--space-2x) var(--space-2x) var(--space-2x);
+  @include mixins.flexbox(column, start, center);
   top: 0;
   left: 0;
+  padding: var(--header-height) var(--space-2x) var(--space-2x) var(--space-2x);
   width: 100vw;
   height: fit-content;
   max-height: 100vh;
-  overflow-y: auto;
   @include mixins.transform-container(translateY(calc(-100% + 72px)));
   @include mixins.transition(0.5s cubic-bezier(0.23, 1, 0.32, 1));
   opacity: 0;
+  overflow-y: auto;
   visibility: hidden;
 
   @include mixins.respond-to('phone') {
@@ -22,12 +22,12 @@
 
   &.open {
     background-color: rgba(var(--background-secondary-rgb), 0.8);
-    @include mixins.transform-container(translateY(0));
     border-bottom: 1px solid var(--border);
     box-shadow: 0 0 72px 0 rgba(var(--background-rgb), 0.5);
+    @include mixins.transform-container(translateY(0));
+    @include mixins.glass-blur(24px);
     opacity: 1;
     visibility: visible;
-    @include mixins.glass-blur(24px);
   }
 
   .menu_items {
@@ -45,6 +45,7 @@
       }
 
       &.theme_toggle {
+        @include mixins.hover-scale-effect(1.02);
         &:hover {
           background-color: var(--background-secondary);
         }
@@ -53,6 +54,12 @@
       &.auth_item {
         width: 100%;
         border: 1px solid var(--border);
+        @include mixins.hover-scale-effect(1.02);
+        overflow: hidden;
+
+        &:hover {
+          border-color: var(--border-hover);
+        }
       }
     }
   }
@@ -62,13 +69,16 @@
     gap: 12px;
     width: fit-content;
     width: 100%;
-    background-color: var(--background-secondary);
     @include mixins.transition(var(--transition-default));
-    @include mixins.border-radius(12px);
+
+    &:hover {
+      background-color: rgba(var(--background-tertiary-rgb), 0.5);
+    }
 
     .loading {
       width: 32px;
       height: 32px;
+      margin: var(--space);
       border: 2px solid var(--border);
       border-top: 2px solid var(--text-primary);
       border-radius: 50%;

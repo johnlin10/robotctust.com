@@ -27,6 +27,9 @@ code::selection {
 
 html {
   overflow-x: hidden;
+  /* scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height); */
 }
 
 body {

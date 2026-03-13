@@ -1,5 +1,5 @@
 export const SITE_CONFIG = {
-  version: '2.0.2',
+  version: '2.1.0',
   name: '中臺機器人研究社',
   shortName: '中臺機器人研究社',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://robotctust.com',
@@ -18,8 +18,10 @@ export const SITE_CONFIG = {
     '研究社',
     '機器人技術',
     '學習平台',
-    'CTUST',
     'Robot',
+    'CTUST',
+    'robotctust',
+    'Robot CTUST',
     'Robotics Research',
     'Robotics Research Club',
     'Robotics Research Club of CTUST',

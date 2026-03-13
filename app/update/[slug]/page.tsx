@@ -1,12 +1,6 @@
-import React from 'react'
 import { Metadata } from 'next'
 import styles from './post-detail.module.scss'
-// components
-import Page from '../../components/page/Page'
-import PostDetailClient from './PostDetailClient'
-// types
-import { POST_CATEGORY_LABELS, Post } from '../../types/post'
-import { serializePost } from '../../types/serialized'
+
 // utils
 import {
   metadata,
@@ -15,7 +9,18 @@ import {
 } from '../../utils/metadata'
 import { getAllPosts, getPostById } from '../../utils/postService'
 
+// components
+import Page from '../../components/page/Page'
+import PostDetailClient from './PostDetailClient'
+
+// types
+import { POST_CATEGORY_LABELS, Post } from '../../types/post'
+import { serializePost } from '../../types/serialized'
+
+// 重新整理時間
 export const revalidate = 60
+
+// 動態參數
 export const dynamicParams = true
 
 /**
@@ -37,14 +42,18 @@ export default async function PostDetailPage({
 }: {
   params: Promise<{ slug: string }>
 }) {
+  // 獲取參數
   const { slug } = await params
+  // 初始化文章資料
   let initialPost = null
+  // 初始化錯誤訊息
   let error = null
 
+  // 載入文章資料
   try {
     // 在 server side 預載文章資料
     const post = await getPostById(slug)
-    console.log('post', post)
+
     if (post) {
       // 序列化資料以便傳遞給 client component
       initialPost = serializePost(post)
@@ -52,8 +61,8 @@ export default async function PostDetailPage({
       error = '文章不存在或已被刪除'
     }
   } catch (err) {
-    console.error('Error loading post on server:', err)
-    error = '載入文章失敗，請稍後再試'
+    console.error('載入文章失敗：', err)
+    error = '載入文章失敗：' + err
   }
 
   return (
@@ -94,7 +103,7 @@ export async function generateMetadata({
     //* 生成文章描述
     const description = generateDescriptionFromMarkdown(
       post.contentMarkdown,
-      160
+      160,
     )
 
     //* 生成關鍵字

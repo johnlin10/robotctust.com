@@ -1,16 +1,14 @@
 @use '../../styles/mixins' as mixins;
 
 .form_header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include mixins.flexbox(row, space-between, center);
   margin-bottom: 1.5rem;
 
   > h2 {
     margin: 0;
-    color: var(--foreground);
     font-size: 1.5rem;
     font-weight: 600;
+    color: var(--foreground);
   }
 
   > .close_button {
@@ -24,21 +22,21 @@
     cursor: pointer;
 
     &:hover {
-      border-color: var(--border-hover);
-      background: var(--background-secondary);
       color: var(--foreground);
+      background: var(--background-secondary);
+      border-color: var(--border-hover);
     }
   }
 }
 
 .error_message {
-  background: #fee;
-  color: #c53030;
   padding: 0.75rem;
-  border-radius: 6px;
   margin-bottom: 1rem;
   font-size: 0.875rem;
-  border: 1px solid #fed7d7;
+  color: var(--theme-red-800);
+  background: var(--theme-red-200);
+  border: 1px solid var(--theme-red-300);
+  @include mixins.border-radius(6px);
 }
 
 .form {
@@ -48,17 +46,17 @@
     > label {
       display: block;
       margin-bottom: 0.5rem;
-      color: var(--foreground);
       font-weight: 500;
       font-size: 0.875rem;
+      color: var(--foreground);
     }
 
     > input {
       box-sizing: border-box;
       padding: 0.75rem;
       width: 100%;
-      border: 1px solid var(--border);
       font-size: 1rem;
+      border: 1px solid var(--border);
       @include mixins.border-radius(6px);
 
       &:focus {
@@ -79,43 +77,43 @@
 
     > .field_error {
       display: block;
-      color: var(--theme-red-600);
       font-size: 0.75rem;
       margin-top: 0.25rem;
+      color: var(--theme-red-600);
     }
   }
 
   > .submit_button {
-    width: 100%;
-    background: var(--primary);
-    color: white;
     padding: 0.875rem;
+    width: 100%;
     font-size: 1rem;
     font-weight: 600;
-    cursor: pointer;
+    color: white;
+    background: var(--primary);
     border: 1px solid var(--border);
     @include mixins.border-radius(6px);
     @include mixins.hover-scale-effect(1.01);
+    cursor: pointer;
 
     &:hover:not(:disabled) {
-      border-color: var(--border-hover);
       background: var(--primary-hover);
+      border-color: var(--border-hover);
     }
 
     &:disabled {
       background: var(--muted);
-      cursor: not-allowed;
       transform: none;
+      cursor: not-allowed;
     }
   }
 }
 
 .divider {
-  @include mixins.flexbox(row, center, center);
   position: relative;
-  text-align: center;
+  @include mixins.flexbox(row, center, center);
   margin: 36px 0;
   width: 100%;
+  text-align: center;
 
   > span {
     &.divider_line {
@@ -128,30 +126,31 @@
       z-index: 10;
       position: absolute;
       left: 50%;
-      right: 0;
-      width: fit-content;
+      padding: 0.15rem 0.75rem;
+      font-size: 0.75rem;
+      color: var(--foreground-tertiary);
       background: var(--background-secondary);
-      padding: 0 1rem;
-      color: var(--foreground);
-      font-size: 0.875rem;
+      white-space: nowrap;
+      @include mixins.border-radius(12px);
       @include mixins.transform-container(translateX(-50%));
     }
   }
 }
 
 .switch_form {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
   text-align: center;
   color: var(--foreground-tertiary);
-  font-size: 0.875rem;
 
   > button {
+    margin-left: 0.25rem;
+    font-weight: 500;
+    text-decoration: underline;
+    color: #3b82f6;
     background: none;
     border: none;
-    color: #3b82f6;
     cursor: pointer;
-    font-weight: 500;
-    margin-left: 0.25rem;
-    text-decoration: underline;
 
     &:hover {
       color: #2563eb;

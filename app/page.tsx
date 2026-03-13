@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import styles from './home.module.scss'
+
 // components
 import Page from './components/page/Page'
 import Footer from './components/Footer/Footer'
@@ -8,15 +9,16 @@ import ClubFeaturesSection from './components/home/ClubFeaturesSection'
 import CoreProjects from './components/home/CoreProjects/CoreProjects'
 import LatestUpdatesSection from './components/home/LatestUpdatesSection'
 import Loading from './components/Loading/Loading'
-// data
-// import { howWeLearn } from './messages/howWeLearn'
-// utils
-import { metadata } from './utils/metadata'
-import ScrollAnimation from './components/animation/ScrollAnimation/ScrollAnimation'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBullseye } from '@fortawesome/free-solid-svg-icons'
 import Marquee from './components/home/Marquee/Marquee'
 import LessonIntro from './components/home/LessonIntro/LessonIntro'
+import ScrollAnimation from './components/animation/ScrollAnimation/ScrollAnimation'
+
+// utils
+import { metadata } from './utils/metadata'
+
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBullseye } from '@fortawesome/free-solid-svg-icons'
 
 /**
  * 首頁
@@ -53,34 +55,6 @@ export default function Home() {
       />
       <ClubFeaturesSection />
       <LessonIntro />
-      {/* <section className={styles.howWeLearnSection}>
-        <div className={styles.howWeLearnContainer}>
-          <div className={styles.headerContainer}>
-            <h2>我們如何學習與成長？</h2>
-            <p>
-              在機器人研究社，我們相信「做中學」是最好的成長方式。
-              <br />
-              我們規劃了由淺入深的學習路徑，無論你是完全沒接觸過的新手，還是已有基礎的同好，都能在這裡找到屬於你的舞台，享受動手創造的樂趣！
-            </p>
-          </div>
-          <div className={styles.cardContainer}>
-            {howWeLearn.map((item) => (
-              <div key={item.title} className={styles.card}>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-                <div className={styles.points}>
-                  <p>{item.points.title}</p>
-                  <ul>
-                    {item.points.points.map((point) => (
-                      <li key={point}>{point}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
 
       <Suspense fallback={<Loading />}>
         <LatestUpdatesSection />

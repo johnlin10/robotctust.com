@@ -1,7 +1,28 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import styles from './post-detail.module.scss'
+
+// components
+import MarkdownRenderer from '../../components/Markdown/MarkdownRenderer'
+import FloatingActionBar, {
+  ActionItem,
+} from '@/app/components/FloatingActionBar/FloatingActionBar'
+
+// util
+import { formatPostDate } from '../../utils/postService'
+
+// hook
+import useWebSupport from '@/app/hooks/useWebSupport'
+
+// types
+import { POST_CATEGORY_LABELS } from '../../types/post'
+import { SerializedPost, deserializePost } from '../../types/serialized'
+import { POST_CATEGORY_COLORS } from '../../types/post'
+
+// icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCalendar,
@@ -11,25 +32,20 @@ import {
   faLink,
   faShare,
 } from '@fortawesome/free-solid-svg-icons'
-import styles from './post-detail.module.scss'
-import MarkdownRenderer from '../../components/Markdown/MarkdownRenderer'
-import { formatPostDate } from '../../utils/postService'
-import { POST_CATEGORY_LABELS } from '../../types/post'
-import { SerializedPost, deserializePost } from '../../types/serialized'
-import Image from 'next/image'
-import { POST_CATEGORY_COLORS } from '../../types/post'
-import FloatingActionBar, {
-  ActionItem,
-} from '@/app/components/FloatingActionBar/FloatingActionBar'
 import { faThreads, faXTwitter } from '@fortawesome/free-brands-svg-icons'
-import useWebSupport from '@/app/hooks/useWebSupport'
 
 interface PostDetailClientProps {
-  postId: string
-  initialPost: SerializedPost | null
-  initialError: string | null
+  postId: string // 文章 ID
+  initialPost: SerializedPost | null // 初始化文章資料
+  initialError: string | null // 初始化錯誤訊息
 }
 
+/**
+ * [Client Component] 文章詳細頁面
+ * @param initialPost - 初始化文章資料
+ * @param initialError - 初始化錯誤訊息
+ * @returns 文章詳細頁面
+ */
 export default function PostDetailClient({
   initialPost,
   initialError,
@@ -45,10 +61,18 @@ export default function PostDetailClient({
   const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/update/${postId}`
   const error = initialError
 
+  /**
+   * 跳轉到文章列表頁面
+   * @returns void
+   */
   const handleGoToList = () => {
     router.push('/update')
   }
 
+  /**
+   * 複製文章網址
+   * @returns void
+   */
   const handleShareUrl = async () => {
     // 檢查是否支援 Clipboard API
     try {
@@ -59,9 +83,14 @@ export default function PostDetailClient({
     }
   }
 
-  // 使用系統控件分享
+  /**
+   * 使用系統控件分享
+   * @returns void
+   */
   const handleShareSystem = async () => {
+    // 生成分享網址
     const url = `${process.env.NEXT_PUBLIC_SITE_URL}/update/${post?.id}`
+    // 生成分享文字
     const text =
       post?.contentMarkdown
         .replace(/#{1,6}\s+/g, '') // remove title
@@ -77,18 +106,23 @@ export default function PostDetailClient({
         .trim()
         .substring(0, 100) + '...'
 
+    // 生成分享資料
     const shareData = {
       title: post?.title,
       text: text,
       url: url,
     }
 
+    // 使用系統控件分享
     await navigator.share(shareData).catch((err) => {
-      console.warn('Share API failed: ', err)
+      console.warn('分享失敗：', err)
     })
   }
 
-  //* 浮動操作列動作
+  /**
+   * 浮動操作列動作
+   * @returns ActionItem[]
+   */
   const floatingActionBarActions: ActionItem[] = [
     {
       type: 'link',

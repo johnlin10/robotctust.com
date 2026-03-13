@@ -5,33 +5,19 @@ import React, {
   useContext,
   useEffect,
   useState,
+  useMemo,
   useCallback,
 } from 'react'
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  signOut as firebaseSignOut,
-  onAuthStateChanged,
-  User,
-} from 'firebase/auth'
-import {
-  doc,
-  getDoc,
-  setDoc,
-  query,
-  where,
-  collection,
-  getDocs,
-} from 'firebase/firestore'
-import { auth, db, googleProvider } from '../utils/firebase'
-import { processFirestoreDoc } from '../utils/firestoreHelpers'
+import { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
+import { createClient } from '../utils/supabase/client'
 import {
   AuthContextType,
   UserProfile,
   RegisterFormData,
   UserPermissions,
-  createDefaultUserProfile,
+  DEFAULT_USER_PERMISSIONS,
+  DEFAULT_USER_STATS,
+  DEFAULT_PRIVACY_SETTINGS,
 } from '../types/user'
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -47,46 +33,69 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const supabase = useMemo(() => createClient(), [])
   const [user, setUser] = useState<UserProfile | null>(null)
-  const [firebaseUser, setFirebaseUser] = useState<User | null>(null)
+  const [supabaseUser, setSupabaseUser] = useState<User | null>(null)
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false)
   const [loading, setLoading] = useState(true)
 
-  //* 檢查使用者名稱是否已存在
-  const checkUsernameExists = useCallback(
-    async (username: string): Promise<boolean> => {
-      try {
-        const q = query(
-          collection(db, 'users'),
-          where('username', '==', username)
-        )
-        const querySnapshot = await getDocs(q)
-        return !querySnapshot.empty
-      } catch (error) {
-        console.error('檢查使用者名稱時發生錯誤:', error)
-        throw error
-      }
-    },
-    []
-  )
-
-  //* 從 Firestore 獲取使用者資料
+  //* 從 Supabase 獲取使用者資料並做對應的轉換
   const getUserProfile = useCallback(
     async (uid: string): Promise<UserProfile | null> => {
       try {
-        const userDoc = await getDoc(doc(db, 'users', uid))
-        if (userDoc.exists()) {
-          const data = userDoc.data()
-          return processFirestoreDoc<UserProfile>(data)
+        const { data, error } = await supabase
+          .from('users')
+          .select('*, user_stats(*)')
+          .eq('id', uid)
+          .maybeSingle()
+
+        if (error) {
+          console.error('獲取使用者資料時發生錯誤:', error.message)
+          return null
         }
-        return null
+        
+        if (!data) {
+          console.warn(`User profile not found for uid: ${uid}`)
+          return null
+        }
+
+        const statsData = Array.isArray(data.user_stats) ? data.user_stats[0] : data.user_stats
+        const stats = statsData ? {
+          postsCount: statsData.posts_count || 0,
+          followersCount: statsData.followers_count || 0,
+          followingCount: statsData.following_count || 0,
+          likesReceived: statsData.likes_received || 0,
+        } : DEFAULT_USER_STATS
+
+        return {
+          uid: data.id,
+          email: data.email || '',
+          username: data.username || '',
+          displayName: data.displayName || data.display_name || data.username || '',
+          photoURL: data.photoURL || data.avatar_url || '/assets/image/userEmptyAvatar.png',
+          provider: data.provider || 'email',
+          createdAt: new Date(data.created_at || new Date()),
+          updatedAt: new Date(data.updated_at || new Date()),
+          role: data.role || 'user',
+          permissions: data.permissions || DEFAULT_USER_PERMISSIONS,
+          bio: data.bio,
+          backgroundURL: data.background_url || null,
+          location: data.location,
+          website: data.website,
+          socialLinks: data.social_links || {},
+          stats,
+          privacy: data.privacy || DEFAULT_PRIVACY_SETTINGS,
+          isActive: data.is_active ?? true,
+          isVerified: data.is_verified ?? false,
+          lastLoginAt: data.last_login_at ? new Date(data.last_login_at) : undefined,
+        } as UserProfile
       } catch (error) {
-        console.error('獲取使用者資料時發生錯誤:', error)
+        console.error('獲取使用者資料時發生例外錯誤:', error)
         return null
       }
     },
-    []
+    [supabase]
   )
 
   //* 從 username 獲取使用者資料
@@ -94,59 +103,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     username: string
   ): Promise<UserProfile | null> => {
     try {
-      const q = query(
-        collection(db, 'users'),
-        where('username', '==', username)
-      )
-      const querySnapshot = await getDocs(q)
-      if (querySnapshot.empty) {
-        return null
-      }
-      const userDoc = querySnapshot.docs[0]
-      const data = userDoc.data()
-      return processFirestoreDoc<UserProfile>(data)
+      const { data, error } = await supabase
+        .from('users')
+        .select('id')
+        .eq('username', username)
+        .single()
+
+      if (error || !data) return null
+      return getUserProfile(data.id)
     } catch (error) {
       console.error('從 username 獲取使用者資料時發生錯誤:', error)
       return null
     }
   }
 
-  //* 創建使用者資料到 Firestore
-  const createUserProfile = useCallback(
-    async (firebaseUser: User, additionalData: Partial<UserProfile>) => {
-      try {
-        const userProfile = createDefaultUserProfile(
-          firebaseUser,
-          additionalData
-        )
-        await setDoc(doc(db, 'users', firebaseUser.uid), userProfile)
-        return userProfile
-      } catch (error) {
-        console.error('創建使用者資料時發生錯誤:', error)
-        throw error
-      }
-    },
-    []
-  )
-
   //* 電子郵件登入
   const signInWithEmail = async (email: string, password: string) => {
     try {
       setLoading(true)
-      const result = await signInWithEmailAndPassword(auth, email, password)
-      const userProfile = await getUserProfile(result.user.uid)
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-      // 更新最後登入時間
-      if (userProfile) {
-        await setDoc(
-          doc(db, 'users', result.user.uid),
-          { lastLoginAt: new Date(), updatedAt: new Date() },
-          { merge: true }
-        )
-        userProfile.lastLoginAt = new Date()
+      if (error) throw error
+
+      if (data.user) {
+        // 觸發更新最後登入時間
+        await supabase
+          .from('users')
+          .update({ last_login_at: new Date().toISOString() })
+          .eq('id', data.user.id)
+        
+        // 抓取包含 username 跟 stats 在內的個人資料
+        const userProfile = await getUserProfile(data.user.id)
+        setUser(userProfile)
       }
-
-      setUser(userProfile)
     } catch (error) {
       console.error('電子郵件登入失敗:', error)
       throw error
@@ -155,75 +147,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
-  //* 自動修復孤兒帳號（Firebase Auth 有帳號但 Firestore 沒有資料）
-  const _autoRepairOrphanAccount = useCallback(
-    async (firebaseUser: User): Promise<UserProfile> => {
-      try {
-        console.log('偵測到孤兒帳號，正在自動修復...', firebaseUser.uid)
-
-        // 生成預設的使用者名稱（基於 email 或 uid）
-        const defaultUsername = firebaseUser.email
-          ? firebaseUser.email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_')
-          : `user_${firebaseUser.uid.slice(0, 8)}`
-
-        // 檢查使用者名稱是否已存在，如果存在則加上隨機後綴
-        let username = defaultUsername
-        let counter = 1
-        while (await checkUsernameExists(username)) {
-          username = `${defaultUsername}_${counter}`
-          counter++
-        }
-
-        // 創建使用者資料
-        const userProfile = await createUserProfile(firebaseUser, {
-          username,
-          displayName: firebaseUser.displayName || username,
-          photoURL:
-            firebaseUser.photoURL || '/assets/image/userEmptyAvatar.png',
-          provider: 'google',
-        })
-
-        console.log('孤兒帳號修復完成:', userProfile.username)
-        return userProfile
-      } catch (error) {
-        console.error('自動修復孤兒帳號失敗:', error)
-        throw new Error('帳號資料同步失敗，請聯繫管理員')
-      }
-    },
-    [checkUsernameExists, createUserProfile]
-  )
-
-  //* Google 登入（修復版本）
+  //* Google 登入（如果已有設定好網址跟 Oauth 設定即可）
   const signInWithGoogle = async () => {
     try {
       setLoading(true)
-      const result = await signInWithPopup(auth, googleProvider)
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`, // 注意要有相應的 callback 設定
+        },
+      })
 
-      // 檢查是否為新使用者
-      let userProfile = await getUserProfile(result.user.uid)
-
-      if (!userProfile) {
-        // 嘗試自動修復孤兒帳號
-        try {
-          userProfile = await _autoRepairOrphanAccount(result.user)
-        } catch (repairError) {
-          // 如果自動修復失敗，則要求完成註冊流程
-          console.error('自動修復失敗，需要手動註冊:', repairError)
-          throw new Error('NEW_USER_NEEDS_REGISTRATION')
-        }
-      }
-
-      // 更新最後登入時間
-      if (userProfile) {
-        await setDoc(
-          doc(db, 'users', result.user.uid),
-          { lastLoginAt: new Date(), updatedAt: new Date() },
-          { merge: true }
-        )
-        userProfile.lastLoginAt = new Date()
-      }
-
-      setUser(userProfile)
+      if (error) throw error
     } catch (error) {
       console.error('Google 登入失敗:', error)
       throw error
@@ -233,46 +168,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   //* 註冊新使用者
-  const register = async (data: RegisterFormData) => {
+  const register = async (data: RegisterFormData): Promise<{ requiresEmailConfirmation: boolean }> => {
     try {
       setLoading(true)
 
-      // 檢查使用者名稱是否已存在
-      const usernameExists = await checkUsernameExists(data.username)
-      if (usernameExists) {
-        throw new Error('使用者名稱已存在')
+      let finalUsername = data.username?.trim()
+      // 如果未提供 username，則從 email 中提取 @ 之前的字串作為 username
+      if ((!finalUsername || finalUsername === '') && data.email) {
+        finalUsername = data.email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_')
       }
 
-      let firebaseUser: User
-
-      if (data.email && data.password) {
-        // 電子郵件註冊
-        const result = await createUserWithEmailAndPassword(
-          auth,
-          data.email,
-          data.password
-        )
-        firebaseUser = result.user
-      } else {
-        // Google 註冊（已經通過 Google 登入）
-        if (!auth.currentUser) {
-          throw new Error('請先完成 Google 登入')
-        }
-        firebaseUser = auth.currentUser
+      if (!data.email || !data.password) {
+        throw new Error('請提供信箱與密碼')
       }
 
-      // 創建使用者資料
-      const userProfile = await createUserProfile(firebaseUser, {
-        username: data.username,
-        displayName: data.displayName,
-        photoURL:
-          data.photoURL ||
-          firebaseUser.photoURL ||
-          '/assets/image/userEmptyAvatar.png',
-        provider: data.email ? 'email' : 'google',
+      const avatarUrl = data.photoURL?.trim() || '/assets/image/userEmptyAvatar.png'
+
+      // 透過 options.data 將自訂的屬性（包含 username, displayName 等）附加到 raw_user_meta_data 中
+      // Supabase 的 Database Trigger 將根據這些屬性在 users table 建立對應的行
+      const { data: signUpData, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            username: finalUsername,
+            display_name: data.displayName || finalUsername,
+            avatar_url: avatarUrl,
+          },
+        },
       })
 
-      setUser(userProfile)
+      if (error) throw error
+
+      // session 為 null 表示 Supabase 要求信箱驗證，尚未建立 session
+      const requiresEmailConfirmation = !signUpData.session
+
+      if (signUpData.user && !requiresEmailConfirmation) {
+        const userProfile = await getUserProfile(signUpData.user.id)
+        setUser(userProfile)
+      }
+
+      return { requiresEmailConfirmation }
     } catch (error) {
       console.error('註冊失敗:', error)
       throw error
@@ -284,8 +220,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   //* 登出
   const signOut = async () => {
     try {
-      await firebaseSignOut(auth)
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
       setUser(null)
+      setSupabaseUser(null)
+      setIsAdmin(false)
+      setIsSuperAdmin(false)
     } catch (error) {
       console.error('登出失敗:', error)
       throw error
@@ -298,16 +238,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     updateData: Partial<UserProfile>
   ): Promise<void> => {
     try {
-      const updatePayload = {
-        ...updateData,
-        updatedAt: new Date(),
-      }
+      // 這裡簡單把 camelCase 轉成 Supabase 可能對應的 snake_case
+      const payload: any = { ...updateData, updated_at: new Date().toISOString() }
+      if (updateData.displayName) payload.display_name = updateData.displayName
+      if (updateData.photoURL) payload.avatar_url = updateData.photoURL
 
-      await setDoc(doc(db, 'users', uid), updatePayload, { merge: true })
+      const { error } = await supabase
+        .from('users')
+        .update(payload)
+        .eq('id', uid)
 
-      // 如果更新的是當前使用者，同步更新本地狀態
+      if (error) throw error
+
       if (user && user.uid === uid) {
-        setUser({ ...user, ...updatePayload })
+        setUser({ ...user, ...updateData })
       }
     } catch (error) {
       console.error('更新使用者資料時發生錯誤:', error)
@@ -318,40 +262,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   //* 搜尋使用者
   const searchUsers = async (searchTerm: string, limit: number = 10) => {
     try {
-      // 這裡可以實作更複雜的搜尋邏輯
-      // 目前先用簡單的 username 搜尋
-      const q = query(
-        collection(db, 'users'),
-        where('username', '>=', searchTerm),
-        where('username', '<=', searchTerm + '\uf8ff')
-      )
-      const querySnapshot = await getDocs(q)
+      const { data, error } = await supabase
+        .from('users')
+        .select('id, username, display_name, avatar_url, is_verified')
+        // Supabase 提供 ilike，不分大小寫的模糊搜索
+        .ilike('username', `%${searchTerm}%`)
+        .limit(limit)
 
-      return querySnapshot.docs
-        .map((doc) => {
-          const data = doc.data()
-          return {
-            uid: data.uid,
-            username: data.username,
-            displayName: data.displayName,
-            photoURL: data.photoURL,
-            bio: data.bio,
-            isVerified: data.isVerified,
-          }
-        })
-        .slice(0, limit)
+      if (error) throw error
+
+      return (data || []).map((doc: {
+        id: string
+        username: string
+        display_name: string | null
+        avatar_url: string | null
+        is_verified: boolean | null
+      }) => ({
+        uid: doc.id,
+        username: doc.username,
+        displayName: doc.display_name || doc.username,
+        photoURL: doc.avatar_url || '/assets/image/userEmptyAvatar.png',
+        isVerified: Boolean(doc.is_verified),
+      }))
     } catch (error) {
       console.error('搜尋使用者時發生錯誤:', error)
       return []
     }
   }
 
-  /**
-   * 權限檢查方法
-   * @param feature 功能
-   * @param action 操作
-   * @returns 是否具有權限
-   */
+  //* 檢查 Email 是否已註冊
+  const checkEmailExists = async (email: string): Promise<boolean> => {
+    try {
+      // 由於 public.users 沒有儲存 email，我們透過 RPC 函數並使用 security definer 來查詢 auth.users
+      const { data, error } = await supabase.rpc('check_email_exists', {
+        email_to_check: email,
+      })
+
+      if (error) {
+        console.error('檢查 Email 是否存在時發生錯誤:', error.message)
+        return false
+      }
+
+      return !!data
+    } catch (error) {
+      console.error('檢查 Email 是否存在時發生例外錯誤:', error)
+      return false
+    }
+  }
+
+  //* 權限檢查方法
   const hasPermission = (
     feature: keyof UserPermissions,
     action: string
@@ -367,73 +326,80 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     )
   }
 
-  // const isAdmin = (): boolean => {
-  //   return user?.role === 'admin' || user?.role === 'super_admin'
-  // }
-
-  // const isSuperAdmin = (): boolean => {
-  //   return user?.role === 'super_admin'
-  // }
-
   //* 檢查是否為超級管理員（基於環境變數）
-  const checkSuperAdmin = useCallback((firebaseUser: User | null): boolean => {
-    if (!firebaseUser?.email) return false
+  const checkSuperAdmin = useCallback((currentUser: User | null): boolean => {
+    if (!currentUser?.email) return false
     const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL
-    return firebaseUser.email === adminEmail
+    return currentUser.email === adminEmail
   }, [])
 
-  //* 監聽認證狀態變化
+  //* 監聽 Supabase 認證狀態變化
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      async (currentFirebaseUser) => {
-        setFirebaseUser(currentFirebaseUser)
+    let isMounted = true
 
-        if (currentFirebaseUser) {
-          let userProfile = await getUserProfile(currentFirebaseUser.uid)
+    const syncAuthState = async (session: Session | null) => {
+      if (!isMounted) return
 
-          // 如果 Firebase Auth 有帳號但 Firestore 沒有資料，嘗試自動修復
-          if (!userProfile) {
-            try {
-              console.log(
-                '偵測到孤兒帳號，嘗試自動修復...',
-                currentFirebaseUser.uid
-              )
-              userProfile = await _autoRepairOrphanAccount(currentFirebaseUser)
-            } catch (error) {
-              console.error('自動修復孤兒帳號失敗:', error)
-              // 如果自動修復失敗，設定為 null，讓使用者重新註冊
-              userProfile = null
-            }
-          }
+      const currentSupabaseUser = session?.user || null
+      setSupabaseUser(currentSupabaseUser)
 
-          setUser(userProfile)
+      if (currentSupabaseUser) {
+        const userProfile = await getUserProfile(currentSupabaseUser.id)
+        if (!isMounted) return
 
-          // 檢查超級管理員權限（基於環境變數）
-          const isSuperAdminUser = checkSuperAdmin(currentFirebaseUser)
-          setIsSuperAdmin(isSuperAdminUser)
+        setUser(userProfile)
 
-          // 檢查一般管理員權限
-          setIsAdmin(
-            isSuperAdminUser ||
-              userProfile?.role === 'admin' ||
-              userProfile?.role === 'super_admin'
-          )
-        } else {
-          setUser(null)
-          setIsAdmin(false)
-          setIsSuperAdmin(false)
+        const isSuperAdminUser = checkSuperAdmin(currentSupabaseUser)
+        setIsSuperAdmin(isSuperAdminUser)
+        setIsAdmin(
+          isSuperAdminUser ||
+            userProfile?.role === 'admin' ||
+            userProfile?.role === 'super_admin'
+        )
+      } else {
+        setUser(null)
+        setIsAdmin(false)
+        setIsSuperAdmin(false)
+      }
+
+      setLoading(false)
+    }
+
+    const initAuthState = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession()
+        if (error) {
+          console.error('初始化使用者狀態失敗:', error.message)
+          if (isMounted) setLoading(false)
+          return
         }
-        setLoading(false)
+
+        await syncAuthState(data.session)
+      } catch (error) {
+        console.error('初始化使用者狀態時發生例外錯誤:', error)
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    initAuthState()
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      async (_event: AuthChangeEvent, session: Session | null) => {
+        await syncAuthState(session)
       }
     )
 
-    return () => unsubscribe()
-  }, [getUserProfile, _autoRepairOrphanAccount, checkSuperAdmin])
+    return () => {
+      isMounted = false
+      subscription.unsubscribe()
+    }
+  }, [getUserProfile, checkSuperAdmin, supabase])
 
   const value: AuthContextType = {
     user,
-    firebaseUser,
+    supabaseUser,
     loading,
     getUserProfile,
     getUserProfileByUsername,
@@ -446,6 +412,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     hasPermission,
     isAdmin,
     isSuperAdmin,
+    checkEmailExists,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

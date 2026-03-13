@@ -1,4 +1,4 @@
-import { User } from 'firebase/auth'
+import { User } from '@supabase/supabase-js'
 
 export interface UserProfile extends Record<string, unknown> {
   uid: string
@@ -13,6 +13,7 @@ export interface UserProfile extends Record<string, unknown> {
   permissions: UserPermissions
   // 新增社群功能相關欄位
   bio?: string // 個人簡介
+  backgroundURL?: string // 背景圖片網址
   location?: string // 所在地
   website?: string // 個人網站
   socialLinks?: {
@@ -103,8 +104,8 @@ export interface RegisterFormData {
   email?: string
   password?: string
   confirmPassword?: string
-  username: string
-  displayName: string
+  username?: string // 修改為選填
+  displayName?: string // 使其選填以免報錯
   photoURL?: string
 }
 
@@ -121,7 +122,7 @@ export interface AuthContextType {
   signInWithEmail: (email: string, password: string) => Promise<void>
   signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
-  register: (data: RegisterFormData) => Promise<void>
+  register: (data: RegisterFormData) => Promise<{ requiresEmailConfirmation: boolean }>
   updateUserProfile: (
     uid: string,
     updateData: Partial<UserProfile>
@@ -133,7 +134,8 @@ export interface AuthContextType {
   hasPermission: (feature: keyof UserPermissions, action: string) => boolean
   isAdmin: boolean
   isSuperAdmin: boolean
-  firebaseUser: User | null // 添加 Firebase User 對象
+  supabaseUser: User | null // 修改為 Supabase User 對象
+  checkEmailExists: (email: string) => Promise<boolean>
 }
 
 export interface UpdateUserPermissionsData {
@@ -168,14 +170,15 @@ export const createDefaultUserProfile = (
   additionalData: Partial<UserProfile>
 ): UserProfile => {
   return {
-    uid: firebaseUser.uid,
+    uid: firebaseUser.id,
     email: firebaseUser.email || '',
     username: additionalData.username || '',
-    displayName: additionalData.displayName || firebaseUser.displayName || '',
+    displayName: additionalData.displayName || firebaseUser.user_metadata?.full_name || '',
     photoURL:
       additionalData.photoURL ||
-      firebaseUser.photoURL ||
+      firebaseUser.user_metadata?.avatar_url ||
       '/assets/image/userEmptyAvatar.png',
+    backgroundURL: additionalData.backgroundURL,
     provider: additionalData.provider || 'email',
     role: 'user',
     permissions: DEFAULT_USER_PERMISSIONS,

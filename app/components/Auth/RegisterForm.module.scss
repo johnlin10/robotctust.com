@@ -1,55 +1,109 @@
 @use '../../styles/mixins' as mixins;
 
-.form_header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
+.back_button {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(16px);
+  @include mixins.hover-scale-effect;
+  cursor: pointer;
 
-  > h2 {
-    margin: 0;
+  &:hover {
+    border-color: var(--border-hover);
+    background: var(--background-tertiary);
     color: var(--foreground);
-    font-size: 1.5rem;
-    font-weight: 600;
   }
+}
 
-  > .close_button {
-    height: 44px;
-    width: 44px;
-    font-size: 1.5rem;
-    color: var(--foreground);
-    border: 1px solid var(--border);
-    @include mixins.border-radius(6px);
-    @include mixins.hover-scale-effect;
-    cursor: pointer;
+.stepper {
+  @include mixins.flexbox(row, center, center);
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0 calc(32px + var(--space));
 
-    &:hover {
-      border-color: var(--border-hover);
+  .step_item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .step_dot {
+      @include mixins.flexbox(row, center, center);
+      width: 32px;
+      height: 32px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--foreground-tertiary);
       background: var(--background-secondary);
-      color: var(--foreground);
+      border: 1px solid var(--border);
+      @include mixins.border-radius(50%);
+      @include mixins.transition(var(--transition-default));
+    }
+
+    .step_line {
+      width: clamp(12px, 5vw, 40px);
+      height: 2px;
+      background: var(--border);
+      @include mixins.border-radius(1px);
+      @include mixins.transition(var(--transition-default));
+    }
+
+    &.active {
+      .step_dot {
+        background: var(--theme-purple-500);
+        color: white;
+      }
+      .step_line {
+        background: var(--theme-purple-500);
+      }
     }
   }
 }
 
 .error_message {
-  background: var(--red-100);
-  color: var(--red-600);
   padding: 0.75rem;
-  border-radius: 6px;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
   font-size: 0.875rem;
-  border: 1px solid var(--red-100);
+  color: var(--theme-red-600);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  @include mixins.border-radius(8px);
+}
+
+.email_sent {
+  padding: 0;
+
+  .form_header {
+    margin-bottom: var(--space);
+
+    h2 {
+      margin: 0;
+    }
+  }
+  .email_sent_text {
+    margin-bottom: var(--space-2x);
+  }
+  .submit_button {
+    padding: 6px 12px;
+    width: 100%;
+    color: var(--color-white);
+    background: var(--theme-purple-500);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(9px);
+  }
 }
 
 .register_options {
   margin-bottom: 1.5rem;
 
   > .divider {
-    @include mixins.flexbox(row, center, center);
     position: relative;
-    text-align: center;
-    margin: 36px 0;
+    @include mixins.flexbox(row, center, center);
+    margin: 1.5rem 0;
     width: 100%;
+    text-align: center;
 
     > span {
       &.divider_line {
@@ -62,13 +116,12 @@
         z-index: 10;
         position: absolute;
         left: 50%;
-        right: 0;
-        width: fit-content;
+        padding: 0.15rem 0.75rem;
+        font-size: 0.75rem;
+        color: var(--foreground-tertiary);
         background: var(--background-secondary);
-        padding: 0 1rem;
-        color: var(--foreground);
-        font-size: 0.875rem;
-
+        white-space: nowrap;
+        @include mixins.border-radius(12px);
         @include mixins.transform-container(translateX(-50%));
       }
     }
@@ -76,16 +129,16 @@
 }
 
 .form {
-  > .avatar_section {
-    margin-bottom: 1.5rem;
+  .avatar_section {
+    margin-bottom: 2rem;
     text-align: center;
 
     > label {
       display: block;
       margin-bottom: 1rem;
-      color: var(--foreground);
       font-weight: 500;
       font-size: 0.875rem;
+      color: var(--foreground);
     }
 
     > .avatar_upload {
@@ -96,31 +149,32 @@
         z-index: 10;
         position: absolute;
         @include mixins.flexbox(row, center, center);
-        bottom: -5px;
-        right: -5px;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: var(--primary);
-        color: var(--foreground);
-        border: 1px solid var(--foreground-tertiary);
-        cursor: pointer;
-        font-size: 1rem;
+        bottom: 0;
+        right: 0;
+        width: 28px;
+        height: 28px;
+        font-size: 0.875rem;
+        color: white;
+        background: var(--theme-purple-500);
+        border: 2px solid var(--background-secondary);
+        @include mixins.border-radius(50%);
         @include mixins.transition(var(--transition-default));
+        cursor: pointer;
 
         &:hover {
-          background: var(--primary-hover);
+          background: var(--theme-purple-600);
           @include mixins.transform-container(scale(1.1));
         }
       }
 
       > .avatar_preview {
         position: relative;
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        background: var(--background-secondary);
+        border: 2px solid var(--border);
+        @include mixins.border-radius(50%);
         overflow: hidden;
-        border: 1px solid var(--foreground-tertiary);
 
         > .avatar_image {
           width: 100%;
@@ -135,90 +189,147 @@
     }
   }
 
-  > .form_group {
-    margin-bottom: 1rem;
+  .form_group {
+    margin-bottom: 1.25rem;
 
     > label {
       display: block;
       margin-bottom: 0.5rem;
-      color: var(--foreground);
       font-weight: 500;
       font-size: 0.875rem;
+      color: var(--foreground);
+
+      .required {
+        color: var(--theme-red-500);
+      }
     }
 
     > input {
       box-sizing: border-box;
       width: 100%;
-      padding: 0.75rem;
+      padding: 0.75rem 1rem;
       font-size: 1rem;
+      color: var(--foreground);
+      background: var(--background-secondary);
       border: 1px solid var(--border);
-      @include mixins.border-radius(6px);
+      @include mixins.border-radius(8px);
+      @include mixins.transition(var(--transition-default));
 
       &:focus {
         outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        border-color: var(--theme-purple-500);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        background: var(--background);
       }
 
       &.error {
-        border-color: var(--theme-red-600);
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        border-color: var(--theme-red-500);
+        background: rgba(239, 68, 68, 0.05);
+
+        &:focus {
+          box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
       }
 
       &::placeholder {
-        color: #9ca3af;
+        color: var(--foreground-tertiary);
+        font-size: 0.875rem;
       }
     }
 
-    > .field_error {
-      display: block;
-      color: var(--theme-red-600);
+    .hint {
+      margin-top: 0.5rem;
       font-size: 0.75rem;
-      margin-top: 0.25rem;
+      color: var(--foreground-tertiary);
+    }
+
+    .field_error {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.75rem;
+      color: var(--theme-red-500);
     }
   }
 
-  > .submit_button {
-    width: 100%;
-    background: var(--theme-purple-500);
-    color: var(--foreground);
-    border: 1px solid var(--foreground-tertiary);
+  .password_rules {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.75rem;
+
+    .rule_item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--foreground-tertiary);
+      @include mixins.transition(var(--transition-default));
+
+      .rule_icon {
+        font-size: 0.6rem;
+      }
+
+      &.valid {
+        color: var(--theme-green-500);
+
+        .rule_icon {
+          color: var(--theme-green-500);
+        }
+      }
+    }
+  }
+
+  .next_button,
+  .submit_button {
+    @include mixins.flexbox(row, center, center);
+    gap: 0.5rem;
     padding: 0.875rem;
-    @include mixins.border-radius(6px);
+    margin-top: 1rem;
+    width: 100%;
     font-size: 1rem;
     font-weight: 600;
-    cursor: pointer;
+    color: var(--color-white);
+    background: var(--theme-purple-500);
+    border: none;
+    @include mixins.border-radius(8px);
     @include mixins.transition(var(--transition-default));
-    @include mixins.hover-scale-effect(1.01);
+    cursor: pointer;
 
     &:hover:not(:disabled) {
       background: var(--theme-purple-600);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+      @include mixins.transform-container(translateY(-1px));
+    }
+
+    &:active:not(:disabled) {
+      @include mixins.transform-container(translateY(0));
     }
 
     &:disabled {
-      background: var(--foreground-tertiary);
+      color: var(--foreground-tertiary);
+      background: var(--border);
       cursor: not-allowed;
-      transform: none;
     }
   }
-}
 
-.switch_form {
-  text-align: center;
-  color: var(--foreground-tertiary);
-  font-size: 0.875rem;
+  .switch_text {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--foreground-tertiary);
 
-  > button {
-    background: none;
-    border: none;
-    color: #3b82f6;
-    cursor: pointer;
-    font-weight: 500;
-    margin-left: 0.25rem;
-    text-decoration: underline;
+    button {
+      padding: 0;
+      font-weight: 600;
+      text-decoration: underline;
+      color: var(--theme-purple-500);
+      background: none;
+      border: none;
+      cursor: pointer;
 
-    &:hover {
-      color: #2563eb;
+      &:hover {
+        color: var(--theme-purple-600);
+      }
     }
   }
 }

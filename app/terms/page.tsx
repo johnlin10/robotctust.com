@@ -6,13 +6,16 @@ import { metadata } from '../utils/metadata'
 import Page from '../components/page/Page'
 import { MarkdownRenderer } from '../components/Markdown'
 
+/**
+ * [Page] 服務條款頁面
+ * @returns {JSX.Element}
+ */
 export default function Terms() {
   return (
     <Page
-      // style={styles.termsContainer}
       header={{
         title: '服務條款',
-        descriptions: ['最後更新：2025/10/02'],
+        descriptions: ['最後更新：2026/03/12'],
       }}
     >
       <MarkdownRenderer filePath="/assets/docs/terms.md" />
@@ -20,6 +23,10 @@ export default function Terms() {
   )
 }
 
+/**
+ * [Function] 生成服務條款頁面的 Metadata
+ * @returns {Metadata}
+ */
 export async function generateMetadata(): Promise<Metadata> {
   return metadata({
     title: '服務條款｜中臺機器人研究社',
@@ -29,6 +36,6 @@ export async function generateMetadata(): Promise<Metadata> {
     url: '/terms',
     category: 'terms',
     publishedTime: '2025-10-02',
-    modifiedTime: '2025-10-02',
+    modifiedTime: '2026-03-12',
   })
 }

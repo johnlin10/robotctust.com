@@ -21,6 +21,7 @@ export interface SerializedUserProfile {
   permissions: UserPermissions
   // 新增社群功能相關欄位
   bio?: string
+  backgroundURL?: string
   location?: string
   website?: string
   socialLinks?: {

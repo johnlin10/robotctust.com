@@ -1,23 +1,30 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import styles from './LoginForm.module.scss'
-// utils
+
+// third-party utils
+import { useQueryState, parseAsString } from 'nuqs'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+
 // component
 import GoogleLoginButton from '../GoogleLoginButton/GoogleLoginButton'
+
 // context
 import { useAuth } from '../../contexts/AuthContext'
+import { useToast } from '../../contexts/ToastContext'
+
 // type
 import { LoginFormData } from '../../types/user'
+
 // icon
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 /**
- * [Function] 表單驗證規則
+ * [Schema] 表單驗證規則
  */
 const loginSchema = yup.object({
   email: yup
@@ -28,15 +35,16 @@ const loginSchema = yup.object({
 })
 
 interface LoginFormProps {
-  onSwitchToRegister: () => void
-  onClose?: () => void
-  showCloseButton?: boolean
+  onSwitchToRegister: () => void // 切換到註冊模式
+  onClose?: () => void // 關閉模組
+  showCloseButton?: boolean // 是否顯示關閉按鈕
 }
 
 /**
  * [Component] 登入表單
  * @param onSwitchToRegister 切換到註冊模式
  * @param onClose 關閉模組
+ * @param showCloseButton 是否顯示關閉按鈕
  * @returns
  */
 export function LoginForm({
@@ -44,8 +52,12 @@ export function LoginForm({
   onClose,
   showCloseButton = true,
 }: LoginFormProps) {
+  // ToastContext
+  const { showToast } = useToast()
   // AuthContext
   const { signInWithEmail, signInWithGoogle } = useAuth()
+  // 查詢參數電子郵件
+  const [emailQuery] = useQueryState('email', parseAsString.withDefault(''))
   // 登入狀態
   const [isLoading, setIsLoading] = useState(false)
   // 錯誤訊息
@@ -57,6 +69,9 @@ export function LoginForm({
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema),
+    defaultValues: {
+      email: emailQuery,
+    },
   })
 
   /**
@@ -69,10 +84,13 @@ export function LoginForm({
       setIsLoading(true)
       setError('')
       await signInWithEmail(data.email, data.password)
+      showToast('登入成功，歡迎回來！', 'success')
       onClose?.()
     } catch (error) {
       console.error('登入失敗:', error)
-      setError(getErrorMessage((error as { code?: string })?.code || 'unknown'))
+      setError(
+        getErrorMessage((error as { message?: string })?.message || 'unknown'),
+      )
     } finally {
       setIsLoading(false)
     }
@@ -87,20 +105,13 @@ export function LoginForm({
       setIsLoading(true)
       setError('')
       await signInWithGoogle()
-      onClose?.()
+      showToast('Google 登入成功，歡迎回來！', 'success')
     } catch (error) {
       console.error('Google 登入失敗:', error)
-      if (
-        (error as { message?: string })?.message ===
-        'NEW_USER_NEEDS_REGISTRATION'
-      ) {
-        setError('此 Google 帳號尚未註冊，請先完成註冊流程')
-        onSwitchToRegister()
-      } else {
-        setError(
-          getErrorMessage((error as { code?: string })?.code || 'unknown')
-        )
-      }
+      setError(
+        getErrorMessage((error as { message?: string })?.message || 'unknown'),
+      )
+      showToast('Google 登入失敗，請稍後再試', 'error')
     } finally {
       setIsLoading(false)
     }
@@ -111,22 +122,20 @@ export function LoginForm({
    * @param errorCode 錯誤代碼
    * @returns 錯誤訊息
    */
-  const getErrorMessage = (errorCode: string): string => {
-    switch (errorCode) {
-      case 'auth/user-not-found':
-        return '找不到此電子郵件對應的帳號'
-      case 'auth/wrong-password':
-        return '密碼錯誤'
-      case 'auth/invalid-email':
-        return '電子郵件格式無效'
-      case 'auth/user-disabled':
-        return '此帳號已被停用'
-      case 'auth/too-many-requests':
-        return '登入嘗試次數過多，請稍後再試'
-      case 'auth/invalid-credential':
-        return '帳號或密碼錯誤'
-      default:
-        return '登入失敗，請稍後再試'
+  const getErrorMessage = (errorMsg: string): string => {
+    if (
+      errorMsg.includes('Invalid credentials') ||
+      errorMsg.includes('invalid_grant')
+    ) {
+      return '帳號或密碼錯誤'
+    } else if (errorMsg.includes('Email not confirmed')) {
+      return '請先前往信箱驗證您的帳號'
+    } else if (errorMsg.includes('User not found')) {
+      return '找不到此電子郵件對應的帳號'
+    } else if (errorMsg.includes('Invalid login credentials')) {
+      return '帳號或密碼錯誤'
+    } else {
+      return '登入失敗，請稍後再試'
     }
   }
 
@@ -201,6 +210,14 @@ export function LoginForm({
         disabled={isLoading}
         mode="login"
       />
+
+      {/* 切換至註冊 */}
+      <p className={styles.switch_form}>
+        還沒有帳號？{' '}
+        <button type="button" onClick={onSwitchToRegister}>
+          立即註冊
+        </button>
+      </p>
     </>
   )
 }

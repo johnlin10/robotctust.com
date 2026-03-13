@@ -1,45 +1,175 @@
+import { createClient } from './supabase/server'
+import { createAdminClient } from './supabase/admin'
 import {
-  doc,
-  getDoc,
-  query,
-  where,
-  collection,
-  getDocs,
-} from 'firebase/firestore'
-import { db } from './firebase'
-import { processFirestoreDoc } from './firestoreHelpers'
-import { UserProfile } from '../types/user'
+  UserProfile,
+  DEFAULT_USER_PERMISSIONS,
+  DEFAULT_USER_STATS,
+  DEFAULT_PRIVACY_SETTINGS,
+} from '../types/user'
 
-//* 服務器端從 username 獲取使用者資料
+/**
+ * 將 Supabase 資料轉換為 UserProfile 格式
+ * @param {Record<string, unknown>} data - Supabase 資料
+ * @returns {UserProfile} UserProfile 格式
+ */
+function mapToUserProfile(data: Record<string, unknown>): UserProfile {
+  // 獲取使用者統計資料
+  const rawStats = data.user_stats
+  const statsData = Array.isArray(rawStats) ? rawStats[0] : rawStats
+  // 獲取使用者統計資料
+  const stats = statsData
+    ? {
+        postsCount: (statsData as Record<string, number>).posts_count || 0,
+        followersCount:
+          (statsData as Record<string, number>).followers_count || 0,
+        followingCount:
+          (statsData as Record<string, number>).following_count || 0,
+        likesReceived:
+          (statsData as Record<string, number>).likes_received || 0,
+      }
+    : DEFAULT_USER_STATS
+
+  return {
+    uid: data.id as string,
+    email: (data.email as string) || '',
+    username: (data.username as string) || '',
+    displayName:
+      (data.display_name as string) || (data.username as string) || '',
+    photoURL:
+      (data.avatar_url as string) || '/assets/image/userEmptyAvatar.png',
+    provider: (data.provider as 'email' | 'google') || 'email',
+    createdAt: new Date((data.created_at as string) || new Date()),
+    updatedAt: new Date((data.updated_at as string) || new Date()),
+    role: (data.role as 'super_admin' | 'admin' | 'user') || 'user',
+    permissions:
+      (data.permissions as UserProfile['permissions']) ||
+      DEFAULT_USER_PERMISSIONS,
+    bio: data.bio as string | undefined,
+    backgroundURL: (data.background_url as string) || undefined,
+    location: data.location as string | undefined,
+    website: data.website as string | undefined,
+    socialLinks: (data.social_links as UserProfile['socialLinks']) || {},
+    stats,
+    privacy:
+      (data.privacy as UserProfile['privacy']) || DEFAULT_PRIVACY_SETTINGS,
+    isActive: (data.is_active as boolean) ?? true,
+    isVerified: (data.is_verified as boolean) ?? false,
+    lastLoginAt: data.last_login_at
+      ? new Date(data.last_login_at as string)
+      : undefined,
+  } as UserProfile
+}
+
+/**
+ * 服務器端從 username 獲取使用者資料
+ * @param {string} username - 使用者名稱
+ * @returns {Promise<UserProfile | null>} 使用者資料
+ */
 export const getUserProfileByUsernameServer = async (
-  username: string
+  username: string,
 ): Promise<UserProfile | null> => {
   try {
-    const q = query(collection(db, 'users'), where('username', '==', username))
-    const querySnapshot = await getDocs(q)
-    if (querySnapshot.empty) {
+    // 建立 Supabase Client
+    const supabase = await createClient()
+    // 獲取使用者資料
+    const { data, error } = await supabase
+      .from('users')
+      .select('*, user_stats(*)')
+      .eq('username', username)
+      .maybeSingle()
+
+    if (error) {
+      console.error('從 username 獲取使用者資料時發生錯誤:', error.message)
       return null
     }
-    const userDoc = querySnapshot.docs[0]
-    const data = userDoc.data()
-    return processFirestoreDoc<UserProfile>(data)
+    if (!data) return null
+
+    // 轉換為 UserProfile 格式
+    return mapToUserProfile(data as Record<string, unknown>)
   } catch (error) {
     console.error('從 username 獲取使用者資料時發生錯誤:', error)
     return null
   }
 }
 
-//* 服務器端從 uid 獲取使用者資料
+export type UserProfileResult =
+  | { status: 'found'; profile: UserProfile }
+  | { status: 'private' }
+  | { status: 'not_found' }
+
+/**
+ * 服務器端從 username 獲取使用者資料，並區分帳號隱藏與不存在
+ * @param {string} username - 使用者名稱
+ * @returns {Promise<UserProfileResult>} 使用者資料
+ */
+export const getUserProfileStatusByUsername = async (
+  username: string,
+): Promise<UserProfileResult> => {
+  try {
+    // 建立 Supabase Client
+    const supabase = await createClient()
+    // 獲取使用者資料
+    const { data, error } = await supabase
+      .from('users')
+      .select('*, user_stats(*)')
+      .eq('username', username)
+      .maybeSingle()
+
+    if (error) {
+      console.error('從 username 獲取使用者狀態時發生錯誤:', error.message)
+      return { status: 'not_found' }
+    }
+
+    // 有資料，且 RLS 允許存取（帳號公開）
+    if (data) {
+      return {
+        status: 'found',
+        profile: mapToUserProfile(data as Record<string, unknown>),
+      }
+    }
+
+    // 一般查詢回傳 null，透過 admin client（繞過 RLS）確認用戶是否存在
+    const admin = createAdminClient()
+    const { data: adminData } = await admin
+      .from('users')
+      .select('id')
+      .eq('username', username)
+      .maybeSingle()
+
+    // 返回使用者狀態
+    return adminData ? { status: 'private' } : { status: 'not_found' }
+  } catch (error) {
+    console.error('從 username 獲取使用者狀態時發生錯誤:', error)
+    return { status: 'not_found' }
+  }
+}
+
+/**
+ * 服務器端從 uid 獲取使用者資料
+ * @param {string} uid - 使用者 ID
+ * @returns {Promise<UserProfile | null>} 使用者資料
+ */
 export const getUserProfileServer = async (
-  uid: string
+  uid: string,
 ): Promise<UserProfile | null> => {
   try {
-    const userDoc = await getDoc(doc(db, 'users', uid))
-    if (userDoc.exists()) {
-      const data = userDoc.data()
-      return processFirestoreDoc<UserProfile>(data)
+    // 建立 Supabase Client
+    const supabase = await createClient()
+    // 獲取使用者資料
+    const { data, error } = await supabase
+      .from('users')
+      .select('*, user_stats(*)')
+      .eq('id', uid)
+      .maybeSingle()
+
+    if (error) {
+      console.error('獲取使用者資料時發生錯誤:', error.message)
+      return null
     }
-    return null
+    if (!data) return null
+
+    // 轉換為 UserProfile 格式
+    return mapToUserProfile(data as Record<string, unknown>)
   } catch (error) {
     console.error('獲取使用者資料時發生錯誤:', error)
     return null

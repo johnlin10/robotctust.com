@@ -1,15 +1,29 @@
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 import { Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
 import styles from './login.module.scss'
+
 // components
 import Page from '../components/page/Page'
 import LoginClient from './LoginClient'
-// utils
+
+// util
 import { metadata } from '../utils/metadata'
+
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faGraduationCap,
+  faLaptopCode,
+  faMedal,
+  faEnvelope,
+} from '@fortawesome/free-solid-svg-icons'
 
 /**
  * Loading fallback 元件
  * 在 LoginClient 載入時顯示
+ * @returns {JSX.Element}
  */
 function LoginLoadingFallback() {
   return (
@@ -23,26 +37,106 @@ function LoginLoadingFallback() {
   )
 }
 
+/**
+ * [Page] 登入頁面
+ * @returns {JSX.Element}
+ */
 function LoginPage() {
   return (
     <Page
       style={styles.login_page_wrapper}
-      maxWidth="640px"
-      header={{
-        title: '登入 / 註冊',
-        descriptions: [
-          '使用社團帳號登入以管理報名資料、追蹤競賽與社課通知。',
-          '第一次來訪？完成註冊後即可使用同步課程與公告提醒等進階功能。',
-        ],
-      }}
+      backgroundGrid
+      mouseDynamicGlow
+      maxWidth="1000px"
     >
-      <Suspense fallback={<LoginLoadingFallback />}>
-        <LoginClient />
-      </Suspense>
+      <Link href="/" passHref className={styles.back_to_home}>
+        <Image
+          src="/assets/image/home/robotctust-home-image.png"
+          alt="中臺機器人研究社"
+          width={96}
+          height={96}
+        />
+        <p>回到首頁</p>
+      </Link>
+      <div className={styles.auth_container}>
+        {/* 左側：功能介紹 */}
+        <div className={styles.welcome_section}>
+          <div className={styles.welcome_content}>
+            <h1 className={styles.welcome_title}>
+              歡迎來到
+              <br />
+              中臺機器人研究社
+            </h1>
+            <p className={styles.welcome_subtitle}>登入以解鎖更多專屬功能</p>
+
+            <div className={styles.features_list}>
+              <div className={styles.feature_item}>
+                <div className={styles.feature_icon_wrapper}>
+                  <FontAwesomeIcon
+                    icon={faGraduationCap}
+                    className={styles.feature_icon}
+                  />
+                </div>
+                <div className={styles.feature_text}>
+                  <h3>社團課程系統</h3>
+                  <p>查看參與學期的所有課程與進度</p>
+                </div>
+              </div>
+              <div className={styles.feature_item}>
+                <div className={styles.feature_icon_wrapper}>
+                  <FontAwesomeIcon
+                    icon={faLaptopCode}
+                    className={styles.feature_icon}
+                  />
+                </div>
+                <div className={styles.feature_text}>
+                  <h3>技術分享文章</h3>
+                  <p>幹部總結與成員優秀作品分享</p>
+                </div>
+              </div>
+              <div className={styles.feature_item}>
+                <div className={styles.feature_icon_wrapper}>
+                  <FontAwesomeIcon
+                    icon={faMedal}
+                    className={styles.feature_icon}
+                  />
+                </div>
+                <div className={styles.feature_text}>
+                  <h3>成就與經驗值</h3>
+                  <p>完成課程任務，獲得專屬成就徽章</p>
+                </div>
+              </div>
+              <div className={styles.feature_item}>
+                <div className={styles.feature_icon_wrapper}>
+                  <FontAwesomeIcon
+                    icon={faEnvelope}
+                    className={styles.feature_icon}
+                  />
+                </div>
+                <div className={styles.feature_text}>
+                  <h3>專屬信件通知</h3>
+                  <p>重要通知與活動自動發送至 Email</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 右側：登入表單 */}
+        <div className={styles.auth_form_wrapper}>
+          <Suspense fallback={<LoginLoadingFallback />}>
+            <LoginClient />
+          </Suspense>
+        </div>
+      </div>
     </Page>
   )
 }
 
+/**
+ * [Function] 生成 Metadata
+ * @returns {Metadata}
+ */
 export function generateMetadata(): Metadata {
   return metadata({
     title: '登入｜中臺機器人研究社',

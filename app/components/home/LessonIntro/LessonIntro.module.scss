@@ -6,9 +6,9 @@
 
   > .lessonIntroContainer {
     @include mixins.flexbox(column, center, center);
+    padding: var(--space-6x) var(--space-2x);
     width: 100%;
     max-width: 1200px;
-    padding: var(--space-6x) var(--space-2x);
 
     .header {
       h1 {
@@ -18,16 +18,16 @@
     }
 
     .carouselWrapper {
-      width: 100vw;
       position: relative;
       display: flex;
       flex-direction: column;
       gap: var(--space-4x);
+      width: 100vw;
 
       .carousel {
         width: 100%;
         overflow: hidden;
-        padding: 40px 0; // Space for scaled up shadow
+        padding: 40px 0;
 
         --card-width: 800px;
         --gap: 32px;
@@ -42,29 +42,30 @@
 
         .track {
           display: flex;
-          width: max-content;
           gap: var(--gap);
           padding-left: calc(50vw - (var(--card-width) / 2));
           padding-right: calc(50vw - (var(--card-width) / 2));
-          transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+          width: max-content;
+          @include mixins.transition(
+            transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)
+          );
         }
 
         .slide {
+          opacity: 0.4;
+          position: relative;
           flex: 0 0 var(--card-width);
           width: var(--card-width);
-          aspect-ratio: 16/9;
-          position: relative;
-          @include mixins.border-radius(20px);
           border: 1px solid var(--border);
+          @include mixins.border-radius(20px);
+          @include mixins.transition(all 0.6s cubic-bezier(0.25, 1, 0.5, 1));
+          @include mixins.transform-container(scale(0.9));
+          aspect-ratio: 16/9;
           overflow: hidden;
 
-          transform: scale(0.9);
-          opacity: 0.4;
-          transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-
           &[aria-hidden='false'] {
-            transform: scale(1);
             opacity: 1;
+            @include mixins.transform-container(scale(1));
           }
 
           @include mixins.respond-by-max-width(768px) {
@@ -73,6 +74,7 @@
           }
 
           .imageWrapper {
+            z-index: 1;
             position: absolute;
             top: 0;
             left: 0;
@@ -86,6 +88,7 @@
           }
 
           .overlay {
+            z-index: 5;
             position: absolute;
             bottom: 0;
             left: 0;
@@ -100,12 +103,12 @@
           }
 
           .textContainer {
+            z-index: 10;
             position: absolute;
             bottom: var(--space-4x);
             left: var(--space-4x);
             right: var(--space-4x);
             color: white;
-            z-index: 2;
 
             @include mixins.respond-by-max-width(768px) {
               bottom: var(--space-3x);
@@ -114,10 +117,9 @@
             }
 
             h2 {
-              font-size: 2.25rem;
               margin-bottom: var(--space);
+              font-size: 2.25rem;
               color: white;
-              // text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
 
               @include mixins.respond-by-max-width(768px) {
                 font-size: 1.5rem;
@@ -125,11 +127,10 @@
             }
 
             p {
+              max-width: 800px;
               font-size: 1.1rem;
               line-height: 1.6;
-              max-width: 800px;
               color: rgba(255, 255, 255, 0.9);
-              // text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 
               @include mixins.respond-by-max-width(768px) {
                 font-size: 0.95rem;
@@ -138,43 +139,41 @@
 
             .ctaButton {
               display: inline-block;
-              margin-top: var(--space-2x);
               padding: var(--space) var(--space-3x);
-              background-color: var(--primary);
-              color: white;
-              border-radius: 999px;
+              margin-top: var(--space-2x);
               text-decoration: none;
               font-weight: 500;
-              transition: all 0.3s ease;
+              color: white;
+              background-color: var(--primary);
+              @include mixins.border-radius(100px);
+              @include mixins.transition(all 0.3s ease);
 
               &:hover {
                 background-color: var(--primary-dark);
-                transform: translateY(-2px);
+                @include mixins.transform-container(translateY(-2px));
               }
             }
           }
         }
 
         .navButton {
+          z-index: 10;
           position: absolute;
+          @include mixins.flexbox(row, center, center);
           top: 50%;
-          transform: translateY(-50%);
           width: 42px;
           height: 42px;
-          border-radius: 50%;
           color: var(--foreground);
+          @include mixins.border-radius(50%);
+          @include mixins.transition(all 0.3s ease);
+          @include mixins.transform-container(translateY(-50%));
           cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.3s ease;
-          z-index: 10;
 
           &:hover {
             background-color: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-            transform: translateY(-50%) scale(1.05);
+            @include mixins.transform-container(translateY(-50%) scale(1.05));
             @include mixins.glass-blur(6px);
           }
 
@@ -187,33 +186,28 @@
           }
 
           @include mixins.respond-by-max-width(768px) {
-            display: none; // Hide absolute navigation buttons on smaller screens
+            display: none;
           }
         }
-      } // closes .carousel
+      }
 
       .controls {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include mixins.flexbox(row, center, center);
         gap: var(--space-2x);
         margin-top: calc(var(--space-2x) * -1);
 
         .playPauseButton {
-          border: none;
-          color: var(--foreground-secondary);
-          background-color: rgba(0, 0, 0, 0.1);
-          border: 1px solid rgba(0, 0, 0, 0.05);
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          @include mixins.flexbox(row, center, center);
           padding: 8px;
           height: 42px;
           width: 42px;
-          border-radius: 50%;
-          transition: all 0.2s ease;
+          color: var(--foreground-secondary);
+          background-color: rgba(0, 0, 0, 0.1);
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          @include mixins.border-radius(50%);
+          @include mixins.transition(all 0.2s ease);
           @include mixins.glass-blur(6px);
+          cursor: pointer;
 
           :global(html.dark) & {
             background-color: rgba(255, 255, 255, 0.1);
@@ -235,8 +229,7 @@
         }
 
         .indicators {
-          display: flex;
-          justify-content: center;
+          @include mixins.flexbox(row, center, center);
           gap: var(--space-2x);
 
           @include mixins.respond-by-max-width(768px) {
@@ -244,15 +237,15 @@
           }
 
           .dot {
+            position: relative;
             width: 12px;
             height: 12px;
-            border-radius: 6px;
             background-color: rgba(0, 0, 0, 0.15);
             border: 1px solid rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            transition: all 0.4s ease;
-            position: relative;
+            @include mixins.border-radius(6px);
+            @include mixins.transition(all 0.4s ease);
             overflow: hidden;
+            cursor: pointer;
 
             :global(html.dark) & {
               background-color: rgba(255, 255, 255, 0.15);
@@ -295,6 +288,7 @@
 
 //* 模糊漸層效果
 .gradient_blur {
+  z-index: 3;
   display: flex;
   position: fixed;
   inset: auto 0 0 0;

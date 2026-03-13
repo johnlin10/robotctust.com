@@ -14,6 +14,7 @@ import ThemeColorMeta from './components/ThemeColorMeta'
 import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { HeaderProvider } from './contexts/HeaderContext'
+import { ToastProvider } from './contexts/ToastContext'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 // config
 import { HEADER_SCROLL_CONFIG } from './components/Header/headerScrollConfig'
@@ -128,13 +129,15 @@ export default function RootLayout({
       <body className={`${notoSansTC.variable} ${dmMono.variable} antialiased`}>
         <ThemeProvider>
           <AuthProvider>
-            <NuqsAdapter>
-              <HeaderProvider config={HEADER_SCROLL_CONFIG}>
-                <ThemeColorMeta />
-                <Header />
-                {children}
-              </HeaderProvider>
-            </NuqsAdapter>
+            <ToastProvider>
+              <NuqsAdapter>
+                <HeaderProvider config={HEADER_SCROLL_CONFIG}>
+                  <ThemeColorMeta />
+                  <Header />
+                  {children}
+                </HeaderProvider>
+              </NuqsAdapter>
+            </ToastProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

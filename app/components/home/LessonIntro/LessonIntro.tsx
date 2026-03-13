@@ -2,6 +2,12 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
+import styles from './LessonIntro.module.scss'
+
+// component
+import ScrollAnimation from '@/app/components/animation/ScrollAnimation/ScrollAnimation'
+
+// icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPlay,
@@ -9,8 +15,6 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons'
-import styles from './LessonIntro.module.scss'
-import ScrollAnimation from '@/app/components/animation/ScrollAnimation/ScrollAnimation'
 
 interface LessonCard {
   id: string
@@ -58,20 +62,38 @@ const lessonData: LessonCard[] = [
   },
 ]
 
+/**
+ * [Component] 課程概覽
+ * @returns {JSX.Element}
+ */
 export default function LessonIntro() {
+  // 目前顯示的卡片索引
   const [currentIndex, setCurrentIndex] = useState(0)
+  // 是否暫停
   const [isPaused, setIsPaused] = useState(false)
+  // 進度
   const [progress, setProgress] = useState(0)
+  // 觸摸起始 X 座標
   const touchStartX = useRef<number | null>(null)
 
+  // 自動播放間隔
   const autoPlayInterval = 5000 // 5 seconds
+  // 更新進度間隔
   const updateInterval = 50 // Update progress every 50ms
 
+  /**
+   * [Function] 下一張卡片
+   * @returns {void}
+   */
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % lessonData.length)
     setProgress(0)
   }, [])
 
+  /**
+   * [Function] 上一張卡片
+   * @returns {void}
+   */
   const prevSlide = useCallback(() => {
     setCurrentIndex(
       (prevIndex) => (prevIndex - 1 + lessonData.length) % lessonData.length,
@@ -79,48 +101,73 @@ export default function LessonIntro() {
     setProgress(0)
   }, [])
 
+  /**
+   * [Function] 跳轉到指定卡片
+   * @param {number} index - 卡片索引
+   * @returns {void}
+   */
   const goToSlide = (index: number) => {
     setCurrentIndex(index)
     setProgress(0)
   }
 
-  // Handle auto-play and progress
+  /**
+   * [Effect] 自動播放與進度更新
+   * @returns {void}
+   */
   useEffect(() => {
     if (isPaused) return
 
+    // 計時器
     const startTime = Date.now()
     const timer = setInterval(() => {
+      // 計算經過時間
       const elapsed = Date.now() - startTime
+      // 計算進度
       const currentProgress = Math.min((elapsed / autoPlayInterval) * 100, 100)
-
+      // 更新進度
       setProgress(currentProgress)
 
+      // 如果經過時間大於或等於自動播放間隔，則跳轉到下一張卡片
       if (elapsed >= autoPlayInterval) {
         nextSlide()
       }
     }, updateInterval)
-
     return () => clearInterval(timer)
   }, [isPaused, currentIndex, nextSlide])
 
-  // Swipe handlers
+  /**
+   * [Function] 觸摸起始
+   * @param {React.TouchEvent} e - 觸摸事件
+   * @returns {void}
+   */
   const handleTouchStart = (e: React.TouchEvent) => {
+    // 觸摸起始 X 座標
     touchStartX.current = e.touches[0].clientX
   }
 
+  /**
+   * [Function] 觸摸結束
+   * @param {React.TouchEvent} e - 觸摸事件
+   * @returns {void}
+   */
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return
 
+    // 觸摸結束 X 座標
     const touchEndX = e.changedTouches[0].clientX
+    // 計算 X 座標差值
     const deltaX = touchStartX.current - touchEndX
 
-    // Require at least 50px swipe distance
     if (deltaX > 50) {
+      // 如果 X 座標差值大於 50px，則跳轉到下一張卡片
       nextSlide()
     } else if (deltaX < -50) {
+      // 如果 X 座標差值小於 -50px，則跳轉到上一張卡片
       prevSlide()
     }
 
+    // 清除觸摸起始 X 座標
     touchStartX.current = null
   }
 
