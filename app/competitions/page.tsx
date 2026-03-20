@@ -11,7 +11,6 @@ function Competitions() {
   return (
     <Page
       style={styles.competitionsContainer}
-      maxWidth="960px"
       header={{
         title: '競賽資訊',
         descriptions: [

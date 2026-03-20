@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@awesome.me/webawesome": "^3.0.0",
+    "@dnd-kit/react": "^0.3.2",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
@@ -35,6 +36,7 @@
     "@vercel/blob": "^2.0.0",
     "@vercel/speed-insights": "^1.2.0",
     "firebase": "^11.8.1",
+    "firebase-admin": "^13.7.0",
     "highlight.js": "^11.11.1",
     "liquid-glass-react": "^1.1.1",
     "lucide-react": "^0.554.0",

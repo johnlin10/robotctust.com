@@ -487,42 +487,24 @@ export async function batchSyncCompetitions(
   competitions: Competition[],
   userId?: string,
 ): Promise<{ success: number; errors: string[] }> {
-  const batch = writeBatch(db)
-  const errors: string[] = []
-  let successCount = 0
-
   try {
-    for (const competition of competitions) {
-      try {
-        // 使用競賽的 ID 作為文件 ID
-        const docRef = doc(db, COLLECTION_NAME, competition.id)
-        const firestoreDoc = _toFirestoreDocument({
-          ...competition,
-          updatedBy: userId,
-          updatedAt: {
-            date: new Date().toISOString().split('T')[0],
-            time: new Date().toTimeString().slice(0, 5),
-          },
-        })
+    const response = await fetch('/api/dashboard/competitions/sync', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ competitions, userId }),
+    });
 
-        // 使用 set 覆蓋現有文件（如果存在）
-        batch.set(docRef, firestoreDoc)
-        successCount++
-      } catch (error) {
-        console.error(`Error preparing competition ${competition.id}:`, error)
-        errors.push(`競賽 ${competition.title} (${competition.id}) 準備失敗`)
-      }
+    if (!response.ok) {
+      throw new Error(`API 請求失敗: ${response.status}`);
     }
 
-    // 執行批量寫入
-    await batch.commit()
-
-    console.log(`Successfully synced ${successCount} competitions`)
-    return { success: successCount, errors }
+    const result = await response.json();
+    return result;
   } catch (error) {
-    console.error('Batch sync failed:', error)
-    errors.push('批量同步執行失敗')
-    return { success: 0, errors }
+    console.error('Batch sync failed:', error);
+    return { success: 0, errors: ['批量同步執行失敗：API 請求發生錯誤'] };
   }
 }
 

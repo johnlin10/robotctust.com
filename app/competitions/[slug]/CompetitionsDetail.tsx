@@ -354,7 +354,7 @@ export default function CompetitionDetail({
       {/* 詳細規則 */}
       {competition.detailMarkdown && (
         <div className={styles.detailSection}>
-          <h2 className={styles.sectionTitle}>詳細規則</h2>
+          <h2 className={styles.sectionTitle}>詳細資訊</h2>
           <div className={styles.markdownContent}>
             <MarkdownRenderer content={competition.detailMarkdown} />
           </div>

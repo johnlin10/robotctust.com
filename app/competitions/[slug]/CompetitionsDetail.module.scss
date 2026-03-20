@@ -20,12 +20,12 @@
         position: relative;
         width: 100%;
         height: max-content;
-        max-height: 300px;
+        border: 1px solid var(--border);
         overflow: hidden;
         @include mixins.border-radius(12px);
         @include mixins.transition(var(--transition-default));
-        @include mixins.hover-scale-effect(1.01);
         @include mixins.box-shadow(96px);
+        aspect-ratio: 16 / 9;
 
         @include mixins.respond-to('phone') {
           width: calc(100% + 48px);
@@ -68,6 +68,7 @@
             > .statusBadge {
               height: 100%;
               padding: 3px 9px;
+              border: 1px solid var(--border);
               @include mixins.border-radius(6px);
               font-size: 1rem;
               font-weight: 600;

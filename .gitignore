@@ -64,3 +64,5 @@ serializationTest.ts
 .env*.local
 
 supabase-setup.md
+PROJECT.md
+course.ts

@@ -9,7 +9,7 @@ export interface UserProfile extends Record<string, unknown> {
   provider: 'email' | 'google'
   createdAt: Date
   updatedAt: Date
-  role: 'super_admin' | 'admin' | 'user'
+  role: 'super_admin' | 'admin' | 'admin_course' | 'admin_achievement' | 'admin_verifications' | 'admin_news' | 'member' | 'user'
   permissions: UserPermissions
   // 新增社群功能相關欄位
   bio?: string // 個人簡介
@@ -122,14 +122,16 @@ export interface AuthContextType {
   signInWithEmail: (email: string, password: string) => Promise<void>
   signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
-  register: (data: RegisterFormData) => Promise<{ requiresEmailConfirmation: boolean }>
+  register: (
+    data: RegisterFormData,
+  ) => Promise<{ requiresEmailConfirmation: boolean }>
   updateUserProfile: (
     uid: string,
-    updateData: Partial<UserProfile>
+    updateData: Partial<UserProfile>,
   ) => Promise<void>
   searchUsers: (
     searchTerm: string,
-    limit?: number
+    limit?: number,
   ) => Promise<UserSearchResult[]>
   hasPermission: (feature: keyof UserPermissions, action: string) => boolean
   isAdmin: boolean
@@ -167,13 +169,14 @@ export interface UserSearchResult {
 //* 建立完整使用者資料的輔助函數
 export const createDefaultUserProfile = (
   firebaseUser: User,
-  additionalData: Partial<UserProfile>
+  additionalData: Partial<UserProfile>,
 ): UserProfile => {
   return {
     uid: firebaseUser.id,
     email: firebaseUser.email || '',
     username: additionalData.username || '',
-    displayName: additionalData.displayName || firebaseUser.user_metadata?.full_name || '',
+    displayName:
+      additionalData.displayName || firebaseUser.user_metadata?.full_name || '',
     photoURL:
       additionalData.photoURL ||
       firebaseUser.user_metadata?.avatar_url ||

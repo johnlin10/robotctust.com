@@ -1,8 +1,13 @@
 @use '../styles/mixins' as mixins;
 
 .competitionsContainer {
+  max-width: 720px !important;
+
+  @include mixins.respond-to('desktop') {
+    max-width: 960px !important;
+  }
+
   > .competitionsContent {
-    @include mixins.content-container;
     @include mixins.flexbox(column, start, center);
     gap: var(--space-2x);
   }

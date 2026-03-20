@@ -42,7 +42,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   //* 避免資料查詢卡住造成整個 UI 一直 loading
   const resolveWithTimeout = useCallback(
-    async <T,>(promise: Promise<T>, timeoutMs: number, fallback: T): Promise<T> => {
+    async <T,>(
+      promise: Promise<T>,
+      timeoutMs: number,
+      fallback: T,
+    ): Promise<T> => {
       let timerId: ReturnType<typeof setTimeout> | null = null
       try {
         return await Promise.race<T>([
@@ -57,7 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (timerId) clearTimeout(timerId)
       }
     },
-    []
+    [],
   )
 
   //* 從 Supabase 獲取使用者資料並做對應的轉換
@@ -74,26 +78,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           console.error('獲取使用者資料時發生錯誤:', error.message)
           return null
         }
-        
+
         if (!data) {
           console.warn(`User profile not found for uid: ${uid}`)
           return null
         }
 
-        const statsData = Array.isArray(data.user_stats) ? data.user_stats[0] : data.user_stats
-        const stats = statsData ? {
-          postsCount: statsData.posts_count || 0,
-          followersCount: statsData.followers_count || 0,
-          followingCount: statsData.following_count || 0,
-          likesReceived: statsData.likes_received || 0,
-        } : DEFAULT_USER_STATS
+        const statsData = Array.isArray(data.user_stats)
+          ? data.user_stats[0]
+          : data.user_stats
+        const stats = statsData
+          ? {
+              postsCount: statsData.posts_count || 0,
+              followersCount: statsData.followers_count || 0,
+              followingCount: statsData.following_count || 0,
+              likesReceived: statsData.likes_received || 0,
+            }
+          : DEFAULT_USER_STATS
 
         return {
           uid: data.id,
           email: data.email || '',
           username: data.username || '',
-          displayName: data.displayName || data.display_name || data.username || '',
-          photoURL: data.photoURL || data.avatar_url || '/assets/image/userEmptyAvatar.png',
+          displayName:
+            data.displayName || data.display_name || data.username || '',
+          photoURL:
+            data.photoURL ||
+            data.avatar_url ||
+            '/assets/image/userEmptyAvatar.png',
           provider: data.provider || 'email',
           createdAt: new Date(data.created_at || new Date()),
           updatedAt: new Date(data.updated_at || new Date()),
@@ -108,19 +120,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           privacy: data.privacy || DEFAULT_PRIVACY_SETTINGS,
           isActive: data.is_active ?? true,
           isVerified: data.is_verified ?? false,
-          lastLoginAt: data.last_login_at ? new Date(data.last_login_at) : undefined,
+          lastLoginAt: data.last_login_at
+            ? new Date(data.last_login_at)
+            : undefined,
         } as UserProfile
       } catch (error) {
         console.error('獲取使用者資料時發生例外錯誤:', error)
         return null
       }
     },
-    [supabase]
+    [supabase],
   )
 
   //* 從 username 獲取使用者資料
   const getUserProfileByUsername = async (
-    username: string
+    username: string,
   ): Promise<UserProfile | null> => {
     try {
       const { data, error } = await supabase
@@ -154,7 +168,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           .from('users')
           .update({ last_login_at: new Date().toISOString() })
           .eq('id', data.user.id)
-        
+
         // 抓取包含 username 跟 stats 在內的個人資料
         const userProfile = await getUserProfile(data.user.id)
         setUser(userProfile)
@@ -188,7 +202,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   //* 註冊新使用者
-  const register = async (data: RegisterFormData): Promise<{ requiresEmailConfirmation: boolean }> => {
+  const register = async (
+    data: RegisterFormData,
+  ): Promise<{ requiresEmailConfirmation: boolean }> => {
     try {
       setLoading(true)
 
@@ -202,7 +218,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         throw new Error('請提供信箱與密碼')
       }
 
-      const avatarUrl = data.photoURL?.trim() || '/assets/image/userEmptyAvatar.png'
+      const avatarUrl =
+        data.photoURL?.trim() || '/assets/image/userEmptyAvatar.png'
 
       // 透過 options.data 將自訂的屬性（包含 username, displayName 等）附加到 raw_user_meta_data 中
       // Supabase 的 Database Trigger 將根據這些屬性在 users table 建立對應的行
@@ -255,11 +272,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   //* 更新使用者個人資料
   const updateUserProfile = async (
     uid: string,
-    updateData: Partial<UserProfile>
+    updateData: Partial<UserProfile>,
   ): Promise<void> => {
     try {
       // 這裡簡單把 camelCase 轉成 Supabase 可能對應的 snake_case
-      const payload: any = { ...updateData, updated_at: new Date().toISOString() }
+      const payload: any = {
+        ...updateData,
+        updated_at: new Date().toISOString(),
+      }
       if (updateData.displayName) payload.display_name = updateData.displayName
       if (updateData.photoURL) payload.avatar_url = updateData.photoURL
 
@@ -291,19 +311,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (error) throw error
 
-      return (data || []).map((doc: {
-        id: string
-        username: string
-        display_name: string | null
-        avatar_url: string | null
-        is_verified: boolean | null
-      }) => ({
-        uid: doc.id,
-        username: doc.username,
-        displayName: doc.display_name || doc.username,
-        photoURL: doc.avatar_url || '/assets/image/userEmptyAvatar.png',
-        isVerified: Boolean(doc.is_verified),
-      }))
+      return (data || []).map(
+        (doc: {
+          id: string
+          username: string
+          display_name: string | null
+          avatar_url: string | null
+          is_verified: boolean | null
+        }) => ({
+          uid: doc.id,
+          username: doc.username,
+          displayName: doc.display_name || doc.username,
+          photoURL: doc.avatar_url || '/assets/image/userEmptyAvatar.png',
+          isVerified: Boolean(doc.is_verified),
+        }),
+      )
     } catch (error) {
       console.error('搜尋使用者時發生錯誤:', error)
       return []
@@ -333,7 +355,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   //* 權限檢查方法
   const hasPermission = (
     feature: keyof UserPermissions,
-    action: string
+    action: string,
   ): boolean => {
     if (!user || !user.permissions) return false
     const featurePermissions = user.permissions[
@@ -379,7 +401,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setIsAdmin(
             isSuperAdminUser ||
               userProfile?.role === 'admin' ||
-              userProfile?.role === 'super_admin'
+              userProfile?.role === 'super_admin',
           )
         } else {
           setUser(null)
@@ -422,7 +444,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } = supabase.auth.onAuthStateChange(
       (_event: AuthChangeEvent, session: Session | null) => {
         void syncAuthState(session)
-      }
+      },
     )
 
     return () => {

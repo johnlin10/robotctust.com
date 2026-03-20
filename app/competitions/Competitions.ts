@@ -537,15 +537,35 @@ export const competitions: Competition[] = [
   // 114-2
   // 社內競賽
   {
-    id: 'line-following-2026-04-15-club',
-    title: '機器人循線競賽',
-    description: '暫無簡介',
-    detailMarkdown: '',
+    id: 'line-following-2026-04-15-school-inside',
+    title: '第一屆 中臺機器人研究社 機器人循線競賽',
+    description: '本競賽挑戰全自主輪型機器人尋線競速！參賽機器人需全程無遙控沿黑線行駛，以最快完賽且精準停於終點者獲勝。',
+    detailMarkdown: `
+## 賽事核心：全自主尋線挑戰
+
+本比賽最大的考驗在於 **「全自主」**。機器人必須完全依賴單一主機與感測器，在沒有任何外部人為干預的情況下，精準辨識並沿著 2 公分寬的黑色軌跡線前進。比賽現場的光線與環境溫濕度都將是機器人必須克服的自然變數。
+
+## 機器人規格：輕巧與自由的結合
+
+- **尺寸限制**： 長、寬皆須小於等於 30 公分，確保車體能在賽道上靈活穿梭。
+
+- **沒有限制**： 高度與重量完全不設限！只要是輪型運動，參賽者可以自由發揮機構創意，打造最穩定的底盤或最獨特的感測器架構。
+
+## 賽制與勝負關鍵：分秒必爭、精準至上
+
+- 競賽操作：每支隊伍只有 1 名操控手能上場，在短短 5 分鐘內，最多擁有 3 次出發機會。
+
+- 失誤判定：只要車體正投影完全脫離軌跡、停滯或原地打轉超過 10 秒，甚至跌落邊緣，都會立刻失去一次寶貴的機會。
+
+- 煞車關鍵： 衝過終點線後必須立即煞車並停在終點區域內。若衝過頭，將面臨致命的 5 秒加時懲罰！
+
+- 計分方式： **優先比速度**，順利走完全程者優先排名，時間越短越具優勢。未完賽比距離，若未能走完全程，則以機器人努力推進的「距離段數」來計算成績。
+    `,
     status: 'upcoming',
-    position: 'club',
+    position: 'school-inside',
     timeline: [
       {
-        id: 'line-following-2026-04-15-club-registration',
+        id: 'line-following-2026-04-15-school-inside-registration',
         step: 'registration',
         stepName: '報名階段',
         startDateTime: {
@@ -561,7 +581,7 @@ export const competitions: Competition[] = [
         order: 1,
       },
       {
-        id: 'line-following-2026-04-15-club-final',
+        id: 'line-following-2026-04-15-school-inside-final',
         step: 'final',
         stepName: '決賽',
         startDateTime: {
@@ -572,65 +592,76 @@ export const competitions: Competition[] = [
           date: '2026-04-15',
           time: '15:50',
         },
-        // timeline: [
-        //   {
-        //     stepName: '比賽規則講解',
-        //     startTime: '14:00',
-        //     endTime: '14:10',
-        //   },
-        //   {
-        //     stepName: '比賽練習',
-        //     startTime: '14:10',
-        //     endTime: '15:10',
-        //   },
-        //   {
-        //     stepName: '正式比賽',
-        //     startTime: '15:10',
-        //     endTime: '15:50',
-        //   },
-        //   {
-        //     stepName: '公布成績',
-        //     startTime: '15:50',
-        //     endTime: '16:00',
-        //   },
-        // ],
-        description: '最終挑戰，避開障礙物！',
-        required: true,
-        order: 1,
-      },
-      {
-        id: 'line-following-2026-04-15-club-result-announcement',
-        step: 'result',
-        stepName: '成績公布',
-        startDateTime: {
-          date: '2026-04-15',
-          time: '15:50',
-        },
-        endDateTime: {
-          date: null,
-          time: null,
-        },
-        description: '公布成績',
+        timeline: [
+          {
+            stepName: '報到',
+            startTime: '13:00',
+            endTime: '13:10',
+          },
+          {
+            stepName: '開幕儀式',
+            startTime: '13:10',
+            endTime: '13:30',
+          },
+          {
+            stepName: '比賽練習',
+            startTime: '13:30',
+            endTime: '14:10',
+          },
+          {
+            stepName: '檢錄',
+            startTime: '14:10',
+            endTime: '14:20',
+          },
+          {
+            stepName: '正式比賽',
+            startTime: '14:20',
+            endTime: '15:30',
+          },
+          {
+            stepName: '評分/交流',
+            startTime: '15:30',
+            endTime: '15:40',
+          },
+        ],
+        description: '',
         required: true,
         order: 2,
       },
+      {
+        id: 'line-following-2026-04-15-school-inside-result',
+        step: 'result',
+        stepName: '頒獎與閉幕典禮',
+        startDateTime: {
+          date: '2026-04-15',
+          time: '15:40',
+        },
+        endDateTime: {
+          date: '2026-04-15',
+          time: '16:00',
+        },
+        description: '頒獎與閉幕典禮',
+        required: true,
+        order: 3,
+      },
     ],
     link: '',
-    image: '',
+    image:
+      'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fline-following-2026-04-15-school-inside%2F%E7%AB%B6%E8%B3%BD%E7%B6%B2%E7%AB%99%E5%AE%A3%E5%82%B3%E5%B0%81%E9%9D%A2.webp?alt=media&token=857c45dd-f498-447d-8c35-5fa9106989f6',
     tags: ['競賽', '機器人', '循線', '循線感測器'],
-    priority: 2,
+    priority: 1,
     createdAt: {
       date: '2026-03-04',
       time: '14:00',
     },
     updatedAt: {
-      date: '2026-03-04',
-      time: '14:00',
+      date: '2026-03-20',
+      time: '10:00',
     },
     published: true,
     estimatedParticipants: 30,
     registrationFee: 0,
-    rewards: ['獲得排列名次及佳作的隊伍依本大賽辦法發給選手獎品'],
+    rewards: ['第一名 每人一張 500元 禮券', '第二名 每人一張 300元 禮券', '第三名 每人一張 100元 禮券'],
     contact: {
       email: 'robotctust@gmail.com',
       phone: '',

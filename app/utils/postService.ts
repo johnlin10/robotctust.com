@@ -26,45 +26,24 @@ import {
   CreatePostData,
   UpdatePostData,
   PostCategory,
-  AccessControlDocument,
 } from '../types/post'
 import { revalidateUpdatePage } from '../action/revalidate'
+import { MODULE_PERMISSIONS_MAP, Role } from '../types/dashboard'
 
 const POSTS_COLLECTION = 'posts'
-const ACCESS_CONTROL_COLLECTION = 'accessControl'
-const ACCESS_CONTROL_DOC = 'canPostNews'
 
 /**
  * 檢查使用者是否有發布權限
+ * 依據 UserProfile.role 對照 MODULE_PERMISSIONS_MAP 判斷是否有 news 模組存取權
  */
-export async function checkUserPermission(
-  user: User | UserProfile
-): Promise<boolean> {
-  if (!user?.email) return false
-
-  try {
-    const accessControlRef = doc(
-      db,
-      ACCESS_CONTROL_COLLECTION,
-      ACCESS_CONTROL_DOC
-    )
-    const accessControlSnap = await getDoc(accessControlRef)
-
-    if (!accessControlSnap.exists()) {
-      console.warn('Access control document does not exist')
-      return false
-    }
-
-    const data = accessControlSnap.data() as AccessControlDocument
-    const authorizedUser = data.authorizedUsers?.find(
-      (u) => u.email === user.email && u.active
-    )
-
-    return !!authorizedUser
-  } catch (error) {
-    console.error('Error checking user permission:', error)
-    return false
-  }
+export function checkUserPermission(user: User | UserProfile): boolean {
+  const role = (user as UserProfile).role as string | undefined
+  if (!role) return false
+  const knownRole: Role =
+    MODULE_PERMISSIONS_MAP[role as Role] !== undefined
+      ? (role as Role)
+      : 'member'
+  return MODULE_PERMISSIONS_MAP[knownRole].includes('news')
 }
 
 /**
@@ -204,7 +183,7 @@ export async function createPost(
   coverImage?: File
 ): Promise<string> {
   // 檢查權限
-  const hasPermission = await checkUserPermission(user)
+  const hasPermission = checkUserPermission(user)
   if (!hasPermission) {
     throw new Error('您沒有發布文章的權限')
   }
@@ -282,7 +261,7 @@ export async function updatePost(
   removeCoverImage?: boolean
 ): Promise<void> {
   // 檢查權限
-  const hasPermission = await checkUserPermission(user)
+  const hasPermission = checkUserPermission(user)
   if (!hasPermission) {
     throw new Error('您沒有編輯文章的權限')
   }
@@ -339,7 +318,7 @@ export async function deletePost(
   postId: string
 ): Promise<void> {
   // 檢查權限
-  const hasPermission = await checkUserPermission(user)
+  const hasPermission = checkUserPermission(user)
   if (!hasPermission) {
     throw new Error('您沒有刪除文章的權限')
   }
