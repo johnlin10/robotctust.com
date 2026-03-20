@@ -43,7 +43,7 @@ export default function Header() {
   // 獲取當前路徑
   const pathname = usePathname()
   // 獲取登入資訊 與 驗證超級管理員權限
-  const { isSuperAdmin } = useAuth()
+  const { isAdmin, isSuperAdmin } = useAuth()
   // 選單狀態
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   // Header 的縮放狀態
@@ -169,15 +169,28 @@ export default function Header() {
             >
               關於
             </Link>
-            {isSuperAdmin && (
+            {(isAdmin || isSuperAdmin) && (
               <>
                 <div className={styles.separator} />
+                <Link
+                  href="/dashboard"
+                  onClick={handleNavLinkClick}
+                  className={
+                    pathname.startsWith('/dashboard') ? styles.active : ''
+                  }
+                >
+                  後台
+                </Link>
+              </>
+            )}
+            {isSuperAdmin && (
+              <>
                 <Link
                   href="/admin"
                   onClick={handleNavLinkClick}
                   className={pathname.startsWith('/admin') ? styles.active : ''}
                 >
-                  控制台
+                  總控台
                 </Link>
               </>
             )}

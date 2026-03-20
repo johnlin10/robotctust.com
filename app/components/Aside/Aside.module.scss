@@ -1,0 +1,40 @@
+@use '../../styles/_mixins.scss' as mixins;
+
+.aside {
+  z-index: 1000;
+  position: sticky;
+  top: var(--header-height);
+  width: 100%;
+  background: var(--background);
+  @include mixins.border-radius(12px);
+  border: 1px solid var(--border);
+  @include mixins.hide-scrollbar;
+  @include mixins.transition(var(--transition-default));
+  overflow: hidden;
+
+  @include mixins.respond-by-max-width(859px) {
+    &.sticky {
+      background-color: rgba(var(--background-secondary-rgb), 0.25);
+      @include mixins.glass-blur(12px);
+
+      &.headerCompact {
+        top: 48px;
+        border: 1px solid var(--foreground-950);
+      }
+    }
+  }
+
+  @include mixins.respond-by-min-width(860px) {
+    width: 100%;
+    max-width: 280px;
+    min-height: 200px;
+    height: fit-content;
+    max-height: calc(100vh - 72px - var(--space-2x));
+    overflow-y: auto;
+
+    &.headerCompact {
+      top: 48px;
+      max-height: calc(100vh - 48px - var(--space-2x));
+    }
+  }
+}

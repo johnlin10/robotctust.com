@@ -1,0 +1,23 @@
+@use '../styles/_mixins.scss' as mixins;
+
+.container {
+  @include mixins.flexbox(column, center, start);
+  gap: var(--space);
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: calc(72px + var(--space-2x)) var(--space) var(--space-2x);
+  min-height: 100vh;
+
+  @include mixins.respond-by-min-width(860px) {
+    flex-direction: row;
+    gap: var(--space-3x);
+    padding: calc(72px + var(--space-4x)) var(--space-3x) var(--space-4x);
+  }
+}
+
+.content {
+  flex-grow: 1;
+  width: 100%;
+  // For pages that still want to use the main content area style
+}

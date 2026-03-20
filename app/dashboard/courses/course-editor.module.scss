@@ -1,0 +1,515 @@
+@use '../../styles/_mixins.scss' as mixins;
+
+.layout {
+  @include mixins.flexbox(column, center, start);
+  gap: var(--space);
+  width: 100%;
+  
+  @include mixins.respond-by-min-width(860px) {
+    flex-direction: row;
+    gap: var(--space-3x);
+  }
+}
+
+.sidebar {
+  @include mixins.respond-by-min-width(860px) {
+    width: 380px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .asideHeader {
+    z-index: 10;
+    position: sticky;
+    top: 0;
+    padding: var(--space-1-5x);
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
+
+    .backLink {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--foreground-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: var(--space-2x);
+      transition: color 0.2s;
+      
+      &:hover {
+        color: var(--foreground);
+      }
+    }
+
+    .semesterSelectorRow {
+      display: flex;
+      align-items: center;
+      gap: var(--space);
+      
+      .selectorWrapper {
+        flex-grow: 1;
+      }
+      
+      .settingsBtn {
+        background: var(--background-secondary);
+        border: 1px solid var(--border);
+        color: var(--foreground-secondary);
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        
+        &:hover, &.active {
+          background: var(--background-tertiary);
+          color: var(--foreground);
+          border-color: var(--foreground-800);
+        }
+      }
+    }
+  }
+
+  .columnScroller {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    @include mixins.hide-scrollbar;
+    
+    // Fill the remaining height
+    flex-grow: 1;
+    min-height: 400px;
+  }
+
+  .column {
+    // Occupy 100% minus space for the next item to peek
+    width: calc(100% - var(--space-4x));
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space);
+    gap: var(--space-0-5x);
+
+    &:not(:last-child) {
+      border-right: 1px solid var(--border);
+    }
+    
+    .columnHeader {
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: var(--background);
+      color: var(--foreground-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: var(--space-0-5x);
+    }
+    
+    .listItem {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-1-5x);
+      background: var(--background);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      @include mixins.border-radius(8px);
+      
+      .itemInfo {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        overflow: hidden;
+        
+        .itemTitle {
+          font-size: 1rem;
+          font-weight: 500;
+          color: var(--foreground);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        
+        .itemMeta {
+          font-size: 0.8rem;
+          color: var(--foreground-tertiary);
+        }
+      }
+      
+      .itemChevron {
+        color: var(--foreground-tertiary);
+      }
+      
+      // &:hover {
+      //   background: var(--background-tertiary);
+      //   border-color: var(--foreground-800);
+      // }
+      
+      &.active {
+        background: var(--background-secondary);
+        
+        .itemTitle {
+          color: var(--foreground-100);
+        }
+        .itemChevron {
+          color: var(--foreground-100);
+        }
+      }
+      
+      &.draft {
+        opacity: 0.5;
+        border-style: dashed;
+      }
+    }
+  }
+}
+
+.mainContent {
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4x);
+  
+  min-width: 0; // prevents flex item from overflowing
+}
+
+.header {
+  @include mixins.flexbox(column, start, stretch);
+  gap: var(--space-0-5x);
+  
+  .headerTop {
+    @include mixins.flexbox(row, space-between, center);
+    
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--foreground);
+    }
+  }
+
+  p {
+    margin: 0;
+    color: var(--foreground-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
+
+.messagePanel {
+  padding: var(--space-1-5x);
+  background: rgba(var(--theme-purple-500-rgb), 0.1);
+  border: 1px solid var(--theme-purple-500);
+  color: var(--theme-purple-400);
+  @include mixins.border-radius(12px);
+  text-align: center;
+  font-weight: 500;
+}
+
+.loading {
+  text-align: center;
+  color: var(--foreground-secondary);
+  padding: var(--space-4x);
+}
+
+.listCard {
+  @include mixins.flexbox(column, start, stretch);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(16px);
+  background: var(--background);
+  overflow: hidden;
+
+  .cardHeader {
+    @include mixins.flexbox(row, space-between, center);
+    padding: var(--space-1-5x) var(--space-2x);
+    background: var(--background-secondary);
+    border-bottom: 1px solid var(--border);
+
+    h3 {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    .addButton {
+      @include mixins.button('primary', 'small');
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border-radius: 50%;
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        &:hover {
+          transform: none;
+        }
+      }
+    }
+  }
+}
+
+// Table Styles
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  th, td {
+    padding: var(--space-1-5x) var(--space-2x);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  th {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--foreground-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(var(--background-secondary-rgb), 0.5);
+  }
+
+  tbody tr {
+    @include mixins.transition(background 0.2s ease);
+
+    &:hover {
+      background: var(--background-secondary);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .empty {
+    text-align: center;
+    padding: var(--space-4x);
+    color: var(--foreground-tertiary);
+  }
+
+  .actions {
+    @include mixins.flexbox(row, center, center);
+    gap: 8px;
+  }
+}
+
+// Drag List (for contents)
+.dragList {
+  @include mixins.flexbox(column, start, stretch);
+  padding: var(--space-2x);
+  gap: var(--space-0-5x);
+
+  .empty {
+    text-align: center;
+    padding: var(--space-4x);
+    color: var(--foreground-tertiary);
+    border: 1px dashed var(--border);
+    @include mixins.border-radius(8px);
+  }
+
+  .dragItem {
+    @include mixins.flexbox(row, start, center);
+    gap: var(--space);
+    padding: var(--space);
+    background: var(--background-secondary);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(8px);
+    @include mixins.transition(all 0.2s ease);
+
+    &:hover {
+      border-color: var(--foreground-800);
+      background: var(--background-tertiary);
+    }
+
+    .dragHandle {
+      color: var(--foreground-tertiary);
+      cursor: grab;
+      padding: 0 var(--space-0-5x);
+      
+      &:active {
+        cursor: grabbing;
+      }
+    }
+
+    .itemIndex {
+      font-weight: 600;
+      color: var(--foreground-secondary);
+      width: 24px;
+      text-align: center;
+    }
+
+    .itemType {
+      font-size: 0.85rem;
+      padding: 4px 8px;
+      background: var(--background);
+      border: 1px solid var(--border);
+      @include mixins.border-radius(6px);
+      color: var(--foreground-secondary);
+      width: 100px;
+      text-align: center;
+    }
+
+    .itemContent {
+      flex: 1;
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: var(--foreground);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .itemActions {
+      @include mixins.flexbox(row, flex-end, center);
+      gap: 8px;
+    }
+  }
+}
+
+// Common Form Components inside Modal
+.formGroup {
+  @include mixins.flexbox(column, start, stretch);
+  gap: 8px;
+
+  .label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .input, .select, .textarea, .textareaLarge {
+    width: 100%;
+    padding: 12px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(8px);
+    color: var(--foreground);
+    font-size: 0.95rem;
+    @include mixins.transition(border-color 0.2s ease);
+
+    &:focus {
+      outline: none;
+      border-color: var(--theme-purple-500);
+    }
+
+    &::placeholder {
+      color: var(--foreground-tertiary);
+    }
+  }
+
+  .textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .textareaLarge {
+    min-height: 300px;
+    font-family: monospace;
+    resize: vertical;
+  }
+}
+
+// Buttons & Switch
+.iconButton {
+  background: transparent;
+  border: none;
+  color: var(--foreground-secondary);
+  cursor: pointer;
+  padding: 8px;
+  @include mixins.border-radius(6px);
+  @include mixins.transition(all 0.2s);
+  
+  &:hover {
+    background: var(--background-tertiary);
+    color: var(--foreground);
+  }
+}
+
+.iconButtonDanger {
+  @extend .iconButton;
+  &:hover {
+    color: var(--theme-red-500);
+    background: rgba(var(--theme-red-500-rgb), 0.1);
+  }
+}
+
+.btnPrimary {
+  @include mixins.button('primary', 'normal');
+}
+
+.btnSecondary {
+  @include mixins.button('normal', 'normal');
+}
+
+// Toggle Switch
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  margin-right: 8px;
+  vertical-align: middle;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .slider {
+      background-color: var(--theme-green-500);
+    }
+
+    &:checked + .slider:before {
+      transform: translateX(20px);
+    }
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--foreground-800);
+    @include mixins.transition(all 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+    border-radius: 24px;
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      @include mixins.transition(all 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+      border-radius: 50%;
+    }
+  }
+}
+
+.switchLabel {
+  font-size: 0.9rem;
+  color: var(--foreground-secondary);
+  vertical-align: middle;
+}
