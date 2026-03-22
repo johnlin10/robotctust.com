@@ -539,7 +539,8 @@ export const competitions: Competition[] = [
   {
     id: 'line-following-2026-04-15-school-inside',
     title: '第一屆 中臺機器人研究社 機器人循線競賽',
-    description: '本競賽挑戰全自主輪型機器人尋線競速！參賽機器人需全程無遙控沿黑線行駛，以最快完賽且精準停於終點者獲勝。',
+    description:
+      '本競賽挑戰全自主輪型機器人尋線競速！參賽機器人需全程無遙控沿黑線行駛，以最快完賽且精準停於終點者獲勝。',
     detailMarkdown: `
 ## 競賽介紹
 
@@ -616,8 +617,8 @@ export const competitions: Competition[] = [
           time: null,
         },
         endDateTime: {
-          date: '2026-04-15',
-          time: '12:00',
+          date: '2026-04-14',
+          time: '00:00',
         },
         description: '報名階段',
         required: true,
