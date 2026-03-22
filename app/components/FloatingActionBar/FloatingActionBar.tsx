@@ -420,7 +420,7 @@ export default function FloatingActionBar({
         {actions.map((action, index) => renderAction(action, index))}
       </div>
 
-      <div
+      {/* <div
         className={`${styles.gradient_blur}${
           isCompactHeader ? ` ${styles.compact}` : ''
         }${position === 'bottom' ? ` ${styles.bottom}` : ''}`}
@@ -432,7 +432,7 @@ export default function FloatingActionBar({
         <div></div>
         <div></div>
         <div className={styles.gradient_background}></div>
-      </div>
+      </div> */}
     </>
   )
 }
