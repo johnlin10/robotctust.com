@@ -42,8 +42,7 @@ import {
   SLUG_TO_CATEGORY,
 } from '../types/post'
 import { deserializePost, SerializedPost } from '../types/serialized'
-import { MODULE_PERMISSIONS_MAP } from '../types/dashboard'
-import { resolvePrimaryRole } from '../utils/auth/roles'
+import { canAccessModuleByRoles } from '../utils/auth/roles'
 
 // 篩選類型
 type FilterType = PostCategory | 'all'
@@ -91,11 +90,7 @@ export default function UpdatePageClient({
     ? SLUG_TO_CATEGORY[categorySlug as CategorySlug] || 'all'
     : 'all'
   // 是否可以發布文章：根據 roles 判斷是否擁有 news 模組權限
-  const canCreatePost = (() => {
-    return MODULE_PERMISSIONS_MAP[resolvePrimaryRole(user?.roles)].includes(
-      'news',
-    )
-  })()
+  const canCreatePost = canAccessModuleByRoles(user?.roles, 'news')
   // 是否顯示發布文章模態
   const [showCreateModal, setShowCreateModal] = useState(false)
 

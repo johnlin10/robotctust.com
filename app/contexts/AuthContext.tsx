@@ -14,10 +14,7 @@ import {
   AuthContextType,
   UserProfile,
   RegisterFormData,
-  UserPermissions,
-  DEFAULT_USER_PERMISSIONS,
   DEFAULT_USER_STATS,
-  DEFAULT_PRIVACY_SETTINGS,
 } from '../types/user'
 import { isAdminRole, isSuperAdminRole } from '../utils/auth/roles'
 
@@ -90,10 +87,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           : data.user_stats
         const stats = statsData
           ? {
-              postsCount: statsData.posts_count || 0,
-              followersCount: statsData.followers_count || 0,
-              followingCount: statsData.following_count || 0,
-              likesReceived: statsData.likes_received || 0,
+              exp: statsData.exp || 0,
+              level: statsData.level || 1,
+              isPublic: statsData.is_public ?? true,
             }
           : DEFAULT_USER_STATS
 
@@ -111,19 +107,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           createdAt: new Date(data.created_at || new Date()),
           updatedAt: new Date(data.updated_at || new Date()),
           roles: data.roles || ['member'],
-          permissions: data.permissions || DEFAULT_USER_PERMISSIONS,
           bio: data.bio,
           backgroundURL: data.background_url || null,
-          location: data.location,
-          website: data.website,
-          socialLinks: data.social_links || {},
           stats,
-          privacy: data.privacy || DEFAULT_PRIVACY_SETTINGS,
-          isActive: data.is_active ?? true,
-          isVerified: data.is_verified ?? false,
-          lastLoginAt: data.last_login_at
-            ? new Date(data.last_login_at)
-            : undefined,
         } as UserProfile
       } catch (error) {
         console.error('獲取使用者資料時發生例外錯誤:', error)
@@ -164,12 +150,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (error) throw error
 
       if (data.user) {
-        // 觸發更新最後登入時間
-        await supabase
-          .from('users')
-          .update({ last_login_at: new Date().toISOString() })
-          .eq('id', data.user.id)
-
         // 抓取包含 username 跟 stats 在內的個人資料
         const userProfile = await getUserProfile(data.user.id)
         setUser(userProfile)
@@ -305,7 +285,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('id, username, display_name, avatar_url, is_verified')
+        .select('id, username, display_name, avatar_url')
         // Supabase 提供 ilike，不分大小寫的模糊搜索
         .ilike('username', `%${searchTerm}%`)
         .limit(limit)
@@ -318,13 +298,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           username: string
           display_name: string | null
           avatar_url: string | null
-          is_verified: boolean | null
         }) => ({
           uid: doc.id,
           username: doc.username,
           displayName: doc.display_name || doc.username,
           photoURL: doc.avatar_url || '/assets/image/userEmptyAvatar.png',
-          isVerified: Boolean(doc.is_verified),
         }),
       )
     } catch (error) {
@@ -351,22 +329,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error('檢查 Email 是否存在時發生例外錯誤:', error)
       return false
     }
-  }
-
-  //* 權限檢查方法
-  const hasPermission = (
-    feature: keyof UserPermissions,
-    action: string,
-  ): boolean => {
-    if (!user || !user.permissions) return false
-    const featurePermissions = user.permissions[
-      feature
-    ] as UserPermissions[keyof UserPermissions]
-    return (
-      featurePermissions?.[
-        action as keyof UserPermissions[keyof UserPermissions]
-      ] || false
-    )
   }
 
   //* 監聽 Supabase 認證狀態變化
@@ -455,7 +417,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     register,
     updateUserProfile,
     searchUsers,
-    hasPermission,
     isAdmin,
     isSuperAdmin,
     checkEmailExists,

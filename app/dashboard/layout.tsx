@@ -3,7 +3,10 @@ import { redirect } from 'next/navigation'
 import styles from './dashboard.module.scss'
 
 // util
-import { requireDashboardAccess } from '@/app/utils/dashboard/auth'
+import {
+  isDashboardAccessError,
+  requireDashboardAccess,
+} from '@/app/utils/dashboard/auth'
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -27,7 +30,11 @@ export default async function DashboardLayout({
         {children}
       </main>
     )
-  } catch {
-    redirect('/login')
+  } catch (error) {
+    if (isDashboardAccessError(error) && error.statusCode === 401) {
+      redirect('/login')
+    }
+
+    redirect('/')
   }
 }

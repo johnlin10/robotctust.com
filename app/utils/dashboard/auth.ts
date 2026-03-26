@@ -5,9 +5,13 @@ import {
   MODULE_PERMISSIONS_MAP,
   Role,
 } from '@/app/types/dashboard'
-import { resolvePrimaryRole } from '@/app/utils/auth/roles'
+import {
+  getModulesForRoles,
+  normalizeRoles,
+  resolvePrimaryRole,
+} from '@/app/utils/auth/roles'
 
-class DashboardAccessError extends Error {
+export class DashboardAccessError extends Error {
   statusCode: number
 
   constructor(message: string, statusCode: number) {
@@ -65,12 +69,15 @@ export async function getDashboardActor(): Promise<DashboardActor> {
   }
 
   // 正規化角色
-  const role = resolvePrimaryRole(userRow.roles)
+  const roles = normalizeRoles(userRow.roles)
+  const role = resolvePrimaryRole(roles)
+  const modules = getModulesForRoles(roles)
   // 返回管理後台使用者
   return {
     userId: user.id,
     role,
-    modules: getRoleModules(role),
+    roles: roles as Role[],
+    modules,
   }
 }
 
@@ -90,7 +97,7 @@ export async function requireDashboardAccess(
     throw new DashboardAccessError('您沒有後台使用權限', 403)
   }
 
-  if (module && !canAccessModule(actor.role, module)) {
+  if (module && !actor.modules.includes(module)) {
     // 如果使用者沒有該模組的管理權限，返回錯誤
     throw new DashboardAccessError('您沒有該模組的管理權限', 403)
   }
@@ -112,4 +119,10 @@ export function toRouteErrorResponse(error: unknown): Response {
 
   // 如果錯誤是其他類型，返回伺服器錯誤回應
   return Response.json({ error: '伺服器發生未預期錯誤' }, { status: 500 })
+}
+
+export function isDashboardAccessError(
+  error: unknown,
+): error is DashboardAccessError {
+  return error instanceof DashboardAccessError
 }

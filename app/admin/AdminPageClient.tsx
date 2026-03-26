@@ -30,6 +30,7 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: 'admin_achievement', label: '成就審核' },
   { value: 'admin_verifications', label: '認證審查' },
   { value: 'admin_news', label: '新聞發布' },
+  { value: 'admin_accounts', label: '帳號管理' },
   { value: 'member', label: '一般會員' },
 ]
 
@@ -92,7 +93,7 @@ export default function AdminPageClient() {
     }))
   }
 
-  const handleSaveRoles = async (targetUserId: string, newRoles: string[]) => {
+  const handleSaveRoles = async (targetUserId: string, newRoles: UserRole[]) => {
     try {
       setSavingUserId(targetUserId)
       setError(null)

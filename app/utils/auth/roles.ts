@@ -1,4 +1,8 @@
-import { Role } from '@/app/types/dashboard'
+import {
+  DashboardModule,
+  MODULE_PERMISSIONS_MAP,
+  Role,
+} from '@/app/types/dashboard'
 import { UserRole } from '@/app/types/user'
 
 export const SUPER_ADMIN_ROLE: UserRole = 'super_admin'
@@ -10,6 +14,7 @@ export const ADMIN_ROLES: UserRole[] = [
   'admin_achievement',
   'admin_verifications',
   'admin_news',
+  'admin_accounts',
 ]
 
 const ROLE_PRIORITY: Role[] = [
@@ -19,27 +24,58 @@ const ROLE_PRIORITY: Role[] = [
   'admin_achievement',
   'admin_verifications',
   'admin_news',
+  'admin_accounts',
   'member',
 ]
 
-export function isAdminRole(roles?: UserRole[] | null): boolean {
-  if (!roles || !Array.isArray(roles)) return false
-  return roles.some((r) => ADMIN_ROLES.includes(r))
-}
+export function normalizeRoles(roles?: UserRole[] | null): UserRole[] {
+  if (!roles || !Array.isArray(roles) || roles.length === 0) {
+    return ['member']
+  }
 
-export function isSuperAdminRole(roles?: UserRole[] | null): boolean {
-  if (!roles || !Array.isArray(roles)) return false
-  return roles.includes(SUPER_ADMIN_ROLE)
-}
-
-export function resolvePrimaryRole(roles?: UserRole[] | null): Role {
-  if (!roles || !Array.isArray(roles)) return 'member'
-
-  for (const role of ROLE_PRIORITY) {
-    if (roles.includes(role)) {
-      return role
+  const uniqueRoles = new Set<UserRole>()
+  for (const role of roles) {
+    if (ROLE_PRIORITY.includes(role as Role)) {
+      uniqueRoles.add(role)
     }
   }
 
-  return 'member'
+  if (uniqueRoles.size === 0) {
+    return ['member']
+  }
+
+  return ROLE_PRIORITY.filter((role) => uniqueRoles.has(role as UserRole))
+}
+
+export function isAdminRole(roles?: UserRole[] | null): boolean {
+  return normalizeRoles(roles).some((role) => ADMIN_ROLES.includes(role))
+}
+
+export function isSuperAdminRole(roles?: UserRole[] | null): boolean {
+  return normalizeRoles(roles).includes(SUPER_ADMIN_ROLE)
+}
+
+export function resolvePrimaryRole(roles?: UserRole[] | null): Role {
+  return normalizeRoles(roles)[0] as Role
+}
+
+export function getModulesForRoles(
+  roles?: UserRole[] | null,
+): DashboardModule[] {
+  const modules = new Set<DashboardModule>()
+
+  for (const role of normalizeRoles(roles)) {
+    for (const module of MODULE_PERMISSIONS_MAP[role as Role] || []) {
+      modules.add(module)
+    }
+  }
+
+  return Array.from(modules)
+}
+
+export function canAccessModuleByRoles(
+  roles: UserRole[] | null | undefined,
+  module: DashboardModule,
+): boolean {
+  return getModulesForRoles(roles).includes(module)
 }

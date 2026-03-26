@@ -3,7 +3,7 @@
  * 用於處理 Next.js App Router 中的資料傳遞
  */
 
-import { UserProfile, UserPermissions } from './user'
+import { UserProfile } from './user'
 import { Post, PostCategory } from './post'
 import { Timestamp } from 'firebase/firestore'
 
@@ -18,35 +18,15 @@ export interface SerializedUserProfile {
   createdAt: string // Date -> string
   updatedAt: string // Date -> string
   roles: UserProfile['roles']
-  permissions: UserPermissions
   // 新增社群功能相關欄位
   bio?: string
   backgroundURL?: string
-  location?: string
-  website?: string
-  socialLinks?: {
-    github?: string
-    linkedin?: string
-    twitter?: string
-    instagram?: string
-  }
   // 統計資料
   stats: {
-    postsCount: number
-    followersCount: number
-    followingCount: number
-    likesReceived: number
+    exp: number
+    level: number
+    isPublic: boolean
   }
-  // 隱私設定
-  privacy: {
-    profileVisibility: 'public' | 'private' | 'friends'
-    showEmail: boolean
-    showStats: boolean
-  }
-  // 帳號狀態
-  isActive: boolean
-  isVerified: boolean
-  lastLoginAt?: string // Date -> string
 }
 
 //* 序列化後的文章資料（所有 Date 轉為 string）
@@ -70,7 +50,6 @@ export const serializeUserProfile = (
     ...user,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
-    lastLoginAt: user.lastLoginAt?.toISOString(),
   }
 }
 
@@ -82,9 +61,6 @@ export const deserializeUserProfile = (
     ...serializedUser,
     createdAt: new Date(serializedUser.createdAt),
     updatedAt: new Date(serializedUser.updatedAt),
-    lastLoginAt: serializedUser.lastLoginAt
-      ? new Date(serializedUser.lastLoginAt)
-      : undefined,
   }
 }
 
@@ -152,7 +128,7 @@ export const serializeDates = <T extends Record<string, unknown>>(
 //* 安全地反序列化包含日期字串的物件
 export const deserializeDates = <T extends Record<string, unknown>>(
   obj: T,
-  dateFields: string[] = ['createdAt', 'updatedAt', 'lastLoginAt']
+  dateFields: string[] = ['createdAt', 'updatedAt']
 ): T => {
   const deserialized = { ...obj }
 

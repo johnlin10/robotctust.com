@@ -54,7 +54,7 @@ export const dateToTimestamp = (date: Date): Timestamp => {
 //* 處理 Firestore 文檔資料，確保所有時間欄位都正確轉換
 export const processFirestoreDoc = <T extends Record<string, unknown>>(
   data: Record<string, unknown>,
-  dateFields: string[] = ['createdAt', 'updatedAt', 'lastLoginAt']
+  dateFields: string[] = ['createdAt', 'updatedAt']
 ): T => {
   const processed = { ...data }
 
@@ -72,7 +72,7 @@ export const processFirestoreQueryResults = <T extends Record<string, unknown>>(
   querySnapshot: {
     docs: Array<{ id: string; data: () => Record<string, unknown> }>
   },
-  dateFields: string[] = ['createdAt', 'updatedAt', 'lastLoginAt']
+  dateFields: string[] = ['createdAt', 'updatedAt']
 ): T[] => {
   return querySnapshot.docs.map((doc) => ({
     id: doc.id,

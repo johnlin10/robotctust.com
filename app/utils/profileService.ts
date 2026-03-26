@@ -1,8 +1,5 @@
 import { createClient } from '@/app/utils/supabase/client'
-import {
-  UpdateUserProfileData,
-  UserProfile,
-} from '@/app/types/user'
+import { UpdateUserProfileData } from '@/app/types/user'
 
 /**
  * 安全更新目前登入使用者可編輯的個人資料欄位。
@@ -32,28 +29,6 @@ export const updateUserProfileSafe = async (
       throw new Error('個人簡介不能超過 500 個字元')
     }
     payload.bio = updateData.bio
-  }
-
-  if (updateData.location !== undefined) {
-    if (updateData.location.length > 100) {
-      throw new Error('所在地不能超過 100 個字元')
-    }
-    payload.location = updateData.location
-  }
-
-  if (updateData.website !== undefined) {
-    if (updateData.website && !updateData.website.match(/^https?:\/\/.+/)) {
-      throw new Error('網站 URL 格式不正確')
-    }
-    payload.website = updateData.website
-  }
-
-  if (updateData.socialLinks !== undefined) {
-    payload.social_links = updateData.socialLinks as UserProfile['socialLinks']
-  }
-
-  if (updateData.privacy !== undefined) {
-    payload.privacy = updateData.privacy as UserProfile['privacy']
   }
 
   const supabase = createClient()

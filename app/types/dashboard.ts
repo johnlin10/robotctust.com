@@ -6,20 +6,22 @@ export type Role =
   | 'admin_achievement'
   | 'admin_verifications'
   | 'admin_news'
+  | 'admin_accounts'
   | 'member'
 
 // 管理後台模組
 export type DashboardModule =
-  | 'courses'
-  | 'achievements'
-  | 'verifications'
-  | 'news'
-  | 'members'
+  | 'courses' // 課程
+  | 'achievements' // 成就
+  | 'verifications' // 課程審核
+  | 'news' // 最新消息管理
+  | 'accounts' // 帳號管理
 
 // 管理後台使用者
 export interface DashboardActor {
   userId: string
   role: Role
+  roles: Role[]
   modules: DashboardModule[]
 }
 
@@ -33,12 +35,13 @@ export interface DashboardModuleConfig {
 
 //* 模組權限對應表
 export const MODULE_PERMISSIONS_MAP: Record<Role, DashboardModule[]> = {
-  super_admin: ['courses', 'achievements', 'verifications', 'news', 'members'],
-  admin: ['courses', 'verifications', 'news'],
+  super_admin: ['courses', 'achievements', 'verifications', 'news', 'accounts'],
+  admin: ['courses', 'achievements', 'verifications', 'news'],
   admin_course: ['courses'],
   admin_achievement: ['achievements'],
   admin_verifications: ['verifications'],
   admin_news: ['news'],
+  admin_accounts: ['accounts'],
   member: [],
 }
 
@@ -69,9 +72,9 @@ export const DASHBOARD_MODULES: DashboardModuleConfig[] = [
     href: '/dashboard/news',
   },
   {
-    key: 'members',
-    title: '社員系統（預留）',
+    key: 'accounts',
+    title: '帳號管理',
     description: '後續擴充社員名單、學期成員與權限管理。',
-    href: '/dashboard/members',
+    href: '/dashboard/accounts',
   },
 ]

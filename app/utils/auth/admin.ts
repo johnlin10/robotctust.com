@@ -4,7 +4,11 @@ import { User } from '@supabase/supabase-js'
 import { UserProfile } from '@/app/types/user'
 import { createClient } from '@/app/utils/supabase/server'
 import { getUserProfileServer } from '@/app/utils/userService'
-import { isAdminRole, isSuperAdminRole } from '@/app/utils/auth/roles'
+import {
+  isAdminRole,
+  isSuperAdminRole,
+  normalizeRoles,
+} from '@/app/utils/auth/roles'
 
 type UnauthorizedAccess = {
   status: 'unauthenticated' | 'forbidden'
@@ -37,16 +41,24 @@ export async function getAdminAccess(): Promise<AdminAccessResult> {
   }
 
   const profile = await getUserProfileServer(user.id)
-  if (!profile || !isAdminRole(profile.roles)) {
+  if (!profile) {
+    return { status: 'forbidden' }
+  }
+
+  const roles = normalizeRoles(profile.roles)
+  if (!isAdminRole(roles)) {
     return { status: 'forbidden' }
   }
 
   return {
     status: 'authorized',
-    profile,
+    profile: {
+      ...profile,
+      roles,
+    },
     user,
     isAdmin: true,
-    isSuperAdmin: isSuperAdminRole(profile.roles),
+    isSuperAdmin: isSuperAdminRole(roles),
   }
 }
 

@@ -3,9 +3,7 @@ import { createAdminClient } from './supabase/admin'
 import {
   UserProfile,
   UserRole,
-  DEFAULT_USER_PERMISSIONS,
   DEFAULT_USER_STATS,
-  DEFAULT_PRIVACY_SETTINGS,
 } from '../types/user'
 
 /**
@@ -20,13 +18,10 @@ function mapToUserProfile(data: Record<string, unknown>): UserProfile {
   // 獲取使用者統計資料
   const stats = statsData
     ? {
-        postsCount: (statsData as Record<string, number>).posts_count || 0,
-        followersCount:
-          (statsData as Record<string, number>).followers_count || 0,
-        followingCount:
-          (statsData as Record<string, number>).following_count || 0,
-        likesReceived:
-          (statsData as Record<string, number>).likes_received || 0,
+        exp: (statsData as Record<string, number>).exp || 0,
+        level: (statsData as Record<string, number>).level || 1,
+        isPublic:
+          (statsData as Record<string, boolean>).is_public ?? true,
       }
     : DEFAULT_USER_STATS
 
@@ -42,22 +37,9 @@ function mapToUserProfile(data: Record<string, unknown>): UserProfile {
     createdAt: new Date((data.created_at as string) || new Date()),
     updatedAt: new Date((data.updated_at as string) || new Date()),
     roles: (data.roles as UserRole[]) || ['member'],
-    permissions:
-      (data.permissions as UserProfile['permissions']) ||
-      DEFAULT_USER_PERMISSIONS,
     bio: data.bio as string | undefined,
     backgroundURL: (data.background_url as string) || undefined,
-    location: data.location as string | undefined,
-    website: data.website as string | undefined,
-    socialLinks: (data.social_links as UserProfile['socialLinks']) || {},
     stats,
-    privacy:
-      (data.privacy as UserProfile['privacy']) || DEFAULT_PRIVACY_SETTINGS,
-    isActive: (data.is_active as boolean) ?? true,
-    isVerified: (data.is_verified as boolean) ?? false,
-    lastLoginAt: data.last_login_at
-      ? new Date(data.last_login_at as string)
-      : undefined,
   } as UserProfile
 }
 
