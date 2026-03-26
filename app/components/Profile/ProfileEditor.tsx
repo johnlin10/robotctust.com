@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '../../contexts/AuthContext'
-import { updateUserProfileSafe } from '../../utils/userManagementService'
+import { updateUserProfileSafe } from '../../utils/profileService'
 import { UpdateUserProfileData } from '../../types/user'
 import styles from './ProfileEditor.module.scss'
 
