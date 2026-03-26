@@ -1,0 +1,464 @@
+@use '../styles/mixins' as mixins;
+
+.adminContainer {
+  @include mixins.page;
+
+  > .adminContent {
+    @include mixins.content-container();
+    @include mixins.flexbox(column, start, stretch);
+    gap: var(--space-2x);
+  }
+}
+
+.header {
+  @include mixins.flexbox(row, space-between, center);
+  gap: var(--space);
+  margin-bottom: var(--space);
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  @include mixins.respond-to('phone') {
+    @include mixins.flexbox(column, start, stretch);
+    gap: var(--space);
+  }
+}
+
+.adminInfo {
+  @include mixins.flexbox(row, start, center);
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--foreground-secondary);
+
+  .adminBadge {
+    padding: 4px 8px;
+    background: var(--primary);
+    color: var(--color-white);
+    @include mixins.border-radius(12px);
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+}
+
+.section {
+  @include mixins.flexbox(column, start, stretch);
+  gap: var(--space);
+  padding: var(--space);
+  background: var(--background-secondary);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(12px);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.sectionDescription {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--foreground-secondary);
+  line-height: 1.5;
+}
+
+.addUserForm {
+  @include mixins.flexbox(column, start, stretch);
+  gap: 12px;
+  padding: var(--space);
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(8px);
+}
+
+.formGroup {
+  @include mixins.flexbox(column, start, stretch);
+  gap: 8px;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.input {
+  padding: 12px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(8px);
+  font-size: 0.9rem;
+  color: var(--foreground);
+  @include mixins.transition(border-color 0.2s ease);
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  &::placeholder {
+    color: var(--foreground-tertiary);
+  }
+}
+
+.formActions {
+  @include mixins.flexbox(row, start, center);
+  gap: 12px;
+
+  @include mixins.respond-to('phone') {
+    @include mixins.flexbox(column, start, stretch);
+  }
+}
+
+.addButton {
+  @include mixins.button('primary', 'normal');
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @include mixins.respond-to('phone') {
+    width: 100%;
+  }
+}
+
+.usersList {
+  @include mixins.flexbox(column, start, stretch);
+  gap: 8px;
+}
+
+.userCard {
+  @include mixins.flexbox(row, space-between, center);
+  gap: 12px;
+  padding: 12px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(8px);
+  @include mixins.transition(all 0.2s ease);
+
+  &:hover {
+    border-color: var(--border-hover);
+  }
+
+  &.inactive {
+    opacity: 0.6;
+    background: var(--background-tertiary);
+  }
+}
+
+.userInfo {
+  @include mixins.flexbox(column, start, start);
+  gap: 4px;
+  flex: 1;
+}
+
+.userEmail {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.userStatus {
+  @include mixins.flexbox(row, start, center);
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--foreground-secondary);
+}
+
+.statusBadge {
+  padding: 2px 6px;
+  @include mixins.border-radius(12px);
+  font-size: 0.7rem;
+  font-weight: 500;
+
+  &.active {
+    background: var(--color-success);
+    color: var(--color-white);
+  }
+
+  &.inactive {
+    background: var(--color-warning);
+    color: var(--color-white);
+  }
+}
+
+.userActions {
+  @include mixins.flexbox(row, start, center);
+  gap: 8px;
+}
+
+.toggleButton {
+  @include mixins.button('normal', 'small');
+  font-size: 0.8rem;
+
+  &.deactivate {
+    background: var(--color-warning);
+    border-color: var(--color-warning);
+    color: var(--color-white);
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &.activate {
+    background: var(--color-success);
+    border-color: var(--color-success);
+    color: var(--color-white);
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.removeButton {
+  @include mixins.button('danger', 'small');
+  font-size: 0.8rem;
+}
+
+.loadingState {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x);
+  color: var(--foreground-secondary);
+  font-size: 0.9rem;
+
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border);
+    border-top: 2px solid var(--primary);
+    border-radius: 50%;
+    @include mixins.animation-container(spin 1s linear infinite);
+    margin-bottom: 12px;
+  }
+}
+
+.errorState {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-2x);
+  color: var(--danger);
+  font-size: 0.9rem;
+  text-align: center;
+  background: var(--background-tertiary);
+  border: 1px solid var(--danger);
+  @include mixins.border-radius(8px);
+}
+
+.emptyState {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x);
+  color: var(--foreground-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+
+  .emptyIcon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+}
+
+.accessDenied {
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-4x);
+  text-align: center;
+
+  .accessIcon {
+    font-size: 3rem;
+    color: var(--danger);
+    margin-bottom: var(--space);
+  }
+
+  h2 {
+    margin: 0 0 12px 0;
+    font-size: 1.5rem;
+    color: var(--foreground);
+  }
+
+  p {
+    margin: 0;
+    color: var(--foreground-secondary);
+    line-height: 1.5;
+  }
+}
+
+// 競賽同步相關樣式
+.syncSection {
+  @include mixins.flexbox(column, start, stretch);
+  gap: var(--space);
+  padding: var(--space);
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(8px);
+}
+
+.syncInfo {
+  @include mixins.flexbox(column, start, stretch);
+  gap: 12px;
+}
+
+.syncStats {
+  @include mixins.flexbox(row, start, center);
+  gap: var(--space);
+  flex-wrap: wrap;
+
+  @include mixins.respond-to('phone') {
+    @include mixins.flexbox(column, start, start);
+    gap: 8px;
+  }
+}
+
+.statItem {
+  @include mixins.flexbox(row, start, center);
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--foreground-secondary);
+
+  strong {
+    color: var(--foreground);
+  }
+}
+
+.successIcon {
+  color: var(--color-success);
+}
+
+.errorIcon {
+  color: var(--danger);
+}
+
+.successMessage {
+  @include mixins.flexbox(row, start, center);
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--color-success);
+  color: var(--color-white);
+  @include mixins.border-radius(6px);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.syncButton {
+  @include mixins.button('primary', 'normal');
+  align-self: flex-start;
+
+  &.syncing {
+    background: var(--foreground-secondary);
+    border-color: var(--foreground-secondary);
+    cursor: not-allowed;
+  }
+
+  &.success {
+    background: var(--color-success);
+    border-color: var(--color-success);
+
+    &:hover {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      opacity: 0.9;
+    }
+  }
+
+  @include mixins.respond-to('phone') {
+    width: 100%;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.tableContainer {
+  width: 100%;
+  overflow: visible;
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(8px);
+  margin-top: var(--space);
+}
+
+.rolesTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+  
+  th, td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    vertical-align: middle;
+  }
+
+  th {
+    background: var(--background-secondary);
+    color: var(--foreground);
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  td {
+    color: var(--foreground-secondary);
+    background: var(--background);
+    @include mixins.transition(background-color 0.2s ease);
+  }
+
+  tr:last-child {
+    th, td {
+      border-bottom: none;
+    }
+  }
+
+  tr:hover td {
+    background: var(--background-tertiary);
+  }
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary);
+  }
+
+  &.activeRole {
+    color: var(--primary);
+    font-weight: 600;
+  }
+}
+
+.userCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .name {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+}
+
+.email {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  word-break: break-all;
+}

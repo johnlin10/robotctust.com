@@ -5,6 +5,7 @@ import {
   MODULE_PERMISSIONS_MAP,
   Role,
 } from '@/app/types/dashboard'
+import { resolvePrimaryRole } from '@/app/utils/auth/roles'
 
 class DashboardAccessError extends Error {
   statusCode: number
@@ -14,26 +15,6 @@ class DashboardAccessError extends Error {
     this.name = 'DashboardAccessError'
     this.statusCode = statusCode
   }
-}
-
-const KNOWN_ROLES: Role[] = [
-  'super_admin',
-  'admin',
-  'admin_course',
-  'admin_achievement',
-  'admin_verifications',
-  'admin_news',
-  'member',
-]
-
-/**
- * 正規化角色
- * @param role - 角色
- * @returns 正規化後的角色
- */
-function normalizeRole(role: string | null | undefined): Role {
-  if (!role) return 'member'
-  return KNOWN_ROLES.includes(role as Role) ? (role as Role) : 'member'
 }
 
 /**
@@ -75,7 +56,7 @@ export async function getDashboardActor(): Promise<DashboardActor> {
   // 獲取使用者資料
   const { data: userRow, error: profileError } = await supabase
     .from('users')
-    .select('id, role')
+    .select('id, roles')
     .eq('id', user.id)
     .maybeSingle()
 
@@ -84,7 +65,7 @@ export async function getDashboardActor(): Promise<DashboardActor> {
   }
 
   // 正規化角色
-  const role = normalizeRole(userRow.role)
+  const role = resolvePrimaryRole(userRow.roles)
   // 返回管理後台使用者
   return {
     userId: user.id,

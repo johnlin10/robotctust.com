@@ -122,7 +122,7 @@ export const getUserStats = async (): Promise<{
 export const advancedSearchUsers = async (
   searchTerm: string,
   filters: {
-    role?: 'super_admin' | 'admin' | 'user'
+    role?: 'super_admin' | 'admin' | 'member'
     isActive?: boolean
     isVerified?: boolean
     provider?: 'email' | 'google'
@@ -135,7 +135,7 @@ export const advancedSearchUsers = async (
 
     // 添加篩選條件
     if (filters.role) {
-      q = query(q, where('role', '==', filters.role))
+      q = query(q, where('roles', 'array-contains', filters.role))
     }
 
     if (filters.isActive !== undefined) {

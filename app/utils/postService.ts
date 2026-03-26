@@ -28,22 +28,19 @@ import {
   PostCategory,
 } from '../types/post'
 import { revalidateUpdatePage } from '../action/revalidate'
-import { MODULE_PERMISSIONS_MAP, Role } from '../types/dashboard'
+import { MODULE_PERMISSIONS_MAP } from '../types/dashboard'
+import { resolvePrimaryRole } from './auth/roles'
 
 const POSTS_COLLECTION = 'posts'
 
 /**
  * 檢查使用者是否有發布權限
- * 依據 UserProfile.role 對照 MODULE_PERMISSIONS_MAP 判斷是否有 news 模組存取權
+ * 依據 UserProfile.roles 對照 MODULE_PERMISSIONS_MAP 判斷是否有 news 模組存取權
  */
 export function checkUserPermission(user: User | UserProfile): boolean {
-  const role = (user as UserProfile).role as string | undefined
-  if (!role) return false
-  const knownRole: Role =
-    MODULE_PERMISSIONS_MAP[role as Role] !== undefined
-      ? (role as Role)
-      : 'member'
-  return MODULE_PERMISSIONS_MAP[knownRole].includes('news')
+  return MODULE_PERMISSIONS_MAP[
+    resolvePrimaryRole((user as UserProfile).roles)
+  ].includes('news')
 }
 
 /**

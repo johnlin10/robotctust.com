@@ -6,8 +6,9 @@ import MarkdownRenderer from '../../components/Markdown/MarkdownRenderer'
 // type
 import { Competition } from '@/app/types/competition'
 // icons
-import { faDollarSign, faUserGroup } from '@fortawesome/free-solid-svg-icons'
+import { faDollarSign, faUserGroup, faClock, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Link from 'next/link'
 
 interface CompetitionDetailProps {
   competition: Competition
@@ -194,6 +195,32 @@ export default function CompetitionDetail({
     return positionMap[position] || position
   }
 
+  /**
+   * [Function] 檢查報名是否開放
+   * @returns boolean
+   */
+  const checkRegistrationStatus = () => {
+    if (!competition.registrationDeadline || !competition.registrationDeadline.date) return true;
+    
+    // 如果有截止日期，比較當前時間
+    const deadlineStr = `${competition.registrationDeadline.date}T${competition.registrationDeadline.time || '23:59:59'}`;
+    const deadlineDate = new Date(deadlineStr);
+    return new Date() < deadlineDate;
+  };
+
+  const isRegistrationOpen = checkRegistrationStatus();
+
+  /**
+   * [Function] 格式化報名截止時間
+   * @returns string
+   */
+  const formatDeadlineTime = () => {
+    if (!competition.registrationDeadline || !competition.registrationDeadline.date) return '未設定';
+    const date = new Date(competition.registrationDeadline.date);
+    const timeStr = competition.registrationDeadline.time || '23:59';
+    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${timeStr}`;
+  };
+
   return (
     <div className={styles.competitionDetailContainer}>
       <div className={styles.competitionHeader}>
@@ -345,6 +372,59 @@ export default function CompetitionDetail({
         </div>
       </div>
 
+      {/* 報名區塊 */}
+      {(competition.registrationLink || competition.registrationDeadline) && (
+        <div className={styles.registrationSection}>
+          <div className={styles.registrationCard}>
+            <div className={styles.registrationInfo}>
+              <h2 className={styles.registrationTitle}>報名資訊</h2>
+              {competition.registrationDeadline && (
+                <p className={styles.registrationDeadline}>
+                  <FontAwesomeIcon icon={faClock} className={styles.deadlineIcon} />
+                  截止日期：{formatDeadlineTime()}
+                </p>
+              )}
+            </div>
+            
+            <div className={styles.registrationAction}>
+              {competition.registrationLink ? (
+                isRegistrationOpen ? (
+                  <Link
+                    href={competition.registrationLink} 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.registrationButton}
+                  >
+                    前往報名
+                    <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
+                  </Link>
+                ) : (
+                  <div className={styles.registrationClosed}>報名已截止</div>
+                )
+              ) : (
+                <div className={styles.registrationClosed}>尚未提供報名連結</div>
+              )}
+            </div>
+            {competition.image && (
+              <>
+                <div className={`${styles.imageContainer} ${!isRegistrationOpen ? styles.registrationClosed : ''}`}>
+                  <Image className={styles.competitionImage} width={1280} height={720} src={competition.image} alt={competition.title} />
+                </div>
+                <div className={styles.overlay} />
+                <div className={styles.gradient_blur}>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 競賽時間線 */}
       <div className={styles.timelineSection}>
         <h2 className={styles.sectionTitle}>競賽時間表</h2>
@@ -354,7 +434,7 @@ export default function CompetitionDetail({
       {/* 詳細規則 */}
       {competition.detailMarkdown && (
         <div className={styles.detailSection}>
-          <h2 className={styles.sectionTitle}>詳細資訊</h2>
+          {/* <h2 className={styles.sectionTitle}>詳細資訊</h2> */}
           <div className={styles.markdownContent}>
             <MarkdownRenderer content={competition.detailMarkdown} />
           </div>

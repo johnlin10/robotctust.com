@@ -107,6 +107,10 @@ export interface Competition {
   estimatedParticipants?: number
   /** 報名費用 */
   registrationFee?: number
+  /** 報名連結 (如 Google Form 等) */
+  registrationLink?: string | null
+  /** 報名截止時間 */
+  registrationDeadline?: CompetitionDateTime
   /** 獎金或獎品資訊 */
   rewards?: string[]
   /** 聯絡資訊 */
@@ -130,6 +134,8 @@ export interface CreateCompetitionInput {
   priority?: number
   estimatedParticipants?: number
   registrationFee?: number
+  registrationLink?: string | null
+  registrationDeadline?: CompetitionDateTime
   rewards?: string[]
   contact?: Competition['contact']
 }

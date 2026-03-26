@@ -17,7 +17,7 @@ export interface SerializedUserProfile {
   provider: 'email' | 'google'
   createdAt: string // Date -> string
   updatedAt: string // Date -> string
-  role: UserProfile['role']
+  roles: UserProfile['roles']
   permissions: UserPermissions
   // 新增社群功能相關欄位
   bio?: string

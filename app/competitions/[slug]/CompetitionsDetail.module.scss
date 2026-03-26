@@ -299,6 +299,266 @@
 }
 
 // CompetitionTimeline
+// 報名區塊
+.registrationSection {
+  width: 100%;
+  margin-bottom: var(--space-2x);
+
+  > .registrationCard {
+    position: relative;
+    @include mixins.flexbox(column, flex-start, flex-start);
+    background: var(--background-secondary);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(12px);
+    padding: var(--space-1-5x);
+    gap: var(--space-1-5x);
+    @include mixins.transition(all 0.3s ease);
+    overflow: hidden;
+
+    > .registrationInfo {
+      z-index: 10;
+      @include mixins.flexbox(column, start, start);
+      gap: var(--space-0-5x);
+
+      > .registrationTitle {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--foreground);
+      }
+
+      > .registrationDeadline {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--foreground-secondary);
+        font-weight: 500;
+        @include mixins.flexbox(row, start, center);
+        gap: 8px;
+        
+        .deadlineIcon {
+          color: var(--foreground-secondary);
+        }
+      }
+    }
+
+    > .registrationAction {
+      z-index: 10;
+      @include mixins.flexbox(row, center, center);
+      height: 100%;
+
+      > .registrationButton {
+        @include mixins.flexbox(row, center, center);
+        height: 100%;
+        gap: 8px;
+        background: linear-gradient(135deg, var(--theme-purple-600) 0%, var(--theme-purple-500) 100%);
+        color: var(--color-white);
+        padding: var(--space) var(--space-1-5x);
+        border: 1px solid var(--border);
+        @include mixins.border-radius(9px);
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+        @include mixins.transition(all 0.3s ease);
+        white-space: nowrap;
+
+        &:hover {
+          background: linear-gradient(135deg, var(--theme-purple-700) 0%, var(--theme-purple-600) 100%);
+        }
+
+        .buttonIcon {
+          transition: transform 0.3s ease;
+        }
+
+        &:hover .buttonIcon {
+          transform: translateX(4px);
+        }
+      }
+
+      > .registrationClosed {
+        height: 100%;
+        padding: var(--space) var(--space-1-5x);
+        background: var(--background-tertiary);
+        color: var(--text-secondary);
+        @include mixins.border-radius(9px);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: not-allowed;
+        border: 1px solid var(--border);
+        white-space: nowrap;
+        text-align: center;
+      }
+    }
+
+    > .imageContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+
+      &.registrationClosed {
+        filter: brightness(0.5);
+      }
+
+      > .competitionImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+      
+    .overlay {
+      z-index: 6;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, var(--background), #00000000);
+    }
+    .gradient_blur {
+      z-index: 5;
+      display: flex;
+      position: absolute;
+      inset: 0 auto 0 0;
+      height: 100%;
+      width: 360px;
+      pointer-events: none;
+      @include mixins.transform-container(translateY(0) rotate(180deg));
+
+      &.compact {
+        height: calc(32px + 28px + 24px);
+      }
+
+      &.bottom {
+        display: block;
+      }
+
+      &::before {
+        position: absolute;
+        inset: 0;
+        content: '';
+        z-index: 1;
+        backdrop-filter: blur(0.5px);
+        filter: blur(0.5px);
+        mask: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0) 0%,
+          rgba(255, 255, 255, 1) 12.5%,
+          rgba(255, 255, 255, 1) 25%,
+          rgba(0, 0, 0, 0) 37.5%
+        );
+      }
+      &::after {
+        position: absolute;
+        inset: 0;
+        content: '';
+        z-index: 8;
+        backdrop-filter: blur(64px);
+        filter: blur(64px);
+        mask: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0) 87.5%,
+          rgba(255, 255, 255, 1) 100%
+        );
+      }
+
+      > div {
+        position: absolute;
+        inset: 0;
+
+        &.gradient_background {
+          z-index: 100;
+          bottom: 0;
+          height: 100%;
+          background: linear-gradient(
+            to right,
+            rgba(var(--background-rgb), 1),
+            #00000000
+          );
+        }
+      }
+
+      > div {
+        &:nth-of-type(1) {
+          z-index: 2;
+          backdrop-filter: blur(1px);
+          filter: blur(1px);
+          mask: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(255, 255, 255, 1) 25%,
+            rgba(255, 255, 255, 1) 37.5%,
+            rgba(0, 0, 0, 0) 50%
+          );
+        }
+        &:nth-of-type(2) {
+          z-index: 3;
+          backdrop-filter: blur(2px);
+          filter: blur(2px);
+          mask: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0) 25%,
+            rgba(255, 255, 255, 1) 37.5%,
+            rgba(255, 255, 255, 1) 50%,
+            rgba(0, 0, 0, 0) 62.5%
+          );
+        }
+        &:nth-of-type(3) {
+          z-index: 4;
+          backdrop-filter: blur(4px);
+          filter: blur(4px);
+          mask: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0) 37.5%,
+            rgba(255, 255, 255, 1) 50%,
+            rgba(255, 255, 255, 1) 62.5%,
+            rgba(0, 0, 0, 0) 75%
+          );
+        }
+        &:nth-of-type(4) {
+          z-index: 5;
+          backdrop-filter: blur(8px);
+          filter: blur(8px);
+          mask: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(255, 255, 255, 1) 62.5%,
+            rgba(255, 255, 255, 1) 75%,
+            rgba(0, 0, 0, 0) 87.5%
+          );
+        }
+        &:nth-of-type(5) {
+          z-index: 6;
+          backdrop-filter: blur(16px);
+          filter: blur(16px);
+          mask: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0) 62.5%,
+            rgba(255, 255, 255, 1) 75%,
+            rgba(255, 255, 255, 1) 87.5%,
+            rgba(0, 0, 0, 0) 100%
+          );
+        }
+        &:nth-of-type(6) {
+          z-index: 7;
+          backdrop-filter: blur(64px);
+          filter: blur(64px);
+          // background: rgba(255, 255, 255, 1);
+          mask: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0) 75%,
+            rgba(255, 255, 255, 1) 87.5%,
+            rgba(255, 255, 255, 1) 100%
+          );
+        }
+      }
+    }    
+  }
+}
+
 .timelineSection {
   width: 100%;
 

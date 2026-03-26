@@ -1,106 +1,175 @@
-# 中臺機器人研究社 (Robot Research Club of CTUST)
+# 中臺機器人研究社 官方網站
 
-歡迎來到中臺機器人研究社的官方網站專案。本專案旨在為社團提供一個資訊整合、教學資源分享以及活動發布的平台。我們致力於透過現代化的 Web 技術，打造一個高效、美觀且易於維護的社團網站。
+> 一個由社團成員共同維護的平台，用來整合資訊、分享教學資源，以及記錄我們在機器人世界裡走過的每一步。
 
-## 技術架構
-
-本專案採用現代化的前端技術棧進行開發，主要核心技術如下：
-
-### 核心框架
-
-- **Next.js 16 (App Router)**: 使用最新的 React 框架，提供伺服器端渲染 (SSR) 與靜態生成 (SSG) 能力，優化 SEO 與載入效能。
-- **TypeScript**: 全面採用 TypeScript 進行開發，確保程式碼的型別安全與可維護性。
-- **React 19**: 利用最新的 React 特性，包括 Hooks 與 Server Components。
-
-### 樣式與 UI
-
-- **Tailwind CSS v4**: 實用優先 (Utility-first) 的 CSS 框架，用於快速構建版面。目前僅少部分使用。
-- **SCSS Modules**: 主要使用的樣式框架，用於更複雜的元件樣式封裝，支援巢狀選擇器與變數管理。
-- **FontAwesome & Lucide React**: 提供豐富的圖示支援。
-- **React Spring / Framer Motion**: 處理流暢的動畫效果與首頁視覺互動。
-
-### 3D 與互動
-
-目前尚未實際應用，正在學習與規劃中。
-
-- **React Three Fiber (R3F)**: 在 React 中宣告式的使用 Three.js，用於網頁中的 3D 模型展示。
-- **Drei**: R3F 的實用工具庫。
-
-### 資料與狀態管理
-
-- **Supabase**: 作為核心後端服務，處理使用者認證 (Authentication，支援 Google 登入與 Email 註冊) 與關聯式資料庫 (PostgreSQL)，並透過 Row Level Security (RLS) 管理資料存取權限。
-- **Firebase**: (部分舊有資源或特定服務保留使用)。
-- **Google Cloud**: OAuth 認證。
-- **React Hook Form + Yup**: 處理表單驗證與狀態管理。
-- **Nuqs**: URL 查詢參數與狀態管理。
-
-### 功能模組
-
-- **Next-Intl**: 處理多語系 (i18n) 支援。（尚未實作，正在規劃中）
-- **FullCalendar**: 整合行事曆功能，用於展示社團課程與活動。
-- **React Markdown**: 用於渲染 Markdown 格式的文件內容，並支援語法高亮 (Highlight.js)。
-
-### 部署與分析
-
-- **Vercel**: 網站部署平台。
-- **Vercel Analytics & Speed Insights & Google Analytics**: 網站流量與效能分析。
-- **Google Search Console**: 網站 SEO 優化與搜尋引擎索引管理。
-
-## 專案結構
-
-本專案遵循 Feature-based 的架構設計，主要目錄結構說明如下：
-
-- **`app/`**: Next.js App Router 的主要目錄。
-  - **`components/`**: 共用元件，按功能分類 (如 `Header`, `Footer`, `Auth`, `home` 等)。
-  - **`hooks/`**: 自定義 React Hooks。
-  - **`contexts/`**: React Context (如 `ThemeContext`)。
-  - **`utils/`**: 工具函式與服務層 (如 Supabase/Firebase 服務、資料處理)。
-  - **`styles/`**: 全域樣式變數與 Mixins。
-  - **`[username]/`**: 使用者個人主頁 (User Profile) 與資料編輯頁面。
-  - **`(routes)`**: 各個頁面的路由目錄 (如 `about`, `blog`, `competitions` 等)。
-- **`public/`**: 靜態資源檔案。
-  - **`assets/`**: 包含圖片、圖示以及 Markdown 文件 (docs)。
-- **`i18n/`**: 國際化設定與路由處理。
-- **`types/`**: TypeScript 型別定義檔案。
-
-## 核心功能
-
-1. **全新首頁與視覺體驗**: 更加現代語科技感的風格，使用網格與游標螢光效果提升畫面質感，增加多樣化的動態展示與互動模組。
-2. **會員系統 (Supabase Auth)**: 具備獨立登入頁面，提供穩定的 Email/密碼及 Google 帳號登入與註冊機制，並包含登入狀態同步與自動路由重導向。
-3. **個人主頁 (User Profiles)**: 允許使用者設定專屬的 `/[username]` 路由，支援自訂大頭貼、個人主頁背景圖片、公開狀態設定 (`is_public` RLS) ，以及未來的社群連結整合。
-4. **資訊公告與部落格**: 支援 Markdown 渲染，方便發布社團公告、教學文章與競賽資訊。
-5. **活動行事曆**: 整合 FullCalendar，清楚展示社團課程時間與重要活動，並具備效能優化設計。
-6. **文件中心**: 集中管理社團章程、隱私權政策 (`/privacy`) 與服務條款 (`/terms`) 等重要文件，並加強了 SEO 與元資料 (Metadata) 支援。
-
-## 開發指南
-
-若您是社團成員並希望參與網站開發，請依照以下步驟在本地端啟動專案：
-
-1. **安裝依賴套件**:
-   (本專案採用 `pnpm` 進行套件維護及依賴管理)
-
-    ```bash
-    npm install -g pnpm
-    pnpm install
-    ```
-
-2. **設定環境變數**:
-    請參考專案中的環境變數範本 `.env.example` (未來將會提供)，並確保您獲得 Supabase 及 Firebase 等相關設定金鑰。
-
-3. **啟動開發伺服器**:
-
-    ```bash
-    pnpm dev
-    ```
-
-    伺服器啟動後，請在瀏覽器中開啟 `http://localhost:3000`。
-
-## 參與貢獻
-
-我們非常歡迎社團成員參與網站的維護與開發！無論是修復 Bug、新增功能或是改善文件，您的貢獻都能讓社團網站變得更好。
-
-在進行程式碼修改時，請遵循專案既定的程式碼風格與規範 (如模組化 CSS、TypeScript 型別定義等)。
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Auth%20%26%20DB-3ECF8E?logo=supabase)](https://supabase.com/)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel)](https://vercel.com/)
 
 ---
 
-© 中臺機器人研究社 Robotics Research Club of CTUST
+## 關於這個專案
+
+這是中臺科技大學機器人研究社的官方網站，目前持續開發中。
+
+我們希望這個網站不只是一個公告欄，而是一個讓社員真正會用到的地方——查競賽時間、跟著課程學習、分享實作成果。每一個功能的設計，都從「社員實際需要什麼」出發。
+
+網站本身也是我們的一個實踐場：從架構選型到 UI 細節，從認證系統到響應式設計，這個專案讓我們在社團課以外，有機會碰到真實的工程問題。
+
+---
+
+## 目前版本：v2.1.3
+
+### 開發進度
+
+| 功能模組                            | 狀態              |
+| ----------------------------------- | ----------------- |
+| 全新首頁（動態視覺、互動模組）      | ✅ 已上線         |
+| 競賽資訊與報名系統                  | ✅ 已上線         |
+| 社團行事曆                          | ✅ 已上線         |
+| 資訊公告（Markdown 渲染）           | ✅ 已上線         |
+| 文件中心（社章、隱私權政策等）      | ✅ 已上線         |
+| 響應式設計（手機／平板／桌機）      | ✅ 全頁面覆蓋     |
+| Supabase 認證系統（Email + Google） | ✅ 已完成，待開放 |
+| 使用者個人頁面（`/@username`）      | ✅ 基本頁面可訪問 |
+| 課程系統                            | 🔨 開發中（v2.2） |
+| 帳號功能正式開放                    | 🔨 開發中（v2.2） |
+| 經驗值與成就系統                    | 📋 規劃中（v2.3） |
+| 社群發文平台                        | 📋 規劃中（v2.4） |
+| 多語系支援（i18n）                  | 📋 規劃中         |
+| 3D 模型展示（React Three Fiber）    | 🔬 研究中         |
+
+---
+
+## 未來規劃
+
+### v2.2 — 課程系統開放
+
+最核心的功能更新。課程以學期為單位，分為多個章節，每章節包含數節獨立課程。每節課程是一個完整的學習單元，涵蓋機器人實作的具體技術細節。社員完成課程後可提交認證請求，由幹部在後台審核通過。帳號功能也將於此版本正式對全體社員開放。
+
+### v2.3 — 經驗值與成就系統
+
+將課程認證記錄轉換為經驗值，並根據累積進度或特定課程完成情況解鎖成就徽章。讓學習過程更有目標感與成就感。
+
+### v2.4 — 社群平台
+
+開放社員發文，分享實作成果與學習歷程。支援點讚、留言、轉發等互動功能，並完整開放個人頁面管理。
+
+### v2.5 — 穩定與體驗優化
+
+全面稽核前幾個版本累積的技術債，統一介面設計語言，優化各功能模組間的整合性與使用者操作流程。
+
+---
+
+## 技術架構
+
+### 核心框架
+
+- **[Next.js 16](https://nextjs.org/)（App Router）** — SSR／SSG、路由管理、API Routes
+- **[React 19](https://react.dev/)** — Server Components、Hooks
+- **[TypeScript](https://www.typescriptlang.org/)** — 全面型別覆蓋，確保可維護性
+
+### 樣式與 UI
+
+- **SCSS Modules** — 主要樣式方案，支援巢狀選擇器與變數管理
+- **Tailwind CSS v4** — 輔助使用，處理快速排版需求
+- **Framer Motion / React Spring** — 動畫與首頁互動效果
+- **FontAwesome & Lucide React** — 圖示系統
+
+### 後端與資料
+
+- **[Supabase](https://supabase.com/)** — 使用者認證（Email + Google OAuth）、PostgreSQL 資料庫、Row Level Security
+- **Firebase** — 部分舊有服務保留使用，未來將會逐步遷移
+- **React Hook Form + Yup** — 表單驗證
+
+### 功能套件
+
+- **FullCalendar** — 社團行事曆
+- **React Markdown + Highlight.js** — Markdown 渲染與語法高亮
+- **Next-Intl** — 多語系支援（規劃中）
+- **Nuqs** — URL 查詢參數管理
+
+### 部署與分析
+
+- **[Vercel](https://vercel.com/)** — 部署平台
+- **Vercel Analytics / Speed Insights** — 效能監控
+- **Google Analytics / Search Console** — 流量分析與 SEO
+
+### 3D（研究中）
+
+- **React Three Fiber + Drei** — 未來用於 3D 模型展示，目前仍在學習與規劃階段
+
+---
+
+## 專案結構
+
+```
+.
+├── app/
+│   ├── components/        # 共用元件（Header、Footer、Auth 等）
+│   ├── hooks/             # 自訂 React Hooks
+│   ├── contexts/          # React Context（ThemeContext 等）
+│   ├── utils/             # 工具函式與服務層
+│   ├── styles/            # 全域樣式變數與 Mixins
+│   ├── [username]/        # 使用者個人頁面
+│   └── (routes)/          # 各頁面路由（about、blog、competitions 等）
+├── public/
+│   └── assets/            # 圖片、圖示、Markdown 文件
+├── i18n/                  # 國際化設定（規劃中）
+└── types/                 # TypeScript 型別定義
+```
+
+---
+
+## 本地端開發
+
+本專案使用 `pnpm` 管理套件。
+
+```bash
+# 安裝 pnpm（若尚未安裝）
+npm install -g pnpm
+
+# 安裝依賴
+pnpm install
+
+# 啟動開發伺服器
+pnpm dev
+```
+
+開啟瀏覽器前往 `http://localhost:3000`。
+
+**環境變數**：請參考 `.env.example`（即將提供），你需要取得 Supabase 與 Firebase 的相關金鑰才能完整執行認證功能。
+
+---
+
+## 參與貢獻
+
+如果你是社團成員，對網站有任何想法——不管是發現問題、有功能建議，還是想實際動手改——都非常歡迎。
+
+在提交程式碼前，請留意：
+
+- 樣式以 **SCSS Modules** 為主，避免直接寫 inline style
+- 新增功能請搭配 **TypeScript 型別定義**
+- 元件結構盡量遵循現有的 feature-based 目錄規則
+
+有任何問題，也可以直接找社團幹部討論。
+
+---
+
+## 版本紀錄
+
+| 版本   | 日期       | 主要更新                             |
+| ------ | ---------- | ------------------------------------ |
+| v2.1.3 | 2026-03-22 | 競賽報名元件、報名狀態自動判斷       |
+| v2.1.2 | 2026-03-20 | 競賽資料管理、權限系統重構           |
+| v2.1.1 | 2026-03-13 | 認證狀態穩定性修復、登出問題解決     |
+| v2.1.0 | 2026-03-13 | Supabase 認證整合、個人頁面系統      |
+| v2.0.3 | 2026-03-05 | 型別錯誤修復、Sitemap 更新           |
+| v2.0.2 | 2026-03-05 | 日曆效能優化（useMemo、useCallback） |
+| v2.0.1 | 2026-03-05 | 114-2 學期競賽資料、行事曆功能強化   |
+| v2.0.0 | —          | 首頁全面改版，v2 系列正式啟動        |
+
+---
+
+© 中臺機器人研究社 · Robot Research Club of CTUST

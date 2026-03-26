@@ -195,50 +195,25 @@ export async function deleteAllClassEvents(): Promise<void> {
  */
 export async function forceSyncClassEvents(
   events: ScheduleEvent[],
-  userId: string
+  _userId: string
 ): Promise<{ success: number; errors: string[] }> {
-  const result = {
-    success: 0,
-    errors: [] as string[],
-  }
-
   try {
-    // 第一步：刪除所有現有的課程事件
-    await deleteAllClassEvents()
+    const response = await fetch('/api/dashboard/schedules/sync', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ events }),
+    })
 
-    // 第二步：批量添加新的課程事件
-    const batch = writeBatch(db)
-
-    for (const event of events) {
-      try {
-        const docRef = doc(db, COLLECTION_NAME, event.id)
-        const firestoreData = convertToFirestoreFormat({
-          ...event,
-          updatedAt: {
-            date: new Date().toISOString().split('T')[0],
-            time: new Date().toTimeString().slice(0, 5),
-          },
-        })
-
-        batch.set(docRef, {
-          ...firestoreData,
-          lastModifiedBy: userId,
-        })
-        result.success++
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : '未知錯誤'
-        result.errors.push(`${event.title}: ${errorMessage}`)
-      }
+    if (!response.ok) {
+      throw new Error(`API 請求失敗: ${response.status}`)
     }
 
-    // 執行批量寫入
-    await batch.commit()
-
-    return result
+    return await response.json()
   } catch (error) {
     console.error('Error force syncing class events:', error)
-    result.errors.push('強制同步執行失敗')
-    return { success: 0, errors: result.errors }
+    return { success: 0, errors: ['強制同步執行失敗：API 請求發生錯誤'] }
   }
 }
 

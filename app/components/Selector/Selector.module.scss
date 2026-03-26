@@ -93,11 +93,15 @@
 
 //* 下拉選單模式樣式
 .selector {
-  z-index: 100;
+  z-index: 1;
   position: relative;
   width: 100%;
   @include mixins.hover-scale-effect(1.02);
   @include mixins.border-radius(6px);
+
+  &.active {
+    z-index: 999;
+  }
 
   &:hover {
     > .trigger,
@@ -112,7 +116,7 @@
   }
 
   > .trigger {
-    z-index: 200;
+    z-index: 500;
     @include mixins.flexbox(row, space-between, center);
     width: 100%;
     padding: var(--space-0-75x) var(--space);

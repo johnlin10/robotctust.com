@@ -28,7 +28,7 @@ export const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<UserSearchResult[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState({
-    role: undefined as 'super_admin' | 'admin' | 'user' | undefined,
+    role: undefined as 'super_admin' | 'admin' | 'member' | undefined,
     isActive: undefined as boolean | undefined,
     isVerified: undefined as boolean | undefined,
     provider: undefined as 'email' | 'google' | undefined,
@@ -174,7 +174,7 @@ export const UserManagement: React.FC = () => {
               setFilters({
                 ...filters,
                 role:
-                  (e.target.value as 'super_admin' | 'admin' | 'user') ||
+                  (e.target.value as 'super_admin' | 'admin' | 'member') ||
                   undefined,
               })
             }

@@ -1,11 +1,28 @@
 import { NextResponse } from 'next/server'
 import { adminDb } from '@/app/utils/firebaseAdmin'
 import { FieldValue, Timestamp } from 'firebase-admin/firestore'
+import { requireAdminAccess } from '@/app/utils/auth/admin'
 
 export async function POST(request: Request) {
+  const access = await requireAdminAccess({ requireSuperAdmin: true })
+
+  if (access.status !== 'authorized') {
+    return NextResponse.json(
+      {
+        success: 0,
+        errors: [
+          access.status === 'unauthenticated'
+            ? '請先登入後再執行此操作'
+            : '只有超級管理員可以同步競賽資料',
+        ],
+      },
+      { status: access.status === 'unauthenticated' ? 401 : 403 },
+    )
+  }
+
   try {
     const body = await request.json()
-    const { competitions, userId } = body
+    const { competitions } = body
 
     if (!Array.isArray(competitions)) {
       return NextResponse.json(
@@ -64,7 +81,7 @@ export async function POST(request: Request) {
           timeline,
           createdAt,
           updatedAt: FieldValue.serverTimestamp(),
-          updatedBy: userId || null,
+          updatedBy: access.user.id,
         }
 
         batch.set(docRef, docData)

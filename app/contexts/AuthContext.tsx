@@ -19,6 +19,7 @@ import {
   DEFAULT_USER_STATS,
   DEFAULT_PRIVACY_SETTINGS,
 } from '../types/user'
+import { isAdminRole, isSuperAdminRole } from '../utils/auth/roles'
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
@@ -109,7 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           provider: data.provider || 'email',
           createdAt: new Date(data.created_at || new Date()),
           updatedAt: new Date(data.updated_at || new Date()),
-          role: data.role || 'user',
+          roles: data.roles || ['member'],
           permissions: data.permissions || DEFAULT_USER_PERMISSIONS,
           bio: data.bio,
           backgroundURL: data.background_url || null,
@@ -368,13 +369,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     )
   }
 
-  //* 檢查是否為超級管理員（基於環境變數）
-  const checkSuperAdmin = useCallback((currentUser: User | null): boolean => {
-    if (!currentUser?.email) return false
-    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL
-    return currentUser.email === adminEmail
-  }, [])
-
   //* 監聽 Supabase 認證狀態變化
   useEffect(() => {
     let isMounted = true
@@ -396,13 +390,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
           setUser(userProfile)
 
-          const isSuperAdminUser = checkSuperAdmin(currentSupabaseUser)
-          setIsSuperAdmin(isSuperAdminUser)
-          setIsAdmin(
-            isSuperAdminUser ||
-              userProfile?.role === 'admin' ||
-              userProfile?.role === 'super_admin',
-          )
+          const roles = userProfile?.roles
+          setIsSuperAdmin(isSuperAdminRole(roles))
+          setIsAdmin(isAdminRole(roles))
         } else {
           setUser(null)
           setIsAdmin(false)
@@ -451,7 +441,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       isMounted = false
       subscription.unsubscribe()
     }
-  }, [getUserProfile, checkSuperAdmin, supabase, resolveWithTimeout])
+  }, [getUserProfile, supabase, resolveWithTimeout])
 
   const value: AuthContextType = {
     user,

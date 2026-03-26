@@ -175,7 +175,7 @@ export const validateUserDataIntegrity = async (): Promise<{
         'displayName',
         'photoURL',
         'provider',
-        'role',
+        'roles',
         'permissions',
         'stats',
         'privacy',
