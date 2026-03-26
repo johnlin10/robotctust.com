@@ -42,8 +42,8 @@ const shouldHideHeader = (pathname: string): boolean => {
 export default function Header() {
   // 獲取當前路徑
   const pathname = usePathname()
-  // 獲取登入資訊 與 驗證超級管理員權限
-  const { isSuperAdmin } = useAuth()
+  // 獲取登入資訊與管理權限
+  const { isAdmin, isSuperAdmin } = useAuth()
   // 選單狀態
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   // Header 的縮放狀態

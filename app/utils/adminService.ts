@@ -6,9 +6,10 @@ import {
   arrayUnion,
   arrayRemove,
 } from 'firebase/firestore'
-import { User } from '@supabase/supabase-js'
 import { db } from './firebase'
 import { AuthorizedUser, AccessControlDocument } from '../types/post'
+import { UserProfile } from '@/app/types/user'
+import { isSuperAdminRole } from '@/app/utils/auth/roles'
 
 const ACCESS_CONTROL_COLLECTION = 'accessControl'
 const ACCESS_CONTROL_DOC = 'canPostNews'
@@ -18,10 +19,8 @@ const ACCESS_CONTROL_DOC = 'canPostNews'
  * @param {User | null} user - 使用者
  * @returns {boolean} 是否為超級管理員
  */
-export function isSuperAdmin(user: User | null): boolean {
-  if (!user?.email) return false
-  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL
-  return user.email === adminEmail
+export function isSuperAdmin(user: Pick<UserProfile, 'roles'> | null): boolean {
+  return isSuperAdminRole(user?.roles)
 }
 
 /**
@@ -62,7 +61,7 @@ export async function getAuthorizedUsers(): Promise<AuthorizedUser[]> {
  * @returns {Promise<void>} 無回傳值
  */
 export async function addAuthorizedUser(
-  adminUser: User,
+  adminUser: Pick<UserProfile, 'email' | 'roles'>,
   email: string,
 ): Promise<void> {
   if (!isSuperAdmin(adminUser)) {
@@ -129,7 +128,7 @@ export async function addAuthorizedUser(
  * @returns {Promise<void>} 無回傳值
  */
 export async function removeAuthorizedUser(
-  adminUser: User,
+  adminUser: Pick<UserProfile, 'roles'>,
   email: string,
 ): Promise<void> {
   if (!isSuperAdmin(adminUser)) {
@@ -182,7 +181,7 @@ export async function removeAuthorizedUser(
  * @returns {Promise<void>} 無回傳值
  */
 export async function toggleUserStatus(
-  adminUser: User,
+  adminUser: Pick<UserProfile, 'roles'>,
   email: string,
 ): Promise<void> {
   if (!isSuperAdmin(adminUser)) {
@@ -239,7 +238,9 @@ export async function toggleUserStatus(
  * @param {User} adminUser - 管理員使用者
  * @returns {Promise<void>} 無回傳值
  */
-export async function initializeAccessControl(adminUser: User): Promise<void> {
+export async function initializeAccessControl(
+  adminUser: Pick<UserProfile, 'email' | 'roles'>,
+): Promise<void> {
   if (!isSuperAdmin(adminUser)) {
     throw new Error('只有超級管理員可以初始化權限控制')
   }

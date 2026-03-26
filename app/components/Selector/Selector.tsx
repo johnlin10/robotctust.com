@@ -266,7 +266,7 @@ function Selector<T = unknown>(
   return (
     <div
       ref={selectorRef}
-      className={`${styles.selector} ${disabled ? styles.disabled : ''}`}
+      className={`${styles.selector} ${disabled ? styles.disabled : ''} ${isOpen ? styles.active : ''}`}
     >
       <div
         className={`${styles.trigger} ${isOpen ? styles.open : ''}`}

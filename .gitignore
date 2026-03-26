@@ -21,7 +21,6 @@
 /build
 
 # Admin and sensitive files
-/app/admin
 ADMIN_SETUP.md
 auth-debug.md
 

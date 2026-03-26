@@ -1,5 +1,7 @@
 import { User } from '@supabase/supabase-js'
 
+export type UserRole = 'super_admin' | 'admin' | 'admin_course' | 'admin_achievement' | 'admin_verifications' | 'admin_news' | 'member'
+
 export interface UserProfile extends Record<string, unknown> {
   uid: string
   email: string
@@ -9,7 +11,7 @@ export interface UserProfile extends Record<string, unknown> {
   provider: 'email' | 'google'
   createdAt: Date
   updatedAt: Date
-  role: 'super_admin' | 'admin' | 'admin_course' | 'admin_achievement' | 'admin_verifications' | 'admin_news' | 'member' | 'user'
+  roles: UserRole[]
   permissions: UserPermissions
   // 新增社群功能相關欄位
   bio?: string // 個人簡介
@@ -143,7 +145,7 @@ export interface AuthContextType {
 export interface UpdateUserPermissionsData {
   uid: string
   permissions?: Partial<UserPermissions>
-  role?: 'super_admin' | 'admin' | 'user'
+  roles?: UserRole[]
 }
 
 //* 更新使用者個人資料的資料結構
@@ -183,7 +185,7 @@ export const createDefaultUserProfile = (
       '/assets/image/userEmptyAvatar.png',
     backgroundURL: additionalData.backgroundURL,
     provider: additionalData.provider || 'email',
-    role: 'user',
+    roles: ['member'],
     permissions: DEFAULT_USER_PERMISSIONS,
     stats: DEFAULT_USER_STATS,
     privacy: DEFAULT_PRIVACY_SETTINGS,

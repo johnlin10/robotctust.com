@@ -2,6 +2,7 @@ import { createClient } from './supabase/server'
 import { createAdminClient } from './supabase/admin'
 import {
   UserProfile,
+  UserRole,
   DEFAULT_USER_PERMISSIONS,
   DEFAULT_USER_STATS,
   DEFAULT_PRIVACY_SETTINGS,
@@ -40,7 +41,7 @@ function mapToUserProfile(data: Record<string, unknown>): UserProfile {
     provider: (data.provider as 'email' | 'google') || 'email',
     createdAt: new Date((data.created_at as string) || new Date()),
     updatedAt: new Date((data.updated_at as string) || new Date()),
-    role: (data.role as 'super_admin' | 'admin' | 'user') || 'user',
+    roles: (data.roles as UserRole[]) || ['member'],
     permissions:
       (data.permissions as UserProfile['permissions']) ||
       DEFAULT_USER_PERMISSIONS,
