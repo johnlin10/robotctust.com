@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { createClient } from '@/app/utils/supabase/server'
 import { NextResponse } from 'next/server'
+import { isUserOnboardingComplete } from '@/app/utils/auth/onboarding'
 
 /**
  * [Route] 認證回調路由
@@ -21,6 +22,22 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     // 如果交換成功，則重定向到 profile 頁面
     if (!error) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('username, display_name, student_id, school_identity, club_identity')
+          .eq('id', user.id)
+          .maybeSingle()
+
+        if (!isUserOnboardingComplete(profile)) {
+          return NextResponse.redirect(`${origin}/onboarding`)
+        }
+      }
+
       // 獲取 next 參數
       const next = searchParams.get('next') ?? '/profile'
       // 重定向到 next 頁面

@@ -21,7 +21,11 @@ import { useToast } from '../../contexts/ToastContext'
 import { uploadUserAvatarToFirebaseStorage } from '../../utils/firebaseService'
 
 // types
-import { RegisterFormData } from '../../types/user'
+import {
+  ClubIdentity,
+  RegisterFormData,
+  SchoolIdentity,
+} from '../../types/user'
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -31,9 +35,6 @@ import {
   faChevronRight,
   faCheck,
   faCircle,
-  fa1,
-  fa2,
-  fa3,
 } from '@fortawesome/free-solid-svg-icons'
 
 interface RegisterFormProps {
@@ -48,7 +49,27 @@ interface FormData {
   confirmPassword: string // 確認密碼
   username?: string // 帳號名稱
   displayName?: string // 顯示名稱
+  schoolIdentity: SchoolIdentity // 校園身分
+  clubIdentity: ClubIdentity // 社團身分
+  studentId?: string // 學號
 }
+
+const schoolIdentityOptions: Array<{
+  value: SchoolIdentity
+  label: string
+}> = [
+  { value: 'current_student', label: '本校學生' },
+  { value: 'external', label: '非本校人士' },
+  { value: 'alumni', label: '畢業生' },
+]
+
+const clubIdentityOptions: Array<{
+  value: ClubIdentity
+  label: string
+}> = [
+  { value: 'member', label: '我是社團成員' },
+  { value: 'non_member', label: '我不是社團成員' },
+]
 
 /**
  * [Schema] 註冊表單驗證規則
@@ -80,6 +101,30 @@ const registerSchema: yup.ObjectSchema<FormData> = yup.object({
     .min(3, '至少 3 個字元')
     .max(20, '最多 20 個字元'),
   displayName: yup.string().optional().max(20, '最多 20 個字元'),
+  schoolIdentity: yup
+    .mixed<SchoolIdentity>()
+    .oneOf(
+      schoolIdentityOptions.map((option) => option.value),
+      '請選擇您的校園身分',
+    )
+    .required('請選擇您的校園身分'),
+  clubIdentity: yup
+    .mixed<ClubIdentity>()
+    .oneOf(
+      clubIdentityOptions.map((option) => option.value),
+      '請選擇是否為社團成員',
+    )
+    .required('請選擇是否為社團成員'),
+  studentId: yup
+    .string()
+    .trim()
+    .max(20, '學號最多 20 個字元')
+    .matches(/^[A-Za-z0-9_-]*$/, '學號僅能使用英文字母、數字、底線與連字號')
+    .when('schoolIdentity', {
+      is: 'current_student',
+      then: (schema) => schema.required('若您是本校學生，請輸入學號'),
+      otherwise: (schema) => schema.optional(),
+    }),
 })
 
 /**
@@ -102,7 +147,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   } = useAuth()
   // ToastContext
   const { showToast } = useToast()
-  // 註冊步數: 1. Email, 2. Password, 3. Profile
+  // 註冊步數: 1. Email, 2. Password, 3. Profile, 4. Identity
   const [step, setStep] = useState(1)
   // 註冊狀態
   const [isLoading, setIsLoading] = useState(false)
@@ -126,6 +171,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     watch,
     trigger,
     clearErrors,
+    setValue,
   } = useForm<FormData>({
     resolver: yupResolver(registerSchema),
     mode: 'onBlur', // 預設失焦時驗證
@@ -137,6 +183,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const watchEmail = watch('email') ?? ''
   const watchUsername = watch('username') ?? ''
   const watchDisplayName = watch('displayName') ?? ''
+  const watchSchoolIdentity = watch('schoolIdentity')
+  const watchClubIdentity = watch('clubIdentity')
+  const watchStudentId = watch('studentId') ?? ''
+  const isCurrentStudent = watchSchoolIdentity === 'current_student'
 
   // 密碼規則驗證（用於 UI 顯示）
   const passwordRules = {
@@ -207,6 +257,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     return () => clearTimeout(timer)
   }, [watchDisplayName, trigger, clearErrors])
 
+  useEffect(() => {
+    if (watchSchoolIdentity !== 'current_student') {
+      clearErrors('studentId')
+      setValue('studentId', '')
+    }
+  }, [watchSchoolIdentity, clearErrors, setValue])
+
   /**
    * [Function] 檢查目前步驟是否可以進入下一步
    * @returns void
@@ -216,6 +273,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     let fieldsToValidate: (keyof FormData)[] = []
     if (step === 1) fieldsToValidate = ['email']
     if (step === 2) fieldsToValidate = ['password', 'confirmPassword']
+    if (step === 3) fieldsToValidate = ['username', 'displayName']
 
     // 觸發驗證
     const result = await trigger(fieldsToValidate)
@@ -326,6 +384,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         username: data.username?.trim(),
         displayName: data.displayName?.trim(),
         photoURL: avatarURL,
+        schoolIdentity: data.schoolIdentity,
+        clubIdentity: data.clubIdentity,
+        studentId: data.studentId?.trim(),
       }
 
       // 註冊使用者
@@ -357,6 +418,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     if (errorMessage.includes('使用者名稱已存在')) return '此帳號名稱已被使用'
     if (errorMessage.includes('User already registered'))
       return '此電子郵件已被註冊'
+    if (errorMessage.includes('student_id') || errorMessage.includes('學號'))
+      return '此學號已被綁定，請確認輸入是否正確，或改用既有帳號登入'
     if (errorMessage.toLowerCase().includes('password'))
       return '密碼不符合安全性要求'
     return `註冊失敗: ${errorMessage}`
@@ -421,18 +484,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
       {/* 步驟指示器 */}
       <div className={styles.stepper}>
-        {[1, 2, 3].map((s) => (
+        {[1, 2, 3, 4].map((s) => (
           <div
             key={s}
             className={`${styles.step_item} ${step >= s ? styles.active : ''}`}
           >
-            {s > 1 && s <= 3 && <div className={styles.step_line} />}
+            {s > 1 && <div className={styles.step_line} />}
             <span className={styles.step_dot}>
-              {step > s ? (
-                <FontAwesomeIcon icon={faCheck} />
-              ) : (
-                <FontAwesomeIcon icon={s === 1 ? fa1 : s === 2 ? fa2 : fa3} />
-              )}
+              {step > s ? <FontAwesomeIcon icon={faCheck} /> : s}
             </span>
             {/* <span className={styles.step_text}>
               {s === 1 && step === 1
@@ -670,9 +729,111 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             </div>
 
             <button
+              type="button"
+              className={styles.next_button}
+              onClick={handleNextStep}
+              disabled={isLoading}
+            >
+              下一步 <FontAwesomeIcon icon={faChevronRight} />
+            </button>
+          </div>
+        )}
+
+        {/* Step 4: Identity */}
+        {step === 4 && (
+          <div className={styles.step_content}>
+            <p className={styles.section_hint}>
+              這些資訊會用於辨識社員身分與後續課程權限設定。
+            </p>
+
+            <div className={styles.form_group}>
+              <label htmlFor="schoolIdentity">
+                您目前的校園身分 <span className={styles.required}>*</span>
+              </label>
+              <select
+                id="schoolIdentity"
+                autoFocus
+                {...register('schoolIdentity')}
+                className={errors.schoolIdentity ? styles.error : ''}
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  請選擇您的校園身分
+                </option>
+                {schoolIdentityOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {errors.schoolIdentity && (
+                <span className={styles.field_error}>
+                  {errors.schoolIdentity.message}
+                </span>
+              )}
+            </div>
+
+            <div className={styles.form_group}>
+              <label htmlFor="clubIdentity">
+                您是否為社團成員 <span className={styles.required}>*</span>
+              </label>
+              <select
+                id="clubIdentity"
+                {...register('clubIdentity')}
+                className={errors.clubIdentity ? styles.error : ''}
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  請選擇社團身分
+                </option>
+                {clubIdentityOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {errors.clubIdentity && (
+                <span className={styles.field_error}>
+                  {errors.clubIdentity.message}
+                </span>
+              )}
+            </div>
+
+            {isCurrentStudent && (
+              <div className={styles.form_group}>
+                <label htmlFor="studentId">
+                  學號 <span className={styles.required}>*</span>
+                </label>
+                <input
+                  id="studentId"
+                  type="text"
+                  {...register('studentId')}
+                  className={errors.studentId ? styles.error : ''}
+                  placeholder="請輸入學號"
+                />
+                <p className={styles.hint}>
+                  本校學生需提供學號以便核對社員名單
+                </p>
+                {errors.studentId && (
+                  <span className={styles.field_error}>
+                    {errors.studentId.message}
+                  </span>
+                )}
+              </div>
+            )}
+
+            <button
               type="submit"
               className={styles.submit_button}
-              disabled={isLoading}
+              disabled={
+                isLoading ||
+                !watchSchoolIdentity ||
+                !watchClubIdentity ||
+                !!errors.schoolIdentity ||
+                !!errors.clubIdentity ||
+                !!errors.studentId ||
+                (isCurrentStudent && !watchStudentId.trim())
+              }
             >
               {isLoading ? '處理中...' : '開始探索'}
             </button>

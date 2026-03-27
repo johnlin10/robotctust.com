@@ -109,6 +109,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           roles: data.roles || ['member'],
           bio: data.bio,
           backgroundURL: data.background_url || null,
+          studentId: data.student_id || null,
+          schoolIdentity: data.school_identity || null,
+          clubIdentity: data.club_identity || null,
           stats,
         } as UserProfile
       } catch (error) {
@@ -202,7 +205,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const avatarUrl =
         data.photoURL?.trim() || '/assets/image/userEmptyAvatar.png'
 
-      // 透過 options.data 將自訂的屬性（包含 username, displayName 等）附加到 raw_user_meta_data 中
+      // 透過 options.data 將自訂的屬性（包含 username, displayName 與註冊身分）附加到 raw_user_meta_data 中
       // Supabase 的 Database Trigger 將根據這些屬性在 users table 建立對應的行
       const { data: signUpData, error } = await supabase.auth.signUp({
         email: data.email,
@@ -212,6 +215,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             username: finalUsername,
             display_name: data.displayName || finalUsername,
             avatar_url: avatarUrl,
+            student_id: data.studentId?.trim() || null,
+            school_identity: data.schoolIdentity || null,
+            club_identity: data.clubIdentity || null,
           },
         },
       })
@@ -256,13 +262,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     updateData: Partial<UserProfile>,
   ): Promise<void> => {
     try {
-      // 這裡簡單把 camelCase 轉成 Supabase 可能對應的 snake_case
-      const payload: any = {
-        ...updateData,
+      const payload: Record<string, unknown> = {
         updated_at: new Date().toISOString(),
       }
-      if (updateData.displayName) payload.display_name = updateData.displayName
-      if (updateData.photoURL) payload.avatar_url = updateData.photoURL
+
+      if (updateData.username !== undefined) payload.username = updateData.username
+      if (updateData.displayName !== undefined) {
+        payload.display_name = updateData.displayName
+      }
+      if (updateData.photoURL !== undefined) payload.avatar_url = updateData.photoURL
+      if (updateData.bio !== undefined) payload.bio = updateData.bio
+      if (updateData.backgroundURL !== undefined) {
+        payload.background_url = updateData.backgroundURL
+      }
+      if (updateData.studentId !== undefined) payload.student_id = updateData.studentId
+      if (updateData.schoolIdentity !== undefined) {
+        payload.school_identity = updateData.schoolIdentity
+      }
+      if (updateData.clubIdentity !== undefined) {
+        payload.club_identity = updateData.clubIdentity
+      }
 
       const { error } = await supabase
         .from('users')

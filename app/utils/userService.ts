@@ -39,6 +39,10 @@ function mapToUserProfile(data: Record<string, unknown>): UserProfile {
     roles: (data.roles as UserRole[]) || ['member'],
     bio: data.bio as string | undefined,
     backgroundURL: (data.background_url as string) || undefined,
+    studentId: (data.student_id as string) || null,
+    schoolIdentity:
+      (data.school_identity as UserProfile['schoolIdentity']) || null,
+    clubIdentity: (data.club_identity as UserProfile['clubIdentity']) || null,
     stats,
   } as UserProfile
 }

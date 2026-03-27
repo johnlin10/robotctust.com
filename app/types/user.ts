@@ -10,6 +10,9 @@ export type UserRole =
   | 'admin_accounts'
   | 'member'
 
+export type SchoolIdentity = 'current_student' | 'external' | 'alumni'
+export type ClubIdentity = 'member' | 'non_member'
+
 export interface UserProfile extends Record<string, unknown> {
   uid: string
   email: string
@@ -23,6 +26,9 @@ export interface UserProfile extends Record<string, unknown> {
   // 新增社群功能相關欄位
   bio?: string // 個人簡介
   backgroundURL?: string // 背景圖片網址
+  studentId?: string | null
+  schoolIdentity?: SchoolIdentity | null
+  clubIdentity?: ClubIdentity | null
   // 統計資料
   stats: {
     exp: number
@@ -45,6 +51,9 @@ export interface RegisterFormData {
   username?: string // 修改為選填
   displayName?: string // 使其選填以免報錯
   photoURL?: string
+  studentId?: string
+  schoolIdentity?: SchoolIdentity
+  clubIdentity?: ClubIdentity
 }
 
 export interface LoginFormData {

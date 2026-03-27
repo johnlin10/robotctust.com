@@ -13,6 +13,7 @@ import { RegisterForm } from '../components/Auth/RegisterForm'
 
 // contexts
 import { useAuth } from '../contexts/AuthContext'
+import { isUserOnboardingComplete } from '../utils/auth/onboarding'
 
 /**
  * [Component] 登入／註冊頁面的互動式容器
@@ -43,8 +44,8 @@ export default function LoginClient() {
    * @returns {void}
    */
   useEffect(() => {
-    if (user?.username) {
-      router.replace('/profile')
+    if (user) {
+      router.replace(isUserOnboardingComplete(user) ? '/profile' : '/onboarding')
     }
   }, [router, user])
 
@@ -86,7 +87,11 @@ export default function LoginClient() {
 
         {!loading && user && (
           <div className={styles.status_card} aria-live="polite">
-            <p>偵測到您已登入，正在帶您前往個人主頁...</p>
+            <p>
+              {isUserOnboardingComplete(user)
+                ? '偵測到您已登入，正在帶您前往個人主頁...'
+                : '偵測到您尚未完成註冊資料，正在帶您前往續填頁面...'}
+            </p>
           </div>
         )}
 

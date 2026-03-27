@@ -24,7 +24,7 @@ import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { NAV_AUTO_CENTER_CONFIG } from './headerScrollConfig'
 
 //* 需要隱藏 Header 的頁面路徑列表
-const HIDDEN_HEADER_PATHS = ['/login', '/register', '/auth/callback']
+const HIDDEN_HEADER_PATHS = ['/login', '/register', '/auth/callback', '/onboarding']
 
 /**
  * 檢查當前路徑是否需要隱藏 Header

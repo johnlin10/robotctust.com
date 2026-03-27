@@ -204,7 +204,8 @@
       }
     }
 
-    > input {
+    > input,
+    > select {
       box-sizing: border-box;
       width: 100%;
       padding: 0.75rem 1rem;
@@ -235,6 +236,11 @@
         color: var(--foreground-tertiary);
         font-size: 0.875rem;
       }
+    }
+
+    > select {
+      appearance: none;
+      cursor: pointer;
     }
 
     .hint {
@@ -277,6 +283,13 @@
         }
       }
     }
+  }
+
+  .section_hint {
+    margin: 0 0 1rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--foreground-tertiary);
   }
 
   .next_button,

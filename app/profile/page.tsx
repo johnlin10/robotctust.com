@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/app/utils/supabase/server'
+import { isUserOnboardingComplete } from '@/app/utils/auth/onboarding'
 
 /**
  * [Page] 重定向到使用者資訊頁面
@@ -22,9 +23,13 @@ export default async function ProfilePage() {
   // 獲取使用者資料
   const { data: profile, error: profileError } = await supabase
     .from('users')
-    .select('username')
+    .select('username, display_name, student_id, school_identity, club_identity')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
+
+  if (!profileError && !isUserOnboardingComplete(profile)) {
+    redirect('/onboarding')
+  }
 
   // 如果使用者資料存在，則重定向到使用者資訊頁面
   if (!profileError && profile?.username) {
