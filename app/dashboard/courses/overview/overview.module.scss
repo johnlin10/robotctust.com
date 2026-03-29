@@ -1,0 +1,624 @@
+@use '../../../styles/_mixins.scss' as mixins;
+
+/* =========================================
+   Base Page Layout
+   ========================================= */
+.page {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: var(--space-2x);
+  width: 100%;
+
+  /* =========================================
+     Hero Section
+     ========================================= */
+  > .hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) auto;
+    gap: var(--space-2x);
+    padding: clamp(16px, 4vw, 24px);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(16px);
+    overflow: hidden;
+
+    @include mixins.respond-to('tablet') {
+      grid-template-columns: 1fr;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--theme-purple-500);
+    }
+
+    .heroDescription {
+      margin: 0;
+      color: var(--foreground-secondary);
+      line-height: 1.7;
+    }
+
+    > .heroCopy {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      > h2 {
+        margin: 0;
+        margin-top: var(--space);
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        text-wrap: balance;
+      }
+    }
+
+    > .heroActions {
+      position: relative;
+      z-index: 1;
+      align-content: start;
+      justify-content: flex-end;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      @include mixins.respond-to('tablet') {
+        justify-content: flex-start;
+      }
+    }
+  }
+
+  /* =========================================
+     Stats Grid
+     ========================================= */
+  > .statsGrid {
+    display: grid;
+    gap: var(--space);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    @include mixins.respond-to('tablet') {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include mixins.respond-to('phone') {
+      grid-template-columns: 1fr;
+    }
+
+    > .statCard {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      @include mixins.border-radius(16px);
+
+      > .statLabel {
+        margin: 0;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--foreground-tertiary);
+      }
+
+      > .statValue {
+        font-size: 2rem;
+        line-height: 1;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+      }
+    }
+  }
+
+  /* =========================================
+     Semester Section
+     ========================================= */
+  > .semesterSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5x);
+    padding: 12px;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(28px);
+
+    .sectionDescription {
+      margin: 0;
+      color: var(--foreground-secondary);
+      line-height: 1.7;
+    }
+
+    .sectionActions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    > .semesterHeader {
+      @include mixins.flexbox(column, flex-start, flex-start);
+      gap: var(--space);
+      padding: 12px;
+      padding-bottom: 0;
+      width: 100%;
+
+      > .semesterTitleGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+        width: 100%;
+
+        > .semesterTitleRow {
+          @include mixins.flexbox(row, space-between, center);
+          gap: var(--space);
+          width: 100%;
+
+          > .titleContent {
+            @include mixins.flexbox(row, space-between, center);
+            gap: var(--space);
+
+            > h3 {
+              margin: 0;
+              font-size: 1.35rem;
+              line-height: 1.2;
+              text-wrap: balance;
+            }
+
+            > .badge {
+              padding: 3px 9px;
+              border: 1px solid var(--border);
+              @include mixins.border-radius(999px);
+
+              &.activeBadge {
+                color: var(--foreground);
+                background: var(--theme-green-400);
+                border: 1px solid var(--border);
+              }
+
+              &.mutedBadge {
+                color: var(--foreground-secondary);
+                background: rgba(var(--background-rgb), 0.46);
+                border: 1px solid var(--border);
+              }
+            }
+          }
+
+          > .metaRow {
+            @include mixins.flexbox(row, center, center);
+            gap: var(--space);
+
+            > span {
+              @include mixins.flexbox(row, center, center);
+              gap: 8px;
+              padding: 8px 12px;
+              font-size: 0.85rem;
+              color: var(--foreground-secondary);
+              border: 1px solid var(--border);
+              @include mixins.border-radius(999px);
+            }
+          }
+        }
+
+        p {
+          margin: 0;
+          color: var(--foreground-secondary);
+
+          line-height: 1.7;
+        }
+      }
+
+      > .sectionActions {
+        @include mixins.flexbox(row, center, center);
+        gap: var(--space);
+
+        > .primaryButton,
+        > .subtleButton,
+        > .dangerButton {
+          @include mixins.button('normal', 'normal');
+          @include mixins.border-radius(9px);
+          background: rgba(var(--background-secondary-rgb), 0.3);
+          color: var(--foreground-secondary);
+
+          &:hover {
+            color: var(--foreground);
+            background: var(--background-secondary);
+          }
+        }
+
+        > .dangerButton {
+          &:hover {
+            background: var(--theme-red-400);
+          }
+        }
+      }
+    }
+
+    /* =========================================
+       Chapter List
+       ========================================= */
+    > .chapterList {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space);
+
+      > .chapterCard {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 14px;
+        border: 1px solid var(--border);
+        @include mixins.border-radius(16px);
+        cursor: pointer;
+
+        &:hover {
+          border-color: var(--border-hover);
+        }
+
+        &.collapsedChapterCard {
+          @include mixins.hover-scale-effect(1.02);
+          &:hover {
+            border-color: var(--border-hover);
+            background: rgba(var(--background-secondary-rgb), 0.5);
+          }
+        }
+
+        > .chapterCardTop {
+          display: flex;
+          gap: 10px;
+
+          @include mixins.respond-to('phone') {
+            flex-direction: column;
+          }
+
+          > .titleGroup {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: var(--foreground);
+            @include mixins.border-radius(16px);
+
+            &:focus-visible {
+              outline: 2px solid rgba(var(--theme-purple-500-rgb), 0.55);
+              outline-offset: 2px;
+            }
+
+            > .chapterHeading {
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              min-width: 0;
+              text-align: left;
+
+              > .chapterIndex {
+                width: 36px;
+                height: 36px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                background: rgba(var(--theme-purple-500-rgb), 0.15);
+                color: var(--theme-purple-600);
+                font-weight: 800;
+                @include mixins.border-radius(12px);
+                font-variant-numeric: tabular-nums;
+              }
+
+              > .chapterInfo {
+                min-width: 0;
+
+                > h4 {
+                  margin: 0;
+                }
+
+                p {
+                  margin: 0;
+                  color: var(--foreground-secondary);
+                  line-height: 1.7;
+                }
+              }
+            }
+
+            > .chapterActions {
+              @include mixins.flexbox(row, center, center);
+              gap: var(--space-0-5x);
+
+              > .iconButton,
+              .iconButtonDanger {
+                @include mixins.border-radius(9px);
+                @include mixins.hover-scale-effect;
+              }
+              > .chapterToggleIcon {
+                margin-left: var(--space);
+              }
+            }
+          }
+        }
+
+        > .chapterBody {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space);
+
+          > .coursesGrid {
+            display: grid;
+            gap: var(--space);
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+
+            /* =========================================
+               Course Card
+               ========================================= */
+            > .courseCard {
+              display: flex;
+              flex-direction: column;
+              gap: 14px;
+              padding: 18px;
+              min-width: 0;
+              border: 1px solid var(--border);
+              background: rgba(var(--background-secondary-rgb), 0.5);
+              @include mixins.border-radius(9px);
+              cursor: default;
+
+              > .courseCardHeader {
+                display: flex;
+                justify-content: space-between;
+                gap: 12px;
+
+                > .courseCardTitle {
+                  min-width: 0;
+
+                  > h5 {
+                    font-size: 1.2rem;
+                    font-weight: bold;
+                    margin: 0;
+                  }
+
+                  > p {
+                    margin: 0;
+                    margin-bottom: 6px;
+                    width: fit-content;
+                    color: var(--foreground-tertiary);
+                    font-size: 0.8rem;
+                    word-break: break-all;
+                    @include mixins.border-radius(6px);
+                  }
+                }
+
+                > .courseCardActions {
+                  @include mixins.flexbox(row, flex-end, flex-start);
+                  gap: 6px;
+
+                  > span.publishedBadge,
+                  > span.draftBadge {
+                    padding: 3px 9px;
+                    height: fit-content;
+                    font-size: 0.8rem;
+                    border: 1px solid var(--border);
+                    @include mixins.border-radius(6px);
+                  }
+
+                  > span.publishedBadge {
+                    font-weight: bold;
+                    color: var(--foreground-secondary);
+                    background: var(--theme-green-400);
+                    border: 1px solid var(--border);
+                  }
+                }
+              }
+
+              .courseDescription {
+                margin: 0;
+                color: var(--foreground-secondary);
+                line-height: 1.2;
+                flex: 1;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                line-clamp: 3;
+                -webkit-box-orient: vertical;
+                text-overflow: ellipsis;
+                overflow: hidden;
+              }
+
+              .courseActions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: auto;
+
+                > .primaryLink {
+                  @include mixins.button('normal', 'normal');
+                  @include mixins.border-radius(6px);
+                  background: transparent;
+                }
+              }
+
+              .courseMeta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+
+                > .metaPill {
+                  padding: 3px 9px;
+                  font-size: 0.85rem;
+                  border: 1px solid var(--border);
+                  @include mixins.border-radius(6px);
+
+                  &.metaPillExp {
+                    color: var(--foreground-secondary);
+                    background: var(--theme-green-400);
+                  }
+
+                  &.metaPillContent {
+                    color: var(--foreground-tertiary);
+                    background: rgba(var(--background-rgb), 0.46);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* =========================================
+     Buttons & Links
+     ========================================= */
+
+  .inlineLink {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(999px);
+    color: var(--foreground);
+    background: rgba(var(--background-rgb), 0.5);
+  }
+
+  .iconButton,
+  .iconButtonDanger {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    color: var(--foreground-secondary);
+    background: rgba(var(--background-secondary-rgb), 0.3);
+    @include mixins.border-radius(14px);
+
+    &:hover {
+      border-color: var(--border-hover);
+      background: var(--background-secondary);
+    }
+  }
+
+  .iconButtonDanger:hover {
+    color: var(--theme-red-900);
+    border-color: var(--border-hover);
+    background: var(--theme-red-400);
+  }
+
+  /* =========================================
+     Feedback States
+     ========================================= */
+  > .message,
+  > .errorMessage,
+  > .emptyState {
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(18px);
+  }
+
+  > .message {
+    background: rgba(var(--theme-blue-500-rgb), 0.1);
+  }
+
+  > .errorMessage {
+    background: rgba(var(--theme-red-500-rgb), 0.1);
+    color: var(--theme-red-600);
+  }
+
+  > .emptyState {
+    text-align: center;
+    color: var(--foreground-secondary);
+    background: rgba(var(--background-secondary-rgb), 0.28);
+    border-style: dashed;
+  }
+
+  /* =========================================
+     Forms & General Utilities
+     ========================================= */
+  .linkList,
+  .metaRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .modalForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space);
+  }
+
+  .fieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .fieldLabel {
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  .fieldHint {
+    margin: 0;
+    color: var(--foreground-secondary);
+    line-height: 1.7;
+    font-size: 0.84rem;
+  }
+
+  .checkboxRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    color: var(--foreground-secondary);
+  }
+
+  .textInput,
+  .textareaInput {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    color: var(--foreground);
+    background: rgba(var(--background-secondary-rgb), 0.62);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(12px);
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+      border-color: var(--theme-purple-500);
+    }
+  }
+
+  .textareaInput {
+    min-height: 128px;
+    resize: vertical;
+  }
+
+  .splitColumns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space);
+
+    @include mixins.respond-to('phone') {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .confirmBody {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .primaryButton {
+    @include mixins.button('primary', 'normal');
+    &[data-danger='true'] {
+      @include mixins.button('danger', 'normal');
+    }
+  }
+
+  .cancelButton,
+  .secondaryLink {
+    @include mixins.button('normal', 'normal');
+  }
+}

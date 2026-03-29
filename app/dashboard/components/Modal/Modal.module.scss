@@ -7,13 +7,12 @@
   right: 0;
   bottom: 0;
   z-index: 9999;
-  background: rgba(var(--background-rgb), 0.6);
-  @include mixins.glass-blur(2px);
+  background: rgba(var(--background-rgb), 0.5);
   @include mixins.flexbox(column, center, center);
   padding: 24px;
   opacity: 0;
   visibility: hidden;
-  @include mixins.transition(all 0.3s ease-out);
+  overscroll-behavior: contain;
 
   &.visible {
     opacity: 1;
@@ -27,15 +26,17 @@
   > .modal {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: fit-content;
     max-height: 90vh;
-    background: var(--background);
+    background: rgba(var(--background-secondary-rgb), 0.25);
+    @include mixins.glass-blur(32px);
     border: 1px solid var(--border);
     @include mixins.border-radius(16px);
     @include mixins.flexbox(column, start, stretch);
     overflow: hidden;
     @include mixins.transform-container(scale(0.95));
     @include mixins.transition(transform 0.3s ease-out);
+    box-shadow: 0 0 360px 0 rgba(var(--background-rgb), 1);
 
     &.visible {
       @include mixins.transform-container(scale(1));
@@ -52,7 +53,7 @@
       @include mixins.flexbox(row, space-between, center);
       gap: var(--space);
       padding: var(--space-1-5x) var(--space-2x);
-      background: var(--background-secondary);
+      padding-right: var(--space-1-5x);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
 
@@ -69,15 +70,21 @@
         height: 32px;
         padding: 0;
         background: transparent;
-        border: none;
+        border: 1px solid transparent;
         color: var(--foreground-tertiary);
         cursor: pointer;
         @include mixins.border-radius(8px);
         @include mixins.transition(var(--transition-default));
 
         &:hover {
+          border: 1px solid var(--border);
           background: var(--background-tertiary);
           color: var(--foreground);
+        }
+
+        &:focus-visible {
+          outline: 2px solid rgba(var(--theme-purple-500-rgb), 0.55);
+          outline-offset: 2px;
         }
 
         svg {
@@ -98,18 +105,30 @@
         gap: var(--space-2x);
         width: 100%;
       }
+
+      *[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
     }
 
     > .footer {
       @include mixins.flexbox(row, flex-end, center);
       gap: var(--space);
-      padding: var(--space-1-5x) var(--space-2x);
-      background: var(--background-secondary);
+      padding: var(--space) var(--space);
       border-top: 1px solid var(--border);
       flex-shrink: 0;
 
       @include mixins.respond-to('phone') {
         @include mixins.flexbox(column, stretch, stretch);
+      }
+
+      > .primaryButton {
+        @include mixins.button('primary', 'normal');
+      }
+
+      > .cancelButton {
+        @include mixins.button('normal', 'normal');
       }
     }
   }

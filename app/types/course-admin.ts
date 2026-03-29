@@ -24,10 +24,18 @@ export interface Course {
   created_at: string
 }
 
+export type CourseContentType =
+  | 'markdown'
+  | 'text'
+  | 'header1'
+  | 'header2'
+  | 'header3'
+  | 'code'
+
 export interface CourseContent {
   id: string
   course_id: string
-  type: string
+  type: CourseContentType
   content: string
   program_id: string | null
   order_index: number
@@ -42,9 +50,33 @@ export interface ChapterTreeNode extends Chapter {
   courses: CourseTreeNode[]
 }
 
+export interface SemesterStats {
+  chapterCount: number
+  courseCount: number
+  publishedCourseCount: number
+  draftCourseCount: number
+}
+
+export interface SemesterTreeNode extends Semester {
+  chapters: ChapterTreeNode[]
+  stats: SemesterStats
+}
+
 export interface CurriculumPayload {
   semesters: Semester[]
   chapters: ChapterTreeNode[]
+}
+
+export interface CurriculumOverviewPayload {
+  semesters: SemesterTreeNode[]
+}
+
+export interface CourseWorkspacePayload {
+  semesters: Semester[]
+  chapters: Chapter[]
+  course: CourseTreeNode & {
+    semester_id: string
+  }
 }
 
 export interface CourseVerificationRow {

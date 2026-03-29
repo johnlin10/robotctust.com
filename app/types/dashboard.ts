@@ -49,31 +49,31 @@ export const MODULE_PERMISSIONS_MAP: Record<Role, DashboardModule[]> = {
 export const DASHBOARD_MODULES: DashboardModuleConfig[] = [
   {
     key: 'courses',
-    title: '課程編輯器',
+    title: '課程',
     description: '管理章節、單元與課程內容，並支援排序調整。',
     href: '/dashboard/courses',
   },
   {
     key: 'verifications',
-    title: '課程審核中控台',
+    title: '課程審核',
     description: '查看待審核清單並快速核准或退回。',
     href: '/dashboard/verifications',
   },
   {
     key: 'achievements',
-    title: '成就系統（預留）',
+    title: '成就',
     description: '後續擴充成就圖鑑、門檻設定與發放策略。',
     href: '/dashboard/achievements',
   },
   {
     key: 'news',
-    title: '最新消息管理',
+    title: '新聞',
     description: '發布、編輯與刪除最新資訊頁面的文章。',
     href: '/dashboard/news',
   },
   {
     key: 'accounts',
-    title: '帳號管理',
+    title: '社員管理',
     description: '後續擴充社員名單、學期成員與權限管理。',
     href: '/dashboard/accounts',
   },

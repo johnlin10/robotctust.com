@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useId } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import styles from './Modal.module.scss'
@@ -22,6 +22,8 @@ export const Modal: React.FC<ModalProps> = ({
   footer,
   maxWidth = '600px',
 }) => {
+  const titleId = useId()
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -41,13 +43,17 @@ export const Modal: React.FC<ModalProps> = ({
       className={`${styles.overlay} ${isOpen ? styles.visible : ''}`}
       onClick={(e) => e.target === e.currentTarget && onClose()}
       tabIndex={-1}
+      role="presentation"
     >
-      <div 
+      <div
         className={`${styles.modal} ${isOpen ? styles.visible : ''}`}
         style={{ maxWidth }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
       >
         <div className={styles.header}>
-          <h2>{title}</h2>
+          <h2 id={titleId}>{title}</h2>
           <button
             onClick={onClose}
             className={styles.closeButton}

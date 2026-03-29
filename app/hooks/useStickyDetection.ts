@@ -58,6 +58,7 @@ export function useStickyDetection(
     //* 建立一個 sentinel 元素來檢測 sticky 狀態
     // 這個元素會放在 sticky 元素的上方，當它消失時表示元素變成 sticky
     const sentinel = document.createElement('div')
+    sentinel.style.position = 'absolute'
     sentinel.style.width = '1px'
     sentinel.style.height = '1px'
     sentinel.style.marginBottom = '-1px'

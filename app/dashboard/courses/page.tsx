@@ -1,13 +1,18 @@
-import { requireDashboardAccess } from '@/app/utils/dashboard/auth'
-import CourseEditorClient from './CourseEditorClient'
+import CoursesOverviewClient from './overview/CoursesOverviewClient'
+import { CoursesAdminSidebar } from './components/CoursesAdminSidebar'
+import styles from './page.module.scss'
 
 /**
  * 課程編輯器頁面
  * @returns 課程編輯器頁面
  */
 export default async function DashboardCoursesPage() {
-  // 檢查是否有權限
-  await requireDashboardAccess('courses')
-  // 返回課程編輯器頁面
-  return <CourseEditorClient />
+  return (
+    <div className={styles.container}>
+      <CoursesAdminSidebar />
+      <section className={styles.content}>
+        <CoursesOverviewClient />
+      </section>
+    </div>
+  )
 }

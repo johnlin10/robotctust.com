@@ -7,6 +7,7 @@ import {
   isDashboardAccessError,
   requireDashboardAccess,
 } from '@/app/utils/dashboard/auth'
+import Page from '../components/page/Page'
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -25,11 +26,7 @@ export default async function DashboardLayout({
     await requireDashboardAccess()
 
     // 返回管理後台布局
-    return (
-      <main className={styles.container}>
-        {children}
-      </main>
-    )
+    return <Page style={styles.container}>{children}</Page>
   } catch (error) {
     if (isDashboardAccessError(error) && error.statusCode === 401) {
       redirect('/login')

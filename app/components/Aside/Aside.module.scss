@@ -6,7 +6,7 @@
   top: var(--header-height);
   width: 100%;
   background: var(--background);
-  @include mixins.border-radius(12px);
+  @include mixins.border-radius(18px);
   border: 1px solid var(--border);
   @include mixins.hide-scrollbar;
   @include mixins.transition(var(--transition-default));

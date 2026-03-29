@@ -37,6 +37,27 @@ export interface UserProfile extends Record<string, unknown> {
   }
 }
 
+export const getUserRoleName = (role: UserRole) => {
+  switch (role) {
+    case 'super_admin':
+      return '超級管理員'
+    case 'admin':
+      return '管理員'
+    case 'admin_course':
+      return '課程管理員'
+    case 'admin_achievement':
+      return '成就管理員'
+    case 'admin_verifications':
+      return '課程驗證員'
+    case 'admin_news':
+      return '新聞發布員'
+    case 'admin_accounts':
+      return '社員管理員'
+    case 'member':
+      return '一般會員'
+  }
+}
+
 //* 預設使用者統計資料
 export const DEFAULT_USER_STATS = {
   exp: 0,

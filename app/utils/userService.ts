@@ -79,6 +79,38 @@ export const getUserProfileByUsernameServer = async (
   }
 }
 
+/**
+ * 服務器端從 user id 獲取使用者資料
+ * @param {string} uid - 使用者 ID
+ * @returns {Promise<UserProfile | null>} 使用者資料
+ */
+export const getUserProfileByUidServer = async (
+  uid: string,
+): Promise<UserProfile | null> => {
+  try {
+    // 建立 Supabase Client
+    const supabase = await createClient()
+    // 獲取使用者資料
+    const { data, error } = await supabase
+      .from('users')
+      .select('*, user_stats(*)')
+      .eq('id', uid)
+      .maybeSingle()
+
+    if (error) {
+      console.error('從 uid 獲取使用者資料時發生錯誤:', error.message)
+      return null
+    }
+    if (!data) return null
+
+    // 轉換為 UserProfile 格式
+    return mapToUserProfile(data as Record<string, unknown>)
+  } catch (error) {
+    console.error('從 uid 獲取使用者資料時發生錯誤:', error)
+    return null
+  }
+}
+
 export type UserProfileResult =
   | { status: 'found'; profile: UserProfile }
   | { status: 'private' }

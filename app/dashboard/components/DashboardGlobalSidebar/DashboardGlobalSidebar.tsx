@@ -37,7 +37,7 @@ export const DashboardGlobalSidebar: React.FC<DashboardGlobalSidebarProps> = ({
       </div>
       <nav className={styles.nav}>
         <Link href="/dashboard" className={styles.navLink}>
-          模組總覽
+          總覽
         </Link>
         {visibleModules.map((module) => (
           <Link key={module.key} href={module.href} className={styles.navLink}>
