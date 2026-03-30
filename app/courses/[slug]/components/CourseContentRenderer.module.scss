@@ -1,0 +1,196 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.courseContentWrapper {
+  display: flex;
+  flex-direction: column;
+  color: var(--foreground);
+  line-height: 1.7;
+
+  .header1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-top: var(--space-3x);
+    margin-bottom: var(--space);
+    scroll-margin-top: calc(var(--header-height) + var(--space-4x));
+
+    span {
+      padding: 0 var(--space-0-5x);
+      box-shadow: 0 -18px inset var(--theme-purple-500);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+  }
+
+  .header2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: var(--space-2x);
+    scroll-margin-top: calc(var(--header-height) + var(--space-4x));
+  }
+
+  .header3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: var(--space-4x);
+    margin-bottom: var(--space-1x);
+    scroll-margin-top: calc(var(--header-height) + var(--space-4x));
+  }
+
+  .text {
+    font-size: 1.05rem;
+    margin: var(--space) 0;
+  }
+
+  .codeBlock {
+    @include mixins.border-radius(8px);
+    overflow: hidden;
+
+    pre {
+      background: rgba(var(--background-secondary-rgb), 0.5) !important;
+      border: 1px solid var(--border) !important;
+      @include mixins.border-radius(12px !important);
+    }
+    code {
+      background: transparent !important;
+    }
+  }
+
+  .inlineCode {
+    background: rgba(var(--foreground-rgb), 0.1);
+    padding: 0.2em 0.4em;
+    @include mixins.border-radius(4px);
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+
+  .imageBlock {
+    margin: var(--space-2x) 0;
+
+    .courseImage {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border: 1px solid var(--border);
+      @include mixins.border-radius(12px);
+    }
+  }
+
+  .unsupported {
+    padding: var(--space-2x);
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+    border: 1px dashed var(--primary);
+    @include mixins.border-radius(8px);
+    text-align: center;
+    font-family: monospace;
+  }
+
+  .markdownContent {
+    h1,
+    h2,
+    h3 {
+      font-weight: 700;
+      scroll-margin-top: calc(var(--header-height) + var(--space-4x));
+      margin-top: var(--space-4x);
+      margin-bottom: var(--space-2x);
+    }
+
+    h1 {
+      font-size: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: var(--space-2x);
+    }
+    h2 {
+      font-size: 1.5rem;
+    }
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    p {
+      margin: var(--space) 0;
+    }
+
+    hr {
+      margin: var(--space-4x) 0;
+      border-top: 1px solid var(--border);
+    }
+
+    ul,
+    ol {
+      margin-bottom: var(--space-4x);
+      padding-left: var(--space-4x);
+    }
+
+    li {
+      margin-bottom: var(--space-1x);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      @include mixins.border-radius(8px);
+      margin: var(--space-4x) 0;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    pre {
+      background: transparent !important;
+
+      > div {
+        margin: 0 !important;
+        border: 1px solid var(--border) !important;
+        background: rgba(var(--background-secondary-rgb), 0.5) !important;
+        @include mixins.border-radius(12px !important);
+
+        code {
+          background: transparent !important;
+        }
+      }
+    }
+
+    .tableContainer {
+      width: 100%; // 容器維持父元素寬度
+      max-width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      @include mixins.border-radius(12px);
+      margin: var(--space-2x) 0;
+
+      table {
+        width: max-content; // 表格撐開到最大內容寬度
+        min-width: 100%; // 如果內容很少，則至少佔滿 100%
+        border-collapse: separate;
+        border-spacing: 0;
+        border: none;
+
+        th {
+          border-bottom: 2px solid var(--border); // 稍微加粗標題底線
+          background: rgba(var(--background-secondary-rgb), 0.5);
+        }
+
+        th,
+        td {
+          font-size: 0.9rem;
+          padding: var(--space-0-5x) var(--space-2x) var(--space-0-5x)
+            var(--space);
+          border-bottom: 1px solid var(--border);
+
+          &:not(:last-child) {
+            border-right: 1px solid var(--border);
+          }
+        }
+
+        tr:last-child {
+          td {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+  }
+}

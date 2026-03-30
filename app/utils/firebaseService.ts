@@ -220,6 +220,55 @@ export const uploadUserBackgroundToFirebaseStorage = async (
 }
 
 /**
+ * 上傳課程圖片到 Firebase Storage（專用路徑）
+ * @param {File} image - 圖片檔案
+ * @param {string} courseId - 課程 ID
+ * @returns {Promise<string>} 圖片下載 URL
+ */
+export const uploadCourseImageToFirebaseStorage = async (
+  image: File,
+  courseId: string,
+): Promise<string> => {
+  try {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const safeCourseId = courseId
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9._-]/g, '_')
+    const extension = image.name.includes('.')
+      ? image.name.split('.').pop()?.toLowerCase()
+      : 'jpg'
+    const uniqueId =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`
+    const fileName = `${Date.now()}-${uniqueId}.${extension || 'jpg'}`
+
+    const storageRef = ref(
+      storage,
+      `courses/images/${year}/${month}/${safeCourseId}/${fileName}`,
+    )
+
+    const snapshot = await uploadBytes(storageRef, image)
+    try {
+      return await withTimeout(
+        getDownloadURL(snapshot.ref),
+        15000,
+        '取得課程圖片下載網址',
+      )
+    } catch (err) {
+      deleteObject(snapshot.ref).catch(() => {})
+      throw err
+    }
+  } catch (error) {
+    console.error('上傳課程圖片到 Firebase Storage 失敗:', error)
+    throw error
+  }
+}
+
+/**
  * 刪除 Firebase Storage 中的圖片
  * @param {string} imageUrl - 圖片 URL
  * @returns {Promise<void>} 刪除結果

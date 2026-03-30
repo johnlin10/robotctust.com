@@ -24,7 +24,7 @@ import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { NAV_AUTO_CENTER_CONFIG } from './headerScrollConfig'
 
 //* 需要隱藏 Header 的頁面路徑列表
-const HIDDEN_HEADER_PATHS = ['/login', '/register', '/auth/callback']
+const HIDDEN_HEADER_PATHS = ['/login', '/register', '/auth/callback', '/onboarding']
 
 /**
  * 檢查當前路徑是否需要隱藏 Header
@@ -43,7 +43,7 @@ export default function Header() {
   // 獲取當前路徑
   const pathname = usePathname()
   // 獲取登入資訊與管理權限
-  const { isAdmin, isSuperAdmin } = useAuth()
+  const { isAdmin, isSuperAdmin, isSemesterMember } = useAuth()
   // 選單狀態
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   // Header 的縮放狀態
@@ -169,15 +169,37 @@ export default function Header() {
             >
               關於
             </Link>
-            {isSuperAdmin && (
+            {isSemesterMember && (
+              <Link
+                href="/courses"
+                onClick={handleNavLinkClick}
+                className={pathname.startsWith('/courses') ? styles.active : ''}
+              >
+                課程
+              </Link>
+            )}
+            {(isAdmin || isSuperAdmin) && (
               <>
                 <div className={styles.separator} />
+                <Link
+                  href="/dashboard"
+                  onClick={handleNavLinkClick}
+                  className={
+                    pathname.startsWith('/dashboard') ? styles.active : ''
+                  }
+                >
+                  後台
+                </Link>
+              </>
+            )}
+            {isSuperAdmin && (
+              <>
                 <Link
                   href="/admin"
                   onClick={handleNavLinkClick}
                   className={pathname.startsWith('/admin') ? styles.active : ''}
                 >
-                  控制台
+                  總控台
                 </Link>
               </>
             )}

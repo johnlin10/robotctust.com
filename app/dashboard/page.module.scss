@@ -1,0 +1,67 @@
+@use '../styles/_mixins.scss' as mixins;
+
+// .wrapper {
+//   @include mixins.flexbox(column, start, stretch);
+//   gap: var(--space-2x);
+// }
+
+// .header {
+//   @include mixins.flexbox(column, start, start);
+//   h2 {
+//     margin: 0;
+//     font-size: 2rem;
+//     font-weight: 700;
+//     color: var(--foreground);
+//     letter-spacing: -0.02em;
+//   }
+
+//   p {
+//     margin: var(--space-0-5x) 0 0;
+//     color: var(--foreground-secondary);
+//     font-size: 1rem;
+//     line-height: 1.6;
+//   }
+// }
+
+// .grid {
+//   display: grid;
+//   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+//   gap: var(--space-2x);
+
+//   @include mixins.respond-to('phone') {
+//     grid-template-columns: 1fr;
+//   }
+// }
+
+// .card {
+//   @include mixins.flexbox(column, space-between, start);
+//   border: 1px solid var(--border);
+//   @include mixins.border-radius(16px);
+//   padding: var(--space-2x);
+//   background: var(--background);
+//   height: 100%;
+//   @include mixins.hover-scale-effect(1.02);
+
+//   &:hover {
+//     background: var(--background-secondary);
+//     border-color: var(--border-hover);
+//   }
+
+//   h3 {
+//     margin: 0;
+//     font-size: 1.25rem;
+//     font-weight: 600;
+//     color: var(--foreground);
+//   }
+
+//   p {
+//     color: var(--foreground-secondary);
+//     line-height: 1.6;
+//     flex-grow: 1;
+//   }
+// }
+
+// .link {
+//   @include mixins.button('normal', 'normal');
+//   width: 100%;
+// }

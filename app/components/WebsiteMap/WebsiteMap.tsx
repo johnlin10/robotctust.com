@@ -2,6 +2,7 @@ import Link from 'next/link'
 import styles from './WebsiteMap.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { useAuth } from '../../contexts/AuthContext'
 
 const LinkWithIcon = ({
   href,
@@ -32,6 +33,7 @@ const LinkWithIcon = ({
  * @returns {JSX.Element} 網站地圖
  */
 export default function WebsiteMap({ onClose }: { onClose?: () => void }) {
+  const { isSemesterMember } = useAuth()
   const handleLinkClick = () => {
     onClose?.()
   }
@@ -49,6 +51,11 @@ export default function WebsiteMap({ onClose }: { onClose?: () => void }) {
           <LinkWithIcon href="/competitions" onClick={handleLinkClick}>
             競賽
           </LinkWithIcon>
+          {isSemesterMember && (
+            <LinkWithIcon href="/courses" onClick={handleLinkClick}>
+              課程
+            </LinkWithIcon>
+          )}
         </div>
       </div>
       <div className={styles.websiteMap_group}>

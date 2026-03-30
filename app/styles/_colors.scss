@@ -126,6 +126,22 @@
   --foreground-dark-800: #ffffff3c;
   --foreground-dark-900: #ffffff26;
   --foreground-dark-950: #ffffff14;
+
+  // roles colors
+  --role-super_admin: linear-gradient(
+    to right,
+    var(--purple-500),
+    var(--blue-500),
+    var(--purple-500)
+  );
+
+  --role-admin: var(--purple-500);
+  --role-admin_course: var(--blue-500);
+  --role-admin_achievement: var(--blue-500);
+  --role-admin_verifications: var(--blue-500);
+  --role-admin_news: var(--blue-500);
+  --role-admin_accounts: var(--blue-500);
+  --role-member: var(--gray-500);
 }
 
 //* 淺色主題

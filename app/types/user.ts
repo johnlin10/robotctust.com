@@ -1,6 +1,18 @@
 import { User } from '@supabase/supabase-js'
 
-export type UserRole = 'super_admin' | 'admin' | 'admin_course' | 'admin_achievement' | 'admin_verifications' | 'admin_news' | 'member'
+export type UserRole =
+  | 'super_admin'
+  | 'admin'
+  | 'admin_course'
+  | 'admin_achievement'
+  | 'admin_verifications'
+  | 'admin_news'
+  | 'admin_accounts'
+  | 'admin_members'
+  | 'member'
+
+export type SchoolIdentity = 'current_student' | 'external' | 'alumni'
+export type ClubIdentity = 'member' | 'non_member'
 
 export interface UserProfile extends Record<string, unknown> {
   uid: string
@@ -12,94 +24,48 @@ export interface UserProfile extends Record<string, unknown> {
   createdAt: Date
   updatedAt: Date
   roles: UserRole[]
-  permissions: UserPermissions
   // 新增社群功能相關欄位
   bio?: string // 個人簡介
   backgroundURL?: string // 背景圖片網址
-  location?: string // 所在地
-  website?: string // 個人網站
-  socialLinks?: {
-    github?: string
-    linkedin?: string
-    twitter?: string
-    instagram?: string
-  }
+  studentId?: string | null
+  schoolIdentity?: SchoolIdentity | null
+  clubIdentity?: ClubIdentity | null
   // 統計資料
   stats: {
-    postsCount: number // 發文數量
-    followersCount: number // 追蹤者數量
-    followingCount: number // 追蹤中數量
-    likesReceived: number // 收到的讚數
-  }
-  // 隱私設定
-  privacy: {
-    profileVisibility: 'public' | 'private' | 'friends' // 個人檔案可見性
-    showEmail: boolean // 是否顯示電子郵件
-    showStats: boolean // 是否顯示統計資料
-  }
-  // 帳號狀態
-  isActive: boolean // 帳號是否啟用
-  isVerified: boolean // 是否已驗證
-  lastLoginAt?: Date // 最後登入時間
-}
-
-export interface UserPermissions {
-  announcements: {
-    canCreate: boolean
-    canEdit: boolean
-    canDelete: boolean
-  }
-  downloads: {
-    canManage: boolean
+    exp: number
+    level: number
+    isPublic: boolean
   }
 }
 
-export const DEFAULT_USER_PERMISSIONS: UserPermissions = {
-  announcements: {
-    canCreate: false,
-    canEdit: false,
-    canDelete: false,
-  },
-  downloads: {
-    canManage: false,
-  },
+export const getUserRoleName = (role: UserRole) => {
+  switch (role) {
+    case 'super_admin':
+      return '超級管理員'
+    case 'admin':
+      return '管理員'
+    case 'admin_course':
+      return '課程管理員'
+    case 'admin_achievement':
+      return '成就管理員'
+    case 'admin_verifications':
+      return '課程驗證員'
+    case 'admin_news':
+      return '新聞發布員'
+    case 'admin_accounts':
+      return '帳號管理員'
+    case 'admin_members':
+      return '社員管理員'
+    case 'member':
+      return '一般會員'
+  }
 }
 
 //* 預設使用者統計資料
 export const DEFAULT_USER_STATS = {
-  postsCount: 0,
-  followersCount: 0,
-  followingCount: 0,
-  likesReceived: 0,
-}
-
-//* 預設隱私設定
-export const DEFAULT_PRIVACY_SETTINGS = {
-  profileVisibility: 'public' as const,
-  showEmail: false,
-  showStats: true,
-}
-
-export const ADMIN_PERMISSIONS: UserPermissions = {
-  announcements: {
-    canCreate: true,
-    canEdit: true,
-    canDelete: true,
-  },
-  downloads: {
-    canManage: true,
-  },
-}
-
-export const SUPER_ADMIN_PERMISSIONS: UserPermissions = {
-  announcements: {
-    canCreate: true,
-    canEdit: true,
-    canDelete: true,
-  },
-  downloads: {
-    canManage: true,
-  },
+  exp: 0,
+  level: 1,
+  isPublic: true,
 }
 
 export interface RegisterFormData {
@@ -109,6 +75,9 @@ export interface RegisterFormData {
   username?: string // 修改為選填
   displayName?: string // 使其選填以免報錯
   photoURL?: string
+  studentId?: string
+  schoolIdentity?: SchoolIdentity
+  clubIdentity?: ClubIdentity
 }
 
 export interface LoginFormData {
@@ -135,16 +104,15 @@ export interface AuthContextType {
     searchTerm: string,
     limit?: number,
   ) => Promise<UserSearchResult[]>
-  hasPermission: (feature: keyof UserPermissions, action: string) => boolean
   isAdmin: boolean
   isSuperAdmin: boolean
+  isSemesterMember: boolean
   supabaseUser: User | null // 修改為 Supabase User 對象
   checkEmailExists: (email: string) => Promise<boolean>
 }
 
-export interface UpdateUserPermissionsData {
+export interface UpdateUserRolesData {
   uid: string
-  permissions?: Partial<UserPermissions>
   roles?: UserRole[]
 }
 
@@ -152,10 +120,6 @@ export interface UpdateUserPermissionsData {
 export interface UpdateUserProfileData {
   displayName?: string
   bio?: string
-  location?: string
-  website?: string
-  socialLinks?: Partial<UserProfile['socialLinks']>
-  privacy?: Partial<UserProfile['privacy']>
 }
 
 //* 使用者搜尋結果
@@ -165,7 +129,6 @@ export interface UserSearchResult {
   displayName: string
   photoURL: string
   bio?: string
-  isVerified: boolean
 }
 
 //* 建立完整使用者資料的輔助函數
@@ -186,14 +149,9 @@ export const createDefaultUserProfile = (
     backgroundURL: additionalData.backgroundURL,
     provider: additionalData.provider || 'email',
     roles: ['member'],
-    permissions: DEFAULT_USER_PERMISSIONS,
     stats: DEFAULT_USER_STATS,
-    privacy: DEFAULT_PRIVACY_SETTINGS,
-    isActive: true,
-    isVerified: false,
     createdAt: new Date(),
     updatedAt: new Date(),
-    lastLoginAt: new Date(),
     ...additionalData,
   }
 }

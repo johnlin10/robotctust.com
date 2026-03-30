@@ -62,7 +62,7 @@
   min-width: max-content;
   text-decoration: none;
   cursor: pointer;
-  @include border-radius(12px);
+  @include border-radius(9px);
   @include hover-scale-effect;
 
   svg {
@@ -100,20 +100,23 @@
     color: var(--foreground);
     &:hover {
       background: var(--background-tertiary);
+      border-color: var(--border-hover);
     }
   } @else if $type == 'primary' {
     background: var(--primary);
-    border: 1px solid var(--primary);
+    border: 1px solid var(--border);
     color: var(--color-white);
     &:hover {
       background: var(--primary-hover);
+      border-color: var(--border-hover);
     }
   } @else if $type == 'danger' {
     background: var(--danger);
-    border: 1px solid var(--danger);
+    border: 1px solid var(--border);
     color: var(--color-white);
     &:hover {
       background: var(--danger-hover);
+      border-color: var(--border-hover);
     }
   }
 }

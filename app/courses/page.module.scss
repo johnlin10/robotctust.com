@@ -1,0 +1,211 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.roadmapContainer {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4x) var(--space-4x) var(--space-8x);
+  width: 100%;
+
+  @include mixins.respond-by-max-width(859px) {
+    padding: var(--space-2x) var(--space-2x) var(--space-6x);
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-6x) 0;
+
+    .iconWrapper {
+      font-size: 5rem;
+      color: var(--primary);
+      opacity: 0.9;
+      filter: drop-shadow(0 0 12px rgba(var(--primary-rgb), 0.4));
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--foreground);
+      margin-bottom: var(--space-2x);
+    }
+
+    p {
+      color: var(--foreground-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+  }
+
+  .roadmap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2x);
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .emptyState {
+    text-align: center;
+    padding: var(--space-8x);
+    background: rgba(var(--background-secondary-rgb), 0.3);
+    @include mixins.glass-blur(12px);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(24px);
+
+    h2 {
+      font-size: 1.5rem;
+      color: var(--foreground);
+      margin-bottom: var(--space-2x);
+    }
+
+    p {
+      color: var(--foreground-tertiary);
+    }
+  }
+
+  .semesterBlock {
+    display: flex;
+    flex-direction: column;
+
+    .semesterTitle {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--foreground);
+      padding-bottom: var(--space-2x);
+      border-bottom: 2px solid rgba(var(--primary-rgb), 0.2);
+      display: inline-block;
+      width: fit-content;
+    }
+  }
+
+  .chapterTimeline {
+    display: flex;
+    flex-direction: column;
+
+    .chapterNode {
+      display: flex;
+      gap: var(--space-2x);
+      position: relative;
+
+      @include mixins.respond-by-max-width(600px) {
+        gap: var(--space-2x);
+      }
+    }
+
+    .nodeMarker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 24px;
+      flex-shrink: 0;
+
+      .nodeDot {
+        margin-top: var(--space-0-5x);
+        width: 16px;
+        height: 16px;
+        background: var(--primary);
+        @include mixins.border-radius(50%);
+        margin-top: 7px;
+        box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
+        z-index: 2;
+      }
+
+      .nodeLine {
+        width: 2px;
+        height: calc(100% - 16px);
+        background: var(--primary);
+        margin-top: var(--space);
+        margin-bottom: 5px;
+      }
+    }
+
+    .chapterContent {
+      flex: 1;
+      padding-bottom: var(--space-2x);
+
+      .chapterTitle {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--foreground);
+        margin-bottom: var(--space);
+      }
+
+      .emptyCourses {
+        color: var(--foreground-tertiary);
+        font-style: italic;
+        font-size: 0.9rem;
+      }
+
+      .courseGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: var(--space-2x);
+
+        @include mixins.respond-by-max-width(600px) {
+          grid-template-columns: 1fr;
+        }
+
+        .courseCard {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          gap: var(--space);
+          background: rgba(var(--background-secondary-rgb), 0.25);
+          @include mixins.glass-blur(12px);
+          border: 1px solid var(--border);
+          @include mixins.border-radius(16px);
+          padding: var(--space-2x);
+          text-decoration: none;
+          @include mixins.hover-scale-effect(1.02);
+
+          &:hover {
+            border-color: var(--border-hover);
+            background: rgba(var(--background-secondary-rgb), 1);
+
+            .cardFooter span {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+
+          .cardHeader {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-2x);
+
+            .courseIcon {
+              color: var(--primary);
+              font-size: 1.2rem;
+              margin-top: 2px;
+            }
+
+            h4 {
+              font-size: 1.1rem;
+              font-weight: 600;
+              color: var(--foreground);
+              line-height: 1.4;
+            }
+          }
+
+          .cardFooter {
+            display: flex;
+            justify-content: flex-end;
+
+            span {
+              font-size: 0.9rem;
+              font-weight: 600;
+              color: var(--primary);
+              opacity: 0;
+              transform: translateX(-10px);
+              @include mixins.transition(all 0.3s ease);
+            }
+          }
+        }
+      }
+    }
+  }
+}

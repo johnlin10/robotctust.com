@@ -1,0 +1,126 @@
+@use '../../styles/_mixins.scss' as mixins;
+
+.drawerOverlay {
+  display: none;
+
+  @include mixins.respond-by-max-width(859px) {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    @include mixins.transition(opacity 0.3s ease);
+
+    &.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
+.aside {
+  z-index: 1000;
+  position: sticky;
+  top: var(--header-height);
+  width: 100%;
+  background: var(--background);
+  @include mixins.border-radius(18px);
+  border: 1px solid var(--border);
+  @include mixins.hover-scale-effect(1.01);
+  overflow: hidden;
+
+  &:hover {
+    background: rgba(var(--background-secondary-rgb), 0.15);
+    box-shadow: 0 0 96px 0 #0000000f;
+  }
+
+  .scrollableContent {
+    @include mixins.hide-scrollbar;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .closeBtn {
+    display: none;
+  }
+
+  @include mixins.respond-by-max-width(859px) {
+    &.sticky {
+      background-color: rgba(var(--background-secondary-rgb), 0.25);
+      @include mixins.glass-blur(12px);
+
+      &.headerCompact {
+        top: 48px;
+        border: 1px solid var(--foreground-950);
+      }
+    }
+
+    // Mobile Drawer styling
+    &.mobileDrawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      max-width: 80vw;
+      height: 100vh;
+      z-index: 9999;
+      background: rgba(var(--background-secondary-rgb), 0.5);
+      border: none;
+      border-right: 1px solid var(--border);
+      @include mixins.border-radius(0);
+      @include mixins.glass-blur(24px);
+      transform: translateX(-100%);
+      @include mixins.transition(transform 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+
+      .scrollableContent {
+        padding-top: var(--space-8x); // Make room for close btn
+      }
+
+      .closeBtn {
+        z-index: 10;
+        display: block;
+        position: absolute;
+        top: var(--space-2x);
+        right: var(--space-2x);
+        background: transparent;
+        border: none;
+        color: var(--foreground);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: var(--space);
+        border: 1px solid var(--border);
+        @include mixins.border-radius(8px);
+        @include mixins.hover-scale-effect;
+
+        &:hover {
+          background: var(--background-secondary);
+          border-color: var(--border-hover);
+          color: var(--foreground);
+        }
+      }
+
+      &.open {
+        transform: translateX(0);
+      }
+    }
+  }
+
+  @include mixins.respond-by-min-width(860px) {
+    width: 100%;
+    max-width: 280px;
+    min-height: 200px;
+    height: fit-content;
+    max-height: calc(100vh - 72px - var(--space-2x));
+
+    &.headerCompact {
+      top: 48px;
+      max-height: calc(100vh - 48px - var(--space-2x));
+    }
+  }
+}

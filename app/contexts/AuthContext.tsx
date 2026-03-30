@@ -14,10 +14,7 @@ import {
   AuthContextType,
   UserProfile,
   RegisterFormData,
-  UserPermissions,
-  DEFAULT_USER_PERMISSIONS,
   DEFAULT_USER_STATS,
-  DEFAULT_PRIVACY_SETTINGS,
 } from '../types/user'
 import { isAdminRole, isSuperAdminRole } from '../utils/auth/roles'
 
@@ -39,7 +36,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [supabaseUser, setSupabaseUser] = useState<User | null>(null)
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false)
+  const [isSemesterMember, setIsSemesterMember] = useState<boolean>(false)
   const [loading, setLoading] = useState(true)
+
+  //* 檢查使用者是否為學期社員
+  const checkIsSemesterMember = useCallback(
+    async (studentId: string | null): Promise<boolean> => {
+      if (!studentId) return false
+      try {
+        const { data, error } = await supabase
+          .from('semester_members')
+          .select('id')
+          .eq('student_id', studentId)
+          .limit(1)
+          .maybeSingle()
+
+        if (error) {
+          console.error('檢查社員身分時發生錯誤:', error.message)
+          return false
+        }
+
+        return !!data
+      } catch (error) {
+        console.error('檢查社員身分時發生例外錯誤:', error)
+        return false
+      }
+    },
+    [supabase],
+  )
 
   //* 避免資料查詢卡住造成整個 UI 一直 loading
   const resolveWithTimeout = useCallback(
@@ -90,10 +114,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           : data.user_stats
         const stats = statsData
           ? {
-              postsCount: statsData.posts_count || 0,
-              followersCount: statsData.followers_count || 0,
-              followingCount: statsData.following_count || 0,
-              likesReceived: statsData.likes_received || 0,
+              exp: statsData.exp || 0,
+              level: statsData.level || 1,
+              isPublic: statsData.is_public ?? true,
             }
           : DEFAULT_USER_STATS
 
@@ -111,19 +134,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           createdAt: new Date(data.created_at || new Date()),
           updatedAt: new Date(data.updated_at || new Date()),
           roles: data.roles || ['member'],
-          permissions: data.permissions || DEFAULT_USER_PERMISSIONS,
           bio: data.bio,
           backgroundURL: data.background_url || null,
-          location: data.location,
-          website: data.website,
-          socialLinks: data.social_links || {},
+          studentId: data.student_id || null,
+          schoolIdentity: data.school_identity || null,
+          clubIdentity: data.club_identity || null,
           stats,
-          privacy: data.privacy || DEFAULT_PRIVACY_SETTINGS,
-          isActive: data.is_active ?? true,
-          isVerified: data.is_verified ?? false,
-          lastLoginAt: data.last_login_at
-            ? new Date(data.last_login_at)
-            : undefined,
         } as UserProfile
       } catch (error) {
         console.error('獲取使用者資料時發生例外錯誤:', error)
@@ -164,12 +180,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (error) throw error
 
       if (data.user) {
-        // 觸發更新最後登入時間
-        await supabase
-          .from('users')
-          .update({ last_login_at: new Date().toISOString() })
-          .eq('id', data.user.id)
-
         // 抓取包含 username 跟 stats 在內的個人資料
         const userProfile = await getUserProfile(data.user.id)
         setUser(userProfile)
@@ -222,7 +232,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const avatarUrl =
         data.photoURL?.trim() || '/assets/image/userEmptyAvatar.png'
 
-      // 透過 options.data 將自訂的屬性（包含 username, displayName 等）附加到 raw_user_meta_data 中
+      // 透過 options.data 將自訂的屬性（包含 username, displayName 與註冊身分）附加到 raw_user_meta_data 中
       // Supabase 的 Database Trigger 將根據這些屬性在 users table 建立對應的行
       const { data: signUpData, error } = await supabase.auth.signUp({
         email: data.email,
@@ -232,6 +242,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             username: finalUsername,
             display_name: data.displayName || finalUsername,
             avatar_url: avatarUrl,
+            student_id: data.studentId?.trim() || null,
+            school_identity: data.schoolIdentity || null,
+            club_identity: data.clubIdentity || null,
           },
         },
       })
@@ -264,6 +277,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setSupabaseUser(null)
       setIsAdmin(false)
       setIsSuperAdmin(false)
+      setIsSemesterMember(false)
     } catch (error) {
       console.error('登出失敗:', error)
       throw error
@@ -276,13 +290,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     updateData: Partial<UserProfile>,
   ): Promise<void> => {
     try {
-      // 這裡簡單把 camelCase 轉成 Supabase 可能對應的 snake_case
-      const payload: any = {
-        ...updateData,
+      const payload: Record<string, unknown> = {
         updated_at: new Date().toISOString(),
       }
-      if (updateData.displayName) payload.display_name = updateData.displayName
-      if (updateData.photoURL) payload.avatar_url = updateData.photoURL
+
+      if (updateData.username !== undefined) payload.username = updateData.username
+      if (updateData.displayName !== undefined) {
+        payload.display_name = updateData.displayName
+      }
+      if (updateData.photoURL !== undefined) payload.avatar_url = updateData.photoURL
+      if (updateData.bio !== undefined) payload.bio = updateData.bio
+      if (updateData.backgroundURL !== undefined) {
+        payload.background_url = updateData.backgroundURL
+      }
+      if (updateData.studentId !== undefined) payload.student_id = updateData.studentId
+      if (updateData.schoolIdentity !== undefined) {
+        payload.school_identity = updateData.schoolIdentity
+      }
+      if (updateData.clubIdentity !== undefined) {
+        payload.club_identity = updateData.clubIdentity
+      }
 
       const { error } = await supabase
         .from('users')
@@ -305,7 +332,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('id, username, display_name, avatar_url, is_verified')
+        .select('id, username, display_name, avatar_url')
         // Supabase 提供 ilike，不分大小寫的模糊搜索
         .ilike('username', `%${searchTerm}%`)
         .limit(limit)
@@ -318,13 +345,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           username: string
           display_name: string | null
           avatar_url: string | null
-          is_verified: boolean | null
         }) => ({
           uid: doc.id,
           username: doc.username,
           displayName: doc.display_name || doc.username,
           photoURL: doc.avatar_url || '/assets/image/userEmptyAvatar.png',
-          isVerified: Boolean(doc.is_verified),
         }),
       )
     } catch (error) {
@@ -353,22 +378,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
-  //* 權限檢查方法
-  const hasPermission = (
-    feature: keyof UserPermissions,
-    action: string,
-  ): boolean => {
-    if (!user || !user.permissions) return false
-    const featurePermissions = user.permissions[
-      feature
-    ] as UserPermissions[keyof UserPermissions]
-    return (
-      featurePermissions?.[
-        action as keyof UserPermissions[keyof UserPermissions]
-      ] || false
-    )
-  }
-
   //* 監聽 Supabase 認證狀態變化
   useEffect(() => {
     let isMounted = true
@@ -393,10 +402,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           const roles = userProfile?.roles
           setIsSuperAdmin(isSuperAdminRole(roles))
           setIsAdmin(isAdminRole(roles))
+
+          if (userProfile?.studentId) {
+            const isMember = await checkIsSemesterMember(userProfile.studentId)
+            setIsSemesterMember(isMember)
+          } else {
+            setIsSemesterMember(false)
+          }
         } else {
           setUser(null)
           setIsAdmin(false)
           setIsSuperAdmin(false)
+          setIsSemesterMember(false)
         }
       } catch (error) {
         console.error('同步使用者狀態時發生錯誤:', error)
@@ -455,9 +472,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     register,
     updateUserProfile,
     searchUsers,
-    hasPermission,
     isAdmin,
     isSuperAdmin,
+    isSemesterMember,
     checkEmailExists,
   }
 

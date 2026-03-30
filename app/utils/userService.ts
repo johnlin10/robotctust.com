@@ -3,9 +3,7 @@ import { createAdminClient } from './supabase/admin'
 import {
   UserProfile,
   UserRole,
-  DEFAULT_USER_PERMISSIONS,
   DEFAULT_USER_STATS,
-  DEFAULT_PRIVACY_SETTINGS,
 } from '../types/user'
 
 /**
@@ -20,13 +18,10 @@ function mapToUserProfile(data: Record<string, unknown>): UserProfile {
   // 獲取使用者統計資料
   const stats = statsData
     ? {
-        postsCount: (statsData as Record<string, number>).posts_count || 0,
-        followersCount:
-          (statsData as Record<string, number>).followers_count || 0,
-        followingCount:
-          (statsData as Record<string, number>).following_count || 0,
-        likesReceived:
-          (statsData as Record<string, number>).likes_received || 0,
+        exp: (statsData as Record<string, number>).exp || 0,
+        level: (statsData as Record<string, number>).level || 1,
+        isPublic:
+          (statsData as Record<string, boolean>).is_public ?? true,
       }
     : DEFAULT_USER_STATS
 
@@ -42,22 +37,13 @@ function mapToUserProfile(data: Record<string, unknown>): UserProfile {
     createdAt: new Date((data.created_at as string) || new Date()),
     updatedAt: new Date((data.updated_at as string) || new Date()),
     roles: (data.roles as UserRole[]) || ['member'],
-    permissions:
-      (data.permissions as UserProfile['permissions']) ||
-      DEFAULT_USER_PERMISSIONS,
     bio: data.bio as string | undefined,
     backgroundURL: (data.background_url as string) || undefined,
-    location: data.location as string | undefined,
-    website: data.website as string | undefined,
-    socialLinks: (data.social_links as UserProfile['socialLinks']) || {},
+    studentId: (data.student_id as string) || null,
+    schoolIdentity:
+      (data.school_identity as UserProfile['schoolIdentity']) || null,
+    clubIdentity: (data.club_identity as UserProfile['clubIdentity']) || null,
     stats,
-    privacy:
-      (data.privacy as UserProfile['privacy']) || DEFAULT_PRIVACY_SETTINGS,
-    isActive: (data.is_active as boolean) ?? true,
-    isVerified: (data.is_verified as boolean) ?? false,
-    lastLoginAt: data.last_login_at
-      ? new Date(data.last_login_at as string)
-      : undefined,
   } as UserProfile
 }
 
@@ -89,6 +75,38 @@ export const getUserProfileByUsernameServer = async (
     return mapToUserProfile(data as Record<string, unknown>)
   } catch (error) {
     console.error('從 username 獲取使用者資料時發生錯誤:', error)
+    return null
+  }
+}
+
+/**
+ * 服務器端從 user id 獲取使用者資料
+ * @param {string} uid - 使用者 ID
+ * @returns {Promise<UserProfile | null>} 使用者資料
+ */
+export const getUserProfileByUidServer = async (
+  uid: string,
+): Promise<UserProfile | null> => {
+  try {
+    // 建立 Supabase Client
+    const supabase = await createClient()
+    // 獲取使用者資料
+    const { data, error } = await supabase
+      .from('users')
+      .select('*, user_stats(*)')
+      .eq('id', uid)
+      .maybeSingle()
+
+    if (error) {
+      console.error('從 uid 獲取使用者資料時發生錯誤:', error.message)
+      return null
+    }
+    if (!data) return null
+
+    // 轉換為 UserProfile 格式
+    return mapToUserProfile(data as Record<string, unknown>)
+  } catch (error) {
+    console.error('從 uid 獲取使用者資料時發生錯誤:', error)
     return null
   }
 }

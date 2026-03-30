@@ -18,7 +18,6 @@ import {
   getDownloadURL,
   deleteObject,
 } from 'firebase/storage'
-import { User } from 'firebase/auth'
 import { UserProfile } from '../types/user'
 import { db, storage } from './firebase'
 import {
@@ -28,22 +27,16 @@ import {
   PostCategory,
 } from '../types/post'
 import { revalidateUpdatePage } from '../action/revalidate'
-import { MODULE_PERMISSIONS_MAP, Role } from '../types/dashboard'
+import { canAccessModuleByRoles } from './auth/roles'
 
 const POSTS_COLLECTION = 'posts'
 
 /**
  * 檢查使用者是否有發布權限
- * 依據 UserProfile.role 對照 MODULE_PERMISSIONS_MAP 判斷是否有 news 模組存取權
+ * 依據 UserProfile.roles 對照 MODULE_PERMISSIONS_MAP 判斷是否有 news 模組存取權
  */
-export function checkUserPermission(user: User | UserProfile): boolean {
-  const role = (user as UserProfile).role as string | undefined
-  if (!role) return false
-  const knownRole: Role =
-    MODULE_PERMISSIONS_MAP[role as Role] !== undefined
-      ? (role as Role)
-      : 'member'
-  return MODULE_PERMISSIONS_MAP[knownRole].includes('news')
+export function checkUserPermission(user: UserProfile): boolean {
+  return canAccessModuleByRoles(user.roles, 'news')
 }
 
 /**
@@ -178,7 +171,7 @@ export async function deletePostImage(imageUrl: string): Promise<void> {
  * 先上傳圖片（如果有），然後創建包含圖片 URL 的完整文章
  */
 export async function createPost(
-  user: User | UserProfile,
+  user: UserProfile,
   postData: CreatePostData,
   coverImage?: File
 ): Promise<string> {
@@ -207,12 +200,7 @@ export async function createPost(
       category: postData.category,
       coverImageUrl: coverImageUrl,
       authorId: user.uid,
-      authorDisplayName:
-        ('displayName' in user
-          ? user.displayName
-          : (user as User).displayName) ||
-        user.email ||
-        '匿名使用者',
+      authorDisplayName: user.displayName || user.email || '匿名使用者',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     }
@@ -254,7 +242,7 @@ export async function createPost(
  * 更新文章
  */
 export async function updatePost(
-  user: User | UserProfile,
+  user: UserProfile,
   postId: string,
   updateData: UpdatePostData,
   newCoverImage?: File,
@@ -314,7 +302,7 @@ export async function updatePost(
  * 刪除文章
  */
 export async function deletePost(
-  user: User | UserProfile,
+  user: UserProfile,
   postId: string
 ): Promise<void> {
   // 檢查權限

@@ -143,3 +143,15 @@ span.nowrap {
     --safe-area-bottom: env(safe-area-inset-bottom);
   }
 }
+
+@keyframes superAdminGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
