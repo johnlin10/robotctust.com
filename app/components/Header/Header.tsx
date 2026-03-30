@@ -24,7 +24,12 @@ import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { NAV_AUTO_CENTER_CONFIG } from './headerScrollConfig'
 
 //* 需要隱藏 Header 的頁面路徑列表
-const HIDDEN_HEADER_PATHS = ['/login', '/register', '/auth/callback', '/onboarding']
+const HIDDEN_HEADER_PATHS = [
+  '/login',
+  '/register',
+  '/auth/callback',
+  '/onboarding',
+]
 
 /**
  * 檢查當前路徑是否需要隱藏 Header
@@ -132,6 +137,20 @@ export default function Header() {
             ref={containerRef}
             onScroll={handleScroll}
           >
+            {isSemesterMember && (
+              <>
+                <Link
+                  href="/courses"
+                  onClick={handleNavLinkClick}
+                  className={
+                    pathname.startsWith('/courses') ? styles.active : ''
+                  }
+                >
+                  課程
+                </Link>
+                <div className={styles.separator} />
+              </>
+            )}
             <Link
               href="/update"
               onClick={handleNavLinkClick}
@@ -169,15 +188,6 @@ export default function Header() {
             >
               關於
             </Link>
-            {isSemesterMember && (
-              <Link
-                href="/courses"
-                onClick={handleNavLinkClick}
-                className={pathname.startsWith('/courses') ? styles.active : ''}
-              >
-                課程
-              </Link>
-            )}
             {(isAdmin || isSuperAdmin) && (
               <>
                 <div className={styles.separator} />
