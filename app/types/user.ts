@@ -8,6 +8,7 @@ export type UserRole =
   | 'admin_verifications'
   | 'admin_news'
   | 'admin_accounts'
+  | 'admin_members'
   | 'member'
 
 export type SchoolIdentity = 'current_student' | 'external' | 'alumni'
@@ -52,6 +53,8 @@ export const getUserRoleName = (role: UserRole) => {
     case 'admin_news':
       return '新聞發布員'
     case 'admin_accounts':
+      return '帳號管理員'
+    case 'admin_members':
       return '社員管理員'
     case 'member':
       return '一般會員'

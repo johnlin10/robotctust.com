@@ -1,8 +1,14 @@
-import { redirect } from 'next/navigation'
+import { Metadata } from 'next'
+import { requireDashboardAccess } from '@/app/utils/dashboard/auth'
+import MembersClient from './MembersClient'
 
-/**
- * 舊社員管理入口，轉址到新的帳號管理模組
- */
-export default async function DashboardMembersPage() {
-  redirect('/dashboard/accounts')
+export const metadata: Metadata = {
+  title: '學期名單管理 - 課程後台',
+  description: '管理各學期參與課程的社員與學員名單',
+}
+
+export default async function MembersPage() {
+  await requireDashboardAccess('members')
+
+  return <MembersClient />
 }
