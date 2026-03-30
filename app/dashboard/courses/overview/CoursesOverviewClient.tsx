@@ -69,6 +69,7 @@ export default function CoursesOverviewClient() {
   const [courseDescription, setCourseDescription] = useState('')
   const [courseRewardExp, setCourseRewardExp] = useState('0')
   const [courseIsPublished, setCourseIsPublished] = useState(false)
+  const [courseOrderIndex, setCourseOrderIndex] = useState('0')
 
   async function loadOverview() {
     setLoading(true)
@@ -131,6 +132,7 @@ export default function CoursesOverviewClient() {
     setCourseDescription('')
     setCourseRewardExp('0')
     setCourseIsPublished(false)
+    setCourseOrderIndex('0')
   }
 
   function closeModal() {
@@ -164,6 +166,11 @@ export default function CoursesOverviewClient() {
 
   function openCreateCourse(chapterId: string) {
     resetModalFields()
+    const chapter = overview.semesters
+      .flatMap((s) => s.chapters)
+      .find((ch) => ch.id === chapterId)
+    const nextOrder = (chapter?.courses.length || 0) + 1
+    setCourseOrderIndex(String(nextOrder))
     setModal({ kind: 'course', mode: 'create', chapterId })
   }
 
@@ -174,6 +181,7 @@ export default function CoursesOverviewClient() {
     setCourseDescription(course.description || '')
     setCourseRewardExp(String(course.reward_exp))
     setCourseIsPublished(course.is_published)
+    setCourseOrderIndex(String(course.order_index))
     setModal({ kind: 'course', mode: 'edit', course, chapterId })
   }
 
@@ -324,6 +332,7 @@ export default function CoursesOverviewClient() {
           description: courseDescription.trim(),
           reward_exp: Number(courseRewardExp || 0),
           is_published: courseIsPublished,
+          order_index: Number(courseOrderIndex || 0),
         }
 
         if (modal.mode === 'create') {
@@ -1043,22 +1052,37 @@ export default function CoursesOverviewClient() {
                   onChange={(event) => setCourseRewardExp(event.target.value)}
                 />
               </div>
-              <label
-                className={styles.checkboxRow}
-                htmlFor="overview-course-published"
-              >
+              <div className={styles.fieldGroup}>
+                <label
+                  className={styles.fieldLabel}
+                  htmlFor="overview-course-order"
+                >
+                  排序指數
+                </label>
                 <input
-                  id="overview-course-published"
-                  name="courseIsPublished"
-                  type="checkbox"
-                  checked={courseIsPublished}
-                  onChange={(event) =>
-                    setCourseIsPublished(event.target.checked)
-                  }
+                  id="overview-course-order"
+                  name="courseOrderIndex"
+                  className={styles.textInput}
+                  type="number"
+                  inputMode="numeric"
+                  value={courseOrderIndex}
+                  onChange={(event) => setCourseOrderIndex(event.target.value)}
                 />
-                <span>建立後立即發布</span>
-              </label>
+              </div>
             </div>
+            <label
+              className={styles.checkboxRow}
+              htmlFor="overview-course-published"
+            >
+              <input
+                id="overview-course-published"
+                name="courseIsPublished"
+                type="checkbox"
+                checked={courseIsPublished}
+                onChange={(event) => setCourseIsPublished(event.target.checked)}
+              />
+              <span>建立後立即發布</span>
+            </label>
           </div>
         ) : null}
       </Modal>

@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
           description?: string
           reward_exp?: number
           is_published?: boolean
+          order_index?: number
         }
       | {
           type: 'content'
@@ -124,6 +125,7 @@ export async function POST(request: NextRequest) {
         description: body.description?.trim(),
         reward_exp: body.reward_exp,
         is_published: body.is_published,
+        order_index: body.order_index,
       })
       return Response.json({ course }, { status: 201 })
     }
@@ -178,6 +180,7 @@ export async function PATCH(request: NextRequest) {
           chapter_id?: string
           reward_exp?: number
           is_published?: boolean
+          order_index?: number
         }
       | {
           type: 'content'
@@ -232,6 +235,7 @@ export async function PATCH(request: NextRequest) {
         chapter_id: body.chapter_id,
         reward_exp: body.reward_exp,
         is_published: body.is_published,
+        order_index: body.order_index,
       })
       return Response.json({ course })
     }

@@ -1,0 +1,15 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.container {
+  @include mixins.flexbox(row, center, stretch);
+  width: 100%;
+  gap: var(--space-2x);
+
+  > .content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+    max-width: 960px;
+  }
+}

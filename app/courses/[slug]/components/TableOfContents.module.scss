@@ -1,0 +1,105 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.tocContainer {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-4x));
+  height: fit-content;
+  max-height: calc(100vh - var(--header-height) - var(--space-8x));
+  overflow-y: auto;
+  @include mixins.hide-scrollbar;
+  padding-right: var(--space-2x);
+}
+
+.tocTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--foreground-tertiary);
+  margin-bottom: var(--space);
+}
+
+.tocNav {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 9px;
+    bottom: 9px;
+    width: 2px;
+    background: var(--border);
+    @include mixins.border-radius(2px);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  li {
+    position: relative;
+    padding-left: var(--space-2x);
+
+    a {
+      display: block;
+      padding: var(--space-1x) 0;
+      color: var(--foreground-tertiary);
+      font-size: 0.95rem;
+      line-height: 1.4;
+      text-decoration: none;
+      @include mixins.transition(var(--transition-fast));
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+
+      &:hover {
+        color: var(--foreground);
+      }
+    }
+
+    &.level1 {
+      margin: var(--space-0-5x) 0;
+      a {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+    }
+
+    &.level2 {
+      padding-left: var(--space-3x);
+    }
+
+    &.level3 {
+      padding-left: var(--space-4x);
+      a {
+        font-size: 0.85rem;
+        color: var(--foreground-tertiary);
+      }
+    }
+
+    &.active {
+      a {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 3px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 16px;
+        background: var(--primary);
+        @include mixins.border-radius(4px);
+        z-index: 1;
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faArrowDown,
@@ -10,6 +10,7 @@ import {
   faCode,
   faGlobe,
   faHeading,
+  faImage,
   faLink,
   faLock,
   faParagraph,
@@ -17,7 +18,9 @@ import {
   faPlus,
   faSave,
   faTrash,
+  faUpload,
 } from '@fortawesome/free-solid-svg-icons'
+import { uploadCourseImageToFirebaseStorage } from '@/app/utils/firebaseService'
 import { Modal } from '@/app/dashboard/components/Modal'
 import {
   Course,
@@ -59,6 +62,8 @@ export default function CourseWorkspaceClient({
   const [editContent, setEditContent] = useState('')
   const [editProgramId, setEditProgramId] = useState('')
   const [deleteBlockId, setDeleteBlockId] = useState<string | null>(null)
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
+  const imageFileInputRef = useRef<HTMLInputElement>(null)
 
   const isSettingsModified = useMemo(() => {
     if (!workspace) return false
@@ -148,11 +153,13 @@ export default function CourseWorkspaceClient({
   function getBlockIcon(type: CourseContentType) {
     if (type.startsWith('header')) return faHeading
     if (type === 'code') return faCode
+    if (type === 'image') return faImage
     return faParagraph
   }
 
   function getBlockPreviewClass(type: CourseContentType) {
     if (type === 'code') return styles.previewCode
+    if (type === 'image') return styles.previewImage
     if (type === 'header1') return styles.previewHeading1
     if (type === 'header2') return styles.previewHeading2
     if (type === 'header3') return styles.previewHeading3
@@ -204,9 +211,43 @@ export default function CourseWorkspaceClient({
     }
   }
 
+  async function handleImageFileSelect(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      setError('請選擇圖片檔案')
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setError('圖片大小不能超過 10MB')
+      return
+    }
+
+    clearFeedback()
+    setIsUploadingImage(true)
+    try {
+      const url = await uploadCourseImageToFirebaseStorage(file, courseId)
+      setEditContent(url)
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : '圖片上傳失敗')
+    } finally {
+      setIsUploadingImage(false)
+      if (imageFileInputRef.current) {
+        imageFileInputRef.current.value = ''
+      }
+    }
+  }
+
   async function saveContentBlock() {
     if (!editContent.trim()) {
-      setError('請輸入內容')
+      setError(editType === 'image' ? '請提供圖片連結或上傳圖片' : '請輸入內容')
+      return
+    }
+
+    if (isUploadingImage) {
+      setError('請等待圖片上傳完成')
       return
     }
 
@@ -572,17 +613,56 @@ export default function CourseWorkspaceClient({
                     </div>
                   </div>
 
-                  <div className={styles.fieldGroup}>
-                    <label htmlFor="workspace-content-body">內容</label>
-                    <textarea
-                      id="workspace-content-body"
-                      name="contentBody"
-                      className={styles.editorTextarea}
-                      value={editContent}
-                      onChange={(event) => setEditContent(event.target.value)}
-                      placeholder="開始撰寫內容…"
-                    />
-                  </div>
+                  {editType === 'image' ? (
+                    <div className={styles.fieldGroup}>
+                      <label>圖片</label>
+                      <div className={styles.imageInputGroup}>
+                        <input
+                          type="url"
+                          className={styles.textInput}
+                          value={editContent}
+                          onChange={(event) => setEditContent(event.target.value)}
+                          placeholder="貼上圖片連結（https://…）"
+                        />
+                        <span className={styles.imageOrDivider}>或從裝置上傳</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={imageFileInputRef}
+                          className={styles.hiddenFileInput}
+                          onChange={(event) => void handleImageFileSelect(event)}
+                        />
+                        <button
+                          type="button"
+                          className={styles.subtleButton}
+                          onClick={() => imageFileInputRef.current?.click()}
+                          disabled={isUploadingImage}
+                        >
+                          <FontAwesomeIcon icon={isUploadingImage ? faSave : faUpload} />
+                          <span>{isUploadingImage ? '上傳中…' : '選擇圖片'}</span>
+                        </button>
+                      </div>
+                      {editContent && (
+                        <img
+                          src={editContent}
+                          alt="圖片預覽"
+                          className={styles.imagePreviewThumb}
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <div className={styles.fieldGroup}>
+                      <label htmlFor="workspace-content-body">內容</label>
+                      <textarea
+                        id="workspace-content-body"
+                        name="contentBody"
+                        className={styles.editorTextarea}
+                        value={editContent}
+                        onChange={(event) => setEditContent(event.target.value)}
+                        placeholder="開始撰寫內容…"
+                      />
+                    </div>
+                  )}
 
                   <div className={styles.editorActions}>
                     <button
@@ -684,6 +764,12 @@ export default function CourseWorkspaceClient({
                       <div className={`${styles.blockPreview} ${getBlockPreviewClass(content.type)}`}>
                         {content.type === 'code' ? (
                           <pre>{content.content}</pre>
+                        ) : content.type === 'image' ? (
+                          <img
+                            src={content.content}
+                            alt="圖片區塊"
+                            className={styles.previewImageThumb}
+                          />
                         ) : (
                           <p>{content.content}</p>
                         )}

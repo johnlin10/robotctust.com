@@ -106,6 +106,7 @@ export interface AuthContextType {
   ) => Promise<UserSearchResult[]>
   isAdmin: boolean
   isSuperAdmin: boolean
+  isSemesterMember: boolean
   supabaseUser: User | null // 修改為 Supabase User 對象
   checkEmailExists: (email: string) => Promise<boolean>
 }

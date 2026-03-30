@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import styles from './verification.module.scss'
 
 // utils
 import { createClient } from '@/app/utils/supabase/client'
 
-interface PendingVerificationItem {
+interface VerificationItem {
   id: string
   status: 'pending' | 'approved' | 'rejected'
   created_at: string
@@ -31,7 +31,9 @@ export default function VerificationClient() {
   // 建立 Supabase Client
   const supabase = useMemo(() => createClient(), [])
   // 待審核的課程驗證項目列表
-  const [rows, setRows] = useState<PendingVerificationItem[]>([])
+  const [pendingRows, setPendingRows] = useState<VerificationItem[]>([])
+  // 最近已處理的課程驗證項目列表
+  const [processedRows, setProcessedRows] = useState<VerificationItem[]>([])
   // 是否正在載入
   const [loading, setLoading] = useState(true)
   // 正在處理的課程驗證項目 ID
@@ -42,33 +44,57 @@ export default function VerificationClient() {
   /**
    * [Function] 獲取待審核的課程驗證項目
    */
-  async function fetchPending() {
+  const fetchPending = useCallback(async () => {
     try {
-      // 獲取待審核的課程驗證項目
       const res = await fetch('/api/dashboard/verifications/pending')
-      // 解析回應
       const data = (await res.json()) as
-        | { rows: PendingVerificationItem[] }
+        | { rows: VerificationItem[] }
         | { error: string }
 
       if (!res.ok || 'error' in data) {
         throw new Error('error' in data ? data.error : '取得待審核清單失敗')
       }
 
-      setRows(data.rows)
+      setPendingRows(data.rows)
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : '讀取資料失敗')
-    } finally {
-      setLoading(false)
+      console.error('Fetch pending error:', error)
     }
-  }
+  }, [])
 
   /**
-   * [Effect] 獲取待審核的課程驗證項目
+   * [Function] 獲取最近已處理的課程驗證項目
+   */
+  const fetchProcessed = useCallback(async () => {
+    try {
+      const res = await fetch('/api/dashboard/verifications/processed')
+      const data = (await res.json()) as
+        | { rows: VerificationItem[] }
+        | { error: string }
+
+      if (!res.ok || 'error' in data) {
+        throw new Error('error' in data ? data.error : '取得已處理清單失敗')
+      }
+
+      setProcessedRows(data.rows)
+    } catch (error) {
+      console.error('Fetch processed error:', error)
+    }
+  }, [])
+
+  /**
+   * [Function] 初始化獲取資料
+   */
+  const fetchAll = useCallback(async () => {
+    setLoading(true)
+    await Promise.all([fetchPending(), fetchProcessed()])
+    setLoading(false)
+  }, [fetchPending, fetchProcessed])
+
+  /**
+   * [Effect] 獲取課程驗證項目並監聽變化
    */
   useEffect(() => {
-    // 獲取待審核的課程驗證項目
-    void fetchPending()
+    void fetchAll()
 
     // 建立 Supabase Channel
     const channel = supabase
@@ -82,35 +108,27 @@ export default function VerificationClient() {
         },
         () => {
           void fetchPending()
+          void fetchProcessed()
         },
       )
       .subscribe()
 
-    // 建立定時器
-    const timer = setInterval(() => {
-      void fetchPending()
-    }, 60000) // 每 60 秒獲取一次
-
     return () => {
-      clearInterval(timer) // 清除定時器
-      supabase.removeChannel(channel) // 移除 Supabase Channel
+      supabase.removeChannel(channel)
     }
-  }, [supabase])
+  }, [supabase, fetchAll, fetchPending, fetchProcessed])
 
   /**
-   * [Function] 處理課程驗證項目
+   * [Function] 處理課程驗證項目 (核准/退回)
    */
   async function handleAction(id: string, action: 'approve' | 'reject') {
     setProcessingId(id)
     setMessage('')
 
-    // 處理課程驗證項目
     try {
-      // 發送請求
       const res = await fetch(`/api/dashboard/verifications/${id}/${action}`, {
         method: 'PATCH',
       })
-      // 解析回應
       const data = (await res.json()) as { success?: boolean; error?: string }
 
       if (!res.ok || data.error) {
@@ -119,9 +137,7 @@ export default function VerificationClient() {
         )
       }
 
-      // 獲取待審核的課程驗證項目
-      await fetchPending()
-
+      await Promise.all([fetchPending(), fetchProcessed()])
       setMessage(`驗證單 ${id} 已${action === 'approve' ? '核准' : '退回'}`)
     } catch (error) {
       setMessage(error instanceof Error ? error.message : '操作失敗')
@@ -130,59 +146,188 @@ export default function VerificationClient() {
     }
   }
 
+  /**
+   * [Function] 撤回課程驗證項目
+   */
+  async function handleRevoke(id: string) {
+    if (!confirm('確定要撤回此審核紀錄嗎？狀態將會重設為待審核。')) return
+
+    setProcessingId(id)
+    setMessage('')
+
+    try {
+      const res = await fetch(`/api/dashboard/verifications/${id}/revoke`, {
+        method: 'PATCH',
+      })
+      const data = (await res.json()) as { success?: boolean; error?: string }
+
+      if (!res.ok || data.error) {
+        throw new Error(data.error || '無法撤回審核')
+      }
+
+      await Promise.all([fetchPending(), fetchProcessed()])
+      setMessage(`驗證單 ${id} 已撤回，並重新回到待審核清單`)
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : '撤回失敗')
+    } finally {
+      setProcessingId(null)
+    }
+  }
+
   return (
     <div className={styles.wrapper}>
-      <header className={styles.header}>
-        <h2>課程審核中控台</h2>
-        <p>顯示所有待審核請求，並由現場助教即時處理。</p>
-      </header>
+      <section className={styles.hero}>
+        <div className={styles.heroCopy}>
+          <h2>課程審核中控台</h2>
+          <p className={styles.heroDescription}>
+            即時處理學員的課程完成驗證請求。
+          </p>
+        </div>
+      </section>
 
-      {message ? <p className={styles.message}>{message}</p> : null}
-      {loading ? <p>載入中...</p> : null}
+      <section className={styles.statsGrid}>
+        <article className={styles.statCard}>
+          <span className={styles.statLabel}>待審核請求</span>
+          <strong className={styles.statValue}>{pendingRows.length}</strong>
+        </article>
+      </section>
+
+      {message ? (
+        <div className={styles.message} aria-live="polite">
+          {message}
+        </div>
+      ) : null}
+
+      {loading ? (
+        <div className={styles.emptyState}>正在載入審核清單…</div>
+      ) : null}
 
       {!loading && (
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>送審時間</th>
-                <th>課程</th>
-                <th>學員</th>
-                <th>學號</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row.id}>
-                  <td>{new Date(row.created_at).toLocaleString('zh-TW')}</td>
-                  <td>{row.courses?.name || row.course_id}</td>
-                  <td>
-                    {row.users?.display_name ||
-                      row.users?.username ||
-                      row.user_id}
-                  </td>
-                  <td>{row.users?.student_id || '-'}</td>
-                  <td className={styles.actions}>
-                    <button
-                      disabled={processingId === row.id}
-                      onClick={() => void handleAction(row.id, 'approve')}
-                    >
-                      核准
-                    </button>
-                    <button
-                      disabled={processingId === row.id}
-                      onClick={() => void handleAction(row.id, 'reject')}
-                    >
-                      退回
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {!rows.length && <p className={styles.empty}>目前沒有待審核請求。</p>}
-        </div>
+        <>
+          <section className={styles.section}>
+            <h3 className={styles.sectionTitle}>待審核清單</h3>
+            <div className={styles.tableWrap}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>送審時間</th>
+                    <th>課程</th>
+                    <th>學員</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingRows.map((row) => (
+                    <tr key={row.id}>
+                      <td className={styles.timestamp}>
+                        {new Date(row.created_at).toLocaleString('zh-TW', {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </td>
+                      <td className={styles.courseName}>
+                        {row.courses?.name || row.course_id}
+                      </td>
+                      <td>
+                        <div className={styles.studentInfo}>
+                          <span className={styles.studentName}>
+                            {row.users?.display_name ||
+                              row.users?.username ||
+                              row.user_id}
+                          </span>
+                          <span className={styles.studentId}>
+                            {row.users?.student_id || '-'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className={styles.actions}>
+                        <button
+                          disabled={processingId === row.id}
+                          onClick={() => void handleAction(row.id, 'approve')}
+                        >
+                          核准
+                        </button>
+                        <button
+                          disabled={processingId === row.id}
+                          onClick={() => void handleAction(row.id, 'reject')}
+                        >
+                          退回
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {!pendingRows.length && (
+                <p className={styles.emptyState}>目前沒有待審核請求。</p>
+              )}
+            </div>
+          </section>
+
+          <section className={styles.section} style={{ marginTop: '2rem' }}>
+            <h3 className={styles.sectionTitle}>最近已認證紀錄</h3>
+            <div className={styles.tableWrap}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>送審時間</th>
+                    <th>課程</th>
+                    <th>學員</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {processedRows.map((row) => (
+                    <tr key={row.id}>
+                      <td className={styles.timestamp}>
+                        {new Date(row.created_at).toLocaleString('zh-TW', {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </td>
+                      <td className={styles.courseName}>
+                        {row.courses?.name || row.course_id}
+                      </td>
+                      <td>
+                        <div className={styles.studentInfo}>
+                          <span className={styles.studentName}>
+                            {row.users?.display_name ||
+                              row.users?.username ||
+                              row.user_id}
+                          </span>
+                          <span className={styles.studentId}>
+                            {row.users?.student_id || '-'}
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`${styles.statusBadge} ${styles[row.status]}`}>
+                          {row.status === 'approved' ? '已核准' : '已退回'}
+                        </span>
+                      </td>
+                      <td className={styles.actions}>
+                        <button
+                          disabled={processingId === row.id}
+                          onClick={() => void handleRevoke(row.id)}
+                        >
+                          撤回
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {!processedRows.length && (
+                <p className={styles.emptyState}>目前沒有已處理的紀錄。</p>
+              )}
+            </div>
+          </section>
+        </>
       )}
     </div>
   )

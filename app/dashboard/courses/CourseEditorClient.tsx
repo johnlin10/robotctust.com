@@ -69,6 +69,7 @@ export default function CourseEditorClient() {
   const [courseChapterId, setCourseChapterId] = useState('')
   const [newCourseName, setNewCourseName] = useState('')
   const [newCourseDescription, setNewCourseDescription] = useState('')
+  const [newCourseOrderIndex, setNewCourseOrderIndex] = useState('0')
 
   // Content form
   const [newContentType, setNewContentType] = useState('markdown')
@@ -192,6 +193,7 @@ export default function CourseEditorClient() {
         id: generatedId,
         name: newCourseName.trim(),
         description: newCourseDescription.trim(),
+        order_index: Number(newCourseOrderIndex || 0),
       }),
     })
 
@@ -402,6 +404,8 @@ export default function CourseEditorClient() {
             className={styles.addButton}
             onClick={() => {
               setCourseChapterId(selectedChapterId)
+              const nextOrder = (coursesForSelectedChapter.length || 0) + 1
+              setNewCourseOrderIndex(String(nextOrder))
               setActiveModal('course')
             }}
           >
@@ -734,6 +738,16 @@ export default function CourseEditorClient() {
             placeholder="請輸入課程簡介（可選）"
             value={newCourseDescription}
             onChange={(event) => setNewCourseDescription(event.target.value)}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>排序指數</label>
+          <input
+            className={styles.input}
+            type="number"
+            placeholder="指數越大越後面..."
+            value={newCourseOrderIndex}
+            onChange={(event) => setNewCourseOrderIndex(event.target.value)}
           />
         </div>
       </Modal>

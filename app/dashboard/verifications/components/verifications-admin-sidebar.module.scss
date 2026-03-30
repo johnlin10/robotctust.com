@@ -1,0 +1,81 @@
+@use '../../../styles/_mixins.scss' as mixins;
+
+.sidebar {
+  padding: var(--space-1-5x);
+  width: min(100%, 340px);
+  border: 1px solid var(--border);
+  background: var(--background);
+
+  @include mixins.respond-by-min-width(860px) {
+    width: 320px;
+    flex-shrink: 0;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  color: var(--foreground-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  padding: 6px 12px;
+  padding-left: 6px;
+  border: 1px solid var(--border);
+  @include mixins.border-radius(9px);
+  @include mixins.hover-scale-effect(1.04);
+
+  &:hover {
+    color: var(--foreground);
+    border-color: var(--border-hover);
+    background: var(--background-secondary);
+  }
+}
+
+.header h1 {
+  margin: 0;
+  font-size: clamp(1.65rem, 2vw, 2rem);
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space);
+  margin-top: var(--space-2x);
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  color: var(--foreground);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: var(--background);
+  @include mixins.border-radius(9px);
+  @include mixins.hover-scale-effect(1.04);
+
+  svg {
+    color: var(--foreground-secondary);
+  }
+
+  &:hover {
+    background: rgba(var(--background-secondary-rgb), 0.5);
+  }
+
+  &.navLinkActive {
+    color: var(--foreground);
+    background: var(--background-secondary);
+    border-color: var(--border-hover);
+  }
+}

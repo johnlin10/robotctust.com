@@ -38,6 +38,7 @@ export const COURSE_CONTENT_TYPE_OPTIONS: Array<{
   { value: 'header2', label: '中標題 H2' },
   { value: 'header3', label: '小標題 H3' },
   { value: 'code', label: '程式碼區塊' },
+  { value: 'image', label: '圖片' },
 ]
 
 export async function requestJson<T = Record<string, unknown>>(
@@ -90,11 +91,19 @@ export function buildReorderRows(ids: string[]) {
 }
 
 export function withRecalculatedStats(semester: SemesterTreeNode): SemesterTreeNode {
-  const courses = semester.chapters.flatMap((ch) => ch.courses)
+  const sortedChapters = [...semester.chapters]
+    .sort((a, b) => a.order_index - b.order_index)
+    .map((ch) => ({
+      ...ch,
+      courses: [...ch.courses].sort((a, b) => a.order_index - b.order_index),
+    }))
+
+  const courses = sortedChapters.flatMap((ch) => ch.courses)
   return {
     ...semester,
+    chapters: sortedChapters,
     stats: {
-      chapterCount: semester.chapters.length,
+      chapterCount: sortedChapters.length,
       courseCount: courses.length,
       publishedCourseCount: courses.filter((c) => c.is_published).length,
       draftCourseCount: courses.filter((c) => !c.is_published).length,

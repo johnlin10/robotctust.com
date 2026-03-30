@@ -36,7 +36,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [supabaseUser, setSupabaseUser] = useState<User | null>(null)
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false)
+  const [isSemesterMember, setIsSemesterMember] = useState<boolean>(false)
   const [loading, setLoading] = useState(true)
+
+  //* 檢查使用者是否為學期社員
+  const checkIsSemesterMember = useCallback(
+    async (studentId: string | null): Promise<boolean> => {
+      if (!studentId) return false
+      try {
+        const { data, error } = await supabase
+          .from('semester_members')
+          .select('id')
+          .eq('student_id', studentId)
+          .limit(1)
+          .maybeSingle()
+
+        if (error) {
+          console.error('檢查社員身分時發生錯誤:', error.message)
+          return false
+        }
+
+        return !!data
+      } catch (error) {
+        console.error('檢查社員身分時發生例外錯誤:', error)
+        return false
+      }
+    },
+    [supabase],
+  )
 
   //* 避免資料查詢卡住造成整個 UI 一直 loading
   const resolveWithTimeout = useCallback(
@@ -250,6 +277,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setSupabaseUser(null)
       setIsAdmin(false)
       setIsSuperAdmin(false)
+      setIsSemesterMember(false)
     } catch (error) {
       console.error('登出失敗:', error)
       throw error
@@ -374,10 +402,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           const roles = userProfile?.roles
           setIsSuperAdmin(isSuperAdminRole(roles))
           setIsAdmin(isAdminRole(roles))
+
+          if (userProfile?.studentId) {
+            const isMember = await checkIsSemesterMember(userProfile.studentId)
+            setIsSemesterMember(isMember)
+          } else {
+            setIsSemesterMember(false)
+          }
         } else {
           setUser(null)
           setIsAdmin(false)
           setIsSuperAdmin(false)
+          setIsSemesterMember(false)
         }
       } catch (error) {
         console.error('同步使用者狀態時發生錯誤:', error)
@@ -438,6 +474,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     searchUsers,
     isAdmin,
     isSuperAdmin,
+    isSemesterMember,
     checkEmailExists,
   }
 

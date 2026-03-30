@@ -72,6 +72,44 @@ export async function getPendingVerifications(): Promise<
 }
 
 /**
+ * 獲取最近已處理的課程驗證項目 (已核准或已退回)
+ * @param limit - 獲取數量限制
+ * @returns 最近已處理的課程驗證項目
+ */
+export async function getRecentlyProcessedVerifications(
+  limit: number = 20,
+): Promise<PendingVerificationItem[]> {
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('course_verifications')
+    .select(
+      'id, status, created_at, user_id, course_id, users:users!course_verifications_user_id_fkey(student_id, display_name, username), courses(id, name)',
+    )
+    .in('status', ['approved', 'rejected'])
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return (data || []).map((row) => {
+    const user = Array.isArray(row.users) ? row.users[0] : row.users
+    const course = Array.isArray(row.courses) ? row.courses[0] : row.courses
+
+    return {
+      id: row.id,
+      status: row.status,
+      created_at: row.created_at,
+      user_id: row.user_id,
+      course_id: row.course_id,
+      users: user || null,
+      courses: course || null,
+    } as PendingVerificationItem
+  })
+}
+
+/**
  * 核准課程驗證項目
  * @param verificationId - 課程驗證項目 ID
  * @param reviewerId - 核准者 ID
@@ -116,6 +154,28 @@ export async function rejectVerification(
     })
     .eq('id', verificationId)
     .eq('status', 'pending')
+
+  if (error) throw new Error(error.message)
+}
+
+/**
+ * 撤回課程驗證項目 (將狀態重設為待審核)
+ * @param verificationId - 課程驗證項目 ID
+ * @returns 撤回課程驗證項目的結果
+ */
+export async function revokeVerification(
+  verificationId: string,
+): Promise<void> {
+  const admin = createAdminClient()
+  const { error } = await admin
+    .from('course_verifications')
+    .update({
+      status: 'pending',
+      verified_by: null,
+      approved_at: null,
+    })
+    .eq('id', verificationId)
+    .in('status', ['approved', 'rejected'])
 
   if (error) throw new Error(error.message)
 }

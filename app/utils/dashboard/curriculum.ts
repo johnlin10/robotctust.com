@@ -53,6 +53,7 @@ interface CreateCourseInput {
   id?: string
   name: string
   description?: string
+  order_index?: number
   reward_exp?: number
   is_published?: boolean
 }
@@ -63,6 +64,7 @@ interface UpdateCourseInput {
   chapter_id?: string
   name?: string
   description?: string | null
+  order_index?: number
   reward_exp?: number
   is_published?: boolean
 }
@@ -498,11 +500,10 @@ export async function deleteChapter(id: string): Promise<void> {
 
 export async function createCourse(input: CreateCourseInput): Promise<Course> {
   const admin = createAdminClient()
-  const order_index = await getNextOrderIndex(
-    'courses',
-    'chapter_id',
-    input.chapter_id,
-  )
+  const order_index =
+    typeof input.order_index === 'number'
+      ? input.order_index
+      : await getNextOrderIndex('courses', 'chapter_id', input.chapter_id)
   const generatedId = sanitizeSlug(input.id?.trim() || input.name)
 
   const { data, error } = await admin
@@ -540,13 +541,18 @@ export async function updateCourse(input: UpdateCourseInput): Promise<Course> {
   if (typeof input.is_published === 'boolean') {
     nextValues.is_published = input.is_published
   }
+  if (typeof input.order_index === 'number') {
+    nextValues.order_index = input.order_index
+  }
   if (input.chapter_id) {
     nextValues.chapter_id = input.chapter_id
-    nextValues.order_index = await getNextOrderIndex(
-      'courses',
-      'chapter_id',
-      input.chapter_id,
-    )
+    if (typeof input.order_index !== 'number') {
+      nextValues.order_index = await getNextOrderIndex(
+        'courses',
+        'chapter_id',
+        input.chapter_id,
+      )
+    }
   }
 
   const { data, error } = await admin

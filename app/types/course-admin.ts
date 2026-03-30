@@ -31,6 +31,7 @@ export type CourseContentType =
   | 'header2'
   | 'header3'
   | 'code'
+  | 'image'
 
 export interface CourseContent {
   id: string
