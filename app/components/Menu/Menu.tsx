@@ -102,13 +102,13 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
               探索機器人世界！
             </p>
             <div className={styles.auth_buttons}>
-              {/* <Link
+              <Link
                 href="/login"
                 className={styles.login_button}
                 onClick={onClose}
               >
                 登入
-              </Link> */}
+              </Link>
               {/* <Link
                 href={{ pathname: '/login', query: { mode: 'register' } }}
                 className={styles.register_button}
@@ -116,11 +116,11 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
               >
                 註冊
               </Link> */}
-              <p className={styles.auth_login_text}>
+              {/* <p className={styles.auth_login_text}>
                 登入系統內部測試中
                 <br />
                 敬請期待
-              </p>
+              </p> */}
             </div>
           </div>
         )}
