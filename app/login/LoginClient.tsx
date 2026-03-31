@@ -17,9 +17,10 @@ import { isUserOnboardingComplete } from '../utils/auth/onboarding'
 
 /**
  * [Component] 登入／註冊頁面的互動式容器
+ * @param {string} next - 登入後要前往的路徑
  * @returns JSX.Element
  */
-export default function LoginClient() {
+export default function LoginClient({ next }: { next?: string }) {
   // 路由器
   const router = useRouter()
   // 使用者狀態
@@ -40,14 +41,21 @@ export default function LoginClient() {
   )
 
   /**
-   * [Effect] 若使用者已登入則導向個人頁面
+   * [Effect] 若使用者已登入則導向個人頁面或指定頁面
    * @returns {void}
    */
   useEffect(() => {
-    if (user) {
-      router.replace(isUserOnboardingComplete(user) ? '/profile' : '/onboarding')
+    if (!loading && user) {
+      if (!isUserOnboardingComplete(user)) {
+        const onboardingPath = next
+          ? `/onboarding?next=${encodeURIComponent(next)}`
+          : '/onboarding'
+        router.replace(onboardingPath)
+      } else {
+        router.replace(next || '/profile')
+      }
     }
-  }, [router, user])
+  }, [router, user, loading, next])
 
   /**
    * 切換至登入模式

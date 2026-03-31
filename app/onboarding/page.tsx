@@ -9,10 +9,19 @@ import {
   deriveDefaultUsername,
   isUserOnboardingComplete,
 } from '@/app/utils/auth/onboarding'
+import { isSafeRedirectPath } from '@/app/utils/auth/redirect'
 import OnboardingClient from './OnboardingClient'
 import styles from './onboarding.module.scss'
 
-export default async function OnboardingPage() {
+export default async function OnboardingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const sParams = await searchParams
+  const nextRaw = typeof sParams.next === 'string' ? sParams.next : '/profile'
+  const nextPath = isSafeRedirectPath(nextRaw) ? nextRaw : '/profile'
+
   const supabase = await createClient()
   const {
     data: { user },
@@ -20,7 +29,7 @@ export default async function OnboardingPage() {
   } = await supabase.auth.getUser()
 
   if (authError || !user) {
-    redirect('/login')
+    redirect(`/login?next=${encodeURIComponent(nextPath)}`)
   }
 
   const { data: profile } = await supabase
@@ -56,7 +65,7 @@ export default async function OnboardingPage() {
   }
 
   if (isUserOnboardingComplete(initialData)) {
-    redirect('/profile')
+    redirect(nextPath)
   }
 
   return (
@@ -92,7 +101,7 @@ export default async function OnboardingPage() {
         </div>
 
         <div className={styles.form_panel}>
-          <OnboardingClient initialData={initialData} />
+          <OnboardingClient initialData={initialData} next={nextPath} />
         </div>
       </div>
     </Page>

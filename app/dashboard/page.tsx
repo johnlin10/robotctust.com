@@ -21,7 +21,7 @@ import {
   faTrophy,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
-import { getUserProfileByUidServer } from '../utils/userService'
+import { getUserProfileByUidServer } from '../utils/userServiceServer'
 import Image from 'next/image'
 
 /**

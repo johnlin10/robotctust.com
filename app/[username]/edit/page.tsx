@@ -50,7 +50,9 @@ export default async function EditProfilePage({
   // 取得登入使用者的資料
   const { data: userRow } = await supabase
     .from('users')
-    .select('username, display_name, bio, is_public, avatar_url, background_url')
+    .select(
+      'username, display_name, bio, is_public, avatar_url, background_url, school_identity, club_identity, student_id',
+    )
     .eq('id', authUser.id)
     .single()
 
@@ -74,6 +76,9 @@ export default async function EditProfilePage({
         isPublic: userRow.is_public ?? true,
         photoURL: userRow.avatar_url ?? '/assets/image/userEmptyAvatar.png',
         backgroundURL: userRow.background_url || null,
+        schoolIdentity: userRow.school_identity || 'external',
+        clubIdentity: userRow.club_identity || 'non_member',
+        studentId: userRow.student_id || '',
       }}
     />
   )

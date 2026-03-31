@@ -3,7 +3,7 @@ import Image from 'next/image'
 import styles from './ClubOfficer.module.scss'
 
 // utils
-import { getUserProfileByUsernameServer } from '@/app/utils/userService'
+import { getUserProfileByUsernameServer } from '@/app/utils/userServiceServer'
 
 interface ClubOfficer {
   name: string // 名稱

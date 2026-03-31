@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import styles from './EditProfile.module.scss'
@@ -17,6 +17,10 @@ import {
   uploadUserBackgroundToFirebaseStorage,
   deleteImageFromFirebaseStorage,
 } from '@/app/utils/firebaseService'
+import {
+  checkStudentIdAvailable,
+  checkUsernameAvailable,
+} from '@/app/utils/userService'
 
 // context
 import { useAuth } from '@/app/contexts/AuthContext'
@@ -32,11 +36,16 @@ import {
 import useStickyDetection from '@/app/hooks/useStickyDetection'
 import { useHeaderState } from '@/app/contexts/HeaderContext'
 
+import { ClubIdentity, SchoolIdentity, UserProfile } from '@/app/types/user'
+
 interface EditProfileFormData {
   username: string // 帳號名稱
   displayName: string // 顯示名稱
   bio: string // 個人簡介
   isPublic: boolean // 是否公開帳號
+  schoolIdentity: SchoolIdentity // 校園身分
+  clubIdentity: ClubIdentity // 是否為社團成員
+  studentId: string // 學號
 }
 
 interface EditProfileClientProps {
@@ -48,6 +57,9 @@ interface EditProfileClientProps {
     isPublic: boolean // 是否公開帳號
     photoURL: string // 頭像 URL
     backgroundURL: string | null // 背景 URL
+    schoolIdentity: SchoolIdentity // 校園身分
+    clubIdentity: ClubIdentity // 是否為社團成員
+    studentId: string // 學號
   }
 }
 
@@ -69,7 +81,32 @@ const editProfileSchema = yup.object({
     .max(50, '顯示名稱不可超過 50 個字元'),
   bio: yup.string().max(160, '個人簡介不可超過 160 個字元').default(''),
   isPublic: yup.boolean().default(true),
+  schoolIdentity: yup.string().required('請選擇校園身分'),
+  clubIdentity: yup.string().required('請選擇是否為社團成員'),
+  studentId: yup.string().when('schoolIdentity', {
+    is: 'current_student',
+    then: (schema) => schema.required('本校學生需填寫學號'),
+    otherwise: (schema) => schema.optional(),
+  }),
 })
+
+const schoolIdentityOptions: Array<{
+  value: SchoolIdentity
+  label: string
+}> = [
+  { value: 'current_student', label: '本校學生' },
+  { value: 'teacher', label: '本校老師' },
+  { value: 'external', label: '非本校人士' },
+  { value: 'alumni', label: '畢業生' },
+]
+
+const clubIdentityOptions: Array<{
+  value: ClubIdentity
+  label: string
+}> = [
+  { value: 'member', label: '我是社團成員' },
+  { value: 'non_member', label: '我不是社團成員' },
+]
 
 /**
  * 壓縮並裁剪背景圖片至最大 2160x1080（強制 2:1 比例）
@@ -182,8 +219,6 @@ export default function EditProfileClient({
   const router = useRouter()
   // AuthContext
   const { getUserProfile } = useAuth()
-  // Supabase Client
-  const supabase = useMemo(() => createClient(), [])
   // Header Compact State
   const { isCompactHeader } = useHeaderState()
   // Sticky Detection
@@ -248,7 +283,12 @@ export default function EditProfileClient({
   const [usernameStatus, setUsernameStatus] = useState<
     'idle' | 'checking' | 'available' | 'taken' | 'unchanged'
   >('unchanged')
-  const usernameDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  //* 學號
+  // 學號即時可用性檢查
+  const [studentIdStatus, setStudentIdStatus] = useState<
+    'idle' | 'checking' | 'available' | 'taken' | 'unchanged'
+  >('unchanged')
 
   // 表單資料
   const {
@@ -256,7 +296,7 @@ export default function EditProfileClient({
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm<EditProfileFormData>({
     resolver: yupResolver(editProfileSchema) as never,
     defaultValues: {
@@ -264,55 +304,73 @@ export default function EditProfileClient({
       displayName: initialData.displayName,
       bio: initialData.bio,
       isPublic: initialData.isPublic,
+      schoolIdentity: initialData.schoolIdentity,
+      clubIdentity: initialData.clubIdentity,
+      studentId: initialData.studentId || '',
     },
   })
 
-  // 監聽表單變化
+  // 帳號名稱變化
   const watchedUsername = watch('username')
-  // 監聽公開帳號變化
+  // 校園身分變化
+  const watchedSchoolIdentity = watch('schoolIdentity')
+  // 公開帳號變化
   const watchedIsPublic = watch('isPublic')
-  // 監聽個人簡介變化
+  // 個人簡介變化
   const watchedBio = watch('bio')
+  // 學號變化
+  const watchedStudentId = watch('studentId')
 
   /**
-   * [Effect] 監聽表單變化
-   * @returns void
+   * [Effect] 監聽帳號名稱變化進行可用性檢查 (帶有 Debounce)
    */
   useEffect(() => {
-    // 如果帳號名稱未變化，則設定為未變化
     if (watchedUsername === initialData.username) {
       setUsernameStatus('unchanged')
       return
     }
-    // 如果帳號名稱為空或長度小於 3，則設定為空閒
     if (!watchedUsername || watchedUsername.length < 3) {
       setUsernameStatus('idle')
       return
     }
-    // 設定為檢查中
+
     setUsernameStatus('checking')
-    // 清除之前的檢查
-    if (usernameDebounceRef.current) {
-      clearTimeout(usernameDebounceRef.current)
+    const timer = setTimeout(async () => {
+      const isAvailable = await checkUsernameAvailable(watchedUsername, uid)
+      setUsernameStatus(isAvailable ? 'available' : 'taken')
+    }, 1500) // 600ms 延遲
+
+    return () => clearTimeout(timer)
+  }, [watchedUsername, initialData.username, uid])
+
+  /**
+   * [Effect] 監聽學號變化進行可用性檢查 (帶有 Debounce)
+   */
+  useEffect(() => {
+    // 只有本校學生才需要檢查學號
+    if (watchedSchoolIdentity !== 'current_student') {
+      setStudentIdStatus('unchanged')
+      return
     }
 
-    // 設定延遲檢查
-    usernameDebounceRef.current = setTimeout(async () => {
-      const { data } = await supabase
-        .from('users')
-        .select('id')
-        .eq('username', watchedUsername)
-        .maybeSingle()
-
-      setUsernameStatus(data ? 'taken' : 'available')
-    }, 500)
-
-    return () => {
-      if (usernameDebounceRef.current) {
-        clearTimeout(usernameDebounceRef.current)
-      }
+    const trimmedId = watchedStudentId?.trim()
+    if (trimmedId === initialData.studentId) {
+      setStudentIdStatus('unchanged')
+      return
     }
-  }, [watchedUsername, initialData.username, supabase])
+    if (!trimmedId) {
+      setStudentIdStatus('idle')
+      return
+    }
+
+    setStudentIdStatus('checking')
+    const timer = setTimeout(async () => {
+      const isAvailable = await checkStudentIdAvailable(trimmedId, uid)
+      setStudentIdStatus(isAvailable ? 'available' : 'taken')
+    }, 1000) // 600ms 延遲
+
+    return () => clearTimeout(timer)
+  }, [watchedStudentId, watchedSchoolIdentity, initialData.studentId, uid])
 
   /**
    * [Function] 提交表單
@@ -320,8 +378,15 @@ export default function EditProfileClient({
    * @returns
    */
   const onSubmit = async (data: EditProfileFormData) => {
-    // 如果帳號名稱已被使用，則返回
-    if (usernameStatus === 'taken') return
+    // 如果帳號名稱或學號已被使用，則返回
+    if (usernameStatus === 'taken') {
+      setSubmitError('此帳號名稱已被使用')
+      return
+    }
+    if (studentIdStatus === 'taken') {
+      setSubmitError('此學號已被其他使用者綁定')
+      return
+    }
 
     // 嘗試提交表單
     try {
@@ -357,6 +422,9 @@ export default function EditProfileClient({
         display_name: data.displayName,
         bio: data.bio,
         is_public: data.isPublic,
+        school_identity: data.schoolIdentity,
+        club_identity: data.clubIdentity,
+        student_id: data.studentId?.trim() || null,
       }
 
       // 如果頭像已上傳，則設定頭像 URL
@@ -377,6 +445,7 @@ export default function EditProfileClient({
       }
 
       // 更新使用者資料
+      const supabase = createClient()
       const { error } = await supabase
         .from('users')
         .update(payload)
@@ -417,9 +486,14 @@ export default function EditProfileClient({
       }, 500)
     } catch (err) {
       console.error('更新個人資料失敗:', err)
-      setSubmitError(
-        (err as { message?: string })?.message || '更新失敗，請稍後再試',
-      )
+      const errorMsg = (err as { message?: string })?.message || ''
+      if (errorMsg.includes('users_username_key')) {
+        setSubmitError('此帳號名稱已被使用')
+      } else if (errorMsg.includes('users_student_id_key')) {
+        setSubmitError('此學號已被其他使用者綁定')
+      } else {
+        setSubmitError(errorMsg || '更新失敗，請稍後再試')
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -824,6 +898,96 @@ export default function EditProfileClient({
             )}
           </div>
 
+          {/* 身分與校園資訊區塊 */}
+          <div className={styles.identity_section}>
+            <h2 className={styles.section_title}>身分與校園資訊</h2>
+
+            <div className={styles.form_group}>
+              <label htmlFor="schoolIdentity">校園身分</label>
+              <select
+                id="schoolIdentity"
+                className={errors.schoolIdentity ? styles.input_error : ''}
+                {...register('schoolIdentity')}
+              >
+                <option value="" disabled>
+                  請選擇校園身分
+                </option>
+                {schoolIdentityOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {errors.schoolIdentity && (
+                <span className={styles.field_error}>
+                  {errors.schoolIdentity.message}
+                </span>
+              )}
+            </div>
+
+            {watchedSchoolIdentity === 'current_student' && (
+              <div className={styles.form_group}>
+                <label htmlFor="studentId">
+                  學號<span className={styles.required}>*</span>
+                </label>
+                <div className={styles.student_id_input_wrapper}>
+                  <input
+                    id="studentId"
+                    type="text"
+                    placeholder="請輸入學號"
+                    className={`${styles.student_id_input} ${errors.studentId || studentIdStatus === 'taken' ? styles.input_error : ''}`}
+                    {...register('studentId')}
+                  />
+                  {studentIdStatus === 'checking' && (
+                    <span className={styles.status_icon}>
+                      <FontAwesomeIcon icon={faSpinner} spin />
+                    </span>
+                  )}
+                  {studentIdStatus === 'available' && (
+                    <span
+                      className={`${styles.status_icon} ${styles.available}`}
+                    >
+                      <FontAwesomeIcon icon={faCheck} />
+                    </span>
+                  )}
+                </div>
+                {errors.studentId && (
+                  <span className={styles.field_error}>
+                    {errors.studentId.message}
+                  </span>
+                )}
+                {studentIdStatus === 'taken' && !errors.studentId && (
+                  <span className={styles.field_error}>
+                    此學號已被其他使用者綁定
+                  </span>
+                )}
+              </div>
+            )}
+
+            <div className={styles.form_group}>
+              <label htmlFor="clubIdentity">是否為社團成員</label>
+              <select
+                id="clubIdentity"
+                className={errors.clubIdentity ? styles.input_error : ''}
+                {...register('clubIdentity')}
+              >
+                <option value="" disabled>
+                  請選擇身分
+                </option>
+                {clubIdentityOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {errors.clubIdentity && (
+                <span className={styles.field_error}>
+                  {errors.clubIdentity.message}
+                </span>
+              )}
+            </div>
+          </div>
+
           {/* 公開帳號 toggle */}
           <div className={styles.form_group}>
             <div className={styles.toggle_row}>
@@ -864,7 +1028,9 @@ export default function EditProfileClient({
                 isSubmitting ||
                 submitSuccess ||
                 usernameStatus === 'taken' ||
-                usernameStatus === 'checking'
+                usernameStatus === 'checking' ||
+                studentIdStatus === 'taken' ||
+                studentIdStatus === 'checking'
               }
             >
               {isSubmitting ? (

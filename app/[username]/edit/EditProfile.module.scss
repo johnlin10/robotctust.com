@@ -258,26 +258,47 @@
 
   > label {
     @include mixins.flexbox(row, flex-start, center);
-    gap: 0.5rem;
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--foreground);
+
+    > span.required {
+      color: var(--theme-red-600);
+    }
   }
 
   > input,
   > textarea {
     width: 100%;
-    padding: 0.6875rem 0.875rem;
+    padding: 0.5rem 0.7rem;
     font-size: 0.9rem;
     color: var(--foreground);
     background: var(--background);
     border: 1px solid var(--border);
-    @include mixins.border-radius(8px);
+    @include mixins.border-radius(9px);
     resize: none;
 
     &::placeholder {
       color: var(--text-tertiary);
     }
+
+    &:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    &.input_error {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+  }
+
+  select {
+    padding: 0.5rem 0.7rem;
+    background: var(--background);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(9px);
+    @include mixins.transition(var(--transition-default));
 
     &:focus {
       border-color: var(--primary);
@@ -307,6 +328,46 @@
 .field_error {
   font-size: 0.75rem;
   color: var(--theme-red-600, #dc2626);
+}
+
+// 學號輸入框
+.student_id_input_wrapper {
+  position: relative;
+  @include mixins.flexbox(row, flex-start, center);
+  width: 100%;
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(8px);
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.student_id_input {
+  flex: 1;
+  padding: 0.6875rem 0.875rem !important;
+  font-size: 0.9rem;
+  background: transparent !important;
+  border: none !important;
+  outline: none;
+  box-shadow: none !important;
+
+  &.input_error {
+    box-shadow: none !important;
+  }
+}
+
+.status_icon {
+  padding: 0 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+
+  &.available {
+    color: #15803d;
+  }
 }
 
 // username 輸入框（帶 @ 前綴）
@@ -354,6 +415,23 @@
   &.available {
     color: #15803d;
   }
+}
+
+// 身分與校園資訊區塊
+.identity_section {
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space-1-5x);
+  padding: var(--space-2x) 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: var(--space) 0;
+}
+
+.section_title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
 }
 
 // 公開帳號 toggle

@@ -59,6 +59,7 @@ const schoolIdentityOptions: Array<{
   label: string
 }> = [
   { value: 'current_student', label: '本校學生' },
+  { value: 'teacher', label: '本校老師' },
   { value: 'external', label: '非本校人士' },
   { value: 'alumni', label: '畢業生' },
 ]

@@ -3,7 +3,7 @@ import 'server-only'
 import { User } from '@supabase/supabase-js'
 import { UserProfile } from '@/app/types/user'
 import { createClient } from '@/app/utils/supabase/server'
-import { getUserProfileServer } from '@/app/utils/userService'
+import { getUserProfileServer } from '@/app/utils/userServiceServer'
 import {
   isAdminRole,
   isSuperAdminRole,

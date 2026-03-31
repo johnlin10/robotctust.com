@@ -3,6 +3,8 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /api
+Disallow: /dashboard
+Disallow: /onboarding
 
 # Host
 Host: https://robotctust.com

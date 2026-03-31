@@ -29,6 +29,7 @@ interface OnboardingClientProps {
     schoolIdentity?: SchoolIdentity
     clubIdentity?: ClubIdentity
   }
+  next?: string
 }
 
 interface OnboardingFormData {
@@ -44,6 +45,7 @@ const schoolIdentityOptions: Array<{
   label: string
 }> = [
   { value: 'current_student', label: '本校學生' },
+  { value: 'teacher', label: '本校老師' },
   { value: 'external', label: '非本校人士' },
   { value: 'alumni', label: '畢業生' },
 ]
@@ -95,6 +97,7 @@ const onboardingSchema: yup.ObjectSchema<OnboardingFormData> = yup.object({
 
 export default function OnboardingClient({
   initialData,
+  next,
 }: OnboardingClientProps) {
   const router = useRouter()
   const { updateUserProfile } = useAuth()
@@ -253,7 +256,7 @@ export default function OnboardingClient({
 
       await updateUserProfile(initialData.uid, payload)
       showToast('資料已完成，歡迎加入！', 'success')
-      router.replace('/profile')
+      router.replace(next || '/profile')
       router.refresh()
     } catch (err) {
       console.error('完成 onboarding 失敗:', err)

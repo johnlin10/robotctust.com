@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import styles from './User.module.scss'
 
 // utils
-import { getUserProfileStatusByUsername } from '@/app/utils/userService'
+import { getUserProfileStatusByUsername } from '@/app/utils/userServiceServer'
 import { serializeUserProfile } from '@/app/types/serialized'
 import { metadata } from '@/app/utils/metadata'
 

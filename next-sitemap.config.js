@@ -15,41 +15,39 @@ module.exports = {
     '/_*', // 排除所有以底線開頭的頁面
     '/blog', // 排除 blog 頁面
     '/blog/*', // 排除所有 blog 子頁面
+    '/dashboard', // 排除 dashboard 頁面
+    '/dashboard/*', // 排除所有 dashboard 子頁面
+    '/*/edit', // 排除所有編輯頁面
+    '/onboarding', // 排除 onboarding 頁面
+    '/onboarding/*', // 排除所有 onboarding 子頁面
   ],
 
-  //* 進階排除方法：使用自定義函數
-  transform: async (config, path) => {
-    // 可以根據條件動態排除頁面
+  transform: (config, path) => {
     if (path.includes('/test/') || path.includes('/draft/')) {
-      return null // 返回 null 表示排除此頁面
+      return null
     }
 
-    // 為特定頁面設定不同的優先級和更新頻率
-    if (path === '/') {
-      return {
-        loc: path,
-        changefreq: 'daily',
-        priority: 1.0,
-        lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
-      }
-    }
+    const lastmod = config.autoLastmod ? new Date().toISOString() : undefined
 
-    if (path.startsWith('/update/')) {
-      return {
-        loc: path,
-        changefreq: 'daily',
-        priority: 0.8,
-        lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
-      }
-    }
-
-    // 預設設定
-    return {
+    /** @param {Partial<import('next-sitemap').ISitemapField>} overrides */
+    const field = (overrides) => ({
       loc: path,
       changefreq: config.changefreq,
       priority: config.priority,
-      lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
+      lastmod,
+      ...overrides,
+    })
+
+    if (path === '/') {
+      return field({ changefreq: 'daily', priority: 1.0 })
     }
+
+    // `/update` 列表與 `/update/[slug]` 單篇
+    if (path === '/update' || path.startsWith('/update/')) {
+      return field({ changefreq: 'daily', priority: 0.8 })
+    }
+
+    return field({})
   },
 
   //* robots.txt 的額外設定
@@ -58,7 +56,7 @@ module.exports = {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin', '/api'],
+        disallow: ['/admin', '/api', '/dashboard', '/onboarding'],
       },
     ],
   },

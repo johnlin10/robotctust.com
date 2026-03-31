@@ -11,7 +11,7 @@ export type UserRole =
   | 'admin_members'
   | 'member'
 
-export type SchoolIdentity = 'current_student' | 'external' | 'alumni'
+export type SchoolIdentity = 'current_student' | 'teacher' | 'external' | 'alumni'
 export type ClubIdentity = 'member' | 'non_member'
 
 export interface UserProfile extends Record<string, unknown> {

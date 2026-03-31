@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import styles from './login.module.scss'
 
 // components
@@ -10,6 +11,10 @@ import LoginClient from './LoginClient'
 
 // util
 import { metadata } from '../utils/metadata'
+import { createClient } from '../utils/supabase/server'
+import { getUserProfileServer } from '../utils/userServiceServer'
+import { isUserOnboardingComplete } from '../utils/auth/onboarding'
+import { isSafeRedirectPath } from '../utils/auth/redirect'
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -39,9 +44,35 @@ function LoginLoadingFallback() {
 
 /**
  * [Page] 登入頁面
- * @returns {JSX.Element}
+ * @returns {Promise<JSX.Element>}
  */
-function LoginPage() {
+async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  // 獲取查詢參數
+  const sParams = await searchParams
+  const nextRaw = typeof sParams.next === 'string' ? sParams.next : '/profile'
+  const nextPath = isSafeRedirectPath(nextRaw) ? nextRaw : '/profile'
+
+  // 伺服器端驗證
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  // 若已登入，根據 Onboarding 狀態導向
+  if (user) {
+    const profile = await getUserProfileServer(user.id)
+    if (isUserOnboardingComplete(profile)) {
+      redirect(nextPath)
+    } else {
+      // 帶上 next 參數，以便完成 onboarding 後能跳轉回來
+      redirect(`/onboarding?next=${encodeURIComponent(nextPath)}`)
+    }
+  }
+
   return (
     <Page
       style={styles.login_page_wrapper}
@@ -125,7 +156,7 @@ function LoginPage() {
         {/* 右側：登入表單 */}
         <div className={styles.auth_form_wrapper}>
           <Suspense fallback={<LoginLoadingFallback />}>
-            <LoginClient />
+            <LoginClient next={nextPath} />
           </Suspense>
         </div>
       </div>
