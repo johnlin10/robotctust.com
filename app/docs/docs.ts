@@ -80,7 +80,22 @@ export const subDocs: SubDocs[] = [
     docs: [
       {
         id: '',
-        title: '社團課程三：循線自走車',
+        title: '114-2 社團活動一：自走車組裝和測試',
+        date: '2026-04-01',
+        docs: [
+          {
+            id: 'course-files',
+            title: '自走車基本動作測試',
+            type: '.zip',
+            filePath:
+              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/docs%2F114-2-activaty-1%2Fmotor_basics_test.zip?alt=media&token=e5a3fbc3-dc40-438c-9465-ba2fe9e4cfe6',
+            icon: faFileZipper,
+          },
+        ],
+      },
+      {
+        id: '',
+        title: '114-1 社團課程三：循線自走車',
         date: '2025-12-10',
         docs: [
           {
@@ -95,7 +110,7 @@ export const subDocs: SubDocs[] = [
       },
       {
         id: '',
-        title: '社團課程二：自走車 DIY 程式',
+        title: '114-1 社團課程二：自走車 DIY 程式',
         date: '2025-10-29',
         docs: [
           {
@@ -133,7 +148,7 @@ export const subDocs: SubDocs[] = [
       },
       {
         id: 'self-driving-car-diy',
-        title: '活動一：自走車 DIY',
+        title: '114-1 活動一：自走車 DIY',
         date: '2025-10-15',
         docs: [
           {
