@@ -1,196 +1,544 @@
 @use '@/app/styles/_mixins.scss' as mixins;
 
 .courseContentWrapper {
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  line-height: 1.7;
+  display: grid;
+  grid-template-columns: minmax(360px, 960px) minmax(240px, 960px);
+  gap: var(--space-4x);
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  position: relative;
 
-  .header1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-top: var(--space-3x);
-    margin-bottom: var(--space);
-    scroll-margin-top: calc(var(--header-height) + var(--space-4x));
-
-    span {
-      padding: 0 var(--space-0-5x);
-      box-shadow: 0 -18px inset var(--theme-purple-500);
-      box-decoration-break: clone;
-      -webkit-box-decoration-break: clone;
+  &.noPrograms {
+    grid-template-columns: minmax(
+      360px,
+      960px
+    ); // 沒有程式碼表單時，調整為單欄置中
+  }
+  &:not(.noPrograms) {
+    .contentColumn {
+      padding-bottom: 70vh;
     }
   }
 
-  .header2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-top: var(--space-2x);
-    scroll-margin-top: calc(var(--header-height) + var(--space-4x));
+  @include mixins.respond-by-max-width(1200px) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.contentColumn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.blockWithProgram {
+  position: relative;
+  width: 100%;
+}
+
+.programAnchorIcon {
+  position: absolute;
+  top: var(--space-2x);
+  right: -36px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  @include mixins.border-radius(6px);
+  color: var(--foreground-tertiary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+
+  &:hover {
+    color: var(--foreground);
   }
 
-  .header3 {
-    font-size: 1.25rem;
-    font-weight: 600;
+  &.active {
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  @include mixins.respond-by-max-width(1200px) {
+    position: relative;
+    top: auto;
+    left: auto;
+    float: right;
+    margin-left: 12px;
+    margin-bottom: 8px;
+    margin-top: 6px;
+  }
+}
+
+.singleBlock {
+  width: 100%;
+}
+
+.innerBlock {
+  margin-bottom: var(--space-2x);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// ----------------------------------------------------
+// 電腦版：右側程式碼欄位 (Accordion 列)
+// ----------------------------------------------------
+.programSidebar {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space);
+  height: calc(100vh - var(--header-height) - var(--space-3x));
+  @include mixins.hide-scrollbar;
+  @include mixins.transition;
+
+  @include mixins.respond-by-max-width(1200px) {
+    display: none;
+  }
+
+  &.headerCompact {
+    top: calc(var(--header-height-compact) + var(--space));
+    height: calc(100vh - var(--header-height-compact) - var(--space-3x));
+  }
+}
+
+// Extracted common styles for window components
+.windowDots {
+  display: flex;
+  gap: 6px;
+  span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .dotRed {
+    background: #ff5f56;
+  }
+  .dotYellow {
+    background: #ffbd2e;
+  }
+  .dotGreen {
+    background: #27c93f;
+  }
+}
+
+.windowTitle {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--foreground-secondary);
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: white;
+  }
+}
+
+.programWindowCard {
+  border: 1px solid var(--border);
+  @include mixins.border-radius(12px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition:
+    flex 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease,
+    border-color 0.2s ease;
+
+  @include mixins.hover-scale-effect(1.01);
+
+  &.expanded {
+    flex: 1;
+    min-height: 200px;
+    @include mixins.box-shadow(48px);
+    border-color: var(--primary);
+    @include mixins.hover-scale-effect(1.0075);
+
+    &:hover {
+      .windowHeader {
+        background: rgba(var(--background-secondary-rgb), 0.5) !important;
+        border-color: var(--border-hover);
+      }
+      .windowContent {
+        background: rgba(var(--background-secondary-rgb), 0.35) !important;
+      }
+    }
+  }
+
+  &.collapsed {
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--border-hover);
+      background: var(--background-secondary);
+    }
+  }
+
+  .windowHeader {
+    background: rgba(var(--background-secondary-rgb), 0.25);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid transparent;
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--background-secondary);
+    }
+
+    &.activeHeader {
+      border-bottom-color: var(--border);
+      background: rgba(var(--background-secondary-rgb), 0.25);
+    }
+  }
+
+  .windowContent {
+    flex: 1;
+    overflow-y: auto;
+    background: rgba(var(--background-secondary-rgb), 0.25);
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    pre {
+      position: relative;
+      height: fit-content;
+      margin: 0 !important;
+      border: none !important;
+      background: transparent !important;
+
+      code {
+        background: transparent !important;
+      }
+    }
+  }
+
+  .chevron {
+    color: var(--foreground-secondary);
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+  }
+
+  .langBadge {
+    text-transform: uppercase;
+    background: var(--background-secondary);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    @include mixins.border-radius(12px);
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: var(--foreground-secondary);
+  }
+}
+
+// ----------------------------------------------------
+// 手機版：懸浮層 FAB 與 展開視窗
+// ----------------------------------------------------
+.floatingOverlay {
+  position: fixed;
+  bottom: var(--space-2x);
+  right: var(--space-2x);
+  width: calc(100vw - var(--space-4x));
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  @media (min-width: 1200px) {
+    display: none;
+  }
+}
+
+.mobileFloatingWindow {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  height: 50vh;
+  max-height: 800px;
+  margin-bottom: var(--space-2x);
+  animation: scaleInBottomRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: bottom right;
+
+  background: rgba(var(--background-secondary-rgb), 0.5);
+  border: 1px solid var(--border-hover);
+  @include mixins.border-radius(16px);
+  @include mixins.glass-blur(24px);
+  overflow: hidden;
+
+  .windowHeader {
+    background: rgba(var(--background-secondary-rgb), 0.85);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-hover);
+  }
+}
+
+.fabLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.fabExt {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  line-height: 1;
+  font-family: monospace;
+}
+
+.header1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-top: var(--space-8x);
+  margin-bottom: var(--space);
+  scroll-margin-top: calc(var(--header-height) + var(--space-4x));
+
+  span {
+    padding: 0 var(--space-0-5x);
+    box-shadow: 0 -18px inset var(--theme-purple-500);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+}
+
+.header2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: var(--space-2x);
+  scroll-margin-top: calc(var(--header-height) + var(--space-4x));
+}
+
+.header3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: var(--space-4x);
+  margin-bottom: var(--space-1x);
+  scroll-margin-top: calc(var(--header-height) + var(--space-4x));
+}
+
+.text {
+  font-size: 1.05rem;
+  margin: var(--space) 0;
+}
+
+.codeBlock {
+  @include mixins.border-radius(8px);
+  overflow: hidden;
+
+  pre {
+    background: rgba(var(--background-secondary-rgb), 0.5) !important;
+    border: 1px solid var(--border) !important;
+    @include mixins.border-radius(12px !important);
+  }
+  code {
+    background: transparent !important;
+  }
+}
+
+.inlineCode {
+  background: rgba(var(--foreground-rgb), 0.1);
+  padding: 0.2em 0.4em;
+  @include mixins.border-radius(4px);
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.imageBlock {
+  margin: var(--space-2x) 0;
+
+  .courseImage {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(12px);
+  }
+}
+
+.unsupported {
+  padding: var(--space-2x);
+  background: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary);
+  border: 1px dashed var(--primary);
+  @include mixins.border-radius(8px);
+  text-align: center;
+  font-family: monospace;
+}
+
+.markdownContent {
+  h1,
+  h2,
+  h3 {
+    font-weight: 700;
+    scroll-margin-top: calc(var(--header-height) + var(--space-4x));
     margin-top: var(--space-4x);
-    margin-bottom: var(--space-1x);
-    scroll-margin-top: calc(var(--header-height) + var(--space-4x));
+    margin-bottom: var(--space-2x);
   }
 
-  .text {
-    font-size: 1.05rem;
+  h1 {
+    font-size: 2rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: var(--space-2x);
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  p {
     margin: var(--space) 0;
   }
 
-  .codeBlock {
+  hr {
+    margin: var(--space-4x) 0;
+    border-top: 1px solid var(--border);
+  }
+
+  ul,
+  ol {
+    margin-bottom: var(--space-4x);
+    padding-left: var(--space-4x);
+  }
+
+  li {
+    margin-bottom: var(--space-1x);
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
     @include mixins.border-radius(8px);
-    overflow: hidden;
-
-    pre {
-      background: rgba(var(--background-secondary-rgb), 0.5) !important;
-      border: 1px solid var(--border) !important;
-      @include mixins.border-radius(12px !important);
-    }
-    code {
-      background: transparent !important;
-    }
+    margin: var(--space-4x) 0;
   }
 
-  .inlineCode {
-    background: rgba(var(--foreground-rgb), 0.1);
-    padding: 0.2em 0.4em;
-    @include mixins.border-radius(4px);
-    font-family: monospace;
-    font-size: 0.9em;
-  }
-
-  .imageBlock {
-    margin: var(--space-2x) 0;
-
-    .courseImage {
-      display: block;
-      max-width: 100%;
-      height: auto;
-      border: 1px solid var(--border);
-      @include mixins.border-radius(12px);
-    }
-  }
-
-  .unsupported {
-    padding: var(--space-2x);
-    background: rgba(var(--primary-rgb), 0.1);
+  a {
     color: var(--primary);
-    border: 1px dashed var(--primary);
-    @include mixins.border-radius(8px);
-    text-align: center;
-    font-family: monospace;
+    text-decoration: underline;
   }
 
-  .markdownContent {
-    h1,
-    h2,
-    h3 {
-      font-weight: 700;
-      scroll-margin-top: calc(var(--header-height) + var(--space-4x));
-      margin-top: var(--space-4x);
-      margin-bottom: var(--space-2x);
-    }
-
-    h1 {
-      font-size: 2rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: var(--space-2x);
-    }
-    h2 {
-      font-size: 1.5rem;
-    }
-    h3 {
-      font-size: 1.25rem;
-    }
+  blockquote {
+    padding: var(--space) var(--space-1-5x);
+    margin: var(--space-2x) 0;
+    background: rgba(var(--background-secondary-rgb), 0.5);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--border);
+    @include mixins.border-radius(12px);
 
     p {
-      margin: var(--space) 0;
+      margin: var(--space-0-5x) 0;
     }
+  }
 
-    hr {
-      margin: var(--space-4x) 0;
-      border-top: 1px solid var(--border);
-    }
+  pre {
+    background: transparent !important;
 
-    ul,
-    ol {
-      margin-bottom: var(--space-4x);
-      padding-left: var(--space-4x);
-    }
+    > div {
+      margin: 0 !important;
+      border: 1px solid var(--border) !important;
+      background: rgba(var(--background-secondary-rgb), 0.5) !important;
+      @include mixins.border-radius(12px !important);
 
-    li {
-      margin-bottom: var(--space-1x);
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      @include mixins.border-radius(8px);
-      margin: var(--space-4x) 0;
-    }
-
-    a {
-      color: var(--primary);
-      text-decoration: underline;
-    }
-
-    pre {
-      background: transparent !important;
-
-      > div {
-        margin: 0 !important;
-        border: 1px solid var(--border) !important;
-        background: rgba(var(--background-secondary-rgb), 0.5) !important;
-        @include mixins.border-radius(12px !important);
-
-        code {
-          background: transparent !important;
-        }
+      code {
+        background: transparent !important;
       }
     }
+  }
 
-    .tableContainer {
-      width: 100%; // 容器維持父元素寬度
-      max-width: 100%;
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      @include mixins.border-radius(12px);
-      margin: var(--space-2x) 0;
+  .tableContainer {
+    width: 100%; // 容器維持父元素寬度
+    max-width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(12px);
+    margin: var(--space-2x) 0;
 
-      table {
-        width: max-content; // 表格撐開到最大內容寬度
-        min-width: 100%; // 如果內容很少，則至少佔滿 100%
-        border-collapse: separate;
-        border-spacing: 0;
-        border: none;
+    table {
+      width: max-content; // 表格撐開到最大內容寬度
+      min-width: 100%; // 如果內容很少，則至少佔滿 100%
+      border-collapse: separate;
+      border-spacing: 0;
+      border: none;
 
-        th {
-          border-bottom: 2px solid var(--border); // 稍微加粗標題底線
-          background: rgba(var(--background-secondary-rgb), 0.5);
+      th {
+        border-bottom: 2px solid var(--border); // 稍微加粗標題底線
+        background: rgba(var(--background-secondary-rgb), 0.5);
+      }
+
+      th,
+      td {
+        font-size: 0.9rem;
+        padding: var(--space-0-5x) var(--space-2x) var(--space-0-5x)
+          var(--space);
+        border-bottom: 1px solid var(--border);
+
+        &:not(:last-child) {
+          border-right: 1px solid var(--border);
         }
+      }
 
-        th,
+      tr:last-child {
         td {
-          font-size: 0.9rem;
-          padding: var(--space-0-5x) var(--space-2x) var(--space-0-5x)
-            var(--space);
-          border-bottom: 1px solid var(--border);
-
-          &:not(:last-child) {
-            border-right: 1px solid var(--border);
-          }
-        }
-
-        tr:last-child {
-          td {
-            border-bottom: none;
-          }
+          border-bottom: none;
         }
       }
     }
+  }
+}
+
+// ----------------------------------------------------
+// Animations
+// ----------------------------------------------------
+@keyframes scaleInBottomRight {
+  from {
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
   }
 }

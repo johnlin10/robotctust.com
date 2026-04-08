@@ -1,0 +1,141 @@
+.container {
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+}
+
+.programsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.programCard {
+  background: var(--surface-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+  }
+}
+
+.programHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.programName {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.programLang {
+  font-size: 12px;
+  padding: 4px 8px;
+  background: var(--primary-faded);
+  color: var(--primary-color);
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.programPreview {
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  background: var(--code-background);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  color: var(--code-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  height: 80px;
+}
+
+.programFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px;
+  background: var(--surface-background);
+  border-radius: 12px;
+  border: 2px dashed var(--border-color);
+  color: var(--text-secondary);
+}
+
+// Editor styles
+.editorWrapper {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+}
+
+.editorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.editorFields {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.editorMain {
+  flex: 1;
+  position: relative;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.codeArea {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  background: #282c34;
+  color: #abb2bf;
+  border: none;
+  resize: none;
+  outline: none;
+}

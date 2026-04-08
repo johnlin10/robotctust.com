@@ -1,13 +1,45 @@
 @use '@/app/styles/_mixins.scss' as mixins;
 
 .tocContainer {
-  position: sticky;
-  top: calc(var(--header-height) + var(--space-4x));
-  height: fit-content;
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(calc(100% - 16px));
+  width: 250px;
   max-height: calc(100vh - var(--header-height) - var(--space-8x));
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-right: none;
+  border-radius: 16px 0 0 16px;
+  padding: var(--space-3x);
+  padding-left: var(--space-4x);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-y: auto;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+  z-index: 900;
   @include mixins.hide-scrollbar;
-  padding-right: var(--space-2x);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 48px;
+    background: var(--border-hover);
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+
+  &:hover {
+    transform: translateY(-50%) translateX(0);
+    &::before { background: transparent; }
+  }
+
+  @include mixins.respond-by-max-width(1200px) {
+    display: none; // 窄螢幕直將其隱藏
+  }
 }
 
 .tocTitle {

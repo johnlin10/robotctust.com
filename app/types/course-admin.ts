@@ -33,12 +33,21 @@ export type CourseContentType =
   | 'code'
   | 'image'
 
+export interface Program {
+  id: string
+  name: string
+  language: string | null
+  code_content: string
+  created_at: string
+}
+
 export interface CourseContent {
   id: string
   course_id: string
   type: CourseContentType
   content: string
   program_id: string | null
+  program?: Program | null
   order_index: number
   created_at: string
 }
@@ -75,6 +84,7 @@ export interface CurriculumOverviewPayload {
 export interface CourseWorkspacePayload {
   semesters: Semester[]
   chapters: Chapter[]
+  programs: Program[]
   course: CourseTreeNode & {
     semester_id: string
   }

@@ -10,7 +10,7 @@
 .layoutWrapper {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3x);
+  gap: var(--space-4x); // 稍微增加距離以防止黏在一起
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
@@ -18,11 +18,12 @@
   @include mixins.respond-by-min-width(860px) {
     flex-direction: row;
     align-items: flex-start;
+    justify-content: center; // 集中排布
   }
 }
 
 .mainContent {
-  flex: 1;
+  // 移除 flex: 1，讓它隨內部內容撐開寬度，如此左側 Sidebar 就能緊靠
   width: 100%;
   min-width: 0; // Prevent flex item from overflowing due to content
 }

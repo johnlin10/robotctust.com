@@ -144,23 +144,20 @@
             display: flex;
             align-items: center;
             gap: var(--space);
-            padding: var(--space-0-5x) var(--space-1-5x);
+            padding: var(--space-0-5x) var(--space-1-5x) var(--space-0-5x)
+              var(--space-1-5x);
             color: var(--foreground-secondary);
             font-size: 0.95rem;
             @include mixins.border-radius(8px);
             @include mixins.transition(var(--transition-fast));
 
-            .iconWrapper {
-              width: 16px;
-              display: flex;
-              justify-content: center;
-              color: var(--foreground-tertiary);
-              font-size: 0.8rem;
-            }
-
             &:hover {
               background: var(--background-secondary-hover);
               color: var(--foreground);
+
+              > .courseIndex {
+                color: var(--foreground);
+              }
             }
 
             &.active {
@@ -168,9 +165,15 @@
               color: var(--theme-purple-600);
               font-weight: 600;
 
-              .iconWrapper {
+              > .courseIndex {
                 color: var(--theme-purple-600);
               }
+            }
+
+            > .courseIndex {
+              font-size: 0.9rem;
+              font-weight: 700;
+              color: var(--foreground-tertiary);
             }
           }
         }
@@ -184,34 +187,5 @@
     color: var(--foreground-tertiary);
     font-size: 0.9rem;
     line-height: 1.5;
-  }
-}
-
-.mobileFab {
-  display: none;
-
-  @include mixins.respond-by-max-width(859px) {
-    display: flex;
-    align-items: center;
-    gap: var(--space);
-    position: fixed;
-    bottom: calc(var(--space-2x) + env(safe-area-inset-bottom));
-    right: var(--space-2x);
-    z-index: 999;
-    background: var(--primary);
-    color: var(--primary-contrast);
-    padding: var(--space) var(--space-1-5x);
-    border: none;
-    @include mixins.border-radius(100px);
-    font-size: 0.875rem;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    @include mixins.transition(var(--transition-fast));
-
-    &:active {
-      transform: scale(0.95);
-    }
   }
 }

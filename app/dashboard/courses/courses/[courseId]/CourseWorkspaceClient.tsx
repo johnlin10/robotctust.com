@@ -61,6 +61,10 @@ export default function CourseWorkspaceClient({
   const [editType, setEditType] = useState<CourseContentType>('markdown')
   const [editContent, setEditContent] = useState('')
   const [editProgramId, setEditProgramId] = useState('')
+  const [isCreatingNewProgram, setIsCreatingNewProgram] = useState(false)
+  const [newProgramName, setNewProgramName] = useState('')
+  const [newProgramLang, setNewProgramLang] = useState('cpp')
+  const [newProgramCode, setNewProgramCode] = useState('')
   const [deleteBlockId, setDeleteBlockId] = useState<string | null>(null)
   const [isUploadingImage, setIsUploadingImage] = useState(false)
   const imageFileInputRef = useRef<HTMLInputElement>(null)
@@ -109,6 +113,10 @@ export default function CourseWorkspaceClient({
     setEditType('markdown')
     setEditContent('')
     setEditProgramId('')
+    setIsCreatingNewProgram(false)
+    setNewProgramName('')
+    setNewProgramLang('cpp')
+    setNewProgramCode('')
   }
 
   async function loadWorkspace() {
@@ -255,6 +263,32 @@ export default function CourseWorkspaceClient({
     setIsSavingContent(true)
 
     try {
+      let finalProgramId = editProgramId.trim() || null
+
+      if (isCreatingNewProgram) {
+        if (!newProgramName.trim() || !newProgramCode.trim()) {
+          throw new Error('請填寫新程式檔案的名稱與內容')
+        }
+
+        const res = await fetch('/api/dashboard/programs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: newProgramName.trim(),
+            language: newProgramLang,
+            code_content: newProgramCode.trim(),
+          }),
+        })
+        const newP = await res.json()
+        if (!res.ok) throw new Error(newP.error || '建立程式檔案失敗')
+        
+        finalProgramId = newP.id
+        patchWorkspace(curr => ({
+          ...curr,
+          programs: [newP, ...curr.programs]
+        }))
+      }
+
       if (editingBlockId !== 'new' && editingBlockId !== null) {
         const { content } = await requestJson<{ content: CourseContent }>(
           '/api/dashboard/curriculum',
@@ -266,7 +300,7 @@ export default function CourseWorkspaceClient({
               id: editingBlockId,
               content_type: editType,
               content: editContent.trim(),
-              program_id: editProgramId.trim() || null,
+              program_id: finalProgramId,
             }),
           },
         )
@@ -291,7 +325,7 @@ export default function CourseWorkspaceClient({
               course_id: courseId,
               content_type: editType,
               content: editContent.trim(),
-              program_id: editProgramId.trim() || null,
+              program_id: finalProgramId,
             }),
           },
         )
@@ -576,93 +610,156 @@ export default function CourseWorkspaceClient({
                     </div>
                   </div>
 
-                  <div className={styles.fieldGrid}>
-                    <div className={styles.fieldGroup}>
-                      <label htmlFor="workspace-content-type">內容類型</label>
-                      <select
-                        id="workspace-content-type"
-                        name="contentType"
-                        className={styles.selectInput}
-                        value={editType}
-                        onChange={(event) =>
-                          setEditType(event.target.value as CourseContentType)
-                        }
-                      >
-                        {COURSE_CONTENT_TYPE_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="workspace-content-type">區塊類型</label>
+                    <select
+                      id="workspace-content-type"
+                      name="contentType"
+                      className={styles.selectInput}
+                      value={editType}
+                      onChange={(event) =>
+                        setEditType(event.target.value as CourseContentType)
+                      }
+                    >
+                      {COURSE_CONTENT_TYPE_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className={styles.editorGrid}>
+                    {/* 左側：內文編輯 */}
+                    <div className={styles.editorColumn}>
+                      {editType === 'image' ? (
+                        <div className={styles.fieldGroup}>
+                          <label>圖片</label>
+                          <div className={styles.imageInputGroup}>
+                            <input
+                              type="url"
+                              className={styles.textInput}
+                              value={editContent}
+                              onChange={(event) => setEditContent(event.target.value)}
+                              placeholder="貼上圖片連結（https://…）"
+                            />
+                            <span className={styles.imageOrDivider}>或從裝置上傳</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              ref={imageFileInputRef}
+                              className={styles.hiddenFileInput}
+                              onChange={(event) => void handleImageFileSelect(event)}
+                            />
+                            <button
+                              type="button"
+                              className={styles.subtleButton}
+                              onClick={() => imageFileInputRef.current?.click()}
+                              disabled={isUploadingImage}
+                            >
+                              <FontAwesomeIcon icon={isUploadingImage ? faSave : faUpload} />
+                              <span>{isUploadingImage ? '上傳中…' : '選擇圖片'}</span>
+                            </button>
+                          </div>
+                          {editContent && (
+                            <img
+                              src={editContent}
+                              alt="圖片預覽"
+                              className={styles.imagePreviewThumb}
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <div className={styles.fieldGroup}>
+                          <label htmlFor="workspace-content-body">內容 (內文)</label>
+                          <textarea
+                            id="workspace-content-body"
+                            name="contentBody"
+                            className={styles.editorTextarea}
+                            value={editContent}
+                            onChange={(event) => setEditContent(event.target.value)}
+                            placeholder="在此輸入說明文字或 Markdown..."
+                          />
+                        </div>
+                      )}
                     </div>
 
-                    <div className={styles.fieldGroup}>
-                      <label htmlFor="workspace-program-id">Program ID（選填）</label>
-                      <div className={styles.programInput}>
-                        <FontAwesomeIcon icon={faLink} />
-                        <input
-                          id="workspace-program-id"
-                          name="programId"
-                          autoComplete="off"
-                          className={styles.textInput}
-                          value={editProgramId}
-                          onChange={(event) => setEditProgramId(event.target.value)}
-                          placeholder="用來關聯練習題或外部資源…"
-                        />
+                    {/* 右側：程式連結 */}
+                    <div className={styles.editorColumn}>
+                      <div className={styles.fieldGroup}>
+                        <label>
+                          關聯程式檔案 (Program)
+                          {!isCreatingNewProgram && (
+                            <button 
+                              type="button" 
+                              className={styles.inlineActionLink}
+                              onClick={() => setIsCreatingNewProgram(true)}
+                            >
+                              <FontAwesomeIcon icon={faPlus} /> 我要建立新的
+                            </button>
+                          )}
+                          {isCreatingNewProgram && (
+                            <button 
+                              type="button" 
+                              className={styles.inlineActionLink}
+                              onClick={() => setIsCreatingNewProgram(false)}
+                            >
+                              <FontAwesomeIcon icon={faLink} /> 回到現有選擇
+                            </button>
+                          )}
+                        </label>
+
+                        {!isCreatingNewProgram ? (
+                          <div className={styles.programInput}>
+                            <FontAwesomeIcon icon={faLink} />
+                            <select
+                              id="workspace-program-id"
+                              name="programId"
+                              className={styles.selectInput}
+                              value={editProgramId}
+                              onChange={(event) => setEditProgramId(event.target.value)}
+                            >
+                              <option value="">-- 不連結程式檔案 --</option>
+                              {workspace.programs.map((program) => (
+                                <option key={program.id} value={program.id}>
+                                  {program.name} ({program.language || 'cpp'})
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        ) : (
+                          <div className={styles.newProgramForm}>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--theme-blue-500)', fontWeight: 600 }}>
+                              正在準備建立新程式檔案... (儲存區塊時會自動建立)
+                            </p>
+                            <input 
+                              type="text" 
+                              className={styles.textInput}
+                              placeholder="程式檔名 (如: BlinkLED)"
+                              value={newProgramName}
+                              onChange={(e) => setNewProgramName(e.target.value)}
+                            />
+                            <select 
+                              className={styles.selectInput}
+                              value={newProgramLang}
+                              onChange={(e) => setNewProgramLang(e.target.value)}
+                            >
+                              <option value="cpp">C++ (Arduino)</option>
+                              <option value="python">Python</option>
+                              <option value="javascript">JavaScript</option>
+                            </select>
+                            <textarea 
+                              className={`${styles.editorTextarea} ${styles.programCodeInput}`}
+                              placeholder="// 在此輸入程式碼..."
+                              value={newProgramCode}
+                              onChange={(e) => setNewProgramCode(e.target.value)}
+                              spellCheck={false}
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
-
-                  {editType === 'image' ? (
-                    <div className={styles.fieldGroup}>
-                      <label>圖片</label>
-                      <div className={styles.imageInputGroup}>
-                        <input
-                          type="url"
-                          className={styles.textInput}
-                          value={editContent}
-                          onChange={(event) => setEditContent(event.target.value)}
-                          placeholder="貼上圖片連結（https://…）"
-                        />
-                        <span className={styles.imageOrDivider}>或從裝置上傳</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          ref={imageFileInputRef}
-                          className={styles.hiddenFileInput}
-                          onChange={(event) => void handleImageFileSelect(event)}
-                        />
-                        <button
-                          type="button"
-                          className={styles.subtleButton}
-                          onClick={() => imageFileInputRef.current?.click()}
-                          disabled={isUploadingImage}
-                        >
-                          <FontAwesomeIcon icon={isUploadingImage ? faSave : faUpload} />
-                          <span>{isUploadingImage ? '上傳中…' : '選擇圖片'}</span>
-                        </button>
-                      </div>
-                      {editContent && (
-                        <img
-                          src={editContent}
-                          alt="圖片預覽"
-                          className={styles.imagePreviewThumb}
-                        />
-                      )}
-                    </div>
-                  ) : (
-                    <div className={styles.fieldGroup}>
-                      <label htmlFor="workspace-content-body">內容</label>
-                      <textarea
-                        id="workspace-content-body"
-                        name="contentBody"
-                        className={styles.editorTextarea}
-                        value={editContent}
-                        onChange={(event) => setEditContent(event.target.value)}
-                        placeholder="開始撰寫內容…"
-                      />
-                    </div>
-                  )}
 
                   <div className={styles.editorActions}>
                     <button
@@ -683,8 +780,8 @@ export default function CourseWorkspaceClient({
                         {isSavingContent
                           ? '儲存中…'
                           : editingBlockId === 'new'
-                            ? '新增區塊'
-                            : '儲存區塊'}
+                            ? '新增內容區塊'
+                            : '儲存區塊變更'}
                       </span>
                     </button>
                   </div>
@@ -719,7 +816,9 @@ export default function CourseWorkspaceClient({
                           {content.program_id ? (
                             <span className={styles.programChip}>
                               <FontAwesomeIcon icon={faLink} />
-                              <span>{content.program_id}</span>
+                              <span>
+                                {content.program?.name || content.program_id}
+                              </span>
                             </span>
                           ) : null}
                         </div>

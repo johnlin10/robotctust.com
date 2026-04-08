@@ -42,7 +42,7 @@ interface ButtonAction extends BaseActionProps {
   // 標題（懸浮提示）
   title?: string
   // 文字標籤
-  label: string
+  label: ReactNode
   // 文字是否顯示
   labelVisible?: boolean
   // 點擊事件
@@ -50,7 +50,7 @@ interface ButtonAction extends BaseActionProps {
   // 點擊後的視覺回饋
   clicked?: {
     icon?: IconProp
-    label?: string
+    label?: ReactNode
     duration?: number // 顯示時長（毫秒），預設 3000
   }
 }
@@ -65,7 +65,7 @@ interface LinkAction extends BaseActionProps {
   // 標題（懸浮提示）
   title?: string
   // 文字標籤
-  label: string
+  label: ReactNode
   // 文字是否顯示
   labelVisible?: boolean
   // 連結
@@ -299,7 +299,7 @@ export default function FloatingActionBar({
         className={buttonClasses}
         onClick={() => handleButtonClick(action, index)}
         disabled={action.disabled}
-        title={action.title ?? action.label}
+        title={typeof action.title === 'string' ? action.title : typeof action.label === 'string' ? action.label : undefined}
       >
         <FontAwesomeIcon icon={displayIcon} />
         {showLabel && (
@@ -343,7 +343,7 @@ export default function FloatingActionBar({
         href={action.disabled ? undefined : action.href}
         target={action.target ?? '_blank'}
         rel={action.target === '_blank' ? 'noopener noreferrer' : undefined}
-        title={action.title ?? action.label}
+        title={typeof action.title === 'string' ? action.title : typeof action.label === 'string' ? action.label : undefined}
         onClick={handleClick}
         aria-disabled={action.disabled}
       >

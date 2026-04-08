@@ -75,10 +75,19 @@ export const getCourseWithContents = cache(async function getCourseWithContents(
       chapter_id,
       course_contents (
         id,
+        course_id,
         type,
         content,
         program_id,
-        order_index
+        order_index,
+        created_at,
+        programs (
+          id,
+          name,
+          language,
+          code_content,
+          created_at
+        )
       )
     `)
     .eq('id', slug)
@@ -91,7 +100,11 @@ export const getCourseWithContents = cache(async function getCourseWithContents(
 
   if (course) {
     // Sort contents by their order index inline
-    course.course_contents = (course.course_contents || []).sort(
+    course.course_contents = (course.course_contents || []).map((content: any) => ({
+      ...content,
+      // Map programs object to program for consistency with CourseContent type
+      program: content.programs
+    })).sort(
       (a: any, b: any) => a.order_index - b.order_index
     )
   }

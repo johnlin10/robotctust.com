@@ -14,7 +14,7 @@
   -o-transition: var(--transition-default);
 }
 
-*:not(img)::selection {
+/* *:not(img)::selection {
   background: var(--theme-purple-400);
   color: var(--color-white);
 }
@@ -23,7 +23,7 @@ pre::selection,
 code::selection {
   background: var(--gray-600);
   color: var(--color-white);
-}
+} */
 
 html {
   overflow-x: hidden;

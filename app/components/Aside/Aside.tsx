@@ -33,16 +33,16 @@ export const Aside: React.FC<AsideProps> = ({
   })
 
   // Prevent background scrolling when drawer is open
-  useEffect(() => {
-    if (isMobileDrawer && isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isMobileDrawer, isOpen])
+  // useEffect(() => {
+  //   if (isMobileDrawer && isOpen) {
+  //     document.body.style.overflow = 'hidden'
+  //   } else {
+  //     document.body.style.overflow = ''
+  //   }
+  //   return () => {
+  //     document.body.style.overflow = ''
+  //   }
+  // }, [isMobileDrawer, isOpen])
 
   return (
     <>

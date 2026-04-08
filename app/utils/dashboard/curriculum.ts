@@ -17,6 +17,7 @@ import {
   CurriculumPayload,
   Semester,
   SemesterTreeNode,
+  Program
 } from '@/app/types/course-admin'
 
 type ReorderTable = 'chapters' | 'courses' | 'course_contents'
@@ -88,7 +89,7 @@ const chapterColumns = 'id, semester_id, title, order_index, created_at'
 const courseColumns =
   'id, chapter_id, name, description, order_index, is_published, reward_exp, created_at'
 const courseContentColumns =
-  'id, course_id, type, content, program_id, order_index, created_at'
+  'id, course_id, type, content, program_id, order_index, created_at, programs(id, name, language, code_content, created_at)'
 
 function sanitizeSlug(value: string): string {
   const normalized = value
@@ -192,7 +193,22 @@ async function fetchCourseContents(courseIds?: string[]): Promise<CourseContent[
   const { data, error } = await query
   if (error) throw new Error(error.message)
 
-  return (data || []) as CourseContent[]
+  return (data || []).map((content: any) => ({
+    ...content,
+    program: content.programs,
+  })) as CourseContent[]
+}
+
+async function fetchPrograms(): Promise<Program[]> {
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('programs')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) throw new Error(error.message)
+
+  return (data || []) as Program[]
 }
 
 function buildSemesterTree(
@@ -297,10 +313,11 @@ export async function getCourseWorkspace(
 
   const course = courseRow as Course
 
-  const [contents, chapters, semesters] = await Promise.all([
+  const [contents, chapters, semesters, programs] = await Promise.all([
     fetchCourseContents([course.id]),
     fetchChapters(),
     fetchSemesters(),
+    fetchPrograms(),
   ])
 
   const chapter = chapters.find((row) => row.id === course.chapter_id)
@@ -311,6 +328,7 @@ export async function getCourseWorkspace(
   return {
     semesters,
     chapters,
+    programs,
     course: {
       ...course,
       semester_id: chapter.semester_id,

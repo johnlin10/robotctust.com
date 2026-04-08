@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import styles from './CourseSidebar.module.scss'
@@ -10,6 +10,7 @@ import { Aside } from '@/app/components/Aside'
 
 // contexts
 import { useCourseSidebar } from '../../contexts/CourseSidebarContext'
+import { useCourseMobileFab } from '../../contexts/CourseMobileFabContext'
 
 // types
 import { SemesterNode } from '../../types/course'
@@ -30,6 +31,7 @@ interface CourseSidebarProps {
 export const CourseSidebar: React.FC<CourseSidebarProps> = ({ semesters }) => {
   const pathname = usePathname()
   const { isOpen, setIsOpen } = useCourseSidebar()
+  const { registerAction, unregisterAction } = useCourseMobileFab()
 
   // To keep track of which semester's folder is expanded
   const [expandedSemesters, setExpandedSemesters] = useState<
@@ -69,6 +71,34 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({ semesters }) => {
       [id]: !prev[id],
     }))
   }
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 859px)')
+    const updateFab = (e: MediaQueryListEvent | MediaQueryList) => {
+      if (e.matches) {
+        registerAction({
+          id: 'toc',
+          type: 'button',
+          icon: faBook,
+          label: '目錄',
+          priority: 20,
+          onClick: () => setIsOpen(true),
+        })
+      } else {
+        unregisterAction('toc')
+      }
+    }
+
+    // Initial check
+    updateFab(mql)
+
+    // Listen for changes
+    mql.addEventListener('change', updateFab)
+    return () => {
+      mql.removeEventListener('change', updateFab)
+      unregisterAction('toc')
+    }
+  }, [setIsOpen, registerAction, unregisterAction])
 
   return (
     <>
@@ -135,7 +165,7 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({ semesters }) => {
 
                         {expandedChapters[chapter.id] && (
                           <div className={styles.courseList}>
-                            {chapter.courses.map((course) => {
+                            {chapter.courses.map((course, index) => {
                               const courseUrl = `/courses/${course.id}`
                               const isCourseActive = pathname === courseUrl
 
@@ -146,12 +176,9 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({ semesters }) => {
                                   onClick={() => setIsOpen(false)}
                                   className={`${styles.courseLink} ${isCourseActive ? styles.active : ''}`}
                                 >
-                                  {/* <span className={styles.iconWrapper}>
-                                    <FontAwesomeIcon
-                                      icon={faLockOpen}
-                                      className={styles.courseIcon}
-                                    />
-                                  </span> */}
+                                  <p className={styles.courseIndex}>
+                                    {index + 1}
+                                  </p>
                                   {course.name}
                                 </Link>
                               )
@@ -173,16 +200,6 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({ semesters }) => {
           </div>
         </div>
       </Aside>
-
-      {/* Floating Action Button for Mobile Drawer */}
-      <button
-        className={styles.mobileFab}
-        onClick={() => setIsOpen(true)}
-        aria-label="開啟課程目錄"
-      >
-        <FontAwesomeIcon icon={faBook} />
-        目錄
-      </button>
     </>
   )
 }

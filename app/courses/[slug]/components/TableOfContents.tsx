@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useMemo } from 'react'
-import { CourseContent } from './CourseContentRenderer'
+import { CourseContent } from '@/app/types/course-admin'
 import styles from './TableOfContents.module.scss'
 
 interface TableOfContentsProps {
@@ -88,8 +88,10 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ contents }) =>
     e.preventDefault()
     const element = document.getElementById(id)
     if (element) {
+      const yOffset = -100 // Account for header offset
+      const y = element.getBoundingClientRect().top + window.scrollY + yOffset
       window.scrollTo({
-        top: element.offsetTop - 100, // Account for header offset
+        top: y,
         behavior: 'smooth'
       })
       setActiveId(id)

@@ -62,16 +62,11 @@ export async function generateMetadata({
 
 export default async function CoursePage({ params }: CoursePageProps) {
   const { slug } = await params
-  // Fetch course and its contents via Service Layer
   const course = await getCourseWithContents(slug)
 
-  // If the course is null, it means either it doesn't exist
-  // or the user doesn't have permission to view it (RLS blocks it).
   if (!course) {
     notFound()
   }
-
-  // The service already sorts the contents
   const contents = course.course_contents || []
 
   return (

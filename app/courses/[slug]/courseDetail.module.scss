@@ -3,13 +3,8 @@
 .courseSplitLayout {
   display: flex;
   position: relative;
-  max-width: 1000px;
-  margin: 0 auto;
+  width: 100%;
   min-height: 100%;
-
-  @include mixins.respond-by-min-width(1200px) {
-    max-width: 1200px;
-  }
 }
 
 .mainContentArea {
@@ -21,9 +16,9 @@
 .courseHeader {
   padding: var(--space-2x);
   border: 1px solid var(--border);
-  margin-bottom: var(--space-2x);
-  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-4x);
   @include mixins.border-radius(16px);
+  background: var(--background);
 
   h1 {
     font-size: 1.75rem;
@@ -53,15 +48,8 @@
   gap: var(--space-4x);
 }
 
+// Right Sidebar has been moved to be fixed in TableOfContents component's wrapper.
+// This empty block is left to ensure no broken layout in case of leftovers
 .rightSidebar {
-  width: 280px;
-  flex-shrink: 0;
-  display: none;
-  padding-left: var(--space-6x);
-
-  @include mixins.respond-by-min-width(1024px) {
-    display: block; // Show sidebar TOC only on large screens
-  }
+  display: contents;
 }
-
-// Right sidebar has position sticky for the TOC itself

@@ -352,6 +352,48 @@
       @include mixins.border-radius(20px);
     }
 
+    .editorGrid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 20px;
+
+      @include mixins.respond-to('tablet') {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .newProgramForm {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+      background: rgba(var(--background-rgb), 0.4);
+      border: 1px solid var(--border);
+      @include mixins.border-radius(14px);
+      margin-top: 12px;
+    }
+
+    .programCodeInput {
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      min-height: 180px;
+    }
+
+    .inlineActionLink {
+      background: none;
+      border: none;
+      color: var(--theme-blue-500);
+      font-size: 0.82rem;
+      cursor: pointer;
+      margin-left: 10px;
+      padding: 0;
+      text-decoration: underline;
+
+      &:hover {
+        color: var(--theme-blue-600);
+      }
+    }
+
     .editorHeader {
       display: flex;
       flex-direction: column;

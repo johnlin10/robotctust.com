@@ -9,6 +9,7 @@ import { CourseSidebar } from './components/CourseSidebar/CourseSidebar'
 
 // contexts
 import { CourseSidebarProvider } from './contexts/CourseSidebarContext'
+import { CourseMobileFabProvider } from './contexts/CourseMobileFabContext'
 
 // types
 import { SemesterNode } from './types/course'
@@ -39,18 +40,20 @@ export default async function CoursesLayout({
 
   return (
     <CourseSidebarProvider>
-      <Page
-        style={styles.container}
-        config={{
-          paddingBottom: false,
-        }}
-        maxWidth="1400px"
-      >
-        <div className={styles.layoutWrapper}>
-          <CourseSidebar semesters={typedSemesters} />
-          <main className={styles.mainContent}>{children}</main>
-        </div>
-      </Page>
+      <CourseMobileFabProvider>
+        <Page
+          style={styles.container}
+          config={{
+            paddingBottom: false,
+          }}
+          maxWidth="fit-content"
+        >
+          <div className={styles.layoutWrapper}>
+            <CourseSidebar semesters={typedSemesters} />
+            <main className={styles.mainContent}>{children}</main>
+          </div>
+        </Page>
+      </CourseMobileFabProvider>
     </CourseSidebarProvider>
   )
 }
