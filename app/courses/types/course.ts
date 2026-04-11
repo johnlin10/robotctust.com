@@ -1,6 +1,7 @@
 export interface CourseNode {
   id: string
   name: string
+  description: string | null
   order_index: number
   is_published: boolean
 }

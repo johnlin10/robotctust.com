@@ -11,6 +11,7 @@
   flex: 1;
   min-width: 0; // Fix text truncations
   padding: 0 0 var(--space-8x);
+  width: 100%;
 }
 
 .courseHeader {
@@ -46,6 +47,38 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4x);
+}
+
+.accessGuard {
+  width: 100%;
+  padding: var(--space-2x);
+  border: 1px solid var(--border);
+  background: rgba(var(--primary-rgb), 0.08);
+  @include mixins.border-radius(16px);
+
+  h1 {
+    font-size: 1.75rem;
+    line-height: 1.3;
+    color: var(--foreground);
+    margin-bottom: var(--space-2x);
+  }
+
+  p {
+    color: var(--foreground-secondary);
+    line-height: 1.7;
+  }
+}
+
+.accessLink {
+  display: inline-flex;
+  margin-top: var(--space-3x);
+  padding: var(--space) var(--space-2x);
+  color: white;
+  background: var(--primary);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  font-weight: 700;
+  @include mixins.border-radius(12px);
 }
 
 // Right Sidebar has been moved to be fixed in TableOfContents component's wrapper.

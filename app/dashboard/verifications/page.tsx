@@ -1,6 +1,5 @@
 import { requireDashboardAccess } from '@/app/utils/dashboard/auth'
 import VerificationClient from './VerificationClient'
-import { VerificationsAdminSidebar } from './components/VerificationsAdminSidebar'
 import styles from './page.module.scss'
 
 /**
@@ -13,11 +12,8 @@ export default async function DashboardVerificationPage() {
 
   // 返回課程審核控制台頁面
   return (
-    <div className={styles.container}>
-      <VerificationsAdminSidebar />
-      <section className={styles.content}>
-        <VerificationClient />
-      </section>
-    </div>
+    <section className={styles.content}>
+      <VerificationClient />
+    </section>
   )
 }

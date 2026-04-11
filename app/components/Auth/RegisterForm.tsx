@@ -41,6 +41,7 @@ interface RegisterFormProps {
   onSwitchToLogin: (email?: string) => void // 切換到登入模式
   onClose?: () => void // 關閉模組
   showCloseButton?: boolean // 是否顯示關閉按鈕
+  next?: string // 登入後跳轉的路徑
 }
 
 interface FormData {
@@ -139,6 +140,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   onSwitchToLogin,
   onClose,
   showCloseButton = true,
+  next,
 }) => {
   // AuthContext
   const {
@@ -436,7 +438,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       setIsLoading(true)
       setError('')
       // 觸發 Google 登入
-      await signInWithGoogle()
+      await signInWithGoogle(next)
       // 設定為註冊成功
       showToast('Google 登入成功，歡迎加入！', 'success')
       onClose?.()

@@ -26,13 +26,15 @@
 .aside {
   z-index: 1000;
   position: sticky;
-  top: var(--header-height);
+  top: var(--header-height, 72px);
   width: 100%;
   background: var(--background);
   @include mixins.border-radius(18px);
   border: 1px solid var(--border);
   @include mixins.hover-scale-effect(1.01);
   overflow: hidden;
+  flex-shrink: 0;
+  @include mixins.transition(all 0.3s cubic-bezier(0.4, 0, 0.2, 1));
 
   &:hover {
     background: rgba(var(--background-secondary-rgb), 0.15);
@@ -48,6 +50,104 @@
 
   .closeBtn {
     display: none;
+  }
+
+  /* --- Common Header Styles --- */
+  .asideHeader {
+    z-index: 10;
+    position: sticky;
+    top: 0;
+    padding: var(--space-1-5x);
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
+
+    .backLink {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--foreground-secondary);
+      text-decoration: none;
+      margin-bottom: 12px;
+      padding: 4px 8px;
+      margin-left: -6px;
+      margin-top: -6px;
+      border: 1px solid transparent;
+      @include mixins.border-radius(6px);
+      @include mixins.hover-scale-effect(1.02);
+
+      &:hover {
+        border-color: var(--border);
+        background: var(--background-secondary);
+        color: var(--foreground);
+      }
+    }
+
+    .title {
+      margin: 0 0 4px 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--foreground);
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--foreground-tertiary);
+      font-weight: 500;
+    }
+  }
+
+  /* --- Nav Mode Styles --- */
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--space);
+
+    @include mixins.respond-by-max-width(859px) {
+      padding: var(--space-2x);
+    }
+
+    .navLink {
+      display: flex;
+      align-items: center;
+      gap: var(--space);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--foreground-secondary);
+      padding: 6px 12px;
+      border: 1px solid transparent;
+      @include mixins.border-radius(10px);
+      background: transparent;
+
+      @include mixins.respond-by-max-width(859px) {
+        white-space: nowrap;
+      }
+
+      svg {
+        width: 16px;
+        opacity: 0.8;
+      }
+
+      &:hover {
+        background: var(--background-secondary);
+        border-color: var(--border-hover);
+        color: var(--foreground);
+      }
+
+      &.active {
+        background: var(--background-tertiary);
+        border-color: var(--border-hover);
+        color: var(--foreground);
+        
+        svg {
+          opacity: 1;
+        }
+      }
+    }
   }
 
   @include mixins.respond-by-max-width(859px) {
@@ -70,7 +170,7 @@
       max-width: 80vw;
       height: 100vh;
       z-index: 9999;
-      background: rgba(var(--background-secondary-rgb), 0.5);
+      background: var(--background-secondary);
       border: none;
       border-right: 1px solid var(--border);
       @include mixins.border-radius(0);
@@ -79,27 +179,31 @@
       @include mixins.transition(transform 0.3s cubic-bezier(0.4, 0, 0.2, 1));
 
       .scrollableContent {
-        padding-top: var(--space-8x); // Make room for close btn
+        padding-top: var(--space-6x); // Make room for close btn
       }
 
       .closeBtn {
-        z-index: 10;
+        z-index: 10000;
         display: block;
         position: absolute;
-        top: var(--space-2x);
-        right: var(--space-2x);
+        top: var(--space-1-5x);
+        right: var(--space-1-5x);
         background: transparent;
         border: none;
         color: var(--foreground);
         font-size: 1.5rem;
         cursor: pointer;
-        padding: var(--space);
-        border: 1px solid var(--border);
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid transparent;
         @include mixins.border-radius(8px);
         @include mixins.hover-scale-effect;
 
         &:hover {
-          background: var(--background-secondary);
+          background: var(--background);
           border-color: var(--border-hover);
           color: var(--foreground);
         }
@@ -112,9 +216,7 @@
   }
 
   @include mixins.respond-by-min-width(860px) {
-    width: 100%;
-    max-width: 280px;
-    min-height: 200px;
+    width: 280px;
     height: fit-content;
     max-height: calc(100vh - 72px - var(--space-2x));
 

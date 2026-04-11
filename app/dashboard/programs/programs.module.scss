@@ -1,141 +1,248 @@
+@use '../../styles/_mixins.scss' as mixins;
+
+/* =========================================
+   Common Elements
+   ========================================= */
+.primaryButton {
+  @include mixins.button('primary', 'normal');
+}
+
+.loading {
+  padding: var(--space-4x);
+  text-align: center;
+  color: var(--foreground-secondary);
+}
+
+/* =========================================
+   Programs Library (List Page)
+   ========================================= */
 .container {
-  padding: 24px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--foreground);
-}
-
-.controls {
-  display: flex;
-  gap: 12px;
-}
-
-.programsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-.programCard {
-  background: var(--surface-background);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 20px;
+  padding: var(--space-2x);
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
-  text-decoration: none;
-  color: inherit;
+  gap: var(--space-2x);
 
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: var(--primary-color);
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space);
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+
+      .searchInputWrapper {
+        .input {
+          padding: 8px 16px;
+          border: 1px solid var(--border);
+          @include mixins.border-radius(8px);
+          background: var(--background-secondary);
+          color: var(--foreground);
+          width: 240px;
+          transition: border-color 0.2s;
+
+          &:focus {
+            outline: none;
+            border-color: var(--theme-purple-500);
+          }
+        }
+      }
+    }
+  }
+
+  .programsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+
+    .programCard {
+      background: var(--background-secondary);
+      border: 1px solid var(--border);
+      @include mixins.border-radius(16px);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, border-color 0.2s;
+      text-decoration: none;
+      color: inherit;
+
+      &:hover {
+        transform: translateY(-4px);
+        border-color: var(--border-hover);
+        background: var(--background-tertiary);
+      }
+
+      .programHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+
+        .programName {
+          font-size: 1.1rem;
+          font-weight: 700;
+          margin: 0;
+        }
+
+        .programLang {
+          font-size: 0.7rem;
+          font-weight: 700;
+          padding: 4px 8px;
+          background: rgba(var(--theme-purple-500-rgb), 0.1);
+          color: var(--theme-purple-400);
+          border-radius: 6px;
+          text-transform: uppercase;
+        }
+      }
+
+      .programPreview {
+        font-family: var(--font-dm-mono), monospace;
+        font-size: 0.8rem;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        color: var(--foreground-secondary);
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        height: 80px;
+        line-height: 1.5;
+      }
+
+      .programFooter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        color: var(--foreground-tertiary);
+      }
+    }
+  }
+
+  .emptyState {
+    text-align: center;
+    padding: 60px;
+    background: rgba(var(--background-secondary-rgb), 0.3);
+    border-radius: 20px;
+    border: 2px dashed var(--border);
+    color: var(--foreground-tertiary);
+
+    p { margin-top: 16px; }
   }
 }
 
-.programHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
-}
-
-.programName {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.programLang {
-  font-size: 12px;
-  padding: 4px 8px;
-  background: var(--primary-faded);
-  color: var(--primary-color);
-  border-radius: 4px;
-  text-transform: uppercase;
-}
-
-.programPreview {
-  font-family: 'Fira Code', monospace;
-  font-size: 13px;
-  background: var(--code-background);
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  color: var(--code-foreground);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  height: 80px;
-}
-
-.programFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-
-.emptyState {
-  text-align: center;
-  padding: 60px;
-  background: var(--surface-background);
-  border-radius: 12px;
-  border: 2px dashed var(--border-color);
-  color: var(--text-secondary);
-}
-
-// Editor styles
-.editorWrapper {
+/* =========================================
+   Program Editor (Edit Page)
+   ========================================= */
+.editorContainer {
+  padding: var(--space-2x);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 120px);
-}
+  gap: var(--space-2x);
+  height: calc(100vh - 100px);
 
-.editorHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
+  .editorHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-.editorFields {
-  display: grid;
-  grid-template-columns: 1fr 200px;
-  gap: 16px;
-  margin-bottom: 16px;
-}
+    .headerLeft {
+      display: flex;
+      align-items: center;
+      gap: 16px;
 
-.editorMain {
-  flex: 1;
-  position: relative;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  overflow: hidden;
-}
+      .backButton {
+        color: var(--foreground-secondary);
+        font-size: 1.2rem;
+        transition: color 0.2s;
+        &:hover { color: var(--foreground); }
+      }
 
-.codeArea {
-  width: 100%;
-  height: 100%;
-  padding: 16px;
-  font-family: 'Fira Code', monospace;
-  font-size: 14px;
-  background: #282c34;
-  color: #abb2bf;
-  border: none;
-  resize: none;
-  outline: none;
+      .title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+      }
+    }
+  }
+
+  .editorWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5x);
+    min-height: 0;
+
+    .editorFields {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 16px;
+
+      .fieldGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .label {
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: var(--foreground-tertiary);
+          text-transform: uppercase;
+        }
+
+        .input, .select {
+          width: 100%;
+          padding: 10px 14px;
+          background: var(--background-secondary);
+          border: 1px solid var(--border);
+          @include mixins.border-radius(10px);
+          color: var(--foreground);
+          font-size: 0.95rem;
+
+          &:focus {
+            outline: none;
+            border-color: var(--theme-purple-500);
+            background: var(--background);
+          }
+        }
+      }
+    }
+
+    .editorMain {
+      flex: 1;
+      border: 1px solid var(--border);
+      @include mixins.border-radius(12px);
+      overflow: hidden;
+      background: #1e1e1e; // Specific editor background
+
+      .codeArea {
+        width: 100%;
+        height: 100%;
+        padding: 20px;
+        font-family: var(--font-dm-mono), monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        background: transparent;
+        color: #d4d4d4;
+        border: none;
+        resize: none;
+        outline: none;
+
+        &::selection {
+          background: var(--theme-purple-500);
+          color: white;
+        }
+      }
+    }
+  }
 }

@@ -1,1 +1,2 @@
-export { Aside } from './Aside'
+export * from './Aside'
+export * from './AsideContext'

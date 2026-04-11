@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faLayerGroup,
   faPlus,
   faTrash,
   faUsers,
@@ -12,8 +11,10 @@ import { Modal } from '@/app/dashboard/components/Modal'
 import {
   MembersOverviewPayload,
   SemesterWithMembers,
+  MemberWithUser,
 } from '@/app/types/member-admin'
 import { fetchMembersOverview, requestJson } from './client-utils'
+import { useToast } from '@/app/contexts/ToastContext'
 import styles from './members.module.scss'
 
 type ModalState =
@@ -27,12 +28,12 @@ type DeleteState = null | {
 }
 
 export default function MembersClient() {
+  const { showToast } = useToast()
+  
   const [overview, setOverview] = useState<MembersOverviewPayload>({
     semesters: [],
   })
   const [loading, setLoading] = useState(true)
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
   const [modal, setModal] = useState<ModalState>(null)
   const [deleteTarget, setDeleteTarget] = useState<DeleteState>(null)
 
@@ -41,12 +42,11 @@ export default function MembersClient() {
 
   async function loadOverview() {
     setLoading(true)
-    setError('')
     try {
       const payload = await fetchMembersOverview()
       setOverview(payload)
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : '讀取名單失敗')
+      showToast(loadError instanceof Error ? loadError.message : '讀取名單失敗', 'error')
     } finally {
       setLoading(false)
     }
@@ -91,9 +91,6 @@ export default function MembersClient() {
   async function handleSubmitModal() {
     if (!modal) return
 
-    setMessage('')
-    setError('')
-
     try {
       if (modal.kind === 'add-members') {
         if (!studentIdsInput.trim()) throw new Error('請至少輸入一筆學號')
@@ -105,7 +102,7 @@ export default function MembersClient() {
 
         if (studentIds.length === 0) throw new Error('沒有有效的學號可以新增')
 
-        const { added } = await requestJson<{ added: any[] }>(
+        const { added } = await requestJson<{ added: MemberWithUser[] }>(
           '/api/dashboard/members',
           {
             method: 'POST',
@@ -118,7 +115,7 @@ export default function MembersClient() {
           },
         )
 
-        setMessage(`成功新增 ${added.length} 筆社員紀錄`)
+        showToast(`成功新增 ${added.length} 筆社員紀錄`, 'success')
         
         // 重新讀取確保拉齊資料庫關聯 (Left join Users)
         await loadOverview()
@@ -126,7 +123,7 @@ export default function MembersClient() {
 
       closeModal()
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : '儲存失敗')
+      showToast(submitError instanceof Error ? submitError.message : '儲存失敗', 'error')
     }
   }
 
@@ -141,9 +138,6 @@ export default function MembersClient() {
   async function confirmDelete() {
     if (!deleteTarget) return
 
-    setMessage('')
-    setError('')
-
     try {
       await requestJson('/api/dashboard/members', {
         method: 'DELETE',
@@ -154,7 +148,7 @@ export default function MembersClient() {
         }),
       })
 
-      setMessage(`已移除社員 ${deleteTarget.label}`)
+      showToast(`已移除社員 ${deleteTarget.label}`, 'success')
       setOverview((prev) => ({
         semesters: prev.semesters.map((s) => ({
           ...s,
@@ -164,7 +158,7 @@ export default function MembersClient() {
 
       setDeleteTarget(null)
     } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : '刪除失敗')
+      showToast(deleteError instanceof Error ? deleteError.message : '刪除失敗', 'error')
     }
   }
 
@@ -172,14 +166,14 @@ export default function MembersClient() {
 
   return (
     <div className={styles.page}>
-      <section className={styles.hero}>
+      <header className={styles.hero}>
         <div className={styles.heroCopy}>
           <h2>學期名單管理</h2>
           <p className={styles.heroDescription}>
             依照學期彙整社員名單，後續的課程系統與證書都會依照這些名單來核對存取權限。
           </p>
         </div>
-      </section>
+      </header>
 
       <section className={styles.statsGrid}>
         <article className={styles.statCard}>
@@ -198,17 +192,6 @@ export default function MembersClient() {
         </article>
       </section>
 
-      {message && (
-        <div className={styles.message} aria-live="polite">
-          {message}
-        </div>
-      )}
-      {error && (
-        <div className={styles.errorMessage} aria-live="polite">
-          {error}
-        </div>
-      )}
-
       {loading && <div className={styles.emptyState}>正在載入名單總覽…</div>}
 
       {!loading && overview.semesters.length === 0 && (
@@ -220,7 +203,7 @@ export default function MembersClient() {
       {!loading &&
         overview.semesters.map((semester: SemesterWithMembers) => (
           <section key={semester.id} className={styles.semesterSection}>
-            <div className={styles.semesterHeader}>
+            <header className={styles.semesterHeader}>
               <div className={styles.semesterTitleGroup}>
                 <div className={styles.semesterTitleRow}>
                   <div className={styles.titleContent}>
@@ -253,7 +236,7 @@ export default function MembersClient() {
                   <span>批次匯入學號</span>
                 </button>
               </div>
-            </div>
+            </header>
 
             <div className={styles.memberList}>
               {semester.members.length === 0 ? (
@@ -268,7 +251,7 @@ export default function MembersClient() {
                       {member.user ? (
                         <p className={styles.userName}>
                           {member.user.display_name}{' '}
-                          <span style={{ opacity: 0.6 }}>
+                          <span className={styles.userUsername}>
                             (@{member.user.username})
                           </span>
                         </p>
@@ -316,14 +299,13 @@ export default function MembersClient() {
               />
             </div>
 
-            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-              <button className={styles.cancelButton} onClick={closeModal} style={{ flex: 1 }}>
+            <div className={styles.modalActions}>
+              <button className={styles.cancelButton} onClick={closeModal}>
                 取消
               </button>
               <button
                 className={styles.primaryButton}
                 onClick={handleSubmitModal}
-                style={{ flex: 1 }}
               >
                 處理並匯入
               </button>
@@ -339,23 +321,20 @@ export default function MembersClient() {
       >
         {deleteTarget && (
           <div className={styles.confirmBody}>
-            <p>
+            <p className={styles.confirmText}>
               確定要將 <strong>{deleteTarget.label}</strong> 從這個學期中移除嗎？
             </p>
             <p className={styles.fieldHint}>此操作無法復原，但您可以稍後再次加入同樣的學號。</p>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+            <div className={styles.modalActions}>
               <button
                 className={styles.cancelButton}
                 onClick={() => setDeleteTarget(null)}
-                style={{ flex: 1 }}
               >
                 取消
               </button>
               <button
-                className={styles.primaryButton}
-                data-danger="true"
+                className={styles.dangerButton}
                 onClick={confirmDelete}
-                style={{ flex: 1 }}
               >
                 確認移除
               </button>

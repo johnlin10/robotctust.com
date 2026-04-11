@@ -33,6 +33,11 @@
       background: var(--background-secondary);
       color: var(--foreground);
     }
+
+    &.active {
+      background: rgba(var(--background-secondary-rgb), 0.5);
+      color: var(--foreground);
+    }
   }
 
   .semesterList {
@@ -65,10 +70,6 @@
 
       &:hover {
         background: var(--background-secondary-hover);
-      }
-
-      &.active {
-        color: var(--theme-purple-600);
       }
     }
 

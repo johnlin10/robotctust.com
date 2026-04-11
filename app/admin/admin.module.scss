@@ -1,464 +1,261 @@
-@use '../styles/mixins' as mixins;
+@use '@/app/styles/_mixins.scss' as mixins;
 
 .adminContainer {
-  @include mixins.page;
-
-  > .adminContent {
-    @include mixins.content-container();
-    @include mixins.flexbox(column, start, stretch);
-    gap: var(--space-2x);
-  }
-}
-
-.header {
-  @include mixins.flexbox(row, space-between, center);
-  gap: var(--space);
-  margin-bottom: var(--space);
-
-  h1 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--foreground);
-  }
-
-  @include mixins.respond-to('phone') {
-    @include mixins.flexbox(column, start, stretch);
-    gap: var(--space);
-  }
-}
-
-.adminInfo {
-  @include mixins.flexbox(row, start, center);
-  gap: 8px;
-  font-size: 0.9rem;
-  color: var(--foreground-secondary);
-
-  .adminBadge {
-    padding: 4px 8px;
-    background: var(--primary);
-    color: var(--color-white);
-    @include mixins.border-radius(12px);
-    font-size: 0.7rem;
-    font-weight: 600;
-  }
-}
-
-.section {
-  @include mixins.flexbox(column, start, stretch);
-  gap: var(--space);
-  padding: var(--space);
-  background: var(--background-secondary);
-  border: 1px solid var(--border);
-  @include mixins.border-radius(12px);
-}
-
-.sectionTitle {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--foreground);
-}
-
-.sectionDescription {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--foreground-secondary);
-  line-height: 1.5;
-}
-
-.addUserForm {
-  @include mixins.flexbox(column, start, stretch);
-  gap: 12px;
-  padding: var(--space);
+  width: 100%;
+  min-height: 100vh;
   background: var(--background);
-  border: 1px solid var(--border);
-  @include mixins.border-radius(8px);
-}
 
-.formGroup {
-  @include mixins.flexbox(column, start, stretch);
-  gap: 8px;
-}
+  .adminContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-2x) var(--space);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4x);
 
-.label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--foreground);
-  margin: 0;
-}
+    /* =========================================
+       Header Section
+       ========================================= */
+    .header {
+      padding-bottom: var(--space-2x);
+      border-bottom: 1px solid var(--border);
 
-.input {
-  padding: 12px;
-  background: var(--background);
-  border: 1px solid var(--border);
-  @include mixins.border-radius(8px);
-  font-size: 0.9rem;
-  color: var(--foreground);
-  @include mixins.transition(border-color 0.2s ease);
+      .headerTitle {
+        h1 {
+          margin: 0;
+          font-size: 2rem;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+        }
 
-  &:focus {
-    outline: none;
-    border-color: var(--primary);
-  }
+        .adminInfo {
+          margin-top: 12px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
 
-  &::placeholder {
-    color: var(--foreground-tertiary);
-  }
-}
+          .adminBadge {
+            padding: 4px 12px;
+            background: var(--role-super_admin);
+            background-size: 200% auto;
+            animation: superAdminGradientFlow 3s ease-in-out infinite;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            @include mixins.border-radius(999px);
+          }
 
-.formActions {
-  @include mixins.flexbox(row, start, center);
-  gap: 12px;
-
-  @include mixins.respond-to('phone') {
-    @include mixins.flexbox(column, start, stretch);
-  }
-}
-
-.addButton {
-  @include mixins.button('primary', 'normal');
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  @include mixins.respond-to('phone') {
-    width: 100%;
-  }
-}
-
-.usersList {
-  @include mixins.flexbox(column, start, stretch);
-  gap: 8px;
-}
-
-.userCard {
-  @include mixins.flexbox(row, space-between, center);
-  gap: 12px;
-  padding: 12px;
-  background: var(--background);
-  border: 1px solid var(--border);
-  @include mixins.border-radius(8px);
-  @include mixins.transition(all 0.2s ease);
-
-  &:hover {
-    border-color: var(--border-hover);
-  }
-
-  &.inactive {
-    opacity: 0.6;
-    background: var(--background-tertiary);
-  }
-}
-
-.userInfo {
-  @include mixins.flexbox(column, start, start);
-  gap: 4px;
-  flex: 1;
-}
-
-.userEmail {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--foreground);
-}
-
-.userStatus {
-  @include mixins.flexbox(row, start, center);
-  gap: 8px;
-  font-size: 0.8rem;
-  color: var(--foreground-secondary);
-}
-
-.statusBadge {
-  padding: 2px 6px;
-  @include mixins.border-radius(12px);
-  font-size: 0.7rem;
-  font-weight: 500;
-
-  &.active {
-    background: var(--color-success);
-    color: var(--color-white);
-  }
-
-  &.inactive {
-    background: var(--color-warning);
-    color: var(--color-white);
-  }
-}
-
-.userActions {
-  @include mixins.flexbox(row, start, center);
-  gap: 8px;
-}
-
-.toggleButton {
-  @include mixins.button('normal', 'small');
-  font-size: 0.8rem;
-
-  &.deactivate {
-    background: var(--color-warning);
-    border-color: var(--color-warning);
-    color: var(--color-white);
-
-    &:hover {
-      opacity: 0.8;
+          .adminEmail {
+            color: var(--foreground-secondary);
+            font-size: 0.9rem;
+          }
+        }
+      }
     }
-  }
 
-  &.activate {
-    background: var(--color-success);
-    border-color: var(--color-success);
-    color: var(--color-white);
+    /* =========================================
+       Section Layout
+       ========================================= */
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2x);
 
-    &:hover {
-      opacity: 0.8;
+      .sectionHeader {
+        .sectionTitle {
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          color: var(--foreground);
+        }
+
+        .sectionDescription {
+          margin: 8px 0 0 0;
+          color: var(--foreground-secondary);
+          line-height: 1.6;
+          font-size: 0.95rem;
+        }
+      }
+
+      /* Roles Table */
+      .tableContainer {
+        background: var(--background-secondary);
+        border: 1px solid var(--border);
+        @include mixins.border-radius(20px);
+        overflow: hidden;
+
+        .rolesTable {
+          width: 100%;
+          border-collapse: collapse;
+          text-align: left;
+
+          th, td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+          }
+
+          th {
+            background: rgba(var(--background-secondary-rgb), 0.5);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--foreground-tertiary);
+          }
+
+          .userCell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .userName {
+              font-weight: 600;
+              color: var(--foreground);
+            }
+
+            .selfBadge {
+              color: var(--theme-blue-400);
+              font-size: 0.75rem;
+              font-weight: 700;
+            }
+          }
+
+          .email {
+            color: var(--foreground-secondary);
+            font-size: 0.9rem;
+          }
+
+          .saveButton {
+            @include mixins.button('primary', 'small');
+            min-width: 90px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.85rem;
+          }
+
+          .emptyRow {
+            text-align: center;
+            padding: 60px;
+            color: var(--foreground-tertiary);
+          }
+
+          .center { text-align: center; }
+        }
+      }
+
+      /* Sync Grid */
+      .syncGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: var(--space-2x);
+
+        .syncCard {
+          background: var(--background-secondary);
+          border: 1px solid var(--border);
+          padding: 24px;
+          @include mixins.border-radius(20px);
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+
+          h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+          }
+
+          p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--foreground-secondary);
+            line-height: 1.5;
+          }
+
+          .syncMeta {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--foreground-tertiary);
+
+            .successText {
+              color: var(--theme-green-500);
+            }
+          }
+
+          .syncButton {
+            @include mixins.button('normal', 'normal');
+            width: 100%;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(var(--background-secondary-rgb), 0.5);
+
+            &:hover {
+              background: var(--background-tertiary);
+              border-color: var(--border-hover);
+            }
+          }
+        }
+      }
     }
-  }
-}
 
-.removeButton {
-  @include mixins.button('danger', 'small');
-  font-size: 0.8rem;
-}
+    /* States */
+    .loadingState {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 0;
+      gap: 20px;
+      color: var(--foreground-secondary);
 
-.loadingState {
-  @include mixins.flexbox(column, center, center);
-  padding: var(--space-4x);
-  color: var(--foreground-secondary);
-  font-size: 0.9rem;
-
-  .spinner {
-    width: 24px;
-    height: 24px;
-    border: 2px solid var(--border);
-    border-top: 2px solid var(--primary);
-    border-radius: 50%;
-    @include mixins.animation-container(spin 1s linear infinite);
-    margin-bottom: 12px;
-  }
-}
-
-.errorState {
-  @include mixins.flexbox(column, center, center);
-  padding: var(--space-2x);
-  color: var(--danger);
-  font-size: 0.9rem;
-  text-align: center;
-  background: var(--background-tertiary);
-  border: 1px solid var(--danger);
-  @include mixins.border-radius(8px);
-}
-
-.emptyState {
-  @include mixins.flexbox(column, center, center);
-  padding: var(--space-4x);
-  color: var(--foreground-secondary);
-  font-size: 0.9rem;
-  text-align: center;
-
-  .emptyIcon {
-    font-size: 2rem;
-    margin-bottom: 12px;
-    opacity: 0.5;
-  }
-}
-
-.accessDenied {
-  @include mixins.flexbox(column, center, center);
-  padding: var(--space-4x);
-  text-align: center;
-
-  .accessIcon {
-    font-size: 3rem;
-    color: var(--danger);
-    margin-bottom: var(--space);
-  }
-
-  h2 {
-    margin: 0 0 12px 0;
-    font-size: 1.5rem;
-    color: var(--foreground);
-  }
-
-  p {
-    margin: 0;
-    color: var(--foreground-secondary);
-    line-height: 1.5;
-  }
-}
-
-// 競賽同步相關樣式
-.syncSection {
-  @include mixins.flexbox(column, start, stretch);
-  gap: var(--space);
-  padding: var(--space);
-  background: var(--background);
-  border: 1px solid var(--border);
-  @include mixins.border-radius(8px);
-}
-
-.syncInfo {
-  @include mixins.flexbox(column, start, stretch);
-  gap: 12px;
-}
-
-.syncStats {
-  @include mixins.flexbox(row, start, center);
-  gap: var(--space);
-  flex-wrap: wrap;
-
-  @include mixins.respond-to('phone') {
-    @include mixins.flexbox(column, start, start);
-    gap: 8px;
-  }
-}
-
-.statItem {
-  @include mixins.flexbox(row, start, center);
-  gap: 6px;
-  font-size: 0.9rem;
-  color: var(--foreground-secondary);
-
-  strong {
-    color: var(--foreground);
-  }
-}
-
-.successIcon {
-  color: var(--color-success);
-}
-
-.errorIcon {
-  color: var(--danger);
-}
-
-.successMessage {
-  @include mixins.flexbox(row, start, center);
-  gap: 8px;
-  padding: 8px 12px;
-  background: var(--color-success);
-  color: var(--color-white);
-  @include mixins.border-radius(6px);
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.syncButton {
-  @include mixins.button('primary', 'normal');
-  align-self: flex-start;
-
-  &.syncing {
-    background: var(--foreground-secondary);
-    border-color: var(--foreground-secondary);
-    cursor: not-allowed;
-  }
-
-  &.success {
-    background: var(--color-success);
-    border-color: var(--color-success);
-
-    &:hover {
-      background: var(--color-success);
-      border-color: var(--color-success);
-      opacity: 0.9;
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(var(--theme-purple-500-rgb), 0.1);
+        border-top-color: var(--theme-purple-500);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
     }
-  }
 
-  @include mixins.respond-to('phone') {
-    width: 100%;
+    .accessDenied {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px;
+      text-align: center;
+      gap: 16px;
+
+      .accessIcon {
+        font-size: 3rem;
+        color: var(--theme-red-500);
+        margin-bottom: 12px;
+      }
+
+      h2 { margin: 0; font-size: 1.75rem; }
+      p { color: var(--foreground-secondary); }
+    }
   }
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
-.tableContainer {
-  width: 100%;
-  overflow: visible;
-  background: var(--background);
-  border: 1px solid var(--border);
-  @include mixins.border-radius(8px);
-  margin-top: var(--space);
-}
-
-.rolesTable {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 600px;
-  
-  th, td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.9rem;
-    vertical-align: middle;
-  }
-
-  th {
-    background: var(--background-secondary);
-    color: var(--foreground);
-    font-weight: 600;
-    text-align: left;
-    white-space: nowrap;
-  }
-
-  td {
-    color: var(--foreground-secondary);
-    background: var(--background);
-    @include mixins.transition(background-color 0.2s ease);
-  }
-
-  tr:last-child {
-    th, td {
-      border-bottom: none;
-    }
-  }
-
-  tr:hover td {
-    background: var(--background-tertiary);
-  }
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-
-  input[type='checkbox'] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    accent-color: var(--primary);
-  }
-
-  &.activeRole {
-    color: var(--primary);
-    font-weight: 600;
-  }
-}
-
-.userCell {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-
-  .name {
-    color: var(--foreground);
-    font-weight: 500;
-  }
-}
-
-.email {
-  font-size: 0.85rem;
-  opacity: 0.8;
-  word-break: break-all;
+@keyframes superAdminGradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 200% 50%; }
 }

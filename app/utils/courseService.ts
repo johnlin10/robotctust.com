@@ -1,6 +1,49 @@
 import { cache } from 'react'
 import { createClient } from '@/app/utils/supabase/server'
+import { createAdminClient } from '@/app/utils/supabase/admin'
 import { SemesterNode } from '@/app/courses/types/course'
+
+const semesterTreeSelect = `
+  id,
+  name,
+  chapters!inner (
+    id,
+    title,
+    order_index,
+    courses!inner (
+      id,
+      name,
+      description,
+      order_index,
+      is_published
+    )
+  )
+`
+
+function normalizeSemestersTree(semesters: any[]): SemesterNode[] {
+  return semesters
+    .map((sem: any) => {
+      const chapters = (sem.chapters || []).sort(
+        (a: any, b: any) => a.order_index - b.order_index,
+      )
+
+      const sortedChapters = chapters
+        .map((chap: any) => ({
+          ...chap,
+          courses: (chap.courses || [])
+            .filter((course: any) => course.is_published)
+            .sort((a: any, b: any) => a.order_index - b.order_index),
+        }))
+        .filter((chapter: any) => chapter.courses.length > 0)
+
+      return {
+        id: sem.id,
+        name: sem.name,
+        chapters: sortedChapters,
+      }
+    })
+    .filter((semester) => semester.chapters.length > 0) as SemesterNode[]
+}
 
 /**
  * 取得使用者有權限存取的學期、章節與單元樹狀結構
@@ -14,21 +57,7 @@ export const getAccessibleSemestersTree = cache(async function getAccessibleSeme
   // Supabase automatically filters out semesters and courses the user doesn't have access to via RLS
   const { data: semesters, error } = await supabase
     .from('semesters')
-    .select(`
-      id,
-      name,
-      chapters!inner (
-        id,
-        title,
-        order_index,
-        courses!inner (
-          id,
-          name,
-          order_index,
-          is_published
-        )
-      )
-    `)
+    .select(semesterTreeSelect)
     .order('created_at', { ascending: false })
 
   if (error || !semesters) {
@@ -36,27 +65,50 @@ export const getAccessibleSemestersTree = cache(async function getAccessibleSeme
     return []
   }
 
-  // Format and sort tree
-  return semesters.map((sem: any) => {
-    // Sort chapters
-    const chapters = (sem.chapters || []).sort((a: any, b: any) => a.order_index - b.order_index)
-    
-    // Sort courses inside chapters
-    const sortedChapters = chapters.map((chap: any) => ({
-      ...chap,
-      // Only show published courses on general view
-      courses: (chap.courses || [])
-        .filter((c: any) => c.is_published)
-        .sort((a: any, b: any) => a.order_index - b.order_index)
-    }))
-
-    return {
-      id: sem.id,
-      name: sem.name,
-      chapters: sortedChapters
-    }
-  }) as SemesterNode[]
+  return normalizeSemestersTree(semesters)
 })
+
+/**
+ * 取得公開可瀏覽的課程樹，用於未登入使用者的 /courses 頁面與 SEO。
+ */
+export const getPublishedSemestersTree = cache(async function getPublishedSemestersTree(): Promise<
+  SemesterNode[]
+> {
+  const admin = createAdminClient()
+  const { data: semesters, error } = await admin
+    .from('semesters')
+    .select(semesterTreeSelect)
+    .order('created_at', { ascending: false })
+
+  if (error || !semesters) {
+    if (error) console.error('Failed to fetch published semesters tree:', error)
+    return []
+  }
+
+  return normalizeSemestersTree(semesters)
+})
+
+/**
+ * 取得公開可見的課程基本資訊，僅用於權限提示與 metadata 判斷。
+ */
+export const getPublishedCourseSummary = cache(
+  async function getPublishedCourseSummary(slug: string) {
+    const admin = createAdminClient()
+    const { data: course, error } = await admin
+      .from('courses')
+      .select('id, name, description, is_published')
+      .eq('id', slug)
+      .eq('is_published', true)
+      .maybeSingle()
+
+    if (error) {
+      console.error(`Failed to fetch published course summary for ${slug}:`, error)
+      return null
+    }
+
+    return course
+  },
+)
 
 /**
  * 取得單一課程的詳細內容

@@ -48,7 +48,7 @@ export default function Header() {
   // 獲取當前路徑
   const pathname = usePathname()
   // 獲取登入資訊與管理權限
-  const { isAdmin, isSuperAdmin, isSemesterMember } = useAuth()
+  const { isAdmin, isSuperAdmin } = useAuth()
   // 選單狀態
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   // Header 的縮放狀態
@@ -137,20 +137,14 @@ export default function Header() {
             ref={containerRef}
             onScroll={handleScroll}
           >
-            {isSemesterMember && (
-              <>
-                <Link
-                  href="/courses"
-                  onClick={handleNavLinkClick}
-                  className={
-                    pathname.startsWith('/courses') ? styles.active : ''
-                  }
-                >
-                  課程
-                </Link>
-                <div className={styles.separator} />
-              </>
-            )}
+            <Link
+              href="/courses"
+              onClick={handleNavLinkClick}
+              className={pathname.startsWith('/courses') ? styles.active : ''}
+            >
+              課程
+            </Link>
+            <div className={styles.separator} />
             <Link
               href="/update"
               onClick={handleNavLinkClick}

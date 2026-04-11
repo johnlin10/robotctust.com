@@ -91,7 +91,7 @@ export interface AuthContextType {
   getUserProfile: (uid: string) => Promise<UserProfile | null>
   getUserProfileByUsername: (username: string) => Promise<UserProfile | null>
   signInWithEmail: (email: string, password: string) => Promise<void>
-  signInWithGoogle: () => Promise<void>
+  signInWithGoogle: (next?: string) => Promise<void>
   signOut: () => Promise<void>
   register: (
     data: RegisterFormData,

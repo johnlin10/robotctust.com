@@ -186,7 +186,7 @@
   backdrop-filter: blur($blur);
 }
 
-@mixin box-shadow($blur: 12px) {
+@mixin box-shadow($blur: 48px) {
   box-shadow: 0 0 $blur calc($blur / 2) var(--shadow-color);
   -webkit-box-shadow: 0 0 $blur calc($blur / 2) var(--shadow-color);
   -moz-box-shadow: 0 0 $blur calc($blur / 2) var(--shadow-color);

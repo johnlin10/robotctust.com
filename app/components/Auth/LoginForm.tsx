@@ -38,6 +38,7 @@ interface LoginFormProps {
   onSwitchToRegister: () => void // 切換到註冊模式
   onClose?: () => void // 關閉模組
   showCloseButton?: boolean // 是否顯示關閉按鈕
+  next?: string // 登入後跳轉的路徑
 }
 
 /**
@@ -45,12 +46,14 @@ interface LoginFormProps {
  * @param onSwitchToRegister 切換到註冊模式
  * @param onClose 關閉模組
  * @param showCloseButton 是否顯示關閉按鈕
+ * @param next 登入後跳轉的路徑
  * @returns
  */
 export function LoginForm({
   onSwitchToRegister,
   onClose,
   showCloseButton = true,
+  next,
 }: LoginFormProps) {
   // ToastContext
   const { showToast } = useToast()
@@ -104,7 +107,7 @@ export function LoginForm({
     try {
       setIsLoading(true)
       setError('')
-      await signInWithGoogle()
+      await signInWithGoogle(next)
       showToast('Google 登入成功，歡迎回來！', 'success')
     } catch (error) {
       console.error('Google 登入失敗:', error)

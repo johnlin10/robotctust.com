@@ -1,5 +1,4 @@
 import CoursesOverviewClient from './overview/CoursesOverviewClient'
-import { CoursesAdminSidebar } from './components/CoursesAdminSidebar'
 import styles from './page.module.scss'
 
 /**
@@ -8,11 +7,8 @@ import styles from './page.module.scss'
  */
 export default async function DashboardCoursesPage() {
   return (
-    <div className={styles.container}>
-      <CoursesAdminSidebar />
-      <section className={styles.content}>
-        <CoursesOverviewClient />
-      </section>
-    </div>
+    <section className={styles.content}>
+      <CoursesOverviewClient />
+    </section>
   )
 }

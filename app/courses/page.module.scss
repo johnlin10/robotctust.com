@@ -3,8 +3,9 @@
 .roadmapContainer {
   display: flex;
   flex-direction: column;
-  padding: var(--space-4x) var(--space-4x) var(--space-8x);
   width: 100%;
+  position: relative;
+  overflow: hidden;
 
   @include mixins.respond-by-max-width(859px) {
     padding: var(--space-2x) var(--space-2x) var(--space-6x);
@@ -13,28 +14,44 @@
   .header {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     text-align: center;
-    padding: var(--space-6x) 0;
+    padding: var(--space-4x) var(--space-4x);
+    border: 1px solid var(--border);
+    @include mixins.border-radius(16px);
+    position: relative;
+    text-align: left;
 
-    .iconWrapper {
-      font-size: 5rem;
+
+    .headerTitle {
+      display: flex;
+      align-items: center;
+      gap: var(--space);
+      font-size: 3rem;
       color: var(--primary);
-      opacity: 0.9;
-      filter: drop-shadow(0 0 12px rgba(var(--primary-rgb), 0.4));
+      margin-bottom: var(--space);
+      filter: drop-shadow(0 0 15px color-mix(in srgb, var(--primary), transparent 70%));
     }
 
     h1 {
       font-size: 2.5rem;
-      font-weight: 800;
+      font-weight: 900;
       color: var(--foreground);
-      margin-bottom: var(--space-2x);
+      margin: 0;
+      letter-spacing: -0.02em;
+      background: linear-gradient(
+        135deg,
+        var(--foreground) 0%,
+        color-mix(in srgb, var(--foreground), transparent 30%) 100%
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     p {
       color: var(--foreground-secondary);
-      font-size: 1.1rem;
-      max-width: 600px;
+      font-size: 1.15rem;
       line-height: 1.6;
     }
   }
@@ -42,43 +59,132 @@
   .roadmap {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2x);
-    max-width: 900px;
+    gap: var(--space-6x);
+    max-width: 1000px;
     margin: 0 auto;
     width: 100%;
   }
 
+  .accessNotice {
+    max-width: 1000px;
+    width: 100%;
+    margin: var(--space-2x) 0;
+    padding: var(--space-2x);
+    display: flex;
+    gap: var(--space-2x);
+    align-items: center;
+    border: 1px solid color-mix(in srgb, var(--primary), transparent 80%);
+    background: color-mix(in srgb, var(--primary), transparent 97%);
+    @include mixins.border-radius(16px);
+
+    .noticeIcon {
+      font-size: 2rem;
+      color: var(--primary);
+      background: color-mix(in srgb, var(--primary), transparent 90%);
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      @include mixins.border-radius(18px);
+      flex-shrink: 0;
+    }
+
+    .noticeContent {
+      h2 {
+        font-size: 1.35rem;
+        color: var(--foreground);
+        margin: 0;
+      }
+
+      p {
+        color: var(--foreground-secondary);
+        line-height: 1.6;
+        font-size: 1rem;
+      }
+
+      a {
+        color: var(--primary);
+        font-weight: 700;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+        @include mixins.transition(all 0.2s ease);
+
+        &:hover {
+          border-bottom-color: var(--primary);
+        }
+      }
+    }
+
+    @include mixins.respond-by-max-width(600px) {
+      flex-direction: column;
+      text-align: center;
+      padding: var(--space-3x);
+
+      .noticeIcon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+      }
+    }
+  }
+
   .emptyState {
     text-align: center;
-    padding: var(--space-8x);
+    padding: var(--space-10x) var(--space-4x);
     background: rgba(var(--background-secondary-rgb), 0.3);
     @include mixins.glass-blur(12px);
-    border: 1px solid var(--border);
-    @include mixins.border-radius(24px);
+    border: 1px dashed var(--border);
+    @include mixins.border-radius(32px);
+
+    .emptyIcon {
+      font-size: 3.5rem;
+      color: var(--foreground-tertiary);
+      margin-bottom: var(--space-3x);
+      opacity: 0.5;
+    }
 
     h2 {
-      font-size: 1.5rem;
+      font-size: 1.75rem;
       color: var(--foreground);
       margin-bottom: var(--space-2x);
     }
 
     p {
       color: var(--foreground-tertiary);
+      font-size: 1.1rem;
     }
   }
 
   .semesterBlock {
     display: flex;
     flex-direction: column;
+    gap: var(--space-2x);
+    padding: var(--space-4x) 0;
 
-    .semesterTitle {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--foreground);
-      padding-bottom: var(--space-2x);
-      border-bottom: 2px solid rgba(var(--primary-rgb), 0.2);
-      display: inline-block;
-      width: fit-content;
+    .semesterHeader {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2x);
+      padding-bottom: var(--space);
+      border-bottom: 1px solid var(--border);
+
+      .semesterTitle {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--foreground);
+      }
+
+      .courseBadge {
+        background: color-mix(in srgb, var(--primary), transparent 90%);
+        color: var(--primary);
+        padding: 4px 12px;
+        @include mixins.border-radius(100px);
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+      }
     }
   }
 
@@ -88,11 +194,11 @@
 
     .chapterNode {
       display: flex;
-      gap: var(--space-2x);
+      gap: var(--space-4x);
       position: relative;
 
       @include mixins.respond-by-max-width(600px) {
-        gap: var(--space-2x);
+        gap: var(--space-3x);
       }
     }
 
@@ -100,109 +206,220 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 24px;
+      width: 32px;
       flex-shrink: 0;
 
       .nodeDot {
-        margin-top: var(--space-0-5x);
-        width: 16px;
-        height: 16px;
-        background: var(--primary);
+        width: 20px;
+        height: 20px;
+        background: var(--background);
+        border: 4px solid var(--primary);
         @include mixins.border-radius(50%);
-        margin-top: 7px;
-        box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
+        margin-top: 6px;
+        box-shadow: 0 0 15px color-mix(in srgb, var(--primary), transparent 60%);
         z-index: 2;
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 6px;
+          height: 6px;
+          background: var(--primary);
+          @include mixins.border-radius(50%);
+        }
       }
 
       .nodeLine {
         width: 2px;
-        height: calc(100% - 16px);
-        background: var(--primary);
-        margin-top: var(--space);
-        margin-bottom: 5px;
+        height: calc(100% - 20px);
+        background: linear-gradient(
+          to bottom,
+          var(--primary) 0%,
+          color-mix(in srgb, var(--primary), transparent 80%) 100%
+        );
+        margin-top: 4px;
+        margin-bottom: 4px;
       }
     }
 
     .chapterContent {
       flex: 1;
-      padding-bottom: var(--space-2x);
+      padding-bottom: var(--space-6x);
 
       .chapterTitle {
-        font-size: 1.25rem;
-        font-weight: 600;
+        font-size: 1.4rem;
+        font-weight: 700;
         color: var(--foreground);
-        margin-bottom: var(--space);
+        margin-bottom: var(--space-3x);
+        margin-top: 2px;
       }
 
       .emptyCourses {
         color: var(--foreground-tertiary);
         font-style: italic;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        padding: var(--space-2x);
+        background: rgba(var(--background-secondary-rgb), 0.2);
+        @include mixins.border-radius(12px);
       }
 
       .courseGrid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: var(--space-2x);
 
-        @include mixins.respond-by-max-width(600px) {
+        @include mixins.respond-by-max-width(700px) {
           grid-template-columns: 1fr;
         }
 
         .courseCard {
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
-          gap: var(--space);
-          background: rgba(var(--background-secondary-rgb), 0.25);
-          @include mixins.glass-blur(12px);
+          gap: var(--space-1-5x);
+          background: rgba(var(--background-secondary-rgb), 0.3);
+          @include mixins.glass-blur(16px);
           border: 1px solid var(--border);
           @include mixins.border-radius(16px);
+          @include mixins.hover-scale-effect(1.02);
           padding: var(--space-2x);
           text-decoration: none;
-          @include mixins.hover-scale-effect(1.02);
+          position: relative;
+          overflow: hidden;
+
+          // &::before {
+          //   content: '';
+          //   position: absolute;
+          //   top: 0;
+          //   left: 0;
+          //   width: 100%;
+          //   height: 100%;
+          //   background: linear-gradient(
+          //     135deg,
+          //     color-mix(in srgb, var(--primary), transparent 95%) 0%,
+          //     transparent 100%
+          //   );
+          //   opacity: 0;
+          //   @include mixins.transition(opacity 0.3s ease);
+          // }
 
           &:hover {
             border-color: var(--border-hover);
-            background: rgba(var(--background-secondary-rgb), 1);
+            background: rgba(var(--background-secondary-rgb), 0.6);
+            @include mixins.box-shadow();
+
+            &::before {
+              opacity: 1;
+            }
+
+            .cardHeader .courseIcon {
+              transform: scale(1.1) rotate(5deg);
+              background: var(--primary);
+              color: white;
+            }
 
             .cardFooter span {
-              opacity: 1;
-              transform: translateX(0);
+              color: var(--primary);
+              
+              svg {
+                transform: translateX(5px);
+              }
             }
           }
 
           .cardHeader {
             display: flex;
-            align-items: flex-start;
-            gap: var(--space-2x);
+            align-items: center;
+            gap: var(--space-1-5x);
+            z-index: 1;
 
             .courseIcon {
+              width: 44px;
+              height: 44px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: color-mix(in srgb, var(--primary), transparent 90%);
               color: var(--primary);
-              font-size: 1.2rem;
-              margin-top: 2px;
+              font-size: 1.25rem;
+              @include mixins.border-radius(12px);
+              border: 1px solid var(--border);
+              @include mixins.transition(all 0.3s ease);
+              flex-shrink: 0;
             }
 
             h4 {
-              font-size: 1.1rem;
-              font-weight: 600;
+              font-size: 1.25rem;
+              font-weight: 700;
               color: var(--foreground);
-              line-height: 1.4;
+              line-height: 1.3;
             }
           }
 
+          .courseDescription {
+            color: var(--foreground-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            z-index: 1;
+            margin-bottom: var(--space);
+          }
+
           .cardFooter {
+            margin-top: auto;
             display: flex;
             justify-content: flex-end;
+            z-index: 1;
 
             span {
               font-size: 0.9rem;
-              font-weight: 600;
-              color: var(--primary);
-              opacity: 0;
-              transform: translateX(-10px);
+              font-weight: 700;
+              color: var(--foreground-tertiary);
+              display: flex;
+              align-items: center;
+              gap: var(--space);
               @include mixins.transition(all 0.3s ease);
+
+              svg {
+                @include mixins.transition(transform 0.3s ease);
+              }
             }
+          }
+        }
+
+        .lockedCourseCard {
+          cursor: default;
+          opacity: 0.8;
+          @include mixins.hover-scale-effect(1);
+          cursor: not-allowed;
+
+          &:hover {
+            @include mixins.box-shadow(0);
+            border-color: var(--border);
+            background: rgba(var(--background-secondary-rgb), 0.3);
+
+            .cardHeader .courseIcon {
+              transform: none;
+            }
+
+            .cardFooter span {
+              color: var(--foreground);
+            }
+          }
+
+          .cardHeader .courseIcon {
+            background: color-mix(in srgb, var(--foreground-tertiary), transparent 90%);
+            color: var(--foreground-tertiary);
+          }
+
+          .cardFooter span {
+            color: var(--foreground-tertiary);
           }
         }
       }

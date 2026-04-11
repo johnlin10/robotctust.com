@@ -193,13 +193,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   //* Google 登入（如果已有設定好網址跟 Oauth 設定即可）
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (next?: string) => {
     try {
       setLoading(true)
+      const redirectTo = next
+        ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+        : `${window.location.origin}/auth/callback`
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`, // 注意要有相應的 callback 設定
+          redirectTo,
         },
       })
 

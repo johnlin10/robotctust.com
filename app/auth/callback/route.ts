@@ -34,7 +34,11 @@ export async function GET(request: NextRequest) {
           .maybeSingle()
 
         if (!isUserOnboardingComplete(profile)) {
-          return NextResponse.redirect(`${origin}/onboarding`)
+          const next = searchParams.get('next')
+          const onboardingUrl = next
+            ? `${origin}/onboarding?next=${encodeURIComponent(next)}`
+            : `${origin}/onboarding`
+          return NextResponse.redirect(onboardingUrl)
         }
       }
 
@@ -45,5 +49,9 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth_failed`)
+  const next = searchParams.get('next')
+  const loginUrl = next
+    ? `${origin}/login?error=auth_failed&next=${encodeURIComponent(next)}`
+    : `${origin}/login?error=auth_failed`
+  return NextResponse.redirect(loginUrl)
 }

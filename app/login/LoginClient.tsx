@@ -109,11 +109,13 @@ export default function LoginClient({ next }: { next?: string }) {
               <LoginForm
                 onSwitchToRegister={handleSwitchToRegister}
                 showCloseButton={false}
+                next={next}
               />
             ) : (
               <RegisterForm
                 onSwitchToLogin={handleSwitchToLogin}
                 showCloseButton={false}
+                next={next}
               />
             )}
           </div>

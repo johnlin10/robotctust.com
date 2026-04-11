@@ -14,12 +14,12 @@ export interface MemberUserDisplay {
   username: string | null
 }
 
-export interface MemberRow extends SemesterMember {
+export interface MemberWithUser extends SemesterMember {
   user: MemberUserDisplay | null
 }
 
 export interface SemesterWithMembers extends Semester {
-  members: MemberRow[]
+  members: MemberWithUser[]
 }
 
 export interface MembersOverviewPayload {

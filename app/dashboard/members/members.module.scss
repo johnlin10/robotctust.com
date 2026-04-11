@@ -1,8 +1,5 @@
 @use '../../styles/_mixins.scss' as mixins;
 
-/* =========================================
-   Base Page Layout
-   ========================================= */
 .page {
   display: flex;
   flex-direction: column;
@@ -13,7 +10,7 @@
   /* =========================================
      Hero Section
      ========================================= */
-  > .hero {
+  .hero {
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) auto;
@@ -27,14 +24,14 @@
       grid-template-columns: 1fr;
     }
 
-    > .heroCopy {
+    .heroCopy {
       position: relative;
       z-index: 1;
       display: flex;
       flex-direction: column;
       gap: 12px;
 
-      > h2 {
+      h2 {
         margin: 0;
         margin-top: var(--space);
         font-size: clamp(1.5rem, 4vw, 2rem);
@@ -43,24 +40,10 @@
         text-wrap: balance;
       }
 
-      > .heroDescription {
+      .heroDescription {
         margin: 0;
         color: var(--foreground-secondary);
         line-height: 1.7;
-      }
-    }
-
-    > .heroActions {
-      position: relative;
-      z-index: 1;
-      align-content: start;
-      justify-content: flex-end;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-
-      @include mixins.respond-to('tablet') {
-        justify-content: flex-start;
       }
     }
   }
@@ -68,7 +51,7 @@
   /* =========================================
      Stats Grid
      ========================================= */
-  > .statsGrid {
+  .statsGrid {
     display: grid;
     gap: var(--space);
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -81,7 +64,7 @@
       grid-template-columns: 1fr;
     }
 
-    > .statCard {
+    .statCard {
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -89,7 +72,7 @@
       border: 1px solid var(--border);
       @include mixins.border-radius(16px);
 
-      > .statLabel {
+      .statLabel {
         margin: 0;
         font-size: 0.78rem;
         font-weight: 700;
@@ -98,7 +81,7 @@
         color: var(--foreground-tertiary);
       }
 
-      > .statValue {
+      .statValue {
         font-size: 2rem;
         line-height: 1;
         font-weight: 800;
@@ -110,7 +93,7 @@
   /* =========================================
      Semester Section (MemberList)
      ========================================= */
-  > .semesterSection {
+  .semesterSection {
     display: flex;
     flex-direction: column;
     gap: var(--space-1-5x);
@@ -118,37 +101,37 @@
     border: 1px solid var(--border);
     @include mixins.border-radius(24px);
 
-    > .semesterHeader {
+    .semesterHeader {
       @include mixins.flexbox(column, flex-start, flex-start);
       gap: var(--space);
       padding: 12px;
       padding-bottom: 0;
       width: 100%;
 
-      > .semesterTitleGroup {
+      .semesterTitleGroup {
         display: flex;
         flex-direction: column;
         gap: 12px;
         min-width: 0;
         width: 100%;
 
-        > .semesterTitleRow {
+        .semesterTitleRow {
           @include mixins.flexbox(row, space-between, center);
           gap: var(--space);
           width: 100%;
 
-          > .titleContent {
+          .titleContent {
             @include mixins.flexbox(row, space-between, center);
             gap: var(--space);
 
-            > h3 {
+            h3 {
               margin: 0;
               font-size: 1.35rem;
               line-height: 1.2;
               text-wrap: balance;
             }
 
-            > .badge {
+            .badge {
               padding: 3px 9px;
               border: 1px solid var(--border);
               @include mixins.border-radius(999px);
@@ -156,22 +139,20 @@
               &.activeBadge {
                 color: var(--foreground);
                 background: var(--theme-green-400);
-                border: 1px solid var(--border);
               }
 
               &.mutedBadge {
                 color: var(--foreground-secondary);
                 background: rgba(var(--background-rgb), 0.46);
-                border: 1px solid var(--border);
               }
             }
           }
 
-          > .metaRow {
+          .metaRow {
             @include mixins.flexbox(row, center, center);
             gap: var(--space);
 
-            > span {
+            .metaPill {
               @include mixins.flexbox(row, center, center);
               gap: 8px;
               padding: 8px 12px;
@@ -184,11 +165,11 @@
         }
       }
 
-      > .sectionActions {
+      .sectionActions {
         @include mixins.flexbox(row, center, center);
         gap: var(--space);
 
-        > .primaryButton {
+        .primaryButton {
           @include mixins.button('normal', 'normal');
           @include mixins.border-radius(9px);
           background: rgba(var(--background-secondary-rgb), 0.3);
@@ -205,7 +186,7 @@
     /* =========================================
        Member List Grid
        ========================================= */
-    > .memberList {
+    .memberList {
       display: grid;
       gap: var(--space);
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -215,7 +196,16 @@
         grid-template-columns: 1fr;
       }
 
-      > .memberCard {
+      .inSectionEmpty {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 24px;
+        color: var(--foreground-secondary);
+        border: 1px dashed var(--border);
+        @include mixins.border-radius(12px);
+      }
+
+      .memberCard {
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -231,12 +221,12 @@
           border-color: var(--border-hover);
         }
 
-        > .memberInfo {
+        .memberInfo {
           display: flex;
           flex-direction: column;
           min-width: 0;
 
-          > .studentId {
+          .studentId {
             font-size: 1.1rem;
             font-weight: bold;
             font-variant-numeric: tabular-nums;
@@ -244,16 +234,20 @@
             color: var(--foreground);
           }
 
-          > .userName {
+          .userName {
             margin: 4px 0 0 0;
             font-size: 0.9rem;
             color: var(--foreground-secondary);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+
+            .userUsername {
+              opacity: 0.6;
+            }
           }
 
-          > .unregistered {
+          .unregistered {
             margin: 4px 0 0 0;
             font-size: 0.8rem;
             color: var(--theme-purple-500);
@@ -264,8 +258,8 @@
           }
         }
 
-        > .memberActions {
-          > .iconButtonDanger {
+        .memberActions {
+          .iconButtonDanger {
             width: 36px;
             height: 36px;
             display: inline-flex;
@@ -289,83 +283,53 @@
   }
 
   /* =========================================
-     Feedback States
+     Feedback & States
      ========================================= */
-  > .message,
-  > .errorMessage,
-  > .emptyState {
+  .emptyState {
     padding: 14px 16px;
-    border: 1px solid var(--border);
+    border: 1px dashed var(--border);
     @include mixins.border-radius(18px);
-  }
-
-  > .message {
-    background: rgba(var(--theme-blue-500-rgb), 0.1);
-  }
-
-  > .errorMessage {
-    background: rgba(var(--theme-red-500-rgb), 0.1);
-    color: var(--theme-red-600);
-  }
-
-  > .emptyState {
     text-align: center;
     color: var(--foreground-secondary);
     background: rgba(var(--background-secondary-rgb), 0.28);
-    border-style: dashed;
-  }
-
-  .inSectionEmpty {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 24px;
-    color: var(--foreground-secondary);
-    border: 1px dashed var(--border);
-    @include mixins.border-radius(12px);
   }
 
   /* =========================================
-     Forms & Utilities
+     Forms & Modals
      ========================================= */
   .modalForm {
     display: flex;
     flex-direction: column;
     gap: var(--space);
-  }
 
-  .fieldGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+    .fieldGroup {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
 
-  .fieldLabel {
-    font-size: 0.92rem;
-    font-weight: 600;
-  }
+      .textareaInput {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        color: var(--foreground);
+        background: rgba(var(--background-secondary-rgb), 0.62);
+        border: 1px solid var(--border);
+        @include mixins.border-radius(12px);
+        min-height: 200px;
+        resize: vertical;
+        font-family: inherit;
 
-  .fieldHint {
-    margin: 0;
-    color: var(--foreground-secondary);
-    line-height: 1.7;
-    font-size: 0.84rem;
-  }
+        &:focus {
+          outline: none;
+          border-color: var(--theme-purple-500);
+        }
+      }
+    }
 
-  .textareaInput {
-    width: 100%;
-    padding: 0.9rem 1rem;
-    color: var(--foreground);
-    background: rgba(var(--background-secondary-rgb), 0.62);
-    border: 1px solid var(--border);
-    @include mixins.border-radius(12px);
-    min-height: 200px;
-    resize: vertical;
-    font-family: inherit;
-
-    &:focus,
-    &:focus-visible {
-      outline: none;
-      border-color: var(--theme-purple-500);
+    .fieldHint {
+      margin: 0;
+      color: var(--foreground-secondary);
+      line-height: 1.7;
+      font-size: 0.84rem;
     }
   }
 
@@ -373,13 +337,37 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    .confirmText {
+      margin: 0;
+    }
+
+    .fieldHint {
+      margin: 0;
+      color: var(--foreground-secondary);
+      line-height: 1.7;
+      font-size: 0.84rem;
+    }
   }
 
+  /* Shared Modal Components */
+  .modalActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+
+    button {
+      flex: 1;
+    }
+  }
+
+  /* Button Variants */
   .primaryButton {
     @include mixins.button('primary', 'normal');
-    &[data-danger='true'] {
-      @include mixins.button('danger', 'normal');
-    }
+  }
+
+  .dangerButton {
+    @include mixins.button('danger', 'normal');
   }
 
   .cancelButton {

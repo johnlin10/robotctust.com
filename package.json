@@ -54,6 +54,7 @@
     "rehype-highlight": "^7.0.2",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
+    "supabase": "^2.88.1",
     "three": "^0.180.0",
     "yup": "^1.6.1"
   },
