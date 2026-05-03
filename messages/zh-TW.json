@@ -1,0 +1,443 @@
+{
+  "Index": {
+    "title": "中臺機器人研究社",
+    "webTitle": "中臺機器人研究社",
+    "description": "這裡是中臺科大機器人研究社的學習基地。我們不只研究技術，更提供一個讓學生動手實作、共同成長的空間。無論你是新手還是玩家，都能在這裡透過實作課程，一起探索機器人的無限可能。",
+    "schoolName": "中臺科技大學",
+    "schoolNameShort": "中臺科大",
+    "clubName": "機器人研究社",
+    "schoolClubName": "中臺科技大學 機器人研究社"
+  },
+  "LanguageSwitcher": {
+    "label": "語言",
+    "languages": {
+      "zh-TW": "繁體中文",
+      "en": "English"
+    }
+  },
+  "Header": {
+    "nav": {
+      "courses": "課程",
+      "news": "新聞",
+      "competitions": "競賽",
+      "calendar": "行事曆",
+      "docs": "文檔",
+      "about": "關於",
+      "dashboard": "後台",
+      "admin": "總控台"
+    }
+  },
+  "Footer": {
+    "contactUs": {
+      "title": "聯絡我們",
+      "email": "Email",
+      "instagram": "Instagram",
+      "office": "社團辦公室"
+    },
+    "copyright": "版權所有 © 2025 中臺機器人研究社",
+    "links": {
+      "openSource": "開放原始碼",
+      "termsOfService": "服務條款",
+      "privacyPolicy": "隱私權政策"
+    },
+    "version": "版本"
+  },
+  "Components": {
+    "ThemeToggle": {
+      "dark": "深色",
+      "light": "淺色",
+      "system": "系統",
+      "switchTo": "切換到",
+      "mode": "模式",
+      "current": "目前"
+    },
+    "AuthSection": {
+      "logout": "登出",
+      "login": "登入",
+      "joinUs": "加入我們，",
+      "exploreRobotWorld": "探索機器人世界！"
+    },
+    "WebsiteMap": {
+      "info": {
+        "title": "資訊",
+        "items": {
+          "schedules": "行事曆",
+          "news": "新聞",
+          "competitions": "競賽",
+          "courses": "課程"
+        }
+      },
+      "data": {
+        "title": "資料",
+        "items": {
+          "docs": "文檔",
+          "terms": "服務條款",
+          "privacy": "隱私權政策"
+        }
+      },
+      "about": {
+        "title": "關於",
+        "items": {
+          "about": "關於我們",
+          "contact": "聯絡我們"
+        }
+      },
+      "openSource": {
+        "title": "開放原始碼",
+        "items": {
+          "website": "網站"
+        }
+      }
+    }
+  },
+  "Login": {
+    "backToHome": "回到首頁",
+    "welcome": {
+      "title": "歡迎來到",
+      "subtitle": "中臺機器人研究社"
+    },
+    "loginToUnlock": "登入以解鎖更多專屬功能",
+    "features": {
+      "courses": {
+        "title": "社團課程系統",
+        "description": "查看參與學期的所有課程與進度"
+      },
+      "news": {
+        "title": "技術分享文章",
+        "description": "幹部總結與成員優秀作品分享"
+      },
+      "achievements": {
+        "title": "成就與經驗值",
+        "description": "完成課程任務，獲得專屬成就徽章"
+      },
+      "emailNotifications": {
+        "title": "專屬信件通知",
+        "description": "重要通知與活動自動發送至 Email"
+      }
+    },
+    "loading": {
+      "page": "正在載入登入頁面...",
+      "userStatus": "正在載入使用者狀態...",
+      "loggedIn": "偵測到您已登入，正在帶您前往個人主頁...",
+      "onboarding": "偵測到您尚未完成註冊資料，正在帶您前往續填頁面..."
+    },
+    "meta": {
+      "title": "登入｜中臺機器人研究社",
+      "description": "進入中臺機器人研究社會員專區，完成登入或註冊以體驗完整服務。",
+      "keywords": "登入,註冊,會員專區,帳號登入,帳號註冊"
+    },
+    "form": {
+      "googleLogin": "使用 Google 帳號登入",
+      "googleRegister": "使用 Google 帳號註冊",
+      "login": {
+        "title": "登入",
+        "email": "電子郵件",
+        "emailPlaceholder": "請輸入您的電子郵件",
+        "password": "密碼",
+        "passwordPlaceholder": "請輸入您的密碼",
+        "submit": "登入",
+        "submitting": "登入中...",
+        "divider": "或",
+        "switchToRegister": "還沒有帳號？",
+        "registerLink": "立即註冊",
+        "toast": {
+          "success": "登入成功，歡迎回來！",
+          "googleSuccess": "Google 登入成功，歡迎回來！",
+          "googleFailed": "Google 登入失敗，請稍後再試"
+        },
+        "errors": {
+          "invalidCredentials": "帳號或密碼錯誤",
+          "emailNotConfirmed": "請先前往信箱驗證您的帳號",
+          "userNotFound": "找不到此電子郵件對應的帳號",
+          "default": "登入失敗，請稍後再試"
+        },
+        "validation": {
+          "emailRequired": "請輸入電子郵件",
+          "emailInvalid": "請輸入有效的電子郵件格式",
+          "passwordRequired": "請輸入密碼",
+          "passwordMinLength": "密碼至少需要 6 個字元"
+        }
+      },
+      "register": {
+        "emailVerification": {
+          "title": "請驗證您的信箱",
+          "text": "驗證信已寄送至您的信箱，請點擊信中的連結完成帳號驗證後即可登入。",
+          "goToLogin": "前往登入"
+        },
+        "steps": {
+          "next": "下一步",
+          "submit": "開始探索",
+          "submitting": "處理中..."
+        },
+        "step1": {
+          "emailDivider": "或使用 Email 註冊",
+          "email": "電子郵件",
+          "switchToLogin": "已經有帳號了？",
+          "loginLink": "立即登入"
+        },
+        "step2": {
+          "password": "設定密碼",
+          "passwordPlaceholder": "請輸入密碼",
+          "confirmPassword": "確認密碼",
+          "confirmPasswordPlaceholder": "請再次輸入密碼",
+          "rules": {
+            "length": "至少 8 個字元",
+            "lowercase": "包含小寫英文字母",
+            "uppercase": "包含大寫英文字母",
+            "number": "包含數字",
+            "special": "包含特殊字元"
+          }
+        },
+        "step3": {
+          "uploadAvatar": "上傳大頭貼",
+          "username": "帳號名稱",
+          "usernameHint": "僅能使用英文小寫、數字和底線，將作為個人首頁網址的一部分",
+          "displayName": "顯示名稱",
+          "displayNameHint": "最多 20 個字元",
+          "displayNamePlaceholder": "你想讓大家怎麼稱呼你？"
+        },
+        "step4": {
+          "hint": "這些資訊會用於辨識社員身分與後續課程權限設定。",
+          "schoolIdentity": "您目前的校園身分",
+          "schoolIdentityPlaceholder": "請選擇您的校園身分",
+          "schoolIdentityOptions": {
+            "current_student": "本校學生",
+            "teacher": "本校老師",
+            "external": "非本校人士",
+            "alumni": "畢業生"
+          },
+          "clubIdentity": "您是否為社團成員",
+          "clubIdentityPlaceholder": "請選擇社團身分",
+          "clubIdentityOptions": {
+            "member": "我是社團成員",
+            "non_member": "我不是社團成員"
+          },
+          "studentId": "學號",
+          "studentIdPlaceholder": "請輸入學號",
+          "studentIdHint": "本校學生需提供學號以便核對社員名單"
+        },
+        "toast": {
+          "emailDetected": "偵測到此電子郵件已註冊，已為您跳轉至登入頁面。",
+          "emailSent": "驗證信已寄出，請前往信箱完成驗證！",
+          "success": "註冊成功，歡迎加入！",
+          "googleSuccess": "Google 登入成功，歡迎加入！"
+        },
+        "errors": {
+          "usernameTaken": "此帳號名稱已被使用",
+          "emailRegistered": "此電子郵件已被註冊",
+          "studentIdBound": "此學號已被綁定，請確認輸入是否正確，或改用既有帳號登入",
+          "passwordWeak": "密碼不符合安全性要求",
+          "default": "註冊失敗: {message}",
+          "avatarTooLarge": "頭像檔案大小不能超過 5MB",
+          "avatarInvalidType": "請選擇圖片檔案"
+        },
+        "validation": {
+          "emailRequired": "請輸入電子郵件",
+          "emailInvalid": "請輸入有效的電子郵件格式",
+          "passwordRequired": "請輸入密碼",
+          "passwordMinLength": "密碼至少需要 8 個字元",
+          "passwordLowercase": "密碼必須包含小寫英文字母",
+          "passwordUppercase": "密碼必須包含大寫英文字母",
+          "passwordNumber": "密碼必須包含數字",
+          "passwordSpecial": "密碼必須包含至少一個特殊字元",
+          "confirmPasswordRequired": "請再次輸入密碼",
+          "confirmPasswordMismatch": "密碼不一致",
+          "usernamePattern": "僅能使用英文小寫、數字和底線",
+          "usernameMinLength": "至少 3 個字元",
+          "usernameMaxLength": "最多 20 個字元",
+          "displayNameMaxLength": "最多 20 個字元",
+          "schoolIdentityRequired": "請選擇您的校園身分",
+          "clubIdentityRequired": "請選擇是否為社團成員",
+          "studentIdRequired": "若您是本校學生，請輸入學號",
+          "studentIdMaxLength": "學號最多 20 個字元",
+          "studentIdPattern": "學號僅能使用英文字母、數字、底線與連字號"
+        }
+      }
+    }
+  },
+  "Home": {
+    "HeroSection": {
+      "titles": {
+        "1": "從創意到實戰",
+        "2": "打造你的",
+        "3": "機器人宇宙"
+      },
+      "subtitles": {
+        "1": "我們是一個將創意、",
+        "2": "技術與熱情結合，",
+        "3": "親手打造未來可能性的實作基地。"
+      }
+    },
+    "OurMission": {
+      "title": "我們的使命",
+      "description": "我們的宗旨是推廣機器人技術，培養學生的動手實作能力、邏輯思維與團隊協作精神。我們致力於提供一個開放、資源共享的學習環境，讓社員不僅能精進專業技能，更能學會如何解決複雜的實際問題。"
+    },
+    "CoreProjects": {
+      "title": "核心專案",
+      "description": "我們將技術分層，每一層都追求極致的完成度。",
+      "tabs": {
+        "mentor": "啟蒙者",
+        "pathfinder": "拓荒者",
+        "web": {
+          "1": "網站",
+          "2": "平台"
+        },
+        "ios": {
+          "1": "iOS",
+          "2": "App"
+        }
+      },
+      "status": {
+        "live": "上線中",
+        "active": "正在使用",
+        "planning": "規劃中",
+        "developing": "開發中"
+      },
+      "showcases": {
+        "web": {
+          "title": "網站平台",
+          "subtitle": "全端開發",
+          "desc": "基於 <strong>React & Next.js</strong> 建構的現代化入口。不只是展示面，更是展現我們對於 Web 前端技術與設計美感的堅持。",
+          "list": {
+            "1": "RWD 響應式設計",
+            "2": "現代化動態特效",
+            "3": "社員作品集展示平台"
+          }
+        },
+        "mentor": {
+          "title": "啟蒙者",
+          "subtitle": "循線避障入門機器人",
+          "desc": "專為課程設計的 <strong>入門級輪式機器人</strong>。其模組化設計有助於社員掌握感測器、馬達驅動器和 Arduino 邏輯。",
+          "list": {
+            "1": "Arduino Nano 架構",
+            "2": "模組化電路 (L9110S + KY-033)",
+            "3": "循線與避障功能"
+          }
+        },
+        "pathfinder": {
+          "title": "拓荒者",
+          "subtitle": "競賽級自主研發計畫",
+          "desc": "針對 <strong>循線、避障競賽</strong> 打造的高性能機種。突破套件限制，由社團核心團隊 <strong>自主設計</strong>。目標是實現高速循線與精準避障的完美平衡。",
+          "list": {
+            "1": "客製化 PCB 電路板與 3D 列印結構",
+            "2": "PID 控制演算法與感測器陣列最佳化",
+            "3": "軟硬體高度整合開發專案"
+          }
+        },
+        "ios": {
+          "title": "iOS App",
+          "subtitle": "iOS 平台應用程式",
+          "desc": "使用 <strong>SwiftUI 原生開發</strong>。整合社團課程行事曆、即時推播與社員簽到系統。這不只是一個 App，而是社團數位轉型的核心樞紐。",
+          "list": {
+            "1": "SwiftUI 原生開發",
+            "2": "社團課程行事曆",
+            "3": "即時推播與社員簽到系統"
+          }
+        }
+      }
+    },
+    "Marquee": {
+      "keywords": {
+        "lineFollowing": "循線",
+        "obstacleAvoidance": "避障",
+        "pathPlanning": "路徑規劃",
+        "robotArm": "機器手臂",
+        "autonomousCar": "自走車"
+      }
+    },
+    "ClubFeaturesSection": {
+      "title": "社團特色",
+      "features": {
+        "0": {
+          "title": "實作導向",
+          "description": "我們不紙上談兵。每位成員都有機會親手焊電路、寫程式、鎖螺絲，把想法變為現實。"
+        },
+        "1": {
+          "title": "團隊精神",
+          "description": "打造機器人絕非一人之功。在這裡，你將學會溝通、分工，並與夥伴一同面對挑戰。"
+        },
+        "2": {
+          "title": "跨領域合作",
+          "description": "我們歡迎資管、醫療、行銷等不同科系夥伴，不同專業的碰撞能激發最棒的火花。"
+        }
+      }
+    },
+    "LessonIntro": {
+      "title": "課程概覽",
+      "lessons": {
+        "0": {
+          "title": "社員大會與導覽",
+          "description": "社團的第一堂課，從認識彼此開始。介紹社團宗旨、組織章程與未來規劃，帶領社員了解官方網站功能，並依興趣完成分組，為後續的實作課程打好基礎。"
+        },
+        "1": {
+          "title": "機器人硬體組裝",
+          "description": "社團第一場大型實作活動。從零組件開始，對照電路圖完成自走車的結構組裝與線路連接，親身體驗從一堆零件到一台完整機器人的創造過程。"
+        },
+        "2": {
+          "title": "機器人程式設計",
+          "description": "完成硬體後，我們為機器人注入「靈魂」。從安裝 Arduino IDE 與驅動程式開始，學習讀取感測器數值，並撰寫程式邏輯，讓自走車真正動起來。"
+        },
+        "3": {
+          "title": "機器人競賽",
+          "description": "社團首場內部競賽，結合即時工作坊。賽前由幹部講解核心演算法，社員當場調整程式碼與熟悉場地，再讓機器人自主穿越地圖完成挑戰。"
+        }
+      }
+    },
+    "LatestUpdates": {
+      "title": "最新資訊",
+      "viewAll": "查看更多文章"
+    }
+  },
+  "News": {
+    "title": "新聞",
+    "description": "中臺機器人研究社的最新消息，包含社團活動、技術分享、競賽資訊等內容。",
+    "meta": {
+      "title": "新聞｜中臺機器人研究社",
+      "description": "中臺機器人研究社的最新資訊，包含社團活動、技術分享、競賽資訊等內容。",
+      "keywords": "最新資訊,社團動態,技術分享,活動公告,新聞"
+    },
+    "detail": {
+      "updatedAt": "(更新於 {date})",
+      "error": {
+        "loadFailed": "載入失敗",
+        "notFound": "文章不存在",
+        "backToList": "回到文章列表"
+      },
+      "share": {
+        "threads": "分享到 Threads",
+        "twitter": "分享到 X",
+        "copyLink": "複製網址",
+        "copyLinkTitle": "複製文章網址",
+        "copied": "已複製",
+        "share": "分享"
+      },
+      "meta": {
+        "titleTemplate": "{title}｜{category}｜中臺機器人研究社",
+        "descriptionTemplate": "閱讀關於「{title}」的最新內容，由 {author} 分享。",
+        "notFound": {
+          "title": "文章不存在｜中臺機器人研究社",
+          "description": "您要查看的文章不存在或已被刪除，請檢查網址是否正確。",
+          "keywords": "404,文章不存在,錯誤頁面"
+        },
+        "loading": {
+          "title": "文章載入中｜中臺機器人研究社",
+          "description": "正在載入文章內容，請稍候...",
+          "keywords": "載入中,文章,中臺機器人研究社"
+        }
+      }
+    },
+    "categories": {
+      "all": "全部",
+      "club-activity": "社團活動",
+      "instant-news": "即時消息",
+      "news-sharing": "新聞分享",
+      "tech-sharing": "技術分享",
+      "competition-info": "競賽資訊",
+      "website-update": "網站更新"
+    },
+    "emptyState": {
+      "all": "目前沒有任何文章",
+      "filtered": "目前沒有「{category}」分類的文章"
+    }
+  }
+}

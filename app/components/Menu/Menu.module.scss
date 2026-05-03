@@ -11,7 +11,7 @@
   height: fit-content;
   max-height: 100vh;
   @include mixins.transform-container(translateY(calc(-100% + 72px)));
-  @include mixins.transition(0.5s cubic-bezier(0.23, 1, 0.32, 1));
+  @include mixins.transition(0.5s var(--transition-bezier));
   opacity: 0;
   overflow-y: auto;
   visibility: hidden;
@@ -44,11 +44,10 @@
         width: 100%;
       }
 
-      &.theme_toggle {
-        @include mixins.hover-scale-effect(1.02);
-        &:hover {
-          background-color: var(--background-secondary);
-        }
+      &.switchers {
+        @include mixins.flexbox(row, center, center);
+        gap: 12px;
+        height: 42px;
       }
 
       &.auth_item {

@@ -42,8 +42,8 @@ module.exports = {
       return field({ changefreq: 'daily', priority: 1.0 })
     }
 
-    // `/update` 列表與 `/update/[slug]` 單篇
-    if (path === '/update' || path.startsWith('/update/')) {
+    // `/news` 列表與 `/news/[slug]` 單篇
+    if (path === '/news' || path.startsWith('/news/')) {
       return field({ changefreq: 'daily', priority: 0.8 })
     }
 

@@ -1,0 +1,228 @@
+@use '@/app/styles/mixins' as mixins;
+
+.homeContainer {
+  @include mixins.flexbox(column, center, center);
+  height: fit-content !important;
+  width: 100% !important;
+
+  > section {
+    position: relative;
+    @include mixins.flexbox(column, center, center);
+    width: 100%;
+  }
+
+  > section.howWeLearnSection {
+    @include mixins.flexbox(column, center, center);
+    width: 100%;
+    height: fit-content;
+
+    > .howWeLearnContainer {
+      padding: var(--space-6x) var(--space-2x);
+      width: clamp(360px, 100vw, 1080px);
+      height: fit-content;
+
+      > .headerContainer {
+        margin: var(--space-4x) 0;
+        width: 100%;
+        max-width: 720px;
+
+        > h2 {
+          margin-top: 0;
+          font-size: clamp(2rem, 3vw, 3rem);
+          font-weight: bold;
+          letter-spacing: 0.1rem;
+          color: var(--foreground);
+        }
+
+        > p {
+          font-size: 1rem;
+          letter-spacing: 0.05rem;
+          color: var(--foreground-secondary);
+        }
+      }
+
+      > .cardContainer {
+        width: 100%;
+        height: fit-content;
+
+        .card {
+          @include mixins.flexbox(column, start, start);
+          padding: var(--space-6x) var(--space-4x);
+          width: 70%;
+          min-width: 580px;
+          border: 1px solid var(--border);
+          background-color: rgba(var(--background-secondary-rgb), 0.5);
+          @include mixins.border-radius(12px);
+          @include mixins.glass-blur;
+          @include mixins.hover-scale-effect(1.025);
+
+          &:hover {
+            background-color: rgba(var(--background-tertiary-rgb), 0.5);
+            @include mixins.box-shadow(72px);
+          }
+
+          // 偶數
+          &:nth-child(even) {
+            margin-left: auto;
+
+            > h3 {
+              color: var(--theme-blue-600);
+            }
+
+            > .points {
+              > p {
+                background-color: var(--theme-blue-500);
+              }
+            }
+          }
+          &:not(:first-child) {
+            margin-top: -24px;
+          }
+
+          @include mixins.respond-by-max-width(628px) {
+            width: 100%;
+            padding: var(--space-3x) var(--space-2x);
+            margin-top: 24px !important;
+            min-width: unset !important;
+          }
+
+          > h3 {
+            font-size: clamp(1.5rem, 3.25vw, 2rem);
+            font-weight: 900;
+            letter-spacing: 0.1rem;
+            color: var(--theme-purple-600);
+          }
+
+          > p {
+            margin-top: var(--space);
+            margin-bottom: var(--space);
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: var(--foreground-secondary);
+            letter-spacing: 0.05rem;
+          }
+
+          > .points {
+            > p {
+              margin: var(--space-1-5x) 0 var(--space) 0;
+              padding: 6px 12px;
+              width: fit-content;
+              font-size: clamp(0.9rem, 2vw, 1.25rem);
+              font-weight: bolder;
+              background-color: var(--theme-purple-500);
+              color: var(--color-white);
+            }
+
+            > ul {
+              list-style-type: disc;
+              list-style-position: outside;
+              padding-left: 1.5rem;
+
+              > li {
+                font-size: clamp(0.9rem, 2vw, 1.2rem);
+                letter-spacing: 0.05rem;
+                color: var(--foreground-secondary);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  > h1 {
+    color: var(--text-primary);
+  }
+}
+
+.ourMissionSection {
+  @include mixins.flexbox(column, center, center);
+  width: 100%;
+  overflow: hidden;
+  background-color: rgba(var(--background-rgb), 0.25);
+  border: 1px solid var(--border);
+  @include mixins.glass-blur;
+
+  > .container {
+    position: relative;
+    @include mixins.flexbox(row, center, center);
+    gap: var(--space-2x);
+    padding: var(--space-6x) var(--space-2x);
+    width: clamp(360px, 100vw, 1080px);
+    height: fit-content;
+    max-width: 900px;
+
+    > .missionIcon {
+      position: absolute;
+      top: calc(50% - 180px);
+      left: -72px;
+      height: 360px;
+      width: 360px;
+      color: var(--foreground-950);
+    }
+
+    @include mixins.respond-by-max-width(760px) {
+      @include mixins.flexbox(column, center, center);
+
+      > .missionIcon {
+        top: -80px;
+        left: calc(50% - 180px);
+      }
+    }
+
+    h1 {
+      margin: 0;
+      min-width: 25%;
+      white-space: nowrap;
+      color: var(--foreground);
+    }
+    p {
+      font-size: 1rem;
+      color: var(--foreground-secondary);
+    }
+  }
+}
+
+.clubFeaturesSection {
+  width: 100%;
+
+  > .container {
+    @include mixins.flexbox(column, center, center);
+    gap: var(--space-2x);
+    padding: var(--space-6x) var(--space-2x);
+    width: clamp(360px, 100vw, 1080px);
+    height: fit-content;
+
+    > .featuresContainer {
+      @include mixins.flexbox(row, center, stretch);
+      gap: var(--space-2x);
+
+      @include mixins.respond-to('phone') {
+        @include mixins.flexbox(column, center, center);
+      }
+
+      > .featureCard {
+        @include mixins.flexbox(column, center, start);
+        gap: var(--space);
+        padding: var(--space-2x);
+        background-color: rgba(var(--background-secondary-rgb), 0.5);
+        border: 1px solid var(--border);
+        @include mixins.border-radius(12px);
+
+        > .featureIcon {
+          @include mixins.flexbox(column, center, center);
+          width: 60px;
+          height: 60px;
+          background-color: var(--primary);
+          border: 1px solid var(--border-secondary);
+          @include mixins.border-radius(30px);
+          color: var(--foreground);
+          font-size: 1.5rem;
+        }
+
+        > h2 {
+          margin: 0;
+        }
+      }
+    }
+  }
+}

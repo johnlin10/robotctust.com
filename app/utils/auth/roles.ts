@@ -15,6 +15,7 @@ export const ADMIN_ROLES: UserRole[] = [
   'admin_verifications',
   'admin_news',
   'admin_accounts',
+  'admin_members',
 ]
 
 const ROLE_PRIORITY: Role[] = [
@@ -25,6 +26,7 @@ const ROLE_PRIORITY: Role[] = [
   'admin_verifications',
   'admin_news',
   'admin_accounts',
+  'admin_members',
   'member',
 ]
 

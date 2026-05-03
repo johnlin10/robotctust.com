@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
@@ -32,12 +33,29 @@ const HIDDEN_HEADER_PATHS = [
 ]
 
 /**
+ * 去除 pathname 中的 locale 前綴（非預設語言才有前綴，預設 zh-TW 無前綴）
+ */
+const getBasePath = (pathname: string): string => {
+  if (pathname.startsWith('/en/')) return pathname.slice(3)
+  if (pathname === '/en') return '/'
+  return pathname
+}
+
+/**
+ * 檢查當前路徑是否符合目標路徑（精確或子路徑，支援 i18n 前綴）
+ */
+const isActivePath = (pathname: string, path: string): boolean => {
+  const base = getBasePath(pathname)
+  return base === path || base.startsWith(`${path}/`)
+}
+
+/**
  * 檢查當前路徑是否需要隱藏 Header
  * @param {string} pathname 當前路徑
  * @returns {boolean} 是否需要隱藏
  */
 const shouldHideHeader = (pathname: string): boolean => {
-  return HIDDEN_HEADER_PATHS.some((path) => pathname.startsWith(path))
+  return HIDDEN_HEADER_PATHS.some((path) => pathname.includes(path))
 }
 
 /**
@@ -45,6 +63,7 @@ const shouldHideHeader = (pathname: string): boolean => {
  * @returns {JSX.Element} Header 元件
  */
 export default function Header() {
+  const t = useTranslations('Header')
   // 獲取當前路徑
   const pathname = usePathname()
   // 獲取登入資訊與管理權限
@@ -140,47 +159,45 @@ export default function Header() {
             <Link
               href="/courses"
               onClick={handleNavLinkClick}
-              className={pathname.startsWith('/courses') ? styles.active : ''}
+              className={isActivePath(pathname, '/courses') ? styles.active : ''}
             >
-              課程
+              {t('nav.courses')}
             </Link>
             <div className={styles.separator} />
             <Link
-              href="/update"
+              href="/news"
               onClick={handleNavLinkClick}
-              className={pathname.startsWith('/update') ? styles.active : ''}
+              className={isActivePath(pathname, '/news') ? styles.active : ''}
             >
-              新聞
+              {t('nav.news')}
             </Link>
             <Link
               href="/competitions"
               onClick={handleNavLinkClick}
-              className={
-                pathname.startsWith('/competitions') ? styles.active : ''
-              }
+              className={isActivePath(pathname, '/competitions') ? styles.active : ''}
             >
-              競賽
+              {t('nav.competitions')}
             </Link>
             <Link
               href="/schedules"
               onClick={handleNavLinkClick}
-              className={pathname.startsWith('/schedules') ? styles.active : ''}
+              className={isActivePath(pathname, '/schedules') ? styles.active : ''}
             >
-              行事曆
+              {t('nav.calendar')}
             </Link>
             <Link
               href="/docs"
               onClick={handleNavLinkClick}
-              className={pathname.startsWith('/docs') ? styles.active : ''}
+              className={isActivePath(pathname, '/docs') ? styles.active : ''}
             >
-              文檔
+              {t('nav.docs')}
             </Link>
             <Link
               href="/about"
               onClick={handleNavLinkClick}
-              className={pathname.startsWith('/about') ? styles.active : ''}
+              className={isActivePath(pathname, '/about') ? styles.active : ''}
             >
-              關於
+              {t('nav.about')}
             </Link>
             {(isAdmin || isSuperAdmin) && (
               <>
@@ -188,11 +205,9 @@ export default function Header() {
                 <Link
                   href="/dashboard"
                   onClick={handleNavLinkClick}
-                  className={
-                    pathname.startsWith('/dashboard') ? styles.active : ''
-                  }
+                  className={isActivePath(pathname, '/dashboard') ? styles.active : ''}
                 >
-                  後台
+                  {t('nav.dashboard')}
                 </Link>
               </>
             )}
@@ -201,9 +216,9 @@ export default function Header() {
                 <Link
                   href="/admin"
                   onClick={handleNavLinkClick}
-                  className={pathname.startsWith('/admin') ? styles.active : ''}
+                  className={isActivePath(pathname, '/admin') ? styles.active : ''}
                 >
-                  總控台
+                  {t('nav.admin')}
                 </Link>
               </>
             )}

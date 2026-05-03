@@ -1,4 +1,4 @@
-@use '../../styles/mixins' as mixins;
+@use '@/app/styles/mixins' as mixins;
 
 .timelineContainer {
   @include mixins.flexbox(column, start, stretch);

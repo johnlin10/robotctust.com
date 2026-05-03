@@ -181,10 +181,12 @@ export function formatDateTimeToISO(dateTime?: {
  * @param timestamp - Firebase Timestamp 物件
  * @returns ISO 8601 格式的日期時間字串，或 undefined
  */
-export function formatFirebaseTimestampToISO(timestamp?: {
-  toDate?: () => Date
-}): string | undefined {
-  if (!timestamp?.toDate) return undefined
+export function formatFirebaseTimestampToISO(
+  timestamp?: string | { toDate?: () => Date },
+): string | undefined {
+  if (!timestamp) return undefined
+  if (typeof timestamp === 'string') return timestamp
+  if (!timestamp.toDate) return undefined
 
   try {
     return timestamp.toDate().toISOString()

@@ -5,6 +5,7 @@ import { AsideProvider } from '../Aside/AsideContext'
 
 interface PageProps {
   style?: string
+  layoutStyle?: string
   maxWidth?: string
   header?: {
     title?: string
@@ -30,6 +31,7 @@ interface PageProps {
  */
 export default function Page({
   style,
+  layoutStyle,
   maxWidth = '800px',
   header,
   children,
@@ -45,8 +47,8 @@ export default function Page({
       <div className={styles.page}>
         {mouseDynamicGlow ? <MouseDynamicGlow /> : null}
         {backgroundGrid ? <div className={styles.backgroundGrid}></div> : null}
-        
-        <div className={styles.pageLayout}>
+
+        <div className={`${styles.pageLayout} ${layoutStyle || ''}`}>
           {aside && <div className={styles.asideSlot}>{aside}</div>}
 
           <main className={styles.mainContent}>

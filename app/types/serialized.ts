@@ -5,7 +5,6 @@
 
 import { UserProfile } from './user'
 import { Post, PostCategory } from './post'
-import { Timestamp } from 'firebase/firestore'
 
 //* 序列化後的使用者資料（所有 Date 轉為 string）
 export interface SerializedUserProfile {
@@ -38,6 +37,7 @@ export interface SerializedPost {
   coverImageUrl: string | null
   authorId: string
   authorDisplayName: string
+  authorUsername: string | null
   createdAt: string // Timestamp -> string
   updatedAt: string // Timestamp -> string
 }
@@ -64,23 +64,11 @@ export const deserializeUserProfile = (
   }
 }
 
-//* 將 Post 序列化為可傳遞給客戶端的格式
-export const serializePost = (post: Post): SerializedPost => {
-  return {
-    ...post,
-    createdAt: post.createdAt.toDate().toISOString(),
-    updatedAt: post.updatedAt.toDate().toISOString(),
-  }
-}
+//* 將 Post 序列化為可傳遞給客戶端的格式（timestamps 已是 ISO string，直接傳遞）
+export const serializePost = (post: Post): SerializedPost => post
 
-//* 將序列化的文章資料還原為 Post
-export const deserializePost = (serializedPost: SerializedPost): Post => {
-  return {
-    ...serializedPost,
-    createdAt: Timestamp.fromDate(new Date(serializedPost.createdAt)),
-    updatedAt: Timestamp.fromDate(new Date(serializedPost.updatedAt)),
-  }
-}
+//* 將序列化的文章資料還原為 Post（timestamps 已是 ISO string，直接傳遞）
+export const deserializePost = (serializedPost: SerializedPost): Post => serializedPost
 
 //* 安全地序列化任何包含 Date 的物件
 export const serializeDates = <T extends Record<string, unknown>>(

@@ -2,17 +2,20 @@ import styles from './ContactUs.module.scss'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { getTranslations } from 'next-intl/server'
 
-function ContactUs() {
+async function ContactUs() {
+  const t = await getTranslations('Footer')
+
   return (
     <div className={styles.contact}>
       <h2 className={styles.blockTitle}>
         <Link href="/contact">
-          聯絡我們 <FontAwesomeIcon icon={faChevronRight} />
+          {t('contactUs.title')} <FontAwesomeIcon icon={faChevronRight} />
         </Link>
       </h2>
       <div className={styles.contactItem}>
-        <p className={styles.labelTitle}>Email</p>
+        <p className={styles.labelTitle}>{t('contactUs.email')}</p>
         <Link
           href="mailto:robotctust@gmail.com"
           className="link"
@@ -22,7 +25,7 @@ function ContactUs() {
         </Link>
       </div>
       <div className={styles.contactItem}>
-        <p className={styles.labelTitle}>Instagram</p>
+        <p className={styles.labelTitle}>{t('contactUs.instagram')}</p>
         <Link
           href="https://www.instagram.com/robotctust/"
           className="link"
@@ -33,7 +36,7 @@ function ContactUs() {
       </div>
 
       <div className={styles.contactItem}>
-        <p className={styles.labelTitle}>社團辦公室</p>
+        <p className={styles.labelTitle}>{t('contactUs.office')}</p>
         <Link href="/contact" className="link">
           中臺科技大學 天機教學大樓 2323
         </Link>

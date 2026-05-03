@@ -10,13 +10,19 @@ import styles from './Aside.module.scss'
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBars,
+  faChevronLeft,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 
 export interface AsideNavItem {
   label: string
   href: string
   icon?: IconDefinition | null
+  /** 精確匹配路徑，預設 false（使用 startsWith 匹配） */
+  exact?: boolean
 }
 
 export interface AsideHeaderConfig {
@@ -30,24 +36,24 @@ export interface AsideHeaderConfig {
 }
 
 export interface AsideProps {
-  mode: 'nav' | 'custom'
   header?: AsideHeaderConfig
+  /** 傳入時渲染導覽列 */
   items?: AsideNavItem[]
-  customContent?: React.ReactNode
+  /** 傳入時渲染自訂內容，與 items 可並存 */
+  children?: React.ReactNode
   className?: string
   topOffset?: number
 }
 
 export const Aside: React.FC<AsideProps> = ({
-  mode,
   header,
   items = [],
-  customContent,
+  children,
   className = '',
-  topOffset = 60,
+  topOffset = 72,
 }) => {
   const { isCompactHeader } = useHeaderState()
-  const { isOpen, setIsOpen } = useAside()
+  const { isOpen, setIsOpen, toggleAside } = useAside()
   const pathname = usePathname()
 
   const stickyState = useStickyDetection({
@@ -55,12 +61,8 @@ export const Aside: React.FC<AsideProps> = ({
     enabled: true,
   })
 
-  const isLinkActive = (href: string) => {
-    if (href === '/dashboard' || href === '/courses') {
-      return pathname === href
-    }
-    return pathname?.startsWith(href)
-  }
+  const isLinkActive = (item: AsideNavItem) =>
+    item.exact ? pathname === item.href : pathname?.startsWith(item.href)
 
   return (
     <>
@@ -68,61 +70,74 @@ export const Aside: React.FC<AsideProps> = ({
         className={`${styles.drawerOverlay} ${isOpen ? styles.open : ''}`}
         onClick={() => setIsOpen(false)}
       />
-      <aside
-        ref={stickyState.ref}
+      <div
         className={`
-          ${styles.aside}
+          ${styles.mobileRail}
           ${isCompactHeader ? styles.headerCompact : ''}
-          ${stickyState.isSticky ? styles.sticky : ''}
           ${isOpen ? styles.open : ''}
-          ${className}
         `}
       >
         <button
-          className={styles.closeBtn}
-          onClick={() => setIsOpen(false)}
-          aria-label="關閉側邊欄"
+          type="button"
+          className={styles.mobileToggleBtn}
+          onClick={toggleAside}
+          aria-label={isOpen ? '關閉側邊欄' : '展開側邊欄'}
+          aria-expanded={isOpen}
+          aria-controls="app-aside-panel"
         >
-          <FontAwesomeIcon icon={faXmark} />
+          <FontAwesomeIcon icon={isOpen ? faXmark : faBars} />
         </button>
 
-        <div className={styles.scrollableContent}>
-          {(!header || !header.hide) && (
-            <header className={styles.asideHeader}>
-              {header?.backLink && (
-                <Link href={header.backLink.href} className={styles.backLink}>
-                  <FontAwesomeIcon icon={faChevronLeft} />
-                  <span>{header.backLink.label}</span>
-                </Link>
-              )}
-              {header?.title && <h1 className={styles.title}>{header.title}</h1>}
-              {header?.subtitle && (
-                <p className={styles.subtitle}>{header.subtitle}</p>
-              )}
-            </header>
-          )}
+        <aside
+          id="app-aside-panel"
+          ref={stickyState.ref}
+          className={`
+            ${styles.aside}
+            ${isCompactHeader ? styles.headerCompact : ''}
+            ${stickyState.isSticky ? styles.sticky : ''}
+            ${className}
+          `}
+        >
+          <div className={styles.scrollableContent}>
+            {(!header || !header.hide) && (
+              <header className={styles.asideHeader}>
+                {header?.backLink && (
+                  <Link href={header.backLink.href} className={styles.backLink}>
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                    <span>{header.backLink.label}</span>
+                  </Link>
+                )}
+                {header?.title && (
+                  <h1 className={styles.title}>{header.title}</h1>
+                )}
+                {header?.subtitle && (
+                  <p className={styles.subtitle}>{header.subtitle}</p>
+                )}
+              </header>
+            )}
 
-          {mode === 'nav' && (
-            <nav className={styles.nav}>
-              {items.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`${styles.navLink} ${
-                    isLinkActive(item.href) ? styles.active : ''
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.icon && <FontAwesomeIcon icon={item.icon} />}
-                  <span>{item.label}</span>
-                </Link>
-              ))}
-            </nav>
-          )}
+            {items.length > 0 && (
+              <nav className={styles.nav}>
+                {items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`${styles.navLink} ${
+                      isLinkActive(item) ? styles.active : ''
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.icon && <FontAwesomeIcon icon={item.icon} />}
+                    <span>{item.label}</span>
+                  </Link>
+                ))}
+              </nav>
+            )}
 
-          {mode === 'custom' && customContent}
-        </div>
-      </aside>
+            {children}
+          </div>
+        </aside>
+      </div>
     </>
   )
 }

@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 
 // components
-import { Toast, ToastType } from '../components/Toast/Toast'
+import { Toast, ToastType } from '@/app/components/Toast/Toast'
 
 interface ToastContextType {
   showToast: (message: string, type?: ToastType, duration?: number) => void

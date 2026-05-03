@@ -1,24 +1,129 @@
 @use '../../styles/_mixins.scss' as mixins;
 
+@mixin mobile-aside-screen {
+  @include mixins.respond-to('phone') {
+    @content;
+  }
+
+  @include mixins.respond-to('phone-landscape') {
+    @content;
+  }
+
+  @include mixins.respond-by-max-width(859px) {
+    @content;
+  }
+}
+
+// CSS Modules 必須在頂層看到 selector，才能將 styles.xxx 對應到 hash class 名稱。
+// 這些狀態 class 的實際樣式定義在下方各元件的巢狀結構中（例如 .mobileRail.open），
+// 此處僅需宣告以確保 hash 穩定輸出，不可刪除。
+.open {
+}
+
+.headerCompact {
+}
+
+.sticky {
+}
+
+.active {
+}
+
 .drawerOverlay {
   display: none;
 
-  @include mixins.respond-by-max-width(859px) {
+  @include mobile-aside-screen {
     display: block;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 9998;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
     opacity: 0;
     pointer-events: none;
-    @include mixins.transition(opacity 0.3s ease);
+    @include mixins.transition;
+    @include mixins.glass-blur(3px);
 
     &.open {
       opacity: 1;
       pointer-events: auto;
+    }
+  }
+}
+
+.mobileRail {
+  position: relative;
+  @include mixins.transition(var(--transition-default));
+
+  @include mixins.respond-by-min-width(860px) {
+    display: contents;
+  }
+
+  .mobileToggleBtn {
+    display: none;
+    @include mixins.transition;
+
+    @include mobile-aside-screen {
+      z-index: 1101;
+      position: absolute;
+      top: 0;
+      right: -44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: rgba(var(--background-rgb), 0.5);
+      color: var(--foreground);
+      border: 1px solid var(--border);
+      border-left: 1px solid transparent;
+      @include mixins.border-radius(0 9px 9px 0);
+      @include mixins.glass-blur(12px);
+      cursor: pointer;
+      @include mixins.transition(var(--transition-default));
+
+      &:hover {
+        background: rgba(var(--background-rgb), 0.8);
+        color: var(--foreground);
+      }
+
+      svg {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  @include mobile-aside-screen {
+    --mobile-aside-top: var(--header-height);
+    --mobile-aside-width: calc(100vw - var(--space-2x));
+
+    z-index: 1100;
+    position: fixed;
+    top: var(--mobile-aside-top);
+    left: 0;
+    display: flex;
+    align-items: flex-start;
+    pointer-events: none;
+    @include mixins.border-radius(16px);
+    @include mixins.transform-container(translateX(-100%));
+
+    > * {
+      pointer-events: auto;
+    }
+
+    &.headerCompact {
+      --mobile-aside-top: var(--header-height-compact);
+    }
+
+    &.open {
+      @include mixins.transform-container(translateX(var(--space)));
+      @include mixins.box-shadow(36px);
+
+      .mobileToggleBtn {
+        top: var(--space);
+        right: var(--space);
+        border-left: 1px solid var(--border);
+        @include mixins.border-radius(9px);
+      }
     }
   }
 }
@@ -31,14 +136,14 @@
   background: var(--background);
   @include mixins.border-radius(18px);
   border: 1px solid var(--border);
-  @include mixins.hover-scale-effect(1.01);
   overflow: hidden;
   flex-shrink: 0;
-  @include mixins.transition(all 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+  @include mixins.transition;
 
   &:hover {
     background: rgba(var(--background-secondary-rgb), 0.15);
-    box-shadow: 0 0 96px 0 #0000000f;
+    @include mixins.box-shadow(96px);
+    @include mixins.transform-container(scale(1.01));
   }
 
   .scrollableContent {
@@ -48,17 +153,12 @@
     overflow-y: auto;
   }
 
-  .closeBtn {
-    display: none;
-  }
-
-  /* --- Common Header Styles --- */
   .asideHeader {
-    z-index: 10;
+    z-index: 100;
     position: sticky;
     top: 0;
     padding: var(--space-1-5x);
-    background: var(--background);
+    @include mixins.glass-blur(12px);
     border-bottom: 1px solid var(--border);
 
     .backLink {
@@ -74,12 +174,13 @@
       margin-top: -6px;
       border: 1px solid transparent;
       @include mixins.border-radius(6px);
-      @include mixins.hover-scale-effect(1.02);
+      @include mixins.transition(var(--transition-default));
 
       &:hover {
         border-color: var(--border);
         background: var(--background-secondary);
         color: var(--foreground);
+        @include mixins.transform-container(scale(1.02));
       }
     }
 
@@ -99,16 +200,11 @@
     }
   }
 
-  /* --- Nav Mode Styles --- */
   .nav {
     display: flex;
     flex-direction: column;
     gap: 6px;
     padding: var(--space);
-
-    @include mixins.respond-by-max-width(859px) {
-      padding: var(--space-2x);
-    }
 
     .navLink {
       display: flex;
@@ -122,8 +218,9 @@
       border: 1px solid transparent;
       @include mixins.border-radius(10px);
       background: transparent;
+      @include mixins.transition(var(--transition-default));
 
-      @include mixins.respond-by-max-width(859px) {
+      @include mobile-aside-screen {
         white-space: nowrap;
       }
 
@@ -142,7 +239,7 @@
         background: var(--background-tertiary);
         border-color: var(--border-hover);
         color: var(--foreground);
-        
+
         svg {
           opacity: 1;
         }
@@ -150,68 +247,27 @@
     }
   }
 
-  @include mixins.respond-by-max-width(859px) {
-    &.sticky {
-      background-color: rgba(var(--background-secondary-rgb), 0.25);
-      @include mixins.glass-blur(12px);
+  @include mobile-aside-screen {
+    position: relative;
+    top: auto;
+    width: var(--mobile-aside-width);
+    max-width: var(--mobile-aside-width);
+    max-height: calc(
+      100vh - var(--mobile-aside-top) - var(--space-2x)
+    ) !important;
+    background: rgba(var(--background-rgb), 0.8);
+    @include mixins.border-radius(16px);
+    @include mixins.glass-blur(16px);
 
-      &.headerCompact {
-        top: 48px;
-        border: 1px solid var(--foreground-950);
-      }
+    &:hover {
+      background: rgba(var(--background-rgb), 0.92);
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.16);
+      @include mixins.transform-container(none);
     }
 
-    // Mobile Drawer styling
-    &.mobileDrawer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 280px;
-      max-width: 80vw;
-      height: 100vh;
-      z-index: 9999;
-      background: var(--background-secondary);
-      border: none;
-      border-right: 1px solid var(--border);
-      @include mixins.border-radius(0);
-      @include mixins.glass-blur(24px);
-      transform: translateX(-100%);
-      @include mixins.transition(transform 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-
-      .scrollableContent {
-        padding-top: var(--space-6x); // Make room for close btn
-      }
-
-      .closeBtn {
-        z-index: 10000;
-        display: block;
-        position: absolute;
-        top: var(--space-1-5x);
-        right: var(--space-1-5x);
-        background: transparent;
-        border: none;
-        color: var(--foreground);
-        font-size: 1.5rem;
-        cursor: pointer;
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid transparent;
-        @include mixins.border-radius(8px);
-        @include mixins.hover-scale-effect;
-
-        &:hover {
-          background: var(--background);
-          border-color: var(--border-hover);
-          color: var(--foreground);
-        }
-      }
-
-      &.open {
-        transform: translateX(0);
-      }
+    &.sticky,
+    &.headerCompact {
+      top: auto;
     }
   }
 

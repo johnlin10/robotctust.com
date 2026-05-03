@@ -1,0 +1,272 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.adminContainer {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--background);
+
+  .adminContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-2x) var(--space);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4x);
+
+    /* =========================================
+       Header Section
+       ========================================= */
+    .header {
+      padding-bottom: var(--space-2x);
+      border-bottom: 1px solid var(--border);
+
+      .headerTitle {
+        h1 {
+          margin: 0;
+          font-size: 2rem;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+        }
+
+        .adminInfo {
+          margin-top: 12px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .adminBadge {
+            padding: 4px 12px;
+            background: var(--role-super_admin);
+            background-size: 200% auto;
+            animation: superAdminGradientFlow 3s ease-in-out infinite;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            @include mixins.border-radius(999px);
+          }
+
+          .adminEmail {
+            color: var(--foreground-secondary);
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+
+    /* =========================================
+       Section Layout
+       ========================================= */
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2x);
+
+      .sectionHeader {
+        .sectionTitle {
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          color: var(--foreground);
+        }
+
+        .sectionDescription {
+          margin: 8px 0 0 0;
+          color: var(--foreground-secondary);
+          line-height: 1.6;
+          font-size: 0.95rem;
+        }
+      }
+
+      /* Roles Table */
+      .tableContainer {
+        background: var(--background-secondary);
+        border: 1px solid var(--border);
+        @include mixins.border-radius(20px);
+        overflow: hidden;
+
+        .rolesTable {
+          width: 100%;
+          border-collapse: collapse;
+          text-align: left;
+
+          th, td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+          }
+
+          th {
+            background: rgba(var(--background-secondary-rgb), 0.5);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--foreground-tertiary);
+          }
+
+          .userCell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .userName {
+              font-weight: 600;
+              color: var(--foreground);
+            }
+
+            .selfBadge {
+              color: var(--theme-blue-400);
+              font-size: 0.75rem;
+              font-weight: 700;
+            }
+          }
+
+          .email {
+            color: var(--foreground-secondary);
+            font-size: 0.9rem;
+          }
+
+          .saveButton {
+            @include mixins.button('primary', 'small');
+            min-width: 90px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+          }
+
+          .saveButtonDirty {
+            background: var(--theme-orange-400);
+            color: #fff;
+            border-color: transparent;
+
+            &:hover {
+              background: var(--theme-orange-500);
+            }
+          }
+
+          .emptyRow {
+            text-align: center;
+            padding: 60px;
+            color: var(--foreground-tertiary);
+          }
+
+          .center { text-align: center; }
+        }
+      }
+
+      /* Sync Grid */
+      .syncGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: var(--space-2x);
+
+        .syncCard {
+          background: var(--background-secondary);
+          border: 1px solid var(--border);
+          padding: 24px;
+          @include mixins.border-radius(20px);
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+
+          h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+          }
+
+          p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--foreground-secondary);
+            line-height: 1.5;
+          }
+
+          .syncMeta {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--foreground-tertiary);
+
+            .successText {
+              color: var(--theme-green-500);
+            }
+          }
+
+          .syncButton {
+            @include mixins.button('normal', 'normal');
+            width: 100%;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(var(--background-secondary-rgb), 0.5);
+
+            &:hover {
+              background: var(--background-tertiary);
+              border-color: var(--border-hover);
+            }
+          }
+        }
+      }
+    }
+
+    /* States */
+    .loadingState {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 0;
+      gap: 20px;
+      color: var(--foreground-secondary);
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(var(--theme-purple-500-rgb), 0.1);
+        border-top-color: var(--theme-purple-500);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+    }
+
+    .accessDenied {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px;
+      text-align: center;
+      gap: 16px;
+
+      .accessIcon {
+        font-size: 3rem;
+        color: var(--theme-red-500);
+        margin-bottom: 12px;
+      }
+
+      h2 { margin: 0; font-size: 1.75rem; }
+      p { color: var(--foreground-secondary); }
+    }
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes superAdminGradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 200% 50%; }
+}

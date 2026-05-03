@@ -61,7 +61,7 @@ export const WebVisual = () => {
               />
             </Link>
             <div>
-              <Link href="/update">最新資訊</Link>
+              <Link href="/news">最新資訊</Link>
               <Link href="/schedules">行事曆</Link>
               <Link href="/about">關於</Link>
             </div>
@@ -96,7 +96,7 @@ const SensorLight = ({ active }: { active: any }) => {
   return (
     <animated.div
       className={active.to(
-        (v: number) => `${styles.sensor} ${v > 0.5 ? styles.active : ''}`
+        (v: number) => `${styles.sensor} ${v > 0.5 ? styles.active : ''}`,
       )}
     />
   )

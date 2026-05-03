@@ -9,7 +9,7 @@ import React, {
   useRef,
   ReactNode,
 } from 'react'
-import { HeaderScrollConfig } from '../components/Header/headerScrollConfig'
+import { HeaderScrollConfig } from '@/app/components/Header/headerScrollConfig'
 
 //* Header Context 介面定義
 interface HeaderContextType {

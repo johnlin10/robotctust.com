@@ -1,5 +1,3 @@
-import { Timestamp } from 'firebase/firestore'
-
 // 文章分類
 export type PostCategory =
   | '社團活動'
@@ -11,19 +9,20 @@ export type PostCategory =
 
 // 文章資料
 export interface Post {
-  id: string // Document ID
+  id: string // Document ID or slug
   title: string
   contentMarkdown: string
   category: PostCategory
   coverImageUrl: string | null
 
-  // 作者資訊 (Denormalized Data)
-  authorId: string // Firebase Auth user.uid
-  authorDisplayName: string // 儲存當下使用者的顯示名稱
+  // 作者資訊
+  authorId: string
+  authorDisplayName: string
+  authorUsername: string | null
 
-  // 時間戳記
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  // 時間戳記（ISO 8601 字串）
+  createdAt: string
+  updatedAt: string
 }
 
 // 建立文章資料

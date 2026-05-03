@@ -1,5 +1,4 @@
-@import '../../styles/mixins';
-@import '../../styles/colors';
+@use '@/app/styles/mixins' as mixins;
 
 .profile_editor {
   max-width: 600px;
