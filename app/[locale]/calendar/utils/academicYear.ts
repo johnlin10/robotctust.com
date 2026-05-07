@@ -176,6 +176,9 @@ export const filterEventsByAcademicYear = (
 /**
  * 轉換學年度為顯示文字
  */
-export const formatAcademicYear = (academicYear: number): string => {
+export const formatAcademicYear = (academicYear: number, t?: any): string => {
+  if (t) {
+    return t('academicYear', { year: academicYear })
+  }
   return `${academicYear} 學年度`
 }

@@ -5,10 +5,6 @@
     @content;
   }
 
-  @include mixins.respond-to('phone-landscape') {
-    @content;
-  }
-
   @include mixins.respond-by-max-width(859px) {
     @content;
   }
@@ -52,8 +48,15 @@
 
 .mobileRail {
   position: relative;
-  @include mixins.transition(var(--transition-default));
+  width: calc(100% - var(--space-2x));
+  @include mixins.transition;
 
+  @include mixins.respond-by-max-width(860px) {
+    max-width: 280px;
+  }
+  @include mixins.respond-by-max-width(504px) {
+    max-width: 480px;
+  }
   @include mixins.respond-by-min-width(860px) {
     display: contents;
   }
@@ -79,7 +82,6 @@
       @include mixins.border-radius(0 9px 9px 0);
       @include mixins.glass-blur(12px);
       cursor: pointer;
-      @include mixins.transition(var(--transition-default));
 
       &:hover {
         background: rgba(var(--background-rgb), 0.8);
@@ -116,7 +118,6 @@
 
     &.open {
       @include mixins.transform-container(translateX(var(--space)));
-      @include mixins.box-shadow(36px);
 
       .mobileToggleBtn {
         top: var(--space);
@@ -133,23 +134,26 @@
   position: sticky;
   top: var(--header-height, 72px);
   width: 100%;
-  background: var(--background);
-  @include mixins.border-radius(18px);
+  max-width: 280px;
+  background: rgba(var(--background-rgb), 0.5);
+  @include mixins.border-radius(15px);
   border: 1px solid var(--border);
   overflow: hidden;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
   @include mixins.transition;
 
   &:hover {
     background: rgba(var(--background-secondary-rgb), 0.15);
-    @include mixins.box-shadow(96px);
     @include mixins.transform-container(scale(1.01));
   }
 
   .scrollableContent {
     @include mixins.hide-scrollbar;
     width: 100%;
-    height: 100%;
+    flex: 1 1 0%;
+    min-height: 0;
     overflow-y: auto;
   }
 
@@ -158,7 +162,6 @@
     position: sticky;
     top: 0;
     padding: var(--space-1-5x);
-    @include mixins.glass-blur(12px);
     border-bottom: 1px solid var(--border);
 
     .backLink {
@@ -250,11 +253,9 @@
   @include mobile-aside-screen {
     position: relative;
     top: auto;
-    width: var(--mobile-aside-width);
+    width: 100%;
     max-width: var(--mobile-aside-width);
-    max-height: calc(
-      100vh - var(--mobile-aside-top) - var(--space-2x)
-    ) !important;
+    max-height: calc(100vh - var(--mobile-aside-top) - var(--space)) !important;
     background: rgba(var(--background-rgb), 0.8);
     @include mixins.border-radius(16px);
     @include mixins.glass-blur(16px);
@@ -272,7 +273,6 @@
   }
 
   @include mixins.respond-by-min-width(860px) {
-    width: 280px;
     height: fit-content;
     max-height: calc(100vh - 72px - var(--space-2x));
 

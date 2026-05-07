@@ -1,17 +1,16 @@
 @use '@/app/styles/_mixins.scss' as mixins;
 
+// 整個頁面容器（讓各 section 自行管理寬度）
 .aboutContainer {
-  > .aboutContent {
-    @include mixins.content-container;
+  width: 100% !important;
+}
 
-    > .contact {
-      > h2 {
-        border-top: none;
-        padding-top: 0;
-      }
-      > p {
-        color: var(--text-secondary);
-      }
-    }
-  }
+// 幹部介紹 + 辦公室位置 的共用包裝器
+.innerContent {
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space-3x);
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-4x) 0 var(--space-4x);
 }

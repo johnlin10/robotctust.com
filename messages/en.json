@@ -57,11 +57,62 @@
       "joinUs": "Join Us,",
       "exploreRobotWorld": "Explore the Robot World!"
     },
+    "Roles": {
+      "super_admin": "Super Admin",
+      "admin": "Admin",
+      "admin_course": "Course Admin",
+      "admin_achievement": "Achievement Admin",
+      "admin_verifications": "Verification Admin",
+      "admin_news": "News Admin",
+      "admin_accounts": "Account Admin",
+      "admin_members": "Member Admin",
+      "admin_calendar": "Calendar Admin",
+      "member": "Member"
+    },
+    "Aside": {
+      "close": "Close sidebar",
+      "open": "Open sidebar"
+    },
+    "CourseSidebar": {
+      "header": {
+        "title": "Learning Workshop",
+        "subtitle": "Club Courses"
+      },
+      "overview": "Overview",
+      "emptyState": "No courses available, or you are not a member of any semester yet."
+    },
+    "DashboardAside": {
+      "header": {
+        "title": "Admin Dashboard",
+        "subtitle": "Role: {role}"
+      },
+      "overview": "Overview",
+      "backToModules": "Back to Modules",
+      "modules": {
+        "courses": "Courses",
+        "news": "News",
+        "verifications": "Verifications",
+        "programs": "Programs",
+        "members": "Members",
+        "achievements": "Achievements",
+        "accounts": "Accounts",
+        "calendar": "Calendar"
+      },
+      "items": {
+        "courseOverview": "Course Overview",
+        "articleList": "Article List",
+        "newArticle": "New Article",
+        "verificationList": "Verification List",
+        "pendingVerifications": "Pending Verifications",
+        "eventList": "Event List",
+        "newEvent": "New Event"
+      }
+    },
     "WebsiteMap": {
       "info": {
         "title": "Information",
         "items": {
-          "schedules": "Calendar",
+          "calendar": "Calendar",
           "news": "News",
           "competitions": "Competitions",
           "courses": "Courses"
@@ -172,6 +223,7 @@
         "step1": {
           "emailDivider": "or sign up with Email",
           "email": "Email",
+          "agreeTerms": "I have read and agree to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>",
           "switchToLogin": "Already have an account?",
           "loginLink": "Sign in"
         },
@@ -387,6 +439,50 @@
     "LatestUpdates": {
       "title": "Latest Updates",
       "viewAll": "View All Posts"
+    }
+  },
+  "Calendar": {
+    "title": "Calendar",
+    "description": "View the course schedules, competition timelines, and club activities of the CTUST Robotics Research Club.",
+    "academicYear": "{year} Academic Year",
+    "meta": {
+      "title": "Calendar | Robotics Research Club of CTUST",
+      "description": "View the course schedules, competition timelines, and club activities of the CTUST Robotics Research Club.",
+      "keywords": "calendar,club calendar,course schedule,club events,club classes,class times,club activities,meeting times,robotics courses"
+    },
+    "descriptions": [
+      "View the course schedules, competition timelines, and club activities of the CTUST Robotics Research Club.",
+      "Use the academic year selector to view schedules for different years."
+    ],
+    "loading": "Loading calendar...",
+    "error": {
+      "loadFailed": "Failed to load calendar",
+      "retry": "Retry"
+    },
+    "emptyState": {
+      "title": "No Calendar Data",
+      "description": "There are currently no published calendar events."
+    },
+    "components": {
+      "calendar": {
+        "backToTop": "Back to Top",
+        "today": "Today",
+        "scrollToDate": "Click to return to this date",
+        "closeDetail": "Close detail view",
+        "noEvents": "No events scheduled for this day",
+        "notFound": "Configuration data for {year} Academic Year not found",
+        "academicYear": "Academic Year",
+        "academicYearPlaceholder": "Select academic year...",
+        "quickNav": "Quick Navigation",
+        "totalEvents": "{count} events total",
+        "legend": {
+          "schoolEvent": "School Event",
+          "clubEvent": "Club Schedule",
+          "clubActivity": "Club Activity",
+          "clubCourse": "Club Course",
+          "competition": "Competition"
+        }
+      }
     }
   },
   "News": {

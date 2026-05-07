@@ -16,9 +16,7 @@ import styles from './admin.module.scss'
 import Page from '@/app/components/page/Page'
 import { AuthContext } from '@/app/contexts/AuthContext'
 import { batchSyncCompetitions } from '@/app/utils/competitionService'
-import { forceSyncClassEvents } from '@/app/utils/classScheduleService'
 import { competitions } from '@/app/[locale]/competitions/Competitions'
-import { schedules } from '@/app/[locale]/schedules/Schedules'
 import { fetchAllUsers, updateUserRoles } from './actions'
 import { UserRole, getUserRoleName, UserProfile } from '@/app/types/user'
 import Selector from '@/app/components/Selector/Selector'
@@ -34,6 +32,7 @@ const ALL_ROLES: UserRole[] = [
   'admin_news',
   'admin_accounts',
   'admin_members',
+  'admin_calendar',
   'member'
 ]
 
@@ -63,9 +62,6 @@ export default function AdminPageClient() {
 
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle')
   const [syncResult, setSyncResult] = useState<{ success: number; errors: string[] } | null>(null)
-
-  const [classSyncStatus, setClassSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle')
-  const [classSyncResult, setClassSyncResult] = useState<{ success: number; errors: string[] } | null>(null)
 
   const loadUsers = useCallback(async () => {
     if (!supabaseUser) return
@@ -136,27 +132,6 @@ export default function AdminPageClient() {
     } catch (error) {
       setSyncStatus('error')
       showToast(error instanceof Error ? error.message : '同步失敗', 'error')
-    }
-  }
-
-  const handleSyncClassSchedule = async () => {
-    if (!supabaseUser) return
-    if (!window.confirm('確定要強制完全同步課程行程嗎？此操作不可逆。')) return
-
-    try {
-      setClassSyncStatus('syncing')
-      const result = await forceSyncClassEvents(schedules, supabaseUser.id)
-      setClassSyncResult(result)
-      if (result.errors.length > 0) {
-        setClassSyncStatus('error')
-        showToast(`課程同步完成，但有 ${result.errors.length} 個錯誤`, 'error')
-      } else {
-        setClassSyncStatus('success')
-        showToast('課程資料同步成功', 'success')
-      }
-    } catch (error) {
-      setClassSyncStatus('error')
-      showToast(error instanceof Error ? error.message : '課程同步失敗', 'error')
     }
   }
 
@@ -287,22 +262,6 @@ export default function AdminPageClient() {
               </button>
             </article>
 
-            <article className={styles.syncCard}>
-              <h3>課程行程同步</h3>
-              <p>強制刷新雲端課程行程資料。</p>
-              <div className={styles.syncMeta}>
-                <span>待同步: {schedules.length}</span>
-                {classSyncStatus === 'success' && <span className={styles.successText}>已成功</span>}
-              </div>
-              <button
-                onClick={() => void handleSyncClassSchedule()}
-                className={styles.syncButton}
-                disabled={classSyncStatus === 'syncing'}
-              >
-                <FontAwesomeIcon icon={classSyncStatus === 'syncing' ? faSpinner : faDatabase} spin={classSyncStatus === 'syncing'} />
-                同步課程
-              </button>
-            </article>
           </div>
         </section>
       </div>

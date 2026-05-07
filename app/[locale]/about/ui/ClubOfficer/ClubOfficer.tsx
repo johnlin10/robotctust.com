@@ -69,6 +69,11 @@ async function ClubOfficerItem({ clubOfficer }: { clubOfficer: ClubOfficer }) {
       <div className={styles.clubOfficerInfo}>
         <div className={styles.clubOfficerItemName}>
           <h1>{clubOfficer.name}</h1>
+          {clubOfficer.username && (
+            <p className={styles.clubOfficerItemUsername}>
+              @{clubOfficer.username}
+            </p>
+          )}
         </div>
         <div className={styles.clubOfficerItemPosition}>
           <p>{clubOfficer.position}</p>
@@ -87,7 +92,7 @@ export default function ClubOfficer() {
       name: '藍世錡',
       position: '社長',
       description: '社長',
-      username: '',
+      username: 'blue0810',
     },
     {
       name: '趙泰齡',
@@ -99,13 +104,13 @@ export default function ClubOfficer() {
       name: '王朝育',
       position: '活動',
       description: '活動',
-      username: '',
+      username: 'f11308082',
     },
     {
       name: '林廷亘',
       position: '總務',
       description: '總務',
-      username: '',
+      username: 'wsx060408',
     },
     {
       name: '陳宜均',
@@ -115,14 +120,16 @@ export default function ClubOfficer() {
     },
     {
       name: '林昌龍',
-      position: '美工',
-      description: '美工',
+      position: '技術',
+      description: '技術',
       username: 'johnlin',
     },
   ]
   return (
     <div className={styles.clubOfficer}>
-      <h2>社團幹部</h2>
+      <div className={styles.clubOfficerTitle}>
+        <h2>社團幹部</h2>
+      </div>
       <div className={styles.clubOfficerList}>
         {clubOfficers.map((clubOfficer) => (
           <ClubOfficerItem key={clubOfficer.name} clubOfficer={clubOfficer} />

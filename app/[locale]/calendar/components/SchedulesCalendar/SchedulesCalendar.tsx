@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useMemo } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -12,6 +13,7 @@ import {
   isDateInSemester,
 } from '../../utils/academicYear'
 import { useHeaderState } from '@/app/contexts/HeaderContext'
+import { Aside } from '@/app/components/Aside'
 import { Selector } from '@/app/components/Selector'
 import { SelectorOption } from '@/app/components/Selector'
 import styles from './SchedulesCalendar.module.scss'
@@ -21,7 +23,6 @@ import {
   faCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import useStickyDetection from '@/app/hooks/useStickyDetection'
 import FloatingActionBar, {
   ActionItem,
 } from '@/app/components/FloatingActionBar/FloatingActionBar'
@@ -54,12 +55,9 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
   selectedDateEvents = [],
   onCloseDayDetail,
 }) => {
+  const t = useTranslations('Calendar')
+  const locale = useLocale()
   const { isCompactHeader } = useHeaderState()
-
-  const stickyState = useStickyDetection({
-    topOffset: 60,
-    enabled: true,
-  })
 
   //* 月份導航狀態
   const [activeMonth, setActiveMonth] = React.useState<string>('')
@@ -388,7 +386,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
           {
             type: 'button' as const,
             icon: faArrowUp,
-            label: '回到頂部',
+            label: t('components.calendar.backToTop'),
             labelVisible: true,
             onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
           },
@@ -397,7 +395,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
     {
       type: 'button',
       icon: faCalendarDay,
-      label: '今天',
+      label: t('components.calendar.today'),
       labelVisible: true,
       variant: 'primary',
       onClick: scrollToToday,
@@ -408,7 +406,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
   if (!yearConfig) {
     return (
       <div className={styles.errorContainer}>
-        <p>找不到 {selectedYear} 學年度的配置資料</p>
+        <p>{t('components.calendar.notFound', { year: selectedYear })}</p>
       </div>
     )
   }
@@ -422,50 +420,47 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
       >
         <div className={`${styles.classesDetailItem} ${styles.schoolEvent}`}>
           <FontAwesomeIcon icon={faCircle} />
-          <span>學校活動</span>
+          <span>{t('components.calendar.legend.schoolEvent')}</span>
         </div>
         <div className={`${styles.classesDetailItem} ${styles.event}`}>
           <FontAwesomeIcon icon={faCircle} />
-          <span>社團行程</span>
+          <span>{t('components.calendar.legend.clubEvent')}</span>
         </div>
         <div className={`${styles.classesDetailItem} ${styles.activity}`}>
           <FontAwesomeIcon icon={faCircle} />
-          <span>社團活動</span>
+          <span>{t('components.calendar.legend.clubActivity')}</span>
         </div>
         <div className={`${styles.classesDetailItem} ${styles.class}`}>
           <FontAwesomeIcon icon={faCircle} />
-          <span>社團課程</span>
+          <span>{t('components.calendar.legend.clubCourse')}</span>
         </div>
         <div className={`${styles.classesDetailItem} ${styles.competition}`}>
           <FontAwesomeIcon icon={faCircle} />
-          <span>競賽</span>
+          <span>{t('components.calendar.legend.competition')}</span>
         </div>
       </div>
 
       {/* 學年度選擇器 */}
       <div className={styles.yearSelector}>
-        <h2>學年度</h2>
+        <h2>{t('components.calendar.academicYear')}</h2>
         <Selector<number>
           mode="single"
           options={availableYears}
           value={selectedYear}
           onChange={onYearChange}
           showCount={true}
-          placeholder="請選擇學年度..."
+          placeholder={t('components.calendar.academicYearPlaceholder')}
         />
       </div>
 
       <div className={styles.calendarContent}>
         {/* 快速導航 */}
-        <div
-          ref={stickyState.ref}
-          className={`${styles.calendarAside} ${
-            isCompactHeader ? styles.headerCompact : ''
-          } ${stickyState.isSticky ? styles.sticky : ''}`}
-        >
+        <Aside className={styles.calendarAside} header={{ hide: true }}>
           <div className={styles.asideHeader}>
-            <h3>快速導航</h3>
-            <span className={styles.eventCount}>共 {events.length} 個行程</span>
+            <h3>{t('components.calendar.quickNav')}</h3>
+            <span className={styles.eventCount}>
+              {t('components.calendar.totalEvents', { count: events.length })}
+            </span>
 
             {/* 類別標示 */}
             <div className={styles.classesDetail}>
@@ -473,25 +468,25 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
                 className={`${styles.classesDetailItem} ${styles.schoolEvent}`}
               >
                 <FontAwesomeIcon icon={faCircle} />
-                <span>學校活動</span>
+                <span>{t('components.calendar.legend.schoolEvent')}</span>
               </div>
               <div className={`${styles.classesDetailItem} ${styles.event}`}>
                 <FontAwesomeIcon icon={faCircle} />
-                <span>社團行程</span>
+                <span>{t('components.calendar.legend.clubEvent')}</span>
               </div>
               <div className={`${styles.classesDetailItem} ${styles.activity}`}>
                 <FontAwesomeIcon icon={faCircle} />
-                <span>社團活動</span>
+                <span>{t('components.calendar.legend.clubActivity')}</span>
               </div>
               <div className={`${styles.classesDetailItem} ${styles.class}`}>
                 <FontAwesomeIcon icon={faCircle} />
-                <span>社團課程</span>
+                <span>{t('components.calendar.legend.clubCourse')}</span>
               </div>
               <div
                 className={`${styles.classesDetailItem} ${styles.competition}`}
               >
                 <FontAwesomeIcon icon={faCircle} />
-                <span>競賽</span>
+                <span>{t('components.calendar.legend.competition')}</span>
               </div>
             </div>
           </div>
@@ -523,7 +518,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
                   >
                     <div className={styles.monthNavContent}>
                       <span className={styles.monthName}>
-                        {monthInfo.date.toLocaleDateString('zh-TW', {
+                        {monthInfo.date.toLocaleDateString(locale, {
                           month: 'short',
                         })}
                       </span>
@@ -539,7 +534,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
               )
             })}
           </div>
-        </div>
+        </Aside>
 
         {/* 月份容器 */}
         <div className={styles.monthsGrid}>
@@ -552,7 +547,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
               } ${isDayDetailVisible ? styles.dayDetailVisible : ''}`}
             >
               <div className={styles.monthHeader}>
-                {monthInfo.date.toLocaleDateString('zh-TW', {
+                {monthInfo.date.toLocaleDateString(locale, {
                   year: 'numeric',
                   month: 'long',
                 })}
@@ -562,7 +557,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
                 initialView="dayGridMonth"
                 initialDate={monthInfo.date}
                 height="auto"
-                locale="zh-tw"
+                locale={locale.toLowerCase()}
                 // 日期範圍限制 - 只顯示當月
                 validRange={{
                   start: new Date(monthInfo.year, monthInfo.month, 1),
@@ -633,9 +628,9 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
                   <h3
                     className={styles.dayDetailTitle}
                     onClick={() => scrollToDate(selectedDate)}
-                    title="點擊返回該日期"
+                    title={t('components.calendar.scrollToDate')}
                   >
-                    {new Date(selectedDate).toLocaleDateString('zh-TW', {
+                    {new Date(selectedDate).toLocaleDateString(locale, {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
@@ -645,7 +640,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
                   <button
                     className={styles.closeDayDetailButton}
                     onClick={onCloseDayDetail}
-                    aria-label="關閉日程檢視"
+                    aria-label={t('components.calendar.closeDetail')}
                   >
                     ✕
                   </button>
@@ -654,7 +649,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
                 <div className={styles.dayDetailContent}>
                   {selectedDateEvents.length === 0 ? (
                     <div className={styles.noDayEvents}>
-                      <p>這天沒有安排任何行程</p>
+                      <p>{t('components.calendar.noEvents')}</p>
                     </div>
                   ) : (
                     <FullCalendar
@@ -663,7 +658,7 @@ const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
                       initialView="timeGridDay"
                       initialDate={selectedDate}
                       height="300px"
-                      locale="zh-tw"
+                      locale={locale.toLowerCase()}
                       events={convertEventsToCalendarFormat(selectedDateEvents)}
                       slotMinTime={selectedDateTimeRange.start}
                       slotMaxTime={selectedDateTimeRange.end}

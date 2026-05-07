@@ -1,4 +1,5 @@
 import React from 'react'
+import { getTranslations } from 'next-intl/server'
 
 // components
 import { Aside } from '@/app/components/Aside'
@@ -7,11 +8,13 @@ import { faFolderTree } from '@fortawesome/free-solid-svg-icons'
 /**
  * [Component] 課程管理側邊欄 (Server Component @aside slot)
  */
-export default function CoursesAdminAsideSlot() {
+export default async function CoursesAdminAsideSlot() {
+  const t = await getTranslations('Components.DashboardAside')
+
   const navItems = [
     {
       href: '/dashboard/courses',
-      label: '課程總覽',
+      label: t('items.courseOverview'),
       icon: faFolderTree,
       exact: true,
     },
@@ -20,8 +23,8 @@ export default function CoursesAdminAsideSlot() {
   return (
     <Aside
       header={{
-        title: '課程管理',
-        backLink: { href: '/dashboard', label: '返回模組總覽' },
+        title: t('modules.courses'),
+        backLink: { href: '/dashboard', label: t('backToModules') },
       }}
       items={navItems}
     />

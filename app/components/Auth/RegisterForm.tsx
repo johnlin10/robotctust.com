@@ -70,6 +70,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>('')
   const [emailSent, setEmailSent] = useState(false)
+  const [agreeTerms, setAgreeTerms] = useState(false)
   const [previewImage, setPreviewImage] = useState<string>(
     '/assets/image/userEmptyAvatar.svg',
   )
@@ -420,11 +421,33 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               )}
             </div>
 
+            <label className={styles.terms_checkbox}>
+              <input
+                type="checkbox"
+                checked={agreeTerms}
+                onChange={(e) => setAgreeTerms(e.target.checked)}
+              />
+              <span>
+                {t.rich('form.register.step1.agreeTerms', {
+                  terms: (chunks) => (
+                    <Link href="/terms" target="_blank" rel="noopener noreferrer">
+                      {chunks}
+                    </Link>
+                  ),
+                  privacy: (chunks) => (
+                    <Link href="/privacy" target="_blank" rel="noopener noreferrer">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </span>
+            </label>
+
             <button
               type="button"
               className={styles.next_button}
               onClick={handleNextStep}
-              disabled={!watchEmail || !!errors.email}
+              disabled={!watchEmail || !!errors.email || !agreeTerms}
             >
               {t('form.register.steps.next')}{' '}
               <FontAwesomeIcon icon={faChevronRight} />

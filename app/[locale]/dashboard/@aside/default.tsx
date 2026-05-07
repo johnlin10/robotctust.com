@@ -2,6 +2,7 @@
 import { requireDashboardAccess } from '@/app/utils/dashboard/auth'
 import { DASHBOARD_MODULES } from '@/app/types/dashboard'
 import { getUserRoleName } from '@/app/types/user'
+import { getTranslations } from 'next-intl/server'
 
 // components
 import { Aside } from '@/app/components/Aside'
@@ -13,15 +14,17 @@ import { faHouse } from '@fortawesome/free-solid-svg-icons'
  */
 export default async function GlobalAsideSlot() {
   const actor = await requireDashboardAccess()
+  const t = await getTranslations('Components.DashboardAside')
+  const tRoles = await getTranslations('Roles')
 
   const visibleModules = DASHBOARD_MODULES.filter((module) =>
     actor.modules.includes(module.key),
   )
 
   const items = [
-    { label: '總覽', href: '/dashboard', icon: faHouse, exact: true },
+    { label: t('overview'), href: '/dashboard', icon: faHouse, exact: true },
     ...visibleModules.map((module) => ({
-      label: module.title,
+      label: t(`modules.${module.key}` as any),
       href: module.href,
       icon: module.icon ? module.icon : null,
     })),
@@ -30,8 +33,8 @@ export default async function GlobalAsideSlot() {
   return (
     <Aside
       header={{
-        title: '管理後台',
-        subtitle: `權限：${getUserRoleName(actor.role)}`,
+        title: t('header.title'),
+        subtitle: t('header.subtitle', { role: tRoles(actor.role as any) }),
       }}
       items={items}
     />

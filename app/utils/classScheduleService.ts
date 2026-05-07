@@ -198,7 +198,7 @@ export async function forceSyncClassEvents(
   _userId: string
 ): Promise<{ success: number; errors: string[] }> {
   try {
-    const response = await fetch('/api/dashboard/schedules/sync', {
+    const response = await fetch('/api/dashboard/calendar/sync', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

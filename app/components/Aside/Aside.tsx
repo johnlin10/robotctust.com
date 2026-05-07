@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useHeaderState } from '@/app/contexts/HeaderContext'
 import useStickyDetection from '@/app/hooks/useStickyDetection'
 import { useAside } from './AsideContext'
@@ -26,7 +27,7 @@ export interface AsideNavItem {
 }
 
 export interface AsideHeaderConfig {
-  title: string
+  title?: string
   subtitle?: string
   hide?: boolean
   backLink?: {
@@ -55,6 +56,7 @@ export const Aside: React.FC<AsideProps> = ({
   const { isCompactHeader } = useHeaderState()
   const { isOpen, setIsOpen, toggleAside } = useAside()
   const pathname = usePathname()
+  const t = useTranslations('Components.Aside')
 
   const stickyState = useStickyDetection({
     topOffset,
@@ -81,7 +83,7 @@ export const Aside: React.FC<AsideProps> = ({
           type="button"
           className={styles.mobileToggleBtn}
           onClick={toggleAside}
-          aria-label={isOpen ? '關閉側邊欄' : '展開側邊欄'}
+          aria-label={isOpen ? t('close') : t('open')}
           aria-expanded={isOpen}
           aria-controls="app-aside-panel"
         >

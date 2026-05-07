@@ -62,7 +62,7 @@ export const WebVisual = () => {
             </Link>
             <div>
               <Link href="/news">最新資訊</Link>
-              <Link href="/schedules">行事曆</Link>
+              <Link href="/calendar">行事曆</Link>
               <Link href="/about">關於</Link>
             </div>
             <FontAwesomeIcon icon={faBars} />

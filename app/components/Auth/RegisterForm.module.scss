@@ -292,6 +292,38 @@
     color: var(--foreground-tertiary);
   }
 
+  .terms_checkbox {
+    @include mixins.flexbox(row, flex-start, center);
+    gap: 0.625rem;
+    margin-top: 0.75rem;
+    cursor: pointer;
+
+    input[type='checkbox'] {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: var(--theme-purple-500);
+      cursor: pointer;
+    }
+
+    span {
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: var(--foreground-secondary);
+
+      a {
+        font-weight: 600;
+        color: var(--theme-purple-600);
+        text-decoration: underline;
+
+        &:hover {
+          color: var(--theme-purple-700);
+        }
+      }
+    }
+  }
+
   .next_button,
   .submit_button {
     @include mixins.flexbox(row, center, center);

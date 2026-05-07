@@ -1,30 +1,34 @@
 import styles from './about.module.scss'
 import Page from '@/app/components/page/Page'
-import { MarkdownRenderer } from '@/app/components/Markdown'
+import Footer from '@/app/components/Footer/Footer'
 import { metadata } from '@/app/utils/metadata'
-// components
+
+// sections
+import AboutHeroSection from './ui/AboutHeroSection/AboutHeroSection'
+import OriginSection from './ui/OriginSection/OriginSection'
+import CultureSection from './ui/CultureSection/CultureSection'
+import PhilosophySection from './ui/PhilosophySection/PhilosophySection'
 import ClubOfficer from './ui/ClubOfficer/ClubOfficer'
 import OfficeLocationCard from '@/app/components/OfficeLocationCard/OfficeLocationCard'
-import Footer from '@/app/components/Footer/Footer'
 
+/**
+ * 關於頁面
+ */
 export default function About() {
   return (
     <Page
       style={styles.aboutContainer}
-      header={{
-        title: '關於我們',
-        descriptions: [
-          '中臺機器人研究社是一個由中臺科技大學學生組成的社團，主要研究機器人技術，並且提供學生一個學習機器人技術的平台。',
-        ],
-      }}
+      maxWidth="none"
+      backgroundGrid
+      mouseDynamicGlow
+      config={{ paddingBottom: false }}
     >
-      <div className={styles.aboutContent}>
-        <MarkdownRenderer filePath="/assets/docs/about.md" />
-        <ClubOfficer />
-        <OfficeLocationCard />
-        {/* <MarkdownRenderer filePath="/assets/docs/aboutWebsite.md" /> */}
-      </div>
-      <Footer removePaddingRL />
+      <AboutHeroSection />
+      <OriginSection />
+      <CultureSection />
+      <PhilosophySection />
+      <ClubOfficer />
+      <Footer />
     </Page>
   )
 }

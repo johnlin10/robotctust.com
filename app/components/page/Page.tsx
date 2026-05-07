@@ -26,6 +26,9 @@ interface PageProps {
  * @param maxWidth 頁面最大寬度(default: 800px)
  * @param header 頁面標題與描述
  * @param children 包含頁面內容
+ * @param backgroundGrid 是否顯示背景格子
+ * @param mouseDynamicGlow 是否顯示鼠標動態發光
+ * @param config 頁面配置
  * @param aside 可以傳入 Aside 側邊欄（或經由 Next.js Parallel Routes 的 @aside slot 傳入）
  * @returns
  */

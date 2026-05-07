@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import styles from './CourseSidebar.module.scss'
 
 // components
@@ -26,6 +27,7 @@ interface CourseSidebarProps {
 export const CourseSidebar: React.FC<CourseSidebarProps> = ({ semesters }) => {
   const pathname = usePathname()
   const { setIsOpen } = useAside()
+  const t = useTranslations('Components.CourseSidebar')
 
   const [expandedSemesters, setExpandedSemesters] = useState<
     Record<string, boolean>
@@ -65,7 +67,10 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({ semesters }) => {
 
   return (
     <Aside
-      header={{ title: '學習工坊', subtitle: '社團課程' }}
+      header={{
+        title: t('header.title'),
+        subtitle: t('header.subtitle'),
+      }}
       className={styles.sidebar}
     >
       <div className={styles.navContent}>
@@ -75,7 +80,7 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({ semesters }) => {
           onClick={() => setIsOpen(false)}
         >
           <FontAwesomeIcon icon={faBook} />
-          總覽
+          {t('overview')}
         </Link>
 
         <div className={styles.semesterList}>
@@ -146,7 +151,7 @@ export const CourseSidebar: React.FC<CourseSidebarProps> = ({ semesters }) => {
 
           {semesters.length === 0 && (
             <div className={styles.emptyState}>
-              暫無可用的課程，或您尚未成為任何學期的成員。
+              {t('emptyState')}
             </div>
           )}
         </div>

@@ -159,7 +159,9 @@ export default function Header() {
             <Link
               href="/courses"
               onClick={handleNavLinkClick}
-              className={isActivePath(pathname, '/courses') ? styles.active : ''}
+              className={
+                isActivePath(pathname, '/courses') ? styles.active : ''
+              }
             >
               {t('nav.courses')}
             </Link>
@@ -171,17 +173,21 @@ export default function Header() {
             >
               {t('nav.news')}
             </Link>
-            <Link
+            {/* <Link
               href="/competitions"
               onClick={handleNavLinkClick}
-              className={isActivePath(pathname, '/competitions') ? styles.active : ''}
+              className={
+                isActivePath(pathname, '/competitions') ? styles.active : ''
+              }
             >
               {t('nav.competitions')}
-            </Link>
+            </Link> */}
             <Link
-              href="/schedules"
+              href="/calendar"
               onClick={handleNavLinkClick}
-              className={isActivePath(pathname, '/schedules') ? styles.active : ''}
+              className={
+                isActivePath(pathname, '/calendar') ? styles.active : ''
+              }
             >
               {t('nav.calendar')}
             </Link>
@@ -205,7 +211,9 @@ export default function Header() {
                 <Link
                   href="/dashboard"
                   onClick={handleNavLinkClick}
-                  className={isActivePath(pathname, '/dashboard') ? styles.active : ''}
+                  className={
+                    isActivePath(pathname, '/dashboard') ? styles.active : ''
+                  }
                 >
                   {t('nav.dashboard')}
                 </Link>
@@ -216,7 +224,9 @@ export default function Header() {
                 <Link
                   href="/admin"
                   onClick={handleNavLinkClick}
-                  className={isActivePath(pathname, '/admin') ? styles.active : ''}
+                  className={
+                    isActivePath(pathname, '/admin') ? styles.active : ''
+                  }
                 >
                   {t('nav.admin')}
                 </Link>

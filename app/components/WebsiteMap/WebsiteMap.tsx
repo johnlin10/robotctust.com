@@ -44,8 +44,8 @@ export default function WebsiteMap({ onClose }: { onClose?: () => void }) {
       <div className={styles.websiteMap_group}>
         <p>{t('info.title')}</p>
         <div className={styles.websiteMap_group_items}>
-          <LinkWithIcon href="/schedules" onClick={handleLinkClick}>
-            {t('info.items.schedules')}
+          <LinkWithIcon href="/calendar" onClick={handleLinkClick}>
+            {t('info.items.calendar')}
           </LinkWithIcon>
           <LinkWithIcon href="/news" onClick={handleLinkClick}>
             {t('info.items.news')}

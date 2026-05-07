@@ -50,59 +50,21 @@
       gap: var(--space-2x);
     }
 
-    > .calendarAside {
+    .calendarAside {
       z-index: 1000;
-      position: sticky;
-      top: 72px;
       width: 100%;
-      background: var(--background);
-      @include mixins.border-radius(12px);
-      border: 1px solid var(--border);
-      padding: 0 var(--space-1-5x);
       @include mixins.hide-scrollbar;
       @include mixins.transition(var(--transition-default));
-      overflow: hidden;
 
-      @include mixins.respond-by-max-width(859px) {
-        &.sticky {
-          background-color: rgba(var(--background-secondary-rgb), 0.25);
-          @include mixins.glass-blur(12px);
-
-          &.headerCompact {
-            top: 48px;
-            border: 1px solid var(--foreground-950);
-          }
-        }
-      }
-
-      @include mixins.respond-by-min-width(860px) {
-        padding: var(--space-1-5x);
-        width: 50%;
-        max-width: 200px;
-        min-height: 200px;
-        height: calc(100vh - 72px - var(--space-2x));
-        overflow-y: auto;
-
-        &.headerCompact {
-          top: calc(48px);
-          height: calc(100vh - 48px - var(--space-2x));
-        }
-      }
-
-      > .asideHeader {
+      .asideHeader {
         z-index: 10;
         position: sticky;
         top: 0;
-        margin-bottom: var(--space);
-        padding-bottom: var(--space);
-        background: var(--background);
+        padding: var(--space-1-5x);
         box-shadow: 0 -12px 0 12px var(--background);
         border-bottom: 1px solid var(--border);
-
-        @include mixins.respond-by-max-width(859px) {
-          margin-bottom: 0;
-          display: none;
-        }
+        background: rgba(var(--background-rgb), 0.5);
+        @include mixins.glass-blur(18px);
 
         > h3 {
           margin: 0 0 8px 0;
@@ -117,19 +79,15 @@
         }
       }
 
-      > .monthNavigation {
+      .monthNavigation {
         @include mixins.flexbox(column, stretch, stretch);
         gap: 6px;
+        padding: var(--space-1-5x);
 
         @include mixins.respond-by-max-width(859px) {
-          flex-direction: row;
-          align-items: center;
+          flex-direction: column;
+          align-items: flex-start;
           gap: var(--space-0-5x);
-          padding: var(--space-0-5x);
-          margin-left: calc(var(--space-1-5x) * -1);
-          width: calc(100% + var(--space-3x));
-          overflow-x: auto;
-          @include mixins.hide-scrollbar;
         }
 
         > p.year {
@@ -139,7 +97,6 @@
 
           @include mixins.respond-by-max-width(859px) {
             margin-top: 0;
-            margin-left: var(--space);
             height: fit-content;
           }
         }
@@ -149,23 +106,25 @@
           padding: var(--space-0-5x) var(--space);
           background: var(--background-secondary);
           border: 1px solid var(--border);
-          @include mixins.border-radius(6px);
+          @include mixins.border-radius(10px);
           @include mixins.transition(all 0.2s ease);
           cursor: pointer;
           text-align: left;
-          @include mixins.hover-scale-effect;
+          @include mixins.hover-scale-effect(1.02);
 
           @include mixins.respond-by-max-width(860px) {
             gap: var(--space-0-5x);
+            width: 100%;
           }
 
           &:hover {
-            background: var(--background-tertiary);
+            background: var(--border-hover);
+            border-color: var(--foreground-800);
           }
 
           &.active {
             background: var(--background-tertiary);
-            border-color: var(--foreground-800);
+            border-color: var(--border-hover);
             color: var(--foreground);
 
             > .monthNavContent {
@@ -177,12 +136,18 @@
 
             > .monthEventCount {
               background: var(--theme-purple-500);
+              border-color: var(--border-hover);
               color: var(--color-white);
             }
           }
 
           &.empty {
-            opacity: 0.6;
+            background: var(--background);
+            border: 1px solid var(--border);
+
+            &.active {
+              background: rgba(var(--background-secondary-rgb), 0.25);
+            }
 
             > .monthNavContent {
               > .monthName,
@@ -206,7 +171,7 @@
             }
 
             > .monthName {
-              font-size: 0.9rem;
+              font-size: 0.95rem;
               font-weight: 600;
               color: var(--foreground);
 
@@ -216,22 +181,24 @@
             }
 
             > .monthYear {
-              font-size: 0.75rem;
+              font-size: 0.8rem;
               color: var(--foreground-secondary);
             }
           }
 
           > .monthEventCount {
-            background: var(--background-tertiary);
-            border: 1px solid var(--foreground-800);
+            @include mixins.flexbox(row, center, center);
+            background: var(--background-secondary);
+            border: 1px solid var(--border);
             color: var(--foreground);
             font-size: 0.75rem;
             font-weight: 600;
-            width: 20px;
-            height: 20px;
-            @include mixins.border-radius(10px);
-            min-width: 20px;
+            width: 24px;
+            height: 24px;
+            @include mixins.border-radius(6px);
+            min-width: 24px;
             text-align: center;
+            margin-right: -6px;
           }
         }
 
@@ -537,10 +504,10 @@
 
 //* 類別標示
 .classesDetail {
-  @include mixins.flexbox(column, start, start);
+  @include mixins.flexbox(row, start, start);
   flex-wrap: wrap;
   gap: var(--space-0-5x);
-  margin: var(--space) 0;
+  margin-top: var(--space);
   @include mixins.transition(var(--transition-default));
 
   &.mobileClassesDetail {
@@ -565,6 +532,7 @@
     color: var(--color-white);
     @include mixins.border-radius(6px);
     border: 1px solid var(--border);
+    white-space: nowrap;
 
     &.schoolEvent {
       background: var(--theme-gray-400);
@@ -625,7 +593,7 @@
     height: 40vh;
     border: 1px solid var(--border);
     background: rgba(var(--background-rgb), 0.5);
-    @include mixins.glass-blur(24px);
+    @include mixins.glass-blur(18px);
     @include mixins.transform-container(translateY(0 - 24px));
 
     @include mixins.respond-to('phone') {
@@ -644,7 +612,7 @@
     @include mixins.flexbox(row, space-between, center);
     padding: var(--space) var(--space-1-5x);
     border-bottom: 1px solid var(--border);
-    background: rgba(var(--background-secondary-rgb), 0.75);
+    background: rgba(var(--background-secondary-rgb), 0.25);
     height: 60px;
 
     > .dayDetailTitle {

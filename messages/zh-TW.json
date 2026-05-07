@@ -57,11 +57,62 @@
       "joinUs": "加入我們，",
       "exploreRobotWorld": "探索機器人世界！"
     },
+    "Roles": {
+      "super_admin": "超級管理員",
+      "admin": "管理員",
+      "admin_course": "課程管理員",
+      "admin_achievement": "成就管理員",
+      "admin_verifications": "課程驗證員",
+      "admin_news": "新聞發布員",
+      "admin_accounts": "帳號管理員",
+      "admin_members": "社員管理員",
+      "admin_calendar": "行事曆管理員",
+      "member": "一般會員"
+    },
+    "Aside": {
+      "close": "關閉側邊欄",
+      "open": "展開側邊欄"
+    },
+    "CourseSidebar": {
+      "header": {
+        "title": "學習工坊",
+        "subtitle": "社團課程"
+      },
+      "overview": "總覽",
+      "emptyState": "暫無可用的課程，或您尚未成為任何學期的成員。"
+    },
+    "DashboardAside": {
+      "header": {
+        "title": "管理後台",
+        "subtitle": "權限：{role}"
+      },
+      "overview": "總覽",
+      "backToModules": "返回模組總覽",
+      "modules": {
+        "courses": "課程管理",
+        "news": "新聞管理",
+        "verifications": "審核管理",
+        "programs": "程式檔案庫",
+        "members": "社員管理",
+        "achievements": "成就管理",
+        "accounts": "帳號管理",
+        "calendar": "行事曆管理"
+      },
+      "items": {
+        "courseOverview": "課程總覽",
+        "articleList": "文章列表",
+        "newArticle": "新建文章",
+        "verificationList": "審核列表",
+        "pendingVerifications": "待審核清單",
+        "eventList": "事件列表",
+        "newEvent": "新增事件"
+      }
+    },
     "WebsiteMap": {
       "info": {
         "title": "資訊",
         "items": {
-          "schedules": "行事曆",
+          "calendar": "行事曆",
           "news": "新聞",
           "competitions": "競賽",
           "courses": "課程"
@@ -172,6 +223,7 @@
         "step1": {
           "emailDivider": "或使用 Email 註冊",
           "email": "電子郵件",
+          "agreeTerms": "我已閱讀並同意 <terms>服務條款</terms> 及 <privacy>隱私權政策</privacy>",
           "switchToLogin": "已經有帳號了？",
           "loginLink": "立即登入"
         },
@@ -386,6 +438,50 @@
     "LatestUpdates": {
       "title": "最新資訊",
       "viewAll": "查看更多文章"
+    }
+  },
+  "Calendar": {
+    "title": "行事曆",
+    "description": "檢視中臺機器人研究社的課程安排、競賽時程與社團活動。",
+    "academicYear": "{year} 學年度",
+    "meta": {
+      "title": "行事曆｜中臺機器人研究社",
+      "description": "檢視中臺機器人研究社的課程安排、競賽時程與社團活動。",
+      "keywords": "行事曆,社團行事曆,課程安排,社團行程,社團課,上課時間,社團活動,社團上課時間,社團課程"
+    },
+    "descriptions": [
+      "檢視中臺機器人研究社的課程安排、競賽時程與社團活動。",
+      "透過學年度選擇器切換不同學年的行事曆內容。"
+    ],
+    "loading": "正在載入行事曆",
+    "error": {
+      "loadFailed": "載入行事曆失敗",
+      "retry": "重新載入"
+    },
+    "emptyState": {
+      "title": "暫無行事曆",
+      "description": "目前沒有任何已發布的行事曆資料"
+    },
+    "components": {
+      "calendar": {
+        "backToTop": "回到頂部",
+        "today": "今天",
+        "scrollToDate": "點擊返回該日期",
+        "closeDetail": "關閉日程檢視",
+        "noEvents": "這天沒有安排任何行程",
+        "notFound": "找不到 {year} 學年度的配置資料",
+        "academicYear": "學年度",
+        "academicYearPlaceholder": "請選擇學年度...",
+        "quickNav": "快速導航",
+        "totalEvents": "共 {count} 個行程",
+        "legend": {
+          "schoolEvent": "學校活動",
+          "clubEvent": "社團行程",
+          "clubActivity": "社團活動",
+          "clubCourse": "社團課程",
+          "competition": "競賽"
+        }
+      }
     }
   },
   "News": {

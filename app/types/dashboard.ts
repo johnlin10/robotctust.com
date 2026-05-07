@@ -1,5 +1,5 @@
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
-import { faBook, faCheck, faCheckCircle, faCode, faHouse, faNewspaper, faTrophy, faUserGroup } from '@fortawesome/free-solid-svg-icons'
+import { faBook, faCalendar, faCheckCircle, faCode, faHouse, faNewspaper, faTrophy, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 
 // 角色
 export type Role =
@@ -11,6 +11,7 @@ export type Role =
   | 'admin_news'
   | 'admin_accounts'
   | 'admin_members'
+  | 'admin_calendar'
   | 'member'
 
 // 管理後台模組
@@ -22,6 +23,7 @@ export type DashboardModule =
   | 'accounts' // 帳號管理
   | 'members' // 社員管理
   | 'programs' // 程式檔案庫
+  | 'calendar' // 行事曆管理
 
 // 管理後台使用者
 export interface DashboardActor {
@@ -42,14 +44,15 @@ export interface DashboardModuleConfig {
 
 //* 模組權限對應表
 export const MODULE_PERMISSIONS_MAP: Record<Role, DashboardModule[]> = {
-  super_admin: ['courses', 'achievements', 'verifications', 'news', 'accounts', 'members', 'programs'],
-  admin: ['courses', 'achievements', 'verifications', 'news', 'programs'],
+  super_admin: ['courses', 'achievements', 'verifications', 'news', 'accounts', 'members', 'programs', 'calendar'],
+  admin: ['courses', 'achievements', 'verifications', 'news', 'programs', 'calendar'],
   admin_course: ['courses', 'programs'],
   admin_achievement: ['achievements'],
   admin_verifications: ['verifications'],
   admin_news: ['news'],
   admin_accounts: ['accounts'],
   admin_members: ['members'],
+  admin_calendar: ['calendar'],
   member: [],
 }
 
@@ -61,6 +64,13 @@ export const DASHBOARD_MODULES: DashboardModuleConfig[] = [
     title: '新聞',
     description: '發布、編輯與刪除最新資訊頁面的文章。',
     href: '/dashboard/news',
+  },
+  {
+    key: 'calendar',
+    icon: faCalendar,
+    title: '行事曆',
+    description: '新增、編輯與刪除行事曆事件，並控制發布狀態。',
+    href: '/dashboard/calendar',
   },
   {
     key: 'courses',

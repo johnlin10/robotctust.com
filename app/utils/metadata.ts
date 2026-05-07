@@ -95,6 +95,7 @@ export function metadata(options: MetadataOptions): Metadata {
       canonical: fullUrl,
       languages: {
         'zh-TW': fullUrl,
+        en: `${fullUrl}/en`,
         'x-default': fullUrl,
       },
     },
@@ -203,7 +204,7 @@ export function formatFirebaseTimestampToISO(
  */
 export function generateDescriptionFromMarkdown(
   markdown: string,
-  maxLength: number = 160
+  maxLength: number = 160,
 ): string {
   if (!markdown) return ''
 
