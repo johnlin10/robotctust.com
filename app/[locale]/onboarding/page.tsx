@@ -108,7 +108,7 @@ export default async function OnboardingPage({
   )
 }
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata(): Promise<Metadata> {
   return metadata({
     title: '完成註冊資料｜中臺機器人研究社',
     description:
