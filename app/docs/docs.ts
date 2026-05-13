@@ -80,6 +80,21 @@ export const subDocs: SubDocs[] = [
     docs: [
       {
         id: '',
+        title: '114-2 社團活動二：遙控避障挑戰賽',
+        date: '2026-05-13',
+        docs: [
+          {
+            id: 'course-files',
+            title: '遙控避障挑戰賽基礎程式',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1sditJLJJX0-vp7a8nyeyk58njQ3YCzzH/view?usp=sharing',
+            icon: faGoogleDrive,
+          },
+        ],
+      },
+      {
+        id: '',
         title: '114-2 社團活動一：自走車組裝和測試',
         date: '2026-04-01',
         docs: [
