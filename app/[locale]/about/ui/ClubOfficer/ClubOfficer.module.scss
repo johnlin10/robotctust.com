@@ -1,0 +1,108 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.clubOfficer {
+  @include mixins.flexbox(column, flex-start, center);
+  gap: var(--space);
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: var(--space-4x) 0;
+
+  > .clubOfficerTitle {
+    padding: 0 var(--space-2x);
+
+    > h2 {
+      margin: 0;
+      font-size: 2rem;
+    }
+  }
+
+  > .clubOfficerList {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    // 底部 padding 為 scrollbar 預留空間
+    padding: 4px 0 var(--space);
+    @include mixins.hide-scrollbar;
+
+    > .clubOfficerItem {
+      // 縱向置中排版
+      @include mixins.flexbox(column, flex-start, center);
+      flex-shrink: 0;
+      gap: 12px;
+      width: 200px;
+      padding: 24px 16px;
+      text-align: center;
+      border: 1px solid var(--border);
+      background: rgba(var(--background-rgb), 0.25);
+      @include mixins.border-radius(16px);
+      @include mixins.glass-blur(12px);
+      scroll-snap-align: center;
+      cursor: default;
+
+      &:first-child {
+        margin-left: var(--space-4x);
+      }
+      &:last-child {
+        margin-right: var(--space-4x);
+      }
+
+      &.clubOfficerItemLink {
+        cursor: pointer;
+        @include mixins.hover-scale-effect(1.03);
+
+        &:hover {
+          background: rgba(var(--background-secondary-rgb), 0.25);
+        }
+      }
+
+      > .clubOfficerItemImage {
+        width: 120px;
+        height: 120px;
+        flex-shrink: 0;
+        overflow: hidden;
+        @include mixins.border-radius(50%);
+
+        > img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+        }
+      }
+
+      > .clubOfficerInfo {
+        width: 100%;
+        padding: 0;
+
+        > .clubOfficerItemName {
+          > h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+          }
+          > .clubOfficerItemUsername {
+            margin: 0;
+            font-size: 0.75rem;
+            color: var(--foreground-secondary);
+          }
+        }
+
+        > .clubOfficerItemPosition {
+          margin-top: 4px;
+
+          > p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--foreground-secondary);
+          }
+        }
+      }
+    }
+  }
+}

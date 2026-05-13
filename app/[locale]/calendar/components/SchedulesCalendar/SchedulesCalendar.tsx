@@ -1,0 +1,697 @@
+'use client'
+
+import React, { useMemo } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import { ScheduleEvent } from '@/app/types/Schedule'
+import { convertEventsToCalendarFormat } from '../../utils/calendarHelpers'
+import {
+  getAcademicYearConfig,
+  isDateInSemester,
+} from '../../utils/academicYear'
+import { useHeaderState } from '@/app/contexts/HeaderContext'
+import { Aside } from '@/app/components/Aside'
+import { Selector } from '@/app/components/Selector'
+import { SelectorOption } from '@/app/components/Selector'
+import styles from './SchedulesCalendar.module.scss'
+import {
+  faArrowUp,
+  faCalendarDay,
+  faCircle,
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import FloatingActionBar, {
+  ActionItem,
+} from '@/app/components/FloatingActionBar/FloatingActionBar'
+interface SchedulesCalendarProps {
+  events: ScheduleEvent[]
+  selectedYear: number
+  availableYears: SelectorOption<number>[]
+  onYearChange: (year: number) => void
+  onEventClick?: (eventId: string) => void
+  onDateClick?: (date: string) => void
+  selectedDate?: string | null
+  isDayDetailVisible?: boolean
+  selectedDateEvents?: ScheduleEvent[]
+  onCloseDayDetail?: () => void
+}
+
+/**
+ * 課程行事曆主元件
+ * 使用 FullCalendar 顯示年檢視行事曆
+ */
+const SchedulesCalendar: React.FC<SchedulesCalendarProps> = ({
+  events,
+  selectedYear,
+  availableYears,
+  onYearChange,
+  onEventClick,
+  onDateClick,
+  selectedDate,
+  isDayDetailVisible,
+  selectedDateEvents = [],
+  onCloseDayDetail,
+}) => {
+  const t = useTranslations('Calendar')
+  const locale = useLocale()
+  const { isCompactHeader } = useHeaderState()
+
+  //* 月份導航狀態
+  const [activeMonth, setActiveMonth] = React.useState<string>('')
+  const monthNavRef = React.useRef<HTMLDivElement>(null)
+
+  //* 是否已滾動超過頂部 120px
+  const [isScrolledPast120, setIsScrolledPast120] =
+    React.useState<boolean>(false)
+
+  //* 監聽滾動，更新是否超過 120px
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolledPast120(window.scrollY > 120)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+  //* 轉換事件為 FullCalendar 格式
+  const calendarEvents = useMemo(() => {
+    return convertEventsToCalendarFormat(events)
+  }, [events])
+
+  //* 取得學年度配置
+  const yearConfig = useMemo(() => {
+    return getAcademicYearConfig(selectedYear)
+  }, [selectedYear])
+
+  //* 計算有效日期範圍（暫時註解，未來可能會用到）
+  // const validRange = useMemo(() => {
+  //   if (!yearConfig) return undefined
+
+  //   return {
+  //     start: yearConfig.firstSemester.start,
+  //     end: yearConfig.secondSemester.end,
+  //   }
+  // }, [yearConfig])
+
+  //* 將 Date 物件轉為 local date 字串（YYYY-MM-DD），避免 toISOString() 的 UTC 偏移問題
+  const toLocalDateStr = (date: Date): string => {
+    const y = date.getFullYear()
+    const m = String(date.getMonth() + 1).padStart(2, '0')
+    const d = String(date.getDate()).padStart(2, '0')
+    return `${y}-${m}-${d}`
+  }
+
+  //* 處理事件點擊
+  // 使用 useCallback 包裝以維持函式參考一致性，減少 FullCalendar 重繪
+  const handleEventClick = React.useCallback(
+    (clickInfo: { event: { id: string } }) => {
+      if (onEventClick) {
+        onEventClick(clickInfo.event.id)
+      }
+    },
+    [onEventClick],
+  )
+
+  //* 處理日期點擊
+  // 使用 useCallback 包裝
+  const handleDateClick = React.useCallback(
+    (clickInfo: { dateStr: string }) => {
+      if (onDateClick) {
+        onDateClick(clickInfo.dateStr)
+      }
+    },
+    [onDateClick],
+  )
+
+  //* 滾動到指定月份
+  // 使用 useCallback 包裝並確保參考穩定
+  const scrollToMonth = React.useCallback((year: number, month: number) => {
+    const monthId = `month-${year}-${month}`
+
+    // 先瞬間滾動到 calendarContent 區域，避免從頂部 smooth 滾動卡住
+    const calendarContent = document.querySelector(`.${styles.calendarContent}`)
+    if (calendarContent) {
+      window.scrollTo({
+        top: calendarContent.getBoundingClientRect().top + window.scrollY - 200,
+        behavior: 'smooth',
+      })
+    }
+
+    // 短暫延遲後再 smooth 滾動到目標月份
+    setTimeout(() => {
+      const element = document.getElementById(monthId)
+      if (element) {
+        const elementTop = element.offsetTop
+        const offsetPosition = elementTop - 130 // 對齊到頂部 130px 位置
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth',
+        })
+        setActiveMonth(monthId)
+      }
+    }, 50)
+  }, [])
+
+  //* 計算並快取當下學期每個月的事件數量，大幅減低在 render 時多次 filter 及產生 Date 物件的資源消耗
+  const monthEventCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    events.forEach((event) => {
+      const eventDate = new Date(event.startDateTime.date)
+      const key = `${eventDate.getFullYear()}-${eventDate.getMonth()}`
+      counts[key] = (counts[key] || 0) + 1
+    })
+    return counts
+  }, [events])
+
+  //* 根據預先計算好的月事件數來獲取，這原本在側邊欄 map 中會被多次呼叫
+  const getMonthEventCount = React.useCallback(
+    (year: number, month: number): number => {
+      return monthEventCounts[`${year}-${month}`] || 0
+    },
+    [monthEventCounts],
+  )
+
+  //* 將「選中日期事件的時間範圍計算」提取為 useMemo，
+  //* 因為 FullCalendar 的 props 有 3 處依賴此結果，預先計算好避免每次 render 都重建
+  const selectedDateTimeRange = useMemo(() => {
+    if (!selectedDateEvents || selectedDateEvents.length === 0) {
+      return { start: '08:00:00', end: '18:00:00' }
+    }
+
+    // 取得所有事件的開始和結束時間
+    const times = selectedDateEvents.flatMap((event) => [
+      event.startDateTime.time || '08:00:00',
+      event.endDateTime?.time || event.startDateTime.time || '18:00:00',
+    ])
+
+    // 找出最早和最晚的時間
+    times.sort()
+    const earliest = times[0]
+    const latest = times[times.length - 1]
+
+    // 往前推1小時，往後推1小時
+    const startHour = Math.max(0, parseInt(earliest.split(':')[0]) - 1)
+    const endHour = Math.min(23, parseInt(latest.split(':')[0]) + 1)
+
+    return {
+      start: `${startHour.toString().padStart(2, '0')}:00:00`,
+      end: `${endHour.toString().padStart(2, '0')}:59:59`,
+    }
+  }, [selectedDateEvents])
+
+  //* 自定義日期樣式 - 學期外日期暗淡（暫時註解，未來可能會用到）
+  // const dayClassNames = (date: { date: Date }) => {
+  //   const dateObj = date.date
+  //   const isInSemester = isDateInSemester(dateObj, selectedYear)
+
+  //   return isInSemester ? '' : styles.dayOutOfSemester
+  // }
+
+  //* 滾動到指定日期
+  // 使用 useCallback 包裝並確保參考穩定
+  const scrollToDate = React.useCallback(
+    (dateStr: string) => {
+      const targetDate = new Date(dateStr)
+      const year = targetDate.getFullYear()
+      const month = targetDate.getMonth()
+
+      // 先瞬間滾動到 calendarContent 區域
+      const calendarContent = document.querySelector(
+        `.${styles.calendarContent}`,
+      )
+      if (calendarContent) {
+        window.scrollTo({
+          top:
+            calendarContent.getBoundingClientRect().top + window.scrollY - 200,
+          behavior: 'smooth',
+        })
+      }
+
+      // 短暫延遲後滾動到對應月份
+      setTimeout(() => {
+        scrollToMonth(year, month)
+
+        // 延遲後查詢並高亮該日期（等待滾動動畫和 DOM 更新）
+        setTimeout(() => {
+          const dateCell = document.querySelector(`[data-date="${dateStr}"]`)
+          if (dateCell) {
+            // 使用 IntersectionObserver 監聽元素進入視圖
+            const observer = new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting) {
+                    // 進入視圖後延遲 500ms 高亮
+                    setTimeout(() => {
+                      dateCell.classList.add(styles.dayHighlighted)
+                      setTimeout(() => {
+                        dateCell.classList.remove(styles.dayHighlighted)
+                      }, 1000)
+                    }, 500)
+                    observer.disconnect()
+                  }
+                })
+              },
+              {
+                threshold: 0.5, // 元素至少 50% 可見時觸發
+              },
+            )
+            observer.observe(dateCell)
+          }
+        }, 400)
+      }, 50)
+    },
+    [scrollToMonth],
+  )
+
+  //* 滾動到今天
+  const scrollToToday = React.useCallback(() => {
+    const today = new Date()
+    // 使用 local date 格式，避免 toISOString() 的 UTC 時區偏移
+    const localDateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    scrollToDate(localDateStr)
+  }, [scrollToDate])
+
+  //* 生成學年度的所有月份
+  const academicYearMonths = useMemo(() => {
+    if (!yearConfig) return []
+
+    const months = []
+    const startDate = new Date(yearConfig.firstSemester.start)
+    const endDate = new Date(yearConfig.secondSemester.end)
+
+    const current = new Date(startDate)
+    current.setDate(1) // 設定為每月1號
+
+    while (current <= endDate) {
+      months.push({
+        year: current.getFullYear(),
+        month: current.getMonth(),
+        date: new Date(current),
+      })
+      current.setMonth(current.getMonth() + 1)
+    }
+
+    return months
+  }, [yearConfig])
+
+  //* 防止重複執行自動滾動
+  const hasAutoScrolled = React.useRef(false)
+
+  //* 資料載入完成（academicYearMonths 就緒）後，自動滾動到當日
+  React.useEffect(() => {
+    if (academicYearMonths.length === 0 || hasAutoScrolled.current) return
+
+    // 計算今天對應的月份 id（用 local time 避免時區偏移）
+    const today = new Date()
+    const monthId = `month-${today.getFullYear()}-${today.getMonth()}`
+
+    let attempts = 0
+    let timerId: ReturnType<typeof setTimeout>
+
+    // 輪詢直到目標月份元素具備實際高度（FullCalendar 完成 layout）
+    const tryScroll = () => {
+      const element = document.getElementById(monthId)
+      if (element && element.offsetHeight > 0) {
+        hasAutoScrolled.current = true
+        scrollToToday()
+      } else if (attempts < 30) {
+        attempts++
+        timerId = setTimeout(tryScroll, 10)
+      }
+    }
+
+    timerId = setTimeout(tryScroll, 50)
+
+    return () => clearTimeout(timerId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [academicYearMonths])
+
+  //* 當 activeMonth 改變時，將對應導航按鈕捲動到可視範圍內
+  React.useEffect(() => {
+    if (!activeMonth || !monthNavRef.current) return
+
+    const activeButton = monthNavRef.current.querySelector<HTMLButtonElement>(
+      `[data-month-id="${activeMonth}"]`,
+    )
+    if (activeButton) {
+      activeButton.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      })
+    }
+  }, [activeMonth])
+
+  //* 監聽月份容器進入視窗
+  React.useEffect(() => {
+    const observers: IntersectionObserver[] = []
+
+    academicYearMonths.forEach((monthInfo) => {
+      const monthId = `month-${monthInfo.year}-${monthInfo.month}`
+      const element = document.getElementById(monthId)
+
+      if (element) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+                setActiveMonth(monthId)
+              }
+            })
+          },
+          {
+            threshold: [0.3],
+            rootMargin: '-100px 0px -50% 0px',
+          },
+        )
+
+        observer.observe(element)
+        observers.push(observer)
+      }
+    })
+
+    return () => {
+      observers.forEach((observer) => observer.disconnect())
+    }
+  }, [academicYearMonths])
+
+  //* 浮動操作列動作
+  const floatingActionBarActions: ActionItem[] = [
+    ...(isScrolledPast120
+      ? [
+          {
+            type: 'button' as const,
+            icon: faArrowUp,
+            label: t('components.calendar.backToTop'),
+            labelVisible: true,
+            onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+          },
+        ]
+      : []),
+    {
+      type: 'button',
+      icon: faCalendarDay,
+      label: t('components.calendar.today'),
+      labelVisible: true,
+      variant: 'primary',
+      onClick: scrollToToday,
+    },
+  ]
+
+  //* 渲染頁面
+  if (!yearConfig) {
+    return (
+      <div className={styles.errorContainer}>
+        <p>{t('components.calendar.notFound', { year: selectedYear })}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className={styles.calendarContainer}>
+      <div
+        className={`${styles.classesDetail} ${styles.mobileClassesDetail} ${
+          isCompactHeader ? styles.headerCompact : ''
+        }`}
+      >
+        <div className={`${styles.classesDetailItem} ${styles.schoolEvent}`}>
+          <FontAwesomeIcon icon={faCircle} />
+          <span>{t('components.calendar.legend.schoolEvent')}</span>
+        </div>
+        <div className={`${styles.classesDetailItem} ${styles.event}`}>
+          <FontAwesomeIcon icon={faCircle} />
+          <span>{t('components.calendar.legend.clubEvent')}</span>
+        </div>
+        <div className={`${styles.classesDetailItem} ${styles.activity}`}>
+          <FontAwesomeIcon icon={faCircle} />
+          <span>{t('components.calendar.legend.clubActivity')}</span>
+        </div>
+        <div className={`${styles.classesDetailItem} ${styles.class}`}>
+          <FontAwesomeIcon icon={faCircle} />
+          <span>{t('components.calendar.legend.clubCourse')}</span>
+        </div>
+        <div className={`${styles.classesDetailItem} ${styles.competition}`}>
+          <FontAwesomeIcon icon={faCircle} />
+          <span>{t('components.calendar.legend.competition')}</span>
+        </div>
+      </div>
+
+      {/* 學年度選擇器 */}
+      <div className={styles.yearSelector}>
+        <h2>{t('components.calendar.academicYear')}</h2>
+        <Selector<number>
+          mode="single"
+          options={availableYears}
+          value={selectedYear}
+          onChange={onYearChange}
+          showCount={true}
+          placeholder={t('components.calendar.academicYearPlaceholder')}
+        />
+      </div>
+
+      <div className={styles.calendarContent}>
+        {/* 快速導航 */}
+        <Aside className={styles.calendarAside} header={{ hide: true }}>
+          <div className={styles.asideHeader}>
+            <h3>{t('components.calendar.quickNav')}</h3>
+            <span className={styles.eventCount}>
+              {t('components.calendar.totalEvents', { count: events.length })}
+            </span>
+
+            {/* 類別標示 */}
+            <div className={styles.classesDetail}>
+              <div
+                className={`${styles.classesDetailItem} ${styles.schoolEvent}`}
+              >
+                <FontAwesomeIcon icon={faCircle} />
+                <span>{t('components.calendar.legend.schoolEvent')}</span>
+              </div>
+              <div className={`${styles.classesDetailItem} ${styles.event}`}>
+                <FontAwesomeIcon icon={faCircle} />
+                <span>{t('components.calendar.legend.clubEvent')}</span>
+              </div>
+              <div className={`${styles.classesDetailItem} ${styles.activity}`}>
+                <FontAwesomeIcon icon={faCircle} />
+                <span>{t('components.calendar.legend.clubActivity')}</span>
+              </div>
+              <div className={`${styles.classesDetailItem} ${styles.class}`}>
+                <FontAwesomeIcon icon={faCircle} />
+                <span>{t('components.calendar.legend.clubCourse')}</span>
+              </div>
+              <div
+                className={`${styles.classesDetailItem} ${styles.competition}`}
+              >
+                <FontAwesomeIcon icon={faCircle} />
+                <span>{t('components.calendar.legend.competition')}</span>
+              </div>
+            </div>
+          </div>
+          <div ref={monthNavRef} className={styles.monthNavigation}>
+            {academicYearMonths.map((monthInfo, index) => {
+              const monthId = `month-${monthInfo.year}-${monthInfo.month}`
+              const eventCount = getMonthEventCount(
+                monthInfo.year,
+                monthInfo.month,
+              )
+              const isActive = activeMonth === monthId
+
+              return (
+                <React.Fragment key={monthId}>
+                  {index === 0 && (
+                    <p className={styles.year}>{monthInfo.year}</p>
+                  )}
+                  {index === 5 && (
+                    <p className={styles.year}>{monthInfo.year}</p>
+                  )}
+                  <button
+                    data-month-id={monthId}
+                    className={`${styles.monthNavButton} ${
+                      isActive ? styles.active : ''
+                    } ${eventCount === 0 ? styles.empty : ''}`}
+                    onClick={() =>
+                      scrollToMonth(monthInfo.year, monthInfo.month)
+                    }
+                  >
+                    <div className={styles.monthNavContent}>
+                      <span className={styles.monthName}>
+                        {monthInfo.date.toLocaleDateString(locale, {
+                          month: 'short',
+                        })}
+                      </span>
+                      {/* <span className={styles.monthYear}>{monthInfo.year}</span> */}
+                    </div>
+                    {eventCount > 0 && (
+                      <span className={styles.monthEventCount}>
+                        {eventCount}
+                      </span>
+                    )}
+                  </button>
+                </React.Fragment>
+              )
+            })}
+          </div>
+        </Aside>
+
+        {/* 月份容器 */}
+        <div className={styles.monthsGrid}>
+          {academicYearMonths.map((monthInfo) => (
+            <div
+              key={`${monthInfo.year}-${monthInfo.month}`}
+              id={`month-${monthInfo.year}-${monthInfo.month}`}
+              className={`${styles.monthContainer} ${
+                isCompactHeader ? styles.headerCompact : ''
+              } ${isDayDetailVisible ? styles.dayDetailVisible : ''}`}
+            >
+              <div className={styles.monthHeader}>
+                {monthInfo.date.toLocaleDateString(locale, {
+                  year: 'numeric',
+                  month: 'long',
+                })}
+              </div>
+              <FullCalendar
+                plugins={[dayGridPlugin, interactionPlugin]}
+                initialView="dayGridMonth"
+                initialDate={monthInfo.date}
+                height="auto"
+                locale={locale.toLowerCase()}
+                // 日期範圍限制 - 只顯示當月
+                validRange={{
+                  start: new Date(monthInfo.year, monthInfo.month, 1),
+                  end: new Date(monthInfo.year, monthInfo.month + 2, 0),
+                }}
+                // 事件配置
+                events={calendarEvents}
+                eventDisplay="block"
+                eventClick={handleEventClick}
+                dateClick={handleDateClick}
+                // 隱藏標題工具列
+                headerToolbar={false}
+                // 隱藏其他月份的日期
+                fixedWeekCount={false}
+                showNonCurrentDates={false}
+                // 日期格式
+                dayHeaderFormat={{ weekday: 'narrow' }}
+                dayCellContent={(arg) => {
+                  return arg.date.getDate().toString()
+                }}
+                // 事件時間格式
+                eventTimeFormat={{
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  meridiem: false,
+                  hour12: false,
+                }}
+                // 響應式配置
+                windowResizeDelay={10}
+                // 月份配置
+                dayCellClassNames={(date) => {
+                  const isInSemester = isDateInSemester(date.date, selectedYear)
+                  const dateStr = toLocalDateStr(date.date)
+                  const isSelected = selectedDate === dateStr
+
+                  const classes = []
+
+                  if (isInSemester) {
+                    classes.push(styles.dayInSemester)
+                  } else {
+                    classes.push(styles.dayOutOfSemester)
+                  }
+
+                  // 選中日期的樣式
+                  if (isSelected) {
+                    classes.push(styles.daySelected)
+                  }
+
+                  return classes.join(' ')
+                }}
+                // 自定義屬性 標識日期
+                dayCellDidMount={(info) => {
+                  info.el.setAttribute('data-date', toLocalDateStr(info.date))
+                }}
+              />
+            </div>
+          ))}
+
+          {/* 日程詳細檢視器 */}
+          <div
+            className={`${styles.calendarDayDetailContent} ${
+              isDayDetailVisible ? styles.visible : ''
+            }`}
+          >
+            {selectedDate && (
+              <>
+                <div className={styles.dayDetailHeader}>
+                  <h3
+                    className={styles.dayDetailTitle}
+                    onClick={() => scrollToDate(selectedDate)}
+                    title={t('components.calendar.scrollToDate')}
+                  >
+                    {new Date(selectedDate).toLocaleDateString(locale, {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      weekday: 'long',
+                    })}
+                  </h3>
+                  <button
+                    className={styles.closeDayDetailButton}
+                    onClick={onCloseDayDetail}
+                    aria-label={t('components.calendar.closeDetail')}
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className={styles.dayDetailContent}>
+                  {selectedDateEvents.length === 0 ? (
+                    <div className={styles.noDayEvents}>
+                      <p>{t('components.calendar.noEvents')}</p>
+                    </div>
+                  ) : (
+                    <FullCalendar
+                      key={`day-detail-${selectedDate}`}
+                      plugins={[timeGridPlugin, interactionPlugin]}
+                      initialView="timeGridDay"
+                      initialDate={selectedDate}
+                      height="300px"
+                      locale={locale.toLowerCase()}
+                      events={convertEventsToCalendarFormat(selectedDateEvents)}
+                      slotMinTime={selectedDateTimeRange.start}
+                      slotMaxTime={selectedDateTimeRange.end}
+                      slotDuration="01:00:00"
+                      slotLabelInterval="01:00"
+                      allDaySlot={false}
+                      nowIndicator={true}
+                      scrollTime={selectedDateTimeRange.start}
+                      eventClick={handleEventClick}
+                      headerToolbar={false}
+                      dayHeaders={false}
+                      slotLabelFormat={{
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                      }}
+                      eventTimeFormat={{
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                      }}
+                    />
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <FloatingActionBar align="right" actions={floatingActionBarActions} />
+    </div>
+  )
+}
+
+export default SchedulesCalendar

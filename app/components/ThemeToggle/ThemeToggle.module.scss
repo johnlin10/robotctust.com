@@ -2,6 +2,8 @@
 
 .toggle {
   @include mixins.button;
+  background-color: transparent;
+  height: 100%;
 }
 
 .icon {

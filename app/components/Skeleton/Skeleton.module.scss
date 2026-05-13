@@ -1,0 +1,128 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+// ── 閃動動畫 ──────────────────────────────────────────
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// ── 基礎占位塊 ────────────────────────────────────────
+.block {
+  background: linear-gradient(
+    90deg,
+    var(--background-secondary) 25%,
+    var(--background-tertiary)  50%,
+    var(--background-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+  display: block;
+}
+
+// ── 容器 & 排版 ───────────────────────────────────────
+.container {
+  width: 100%;
+}
+
+.list {
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space);
+}
+
+// ── Variant: stat ─────────────────────────────────────
+// 符合 .statCard：padding 18px/20px, border-radius 16px
+.statItem {
+  @include mixins.flexbox(column, flex-start, flex-start);
+  gap: 8px;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  @include mixins.border-radius(16px);
+  min-width: 0;
+}
+
+// ── Variant: card ─────────────────────────────────────
+// 符合 dashboard module cards / program cards
+.cardItem {
+  @include mixins.flexbox(column, flex-start, flex-start);
+  gap: var(--space);
+  padding: var(--space-2x);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(16px);
+  min-height: 120px;
+}
+
+.cardItemHeader {
+  @include mixins.flexbox(row, flex-start, center);
+  gap: var(--space);
+  width: 100%;
+}
+
+// ── Variant: table-row ────────────────────────────────
+// 符合 verifications 表格列：padding 16px/20px
+.tableRowItem {
+  @include mixins.flexbox(row, flex-start, center);
+  gap: var(--space-2x);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+
+  &:first-child {
+    border-top: 1px solid var(--border);
+  }
+}
+
+// ── Variant: list-item ────────────────────────────────
+// 符合 member cards / general list entries
+.listItem {
+  @include mixins.flexbox(row, space-between, center);
+  gap: var(--space);
+  padding: var(--space) var(--space-2x);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(12px);
+}
+
+.listItemMain {
+  @include mixins.flexbox(column, flex-start, flex-start);
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+// ── Variant: section ─────────────────────────────────
+// 符合 semester section / member section：標題列 + 3 個 list-item
+.sectionItem {
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space);
+  padding: var(--space-2x);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(16px);
+}
+
+.sectionHeader {
+  @include mixins.flexbox(row, space-between, center);
+  padding-bottom: var(--space);
+  border-bottom: 1px solid var(--border);
+  gap: var(--space);
+}
+
+.sectionHeaderLeft {
+  @include mixins.flexbox(row, flex-start, center);
+  gap: var(--space);
+}
+
+.sectionBody {
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space-0-75x);
+}

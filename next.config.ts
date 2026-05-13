@@ -1,4 +1,7 @@
 import type { NextConfig } from 'next'
+import createNextIntlPlugin from 'next-intl/plugin'
+
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -41,14 +44,42 @@ const nextConfig: NextConfig = {
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
+  async redirects() {
+    return [
+      {
+        source: '/schedules',
+        destination: '/calendar',
+        permanent: true,
+      },
+      {
+        source: '/en/schedules',
+        destination: '/en/calendar',
+        permanent: true,
+      },
+      {
+        source: '/update/:postId',
+        destination: '/news/:postId',
+        permanent: true,
+      },
+      {
+        source: '/en/update/:postId',
+        destination: '/en/news/:postId',
+        permanent: true,
+      },
+    ]
+  },
   async rewrites() {
     return [
       {
         source: '/@:username',
         destination: '/@:username',
       },
+      {
+        source: '/en/@:username',
+        destination: '/en/@:username',
+      },
     ]
   },
 }
 
-export default nextConfig
+export default withNextIntl(nextConfig)

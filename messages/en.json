@@ -1,0 +1,664 @@
+{
+  "Index": {
+    "title": "Robotics Research Club of CTUST",
+    "webTitle": "Robotics Research Club of CTUST",
+    "description": "The CTUST Robotics Club is a student-led community dedicated to the art of building robots. Our platform provides members with a hands-on learning space to explore technology, share resources, and turn creative ideas into reality.",
+    "schoolName": "Central Taiwan University of Science and Technology",
+    "schoolNameShort": "CTUST",
+    "clubName": "Robotics Research Club",
+    "schoolClubName": "Robotics Research Club of CTUST"
+  },
+  "LanguageSwitcher": {
+    "label": "Language",
+    "languages": {
+      "zh-TW": "繁體中文",
+      "en": "English"
+    }
+  },
+  "Header": {
+    "nav": {
+      "courses": "Courses",
+      "news": "News",
+      "competitions": "Competitions",
+      "calendar": "Calendar",
+      "docs": "Docs",
+      "about": "About",
+      "dashboard": "Dashboard",
+      "admin": "Admin"
+    }
+  },
+  "Footer": {
+    "contactUs": {
+      "title": "Contact Us",
+      "email": "Email",
+      "instagram": "Instagram",
+      "office": "Club Office"
+    },
+    "copyright": "Copyright © 2025 Robotics Research Club of CTUST",
+    "links": {
+      "openSource": "Open Source",
+      "termsOfService": "Terms of Service",
+      "privacyPolicy": "Privacy Policy"
+    },
+    "version": "Version"
+  },
+  "Components": {
+    "ThemeToggle": {
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System",
+      "switchTo": "Switch to",
+      "mode": "Mode",
+      "current": "Current"
+    },
+    "AuthSection": {
+      "logout": "Logout",
+      "login": "Login",
+      "joinUs": "Join Us,",
+      "exploreRobotWorld": "Explore the Robot World!"
+    },
+    "Roles": {
+      "super_admin": "Super Admin",
+      "admin": "Admin",
+      "admin_course": "Course Admin",
+      "admin_achievement": "Achievement Admin",
+      "admin_verifications": "Verification Admin",
+      "admin_news": "News Admin",
+      "admin_accounts": "Account Admin",
+      "admin_members": "Member Admin",
+      "admin_calendar": "Calendar Admin",
+      "member": "Member"
+    },
+    "Aside": {
+      "close": "Close sidebar",
+      "open": "Open sidebar"
+    },
+    "CourseSidebar": {
+      "header": {
+        "title": "Learning Workshop",
+        "subtitle": "Club Courses"
+      },
+      "overview": "Overview",
+      "emptyState": "No courses available, or you are not a member of any semester yet."
+    },
+    "DashboardAside": {
+      "header": {
+        "title": "Admin Dashboard",
+        "subtitle": "Role: {role}"
+      },
+      "overview": "Overview",
+      "backToModules": "Back to Modules",
+      "modules": {
+        "courses": "Courses",
+        "news": "News",
+        "verifications": "Verifications",
+        "programs": "Programs",
+        "members": "Members",
+        "achievements": "Achievements",
+        "accounts": "Accounts",
+        "calendar": "Calendar"
+      },
+      "items": {
+        "courseOverview": "Course Overview",
+        "articleList": "Article List",
+        "newArticle": "New Article",
+        "verificationList": "Verification List",
+        "pendingVerifications": "Pending Verifications",
+        "eventList": "Event List",
+        "newEvent": "New Event"
+      }
+    },
+    "WebsiteMap": {
+      "info": {
+        "title": "Information",
+        "items": {
+          "calendar": "Calendar",
+          "news": "News",
+          "competitions": "Competitions",
+          "courses": "Courses"
+        }
+      },
+      "data": {
+        "title": "Data",
+        "items": {
+          "docs": "Docs",
+          "terms": "Terms of Service",
+          "privacy": "Privacy Policy"
+        }
+      },
+      "about": {
+        "title": "About",
+        "items": {
+          "about": "About Us",
+          "contact": "Contact Us"
+        }
+      },
+      "openSource": {
+        "title": "Open Source",
+        "items": {
+          "website": "Website"
+        }
+      }
+    }
+  },
+  "Login": {
+    "backToHome": "Back to Home",
+    "welcome": {
+      "title": "Welcome to",
+      "subtitle": "Robotics Research Club of CTUST"
+    },
+    "loginToUnlock": "Sign in to unlock exclusive features",
+    "features": {
+      "courses": {
+        "title": "Club Course System",
+        "description": "View all courses and progress for your enrolled semester"
+      },
+      "news": {
+        "title": "Tech Sharing Articles",
+        "description": "Officer recaps and member highlight showcases"
+      },
+      "achievements": {
+        "title": "Achievements & XP",
+        "description": "Complete course tasks to earn exclusive achievement badges"
+      },
+      "emailNotifications": {
+        "title": "Email Notifications",
+        "description": "Important announcements and events delivered to your inbox"
+      }
+    },
+    "loading": {
+      "page": "Loading login page...",
+      "userStatus": "Loading user status...",
+      "loggedIn": "You are already logged in. Redirecting to your profile...",
+      "onboarding": "Your profile is incomplete. Redirecting you to finish setup..."
+    },
+    "meta": {
+      "title": "Login | Robotics Research Club of CTUST",
+      "description": "Sign in or create an account to access the Robotics Research Club of CTUST member area.",
+      "keywords": "login,register,member area,sign in,sign up"
+    },
+    "form": {
+      "googleLogin": "Sign in with Google",
+      "googleRegister": "Sign up with Google",
+      "login": {
+        "title": "Sign In",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email address",
+        "password": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "submit": "Sign In",
+        "submitting": "Signing in...",
+        "divider": "or",
+        "switchToRegister": "Don't have an account?",
+        "registerLink": "Sign up",
+        "toast": {
+          "success": "Logged in successfully. Welcome back!",
+          "googleSuccess": "Signed in with Google. Welcome back!",
+          "googleFailed": "Google sign-in failed. Please try again."
+        },
+        "errors": {
+          "invalidCredentials": "Incorrect email or password",
+          "emailNotConfirmed": "Please verify your email address before signing in",
+          "userNotFound": "No account found for this email address",
+          "default": "Sign-in failed. Please try again."
+        },
+        "validation": {
+          "emailRequired": "Email is required",
+          "emailInvalid": "Please enter a valid email address",
+          "passwordRequired": "Password is required",
+          "passwordMinLength": "Password must be at least 6 characters"
+        }
+      },
+      "register": {
+        "emailVerification": {
+          "title": "Verify Your Email",
+          "text": "A verification email has been sent to your inbox. Click the link in the email to complete your account verification and sign in.",
+          "goToLogin": "Go to Login"
+        },
+        "steps": {
+          "next": "Next",
+          "submit": "Start Exploring",
+          "submitting": "Processing..."
+        },
+        "step1": {
+          "emailDivider": "or sign up with Email",
+          "email": "Email",
+          "agreeTerms": "I have read and agree to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>",
+          "switchToLogin": "Already have an account?",
+          "loginLink": "Sign in"
+        },
+        "step2": {
+          "password": "Set Password",
+          "passwordPlaceholder": "Enter your password",
+          "confirmPassword": "Confirm Password",
+          "confirmPasswordPlaceholder": "Re-enter your password",
+          "rules": {
+            "length": "At least 8 characters",
+            "lowercase": "Contains a lowercase letter",
+            "uppercase": "Contains an uppercase letter",
+            "number": "Contains a number",
+            "special": "Contains a special character"
+          }
+        },
+        "step3": {
+          "uploadAvatar": "Upload Avatar",
+          "username": "Username",
+          "usernameHint": "Lowercase letters, numbers, and underscores only — used as part of your profile URL",
+          "displayName": "Display Name",
+          "displayNameHint": "Up to 20 characters",
+          "displayNamePlaceholder": "What should we call you?"
+        },
+        "step4": {
+          "hint": "This information is used to verify your club membership and configure course permissions.",
+          "schoolIdentity": "Your campus role",
+          "schoolIdentityPlaceholder": "Select your campus role",
+          "schoolIdentityOptions": {
+            "current_student": "Current Student",
+            "teacher": "Faculty / Staff",
+            "external": "Non-CTUST Person",
+            "alumni": "Alumni"
+          },
+          "clubIdentity": "Club membership status",
+          "clubIdentityPlaceholder": "Select membership status",
+          "clubIdentityOptions": {
+            "member": "I am a club member",
+            "non_member": "I am not a club member"
+          },
+          "studentId": "Student ID",
+          "studentIdPlaceholder": "Enter your student ID",
+          "studentIdHint": "CTUST students must provide their student ID to verify club membership"
+        },
+        "toast": {
+          "emailDetected": "This email is already registered. Redirecting you to the login page.",
+          "emailSent": "Verification email sent! Please check your inbox.",
+          "success": "Registration successful. Welcome aboard!",
+          "googleSuccess": "Signed in with Google. Welcome to the club!"
+        },
+        "errors": {
+          "usernameTaken": "This username is already taken",
+          "emailRegistered": "This email address is already registered",
+          "studentIdBound": "This student ID is already linked to another account. Please check your input or sign in with your existing account.",
+          "passwordWeak": "Password does not meet security requirements",
+          "default": "Registration failed: {message}",
+          "avatarTooLarge": "Avatar file size must be under 5 MB",
+          "avatarInvalidType": "Please select an image file"
+        },
+        "validation": {
+          "emailRequired": "Email is required",
+          "emailInvalid": "Please enter a valid email address",
+          "passwordRequired": "Password is required",
+          "passwordMinLength": "Password must be at least 8 characters",
+          "passwordLowercase": "Password must contain a lowercase letter",
+          "passwordUppercase": "Password must contain an uppercase letter",
+          "passwordNumber": "Password must contain a number",
+          "passwordSpecial": "Password must contain at least one special character",
+          "confirmPasswordRequired": "Please re-enter your password",
+          "confirmPasswordMismatch": "Passwords do not match",
+          "usernamePattern": "Lowercase letters, numbers, and underscores only",
+          "usernameMinLength": "At least 3 characters",
+          "usernameMaxLength": "Up to 20 characters",
+          "displayNameMaxLength": "Up to 20 characters",
+          "schoolIdentityRequired": "Please select your campus role",
+          "clubIdentityRequired": "Please select your club membership status",
+          "studentIdRequired": "CTUST students must provide their student ID",
+          "studentIdMaxLength": "Student ID must be 20 characters or fewer",
+          "studentIdPattern": "Student ID may only contain letters, numbers, underscores, and hyphens"
+        }
+      }
+    }
+  },
+  "Home": {
+    "HeroSection": {
+      "titles": {
+        "1": "From Spark to Action",
+        "2": "Create Your ",
+        "3": "Robot Universe"
+      },
+      "subtitles": {
+        "1": "We are a hands-on hub where ",
+        "2": "creativity, tech, and passion converge ",
+        "3": "to craft the possibilities of tomorrow."
+      }
+    },
+    "OurMission": {
+      "title": "Our Mission",
+      "description": "We are here to champion robotics and empower students through hands-on experience, logical thinking, and teamwork. We strive to create an open, shared space where members don’t just refine their skills—they learn how to tackle the world's most complex problems, together."
+    },
+    "CoreProjects": {
+      "title": "Core Projects",
+      "description": "We layer our technologies, striving for excellence at every level.",
+      "tabs": {
+        "mentor": "The Mentor",
+        "pathfinder": "The Pathfinder",
+        "web": {
+          "1": "Web",
+          "2": " Platform"
+        },
+        "ios": {
+          "1": "iOS",
+          "2": "App"
+        }
+      },
+      "status": {
+        "live": "Live",
+        "active": "Active",
+        "planning": "Planning",
+        "developing": "Building"
+      },
+      "showcases": {
+        "web": {
+          "title": "Web Platform",
+          "subtitle": "Full-stack Development",
+          "desc": "A modern portal built on <strong>React & Next.js</strong>. Beyond a showcase, it represents our commitment to front-end tech and design aesthetics.",
+          "list": {
+            "1": "Responsive Design (RWD)",
+            "2": "Modern Dynamic Visuals",
+            "3": "Member Portfolio Hub"
+          }
+        },
+        "mentor": {
+          "title": "Robot Mentor",
+          "subtitle": "Beginner Wheeled Robot",
+          "desc": "An <strong>entry-level wheeled robot</strong> designed for our curriculum. Its modular design helps members master sensors, motor drivers, and Arduino logic.",
+          "list": {
+            "1": "Arduino Nano Architecture",
+            "2": "Modular Circuits (L9110S + KY-033)",
+            "3": "Line-following & Obstacle Avoidance"
+          }
+        },
+        "pathfinder": {
+          "title": "Robot Pathfinder",
+          "subtitle": "Pro Competition Project",
+          "desc": "A high-performance machine built for precision. Developed independently by our core team to push the limits of speed and control.",
+          "list": {
+            "1": "Custom PCB & 3D Printed Parts",
+            "2": "PID Control & Sensor Optimization",
+            "3": "Integrated Hardware-Software Dev"
+          }
+        },
+        "ios": {
+          "title": "iOS App",
+          "subtitle": "Native Application",
+          "desc": "Built natively with SwiftUI. It integrates club calendars and check-in systems, serving as the core of our digital transformation.",
+          "list": {
+            "1": "Native SwiftUI Development",
+            "2": "Club Event Calendars",
+            "3": "Push Notifications & Check-ins"
+          }
+        }
+      }
+    },
+    "Marquee": {
+      "keywords": {
+        "lineFollowing": "Line Following",
+        "obstacleAvoidance": "Obstacle Avoidance",
+        "pathPlanning": "Path Planning",
+        "robotArm": "Robot Arm",
+        "autonomousCar": "Autonomous Car"
+      }
+    },
+    "ClubFeaturesSection": {
+      "title": "Club Features",
+      "features": {
+        "0": {
+          "title": "Hands-on Focus",
+          "description": "We don't just talk. Every member gets to solder circuits, code, and build hardware, turning ideas into reality."
+        },
+        "1": {
+          "title": "Team Spirit",
+          "description": "Building robots is a team effort. You'll learn communication, collaboration, and how to tackle challenges together."
+        },
+        "2": {
+          "title": "Cross-disciplinary",
+          "description": "We welcome students from all fields—IT, Healthcare, Marketing, and more. Diverse perspectives spark the most creative solutions."
+        }
+      }
+    },
+    "LessonIntro": {
+      "title": "Course Overview",
+      "lessons": {
+        "0": {
+          "title": "General Meeting & Orientation",
+          "description": "The first session of our club starts with getting to know each other. We introduce the mission, bylaws, and future plans, guide members through the website's features, and complete interest-based grouping to lay a solid foundation for upcoming hands-on courses."
+        },
+        "1": {
+          "title": "Robot Hardware Assembly",
+          "description": "The first large-scale hands-on event. Starting from individual components, members assemble the robot car's structure and connect circuits based on schematics, experiencing the creative process of turning parts into a complete robot."
+        },
+        "2": {
+          "title": "Robot Programming",
+          "description": "After hardware assembly, we breathe life into the robot. Starting from Arduino IDE installation, members learn to read sensor values and write logic to make the robot car truly move."
+        },
+        "3": {
+          "title": "Robotics Competition",
+          "description": "The club's first internal competition combined with an on-site workshop. Officers explain core algorithms, and members adjust code and familiarize themselves with the track on the spot before robots attempt to navigate the map autonomously."
+        }
+      }
+    },
+    "LatestUpdates": {
+      "title": "Latest Updates",
+      "viewAll": "View All Posts"
+    }
+  },
+  "Calendar": {
+    "title": "Calendar",
+    "description": "View the course schedules, competition timelines, and club activities of the CTUST Robotics Research Club.",
+    "academicYear": "{year} Academic Year",
+    "meta": {
+      "title": "Calendar | Robotics Research Club of CTUST",
+      "description": "View the course schedules, competition timelines, and club activities of the CTUST Robotics Research Club.",
+      "keywords": "calendar,club calendar,course schedule,club events,club classes,class times,club activities,meeting times,robotics courses"
+    },
+    "descriptions": [
+      "View the course schedules, competition timelines, and club activities of the CTUST Robotics Research Club.",
+      "Use the academic year selector to view schedules for different years."
+    ],
+    "loading": "Loading calendar...",
+    "error": {
+      "loadFailed": "Failed to load calendar",
+      "retry": "Retry"
+    },
+    "emptyState": {
+      "title": "No Calendar Data",
+      "description": "There are currently no published calendar events."
+    },
+    "components": {
+      "calendar": {
+        "backToTop": "Back to Top",
+        "today": "Today",
+        "scrollToDate": "Click to return to this date",
+        "closeDetail": "Close detail view",
+        "noEvents": "No events scheduled for this day",
+        "notFound": "Configuration data for {year} Academic Year not found",
+        "academicYear": "Academic Year",
+        "academicYearPlaceholder": "Select academic year...",
+        "quickNav": "Quick Navigation",
+        "totalEvents": "{count} events total",
+        "legend": {
+          "schoolEvent": "School Event",
+          "clubEvent": "Club Schedule",
+          "clubActivity": "Club Activity",
+          "clubCourse": "Club Course",
+          "competition": "Competition"
+        }
+      }
+    }
+  },
+  "News": {
+    "title": "News",
+    "description": "The latest news from the Robotics Research Club of CTUST, including club activities, technical sharing, competition information, and more.",
+    "meta": {
+      "title": "News | Robotics Research Club of CTUST",
+      "description": "The latest news from the Robotics Research Club of CTUST, including club activities, technical sharing, competition information, and more.",
+      "keywords": "latest news,club updates,tech sharing,activity announcements,news"
+    },
+    "detail": {
+      "updatedAt": "(Updated {date})",
+      "error": {
+        "loadFailed": "Failed to load",
+        "notFound": "Post not found",
+        "backToList": "Back to news list"
+      },
+      "share": {
+        "threads": "Share on Threads",
+        "twitter": "Share on X",
+        "copyLink": "Copy link",
+        "copyLinkTitle": "Copy post URL",
+        "copied": "Copied",
+        "share": "Share"
+      },
+      "meta": {
+        "titleTemplate": "{title} | {category} | Robotics Research Club of CTUST",
+        "descriptionTemplate": "Read the latest content about \"{title}\", shared by {author}.",
+        "notFound": {
+          "title": "Post not found | Robotics Research Club of CTUST",
+          "description": "The post you are looking for does not exist or has been deleted. Please check the URL.",
+          "keywords": "404,post not found,error page"
+        },
+        "loading": {
+          "title": "Loading post | Robotics Research Club of CTUST",
+          "description": "Loading post content, please wait...",
+          "keywords": "loading,post,Robotics Research Club of CTUST"
+        }
+      }
+    },
+    "categories": {
+      "all": "All",
+      "club-activity": "Club Activity",
+      "instant-news": "Breaking News",
+      "news-sharing": "News Sharing",
+      "tech-sharing": "Tech Sharing",
+      "competition-info": "Competition",
+      "website-update": "Site Update"
+    },
+    "emptyState": {
+      "all": "No posts available",
+      "filtered": "No posts in the \"{category}\" category"
+    }
+  },
+  "About": {
+    "meta": {
+      "title": "About | Robotics Research Club of CTUST",
+      "description": "Learn about the CTUST Robotics Research Club — our founding mission, activities, and members. We are dedicated to promoting robotics education and providing students with hands-on learning opportunities.",
+      "keywords": "about us,club introduction,members,club mission"
+    },
+    "hero": {
+      "eyebrow": "ROBOT CTUST · About Us",
+      "title": "Discover the Endless Possibilities of Robotics",
+      "subtitle": "Explore, build, and grow alongside a community of like-minded enthusiasts — one step, one creation at a time.",
+      "foundingNote": "Founded in 2025 · by three students"
+    },
+    "origin": {
+      "label": "Our Story",
+      "heading": "Sparked by a Shared Passion for Robotics",
+      "paragraph1": "In the fall of 2025, Shih-Chi, Tai-Ling, and Chang-Lung crossed paths through their shared love of robotics. Seeing fellow students on campus pouring themselves into their own projects, they asked themselves: what if there were a place where everyone could come together — to build, to learn, and to grow? That question is what led them to found the CTUST Robotics Research Club.",
+      "paragraph2": "The idea quickly turned into action. At the October club fair, the newly formed club made its debut — drawing nearly thirty new members to sign up. The first workshop followed soon after. There were bumps along the way: technical hiccups, curriculum tweaks, and plenty of on-the-fly adjustments. But the three founders believed those rough edges were all part of the process. Each setback helped them find the teaching style and club culture that felt right.",
+      "paragraph3": "Today, the club is no longer just three people's dream — it's a learning community of dozens of passionate members. We still carry the same founding spirit: that every hands-on session and every moment of shared discovery is what makes this club worth building. We look forward to exploring this journey alongside you — from parts to machine, one step at a time."
+    },
+    "culture": {
+      "label": "Club Culture",
+      "heading": "Feeling the Pulse of Robotics Through Practice",
+      "narrative": "We believe the real learning journey in robotics doesn't happen in textbooks — it happens the moment you start building. Step into one of our workshops and you'll see it: newcomers focused intently on assembling their first robot, veterans patiently walking a friend through a tricky circuit, everyone learning through trial and discussion. There's no such thing as a bad question here — just people helping each other and always pushing to improve. No matter where you're starting from, if you care about robotics, there's a place for you here.",
+      "moments": [
+        {
+          "title": "Hands-On Building",
+          "description": "From parts to assembly — only by building it yourself do you truly feel the joy of creation."
+        },
+        {
+          "title": "Learning Together",
+          "description": "No bad questions. Just teammates exploring side by side, helping each other grow."
+        },
+        {
+          "title": "Always Improving",
+          "description": "Listen, reflect, and iterate — finding better ways forward with every step."
+        }
+      ]
+    },
+    "philosophy": {
+      "heading": "From Parts to Machine, Together",
+      "body": "Every robot begins with a single part, and every person's growth begins with the willingness to try. We believe the most valuable part of the journey isn't the finished product — it's the warmth of building something alongside others, the shared thinking, and the memories made along the way.",
+      "invitation": "Whether you're just starting out or already deep into the world of robotics, you're welcome here. We look forward to taking each step alongside you — building from parts to machine, and finding our story together."
+    }
+  },
+  "Contact": {
+    "meta": {
+      "title": "Contact Us | Robotics Research Club of CTUST",
+      "description": "Have a question or suggestion? Contact the CTUST Robotics Research Club via Email or Instagram. We are happy to answer questions about courses, competitions, and club activities.",
+      "keywords": "contact us,contact,Email,Instagram,club contact"
+    }
+  },
+  "Docs": {
+    "meta": {
+      "title": "Club Documents | Robotics Research Club of CTUST",
+      "description": "Important documents for the CTUST Robotics Research Club, including the club charter, financial management policy, equipment borrowing guidelines, and future plans.",
+      "keywords": "club documents,club charter,management policy,future plans,equipment borrowing",
+      "docNotFound": "Document Not Found | Robotics Research Club of CTUST",
+      "titleTemplate": "{title} | Robotics Research Club of CTUST"
+    },
+    "page": {
+      "headerTitle": "Club Documents",
+      "headerDescription": "Here you can find important documents for the CTUST Robotics Research Club and course materials."
+    },
+    "mainSection": {
+      "heading": "Club Documents"
+    },
+    "dateLabels": {
+      "today": "Today",
+      "tomorrow": "Tomorrow"
+    },
+    "linkTitle": "View {title} document",
+    "documents": {
+      "org-charter": {
+        "title": "Organization Charter",
+        "description": "Organization charter of CTUST Robotics Research Club"
+      },
+      "financial-management": {
+        "title": "Financial Management Policy",
+        "description": "Regulations and guidelines for club financial management"
+      },
+      "equipment-borrowing-guidelines": {
+        "title": "Equipment Borrowing Guidelines",
+        "description": "Procedures and regulations for borrowing club equipment"
+      },
+      "future-plans": {
+        "title": "Future Development Plans",
+        "description": "Future development roadmap for the club"
+      }
+    },
+    "courseMaterials": {
+      "title": "Course Materials",
+      "category": "Club Documents"
+    }
+  },
+  "Competitions": {
+    "meta": {
+      "title": "Competitions | Robotics Research Club of CTUST",
+      "description": "Explore competitions participated in by the CTUST Robotics Research Club, including schedules, eligibility requirements, and award information.",
+      "keywords": "competitions,contest,robotics competition,participation info",
+      "detail": {
+        "titleTemplate": "Competition | {title} | Robotics Research Club of CTUST",
+        "titleFallback": "Competition | {slug} | Robotics Research Club of CTUST",
+        "descriptionFallback": "View details for the {slug} competition, including rules, schedules, and registration information.",
+        "keywordDetail": "competition details",
+        "keywordInfo": "contest information"
+      }
+    }
+  },
+  "Courses": {
+    "meta": {
+      "title": "Courses | Robotics Research Club of CTUST",
+      "description": "Browse published courses by semester and chapter from the CTUST Robotics Research Club. Start your robotics learning journey today.",
+      "keywords": "courses,learning,online courses,robotics",
+      "dynamicDescription": "This page includes {courseCount} published courses. Welcome to the CTUST Robotics Research Club learning area — browse by chapter and start learning."
+    },
+    "lockedCourse": {
+      "description": "This course requires a member account to access. Please log in to view the content.",
+      "keywords": "course,member login"
+    },
+    "detail": {
+      "titleTemplate": "{name} | Courses | Robotics Research Club of CTUST",
+      "keywords": "course,online courses,robotics,learning unit",
+      "fallbackDescription": "{name} is an online course unit from the CTUST Robotics Research Club, offering structured lessons and completion tracking to guide your robotics learning journey."
+    }
+  }
+}

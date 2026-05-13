@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import styles from './LessonIntro.module.scss'
+import { useTranslations } from 'next-intl'
 
 // component
 import ScrollAnimation from '@/app/components/animation/ScrollAnimation/ScrollAnimation'
@@ -18,11 +19,9 @@ import {
 
 interface LessonCard {
   id: string
-  title: string
-  description: string
   imageUrl: string
   cta?: {
-    text: string
+    textKey: string
     link: string
   }
 }
@@ -30,33 +29,21 @@ interface LessonCard {
 const lessonData: LessonCard[] = [
   {
     id: 'lesson-1',
-    title: '社員大會與導覽',
-    description:
-      '社團的第一堂課，從認識彼此開始。介紹社團宗旨、組織章程與未來規劃，帶領社員了解官方網站功能，並依興趣完成分組，為後續的實作課程打好基礎。',
     imageUrl:
       'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/posts%2Fmanual_uploads%2F20251008%2F_JIN0322.jpg?alt=media&token=0d7bff2b-5c23-425c-9ef8-85d57d146e8e',
   },
   {
     id: 'lesson-2',
-    title: '機器人硬體組裝',
-    description:
-      '社團第一場大型實作活動。從零組件開始，對照電路圖完成自走車的結構組裝與線路連接，親身體驗從一堆零件到一台完整機器人的創造過程。',
     imageUrl:
       'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/posts%2Fmanual_uploads%2F20251015-club-activity-robot-diy%2F251015-club-activity-robot-diy-17.jpg?alt=media&token=fcaf6b77-e262-4014-92e0-976fb763f26c',
   },
   {
     id: 'lesson-3',
-    title: '機器人程式設計',
-    description:
-      '完成硬體後，我們為機器人注入「靈魂」。從安裝 Arduino IDE 與驅動程式開始，學習讀取感測器數值，並撰寫程式邏輯，讓自走車真正動起來。',
     imageUrl:
       'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/posts%2Fmanual_uploads%2F20251029-course-2%2F20251029%20%E7%A4%BE%E5%9C%98%E8%AA%B2%E7%A8%8B-%E8%87%AA%E8%B5%B0%E8%BB%8A%E7%A8%8B%E5%BC%8F-5.jpg?alt=media&token=77da0b8a-6e34-4cba-9766-a470dd7e85a6',
   },
   {
     id: 'lesson-4',
-    title: '機器人競賽',
-    description:
-      '社團首場內部競賽，結合即時工作坊。賽前由幹部講解核心演算法，社員當場調整程式碼與熟悉場地，再讓機器人自主穿越地圖完成挑戰。',
     imageUrl:
       'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/posts%2Fmanual_uploads%2F20251227%2F20251227-1.jpeg?alt=media&token=ab7b0c27-42a0-48d5-aaa8-4bf543bcc268',
   },
@@ -67,6 +54,7 @@ const lessonData: LessonCard[] = [
  * @returns {JSX.Element}
  */
 export default function LessonIntro() {
+  const t = useTranslations('Home.LessonIntro')
   // 目前顯示的卡片索引
   const [currentIndex, setCurrentIndex] = useState(0)
   // 是否暫停
@@ -175,7 +163,7 @@ export default function LessonIntro() {
     <div className={styles.lessonIntro}>
       <div className={styles.lessonIntroContainer}>
         <div className={styles.header}>
-          <h1>課程概覽</h1>
+          <h1>{t('title')}</h1>
         </div>
 
         <ScrollAnimation
@@ -204,7 +192,7 @@ export default function LessonIntro() {
                   <div className={styles.imageWrapper}>
                     <Image
                       src={lesson.imageUrl}
-                      alt={lesson.title}
+                      alt={t(`lessons.${index}.title`)}
                       fill
                       sizes="(max-width: 768px) 100vw, 1200px"
                       style={{ objectFit: 'cover' }}
@@ -222,11 +210,11 @@ export default function LessonIntro() {
                   </div>
                   <div className={styles.overlay} />
                   <div className={styles.textContainer}>
-                    <h2>{lesson.title}</h2>
-                    <p>{lesson.description}</p>
+                    <h2>{t(`lessons.${index}.title`)}</h2>
+                    <p>{t(`lessons.${index}.description`)}</p>
                     {lesson.cta && (
                       <a href={lesson.cta.link} className={styles.ctaButton}>
-                        {lesson.cta.text}
+                        {t(lesson.cta.textKey)}
                       </a>
                     )}
                   </div>

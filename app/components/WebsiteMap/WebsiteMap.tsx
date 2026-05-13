@@ -1,7 +1,10 @@
+'use client'
+
 import Link from 'next/link'
 import styles from './WebsiteMap.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { useTranslations } from 'next-intl'
 
 const LinkWithIcon = ({
   href,
@@ -32,62 +35,63 @@ const LinkWithIcon = ({
  * @returns {JSX.Element} 網站地圖
  */
 export default function WebsiteMap({ onClose }: { onClose?: () => void }) {
+  const t = useTranslations('Components.WebsiteMap')
   const handleLinkClick = () => {
     onClose?.()
   }
   return (
     <div className={styles.websiteMap}>
       <div className={styles.websiteMap_group}>
-        <p>資訊</p>
+        <p>{t('info.title')}</p>
         <div className={styles.websiteMap_group_items}>
-          <LinkWithIcon href="/schedules" onClick={handleLinkClick}>
-            行事曆
+          <LinkWithIcon href="/calendar" onClick={handleLinkClick}>
+            {t('info.items.calendar')}
           </LinkWithIcon>
-          <LinkWithIcon href="/update" onClick={handleLinkClick}>
-            最新資訊
+          <LinkWithIcon href="/news" onClick={handleLinkClick}>
+            {t('info.items.news')}
           </LinkWithIcon>
           <LinkWithIcon href="/competitions" onClick={handleLinkClick}>
-            競賽
+            {t('info.items.competitions')}
           </LinkWithIcon>
           <LinkWithIcon href="/courses" onClick={handleLinkClick}>
-            課程
+            {t('info.items.courses')}
           </LinkWithIcon>
         </div>
       </div>
       <div className={styles.websiteMap_group}>
-        <p>資料</p>
+        <p>{t('data.title')}</p>
         <div className={styles.websiteMap_group_items}>
           <LinkWithIcon href="/docs" onClick={handleLinkClick}>
-            文檔
+            {t('data.items.docs')}
           </LinkWithIcon>
           <LinkWithIcon href="/terms" onClick={handleLinkClick}>
-            服務條款
+            {t('data.items.terms')}
           </LinkWithIcon>
           <LinkWithIcon href="/privacy" onClick={handleLinkClick}>
-            隱私權政策
+            {t('data.items.privacy')}
           </LinkWithIcon>
         </div>
       </div>
       <div className={styles.websiteMap_group}>
-        <p>關於</p>
+        <p>{t('about.title')}</p>
         <div className={styles.websiteMap_group_items}>
           <LinkWithIcon href="/about" onClick={handleLinkClick}>
-            關於我們
+            {t('about.items.about')}
           </LinkWithIcon>
           <LinkWithIcon href="/contact" onClick={handleLinkClick}>
-            聯絡我們
+            {t('about.items.contact')}
           </LinkWithIcon>
         </div>
       </div>
       <div className={styles.websiteMap_group}>
-        <p>Open Source</p>
+        <p>{t('openSource.title')}</p>
         <div className={styles.websiteMap_group_items}>
           <LinkWithIcon
             href="https://github.com/johnlin10/robot-ctust"
             onClick={handleLinkClick}
             blank
           >
-            Website
+            {t('openSource.items.website')}
           </LinkWithIcon>
         </div>
       </div>

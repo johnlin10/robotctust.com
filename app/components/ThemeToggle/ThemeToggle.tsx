@@ -6,8 +6,10 @@ import styles from './ThemeToggle.module.scss'
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDesktop, faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
+import { useTranslations } from 'next-intl'
 
 export default function ThemeToggle() {
+  const t = useTranslations('Components.ThemeToggle')
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -42,18 +44,28 @@ export default function ThemeToggle() {
   }
 
   const getLabel = () => {
-    if (theme === 'system') return '系統'
-    return resolvedTheme === 'dark' ? '深色' : '淺色'
+    if (theme === 'system') return t('system')
+    return resolvedTheme === 'dark' ? t('dark') : t('light')
   }
 
   return (
     <button
       className={styles.toggle}
       onClick={handleThemeChange}
-      aria-label={`切換到${
-        theme === 'light' ? '深色' : theme === 'dark' ? '系統' : '淺色'
-      }模式`}
-      title={`目前：${getLabel()}模式`}
+      aria-label={`${t('switchTo')} ${
+        theme === 'light'
+          ? t('dark')
+          : theme === 'dark'
+            ? t('system')
+            : t('light')
+      } ${t('mode')}`}
+      title={`${t('switchTo')} ${
+        theme === 'light'
+          ? t('dark')
+          : theme === 'dark'
+            ? t('system')
+            : t('light')
+      } ${t('mode')}`}
     >
       <span className={styles.icon}>{getIcon()}</span>
       <span className={styles.label}>{getLabel()}</span>

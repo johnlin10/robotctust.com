@@ -7,6 +7,7 @@ import styles from './Menu.module.scss'
 
 // components
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher'
 import WebsiteMap from '../WebsiteMap/WebsiteMap'
 
 // context
@@ -14,6 +15,7 @@ import { useAuth } from '../../contexts/AuthContext'
 
 // hook
 import { useMenuAutoClose } from '../../hooks/useMenuAutoClose'
+import { useTranslations } from 'next-intl'
 
 interface MenuProps {
   isOpen: boolean
@@ -30,6 +32,7 @@ interface AuthSectionProps {
  * @returns {JSX.Element}
  */
 const AuthSection = ({ onClose }: AuthSectionProps) => {
+  const t = useTranslations('Components.AuthSection')
   // 獲取當前路徑
   const pathname = usePathname()
   // 獲取登入資訊
@@ -90,16 +93,16 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
             </div>
             <div className={styles.action_buttons}>
               <button className={styles.logout_button} onClick={handleLogout}>
-                登出
+                {t('logout')}
               </button>
             </div>
           </Link>
         ) : (
           <div className={styles.auth_login}>
             <p>
-              加入我們，
+              {t('joinUs')}
               <br />
-              探索機器人世界！
+              {t('exploreRobotWorld')}
             </p>
             <div className={styles.auth_buttons}>
               <Link
@@ -107,7 +110,7 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
                 className={styles.login_button}
                 onClick={onClose}
               >
-                登入
+                {t('login')}
               </Link>
               {/* <Link
                 href={{ pathname: '/login', query: { mode: 'register' } }}
@@ -157,8 +160,9 @@ export default function Menu({ isOpen, onClose }: MenuProps) {
         <div className={styles.menu_item + ' ' + styles.website_map} data-menu>
           <WebsiteMap onClose={onClose} />
         </div>
-        <div className={styles.menu_item + ' ' + styles.theme_toggle} data-menu>
+        <div className={styles.menu_item + ' ' + styles.switchers} data-menu>
           <ThemeToggle />
+          <LanguageSwitcher />
         </div>
         <div className={styles.menu_item + ' ' + styles.auth_item} data-menu>
           <AuthSection onClose={onClose} />

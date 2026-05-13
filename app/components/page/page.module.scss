@@ -1,4 +1,4 @@
-@use '../../styles/mixins' as mixins;
+@use '@/app/styles/mixins' as mixins;
 
 .page {
   position: relative;
@@ -7,18 +7,17 @@
   height: fit-content;
   min-height: 100vh;
   padding-top: var(--header-height, 72px);
-  overflow-x: clip;
+  overflow: clip;
 
   .pageLayout {
     display: flex;
     flex-direction: row;
     width: 100%;
     margin: 0 auto;
-    
+
     @include mixins.respond-by-min-width(860px) {
       gap: var(--space-3x);
       max-width: var(--max-window-width);
-      padding: 0 var(--space-2x);
     }
 
     @include mixins.respond-by-max-width(859px) {
@@ -28,7 +27,9 @@
 
   .asideSlot {
     flex-shrink: 0;
-    // On mobile, the wrapper stays 0 width since Aside is position:fixed drawer
+    padding-left: var(--space-2x);
+    width: 100%;
+    max-width: 280px;
   }
 
   .mainContent {
@@ -41,7 +42,7 @@
 
   .pageContainer {
     @include mixins.flexbox(column, start, stretch);
-    width: calc(100%);
+    width: calc(100% - var(--space-4x));
     height: fit-content;
     margin: 0 auto;
 
@@ -79,6 +80,15 @@
   }
 }
 
+@keyframes backgroundGridParallax {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(25%);
+  }
+}
+
 // background grid
 .backgroundGrid {
   z-index: -10;
@@ -91,4 +101,11 @@
     linear-gradient(var(--background-grid-color) 1px, transparent 1px),
     linear-gradient(90deg, var(--background-grid-color) 1px, transparent 1px);
   background-size: 64px 64px;
+}
+
+@supports (animation-timeline: scroll()) {
+  .backgroundGrid {
+    animation: backgroundGridParallax linear both;
+    animation-timeline: scroll(root);
+  }
 }

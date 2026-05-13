@@ -20,6 +20,8 @@ export interface ScheduleEvent {
   color?: string // 事件顏色，會覆蓋預設顏色
   priority: number // 顯示優先級，數字越小優先級越高
   published: boolean
+  semesterId?: string | null // 關聯學期 UUID
+  semesterName?: string | null // 學期名稱（join 展開，唯讀）
   createdAt: {
     date: string
     time: string

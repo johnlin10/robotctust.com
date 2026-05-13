@@ -9,6 +9,7 @@ export type UserRole =
   | 'admin_news'
   | 'admin_accounts'
   | 'admin_members'
+  | 'admin_calendar'
   | 'member'
 
 export type SchoolIdentity = 'current_student' | 'teacher' | 'external' | 'alumni'
@@ -38,7 +39,8 @@ export interface UserProfile extends Record<string, unknown> {
   }
 }
 
-export const getUserRoleName = (role: UserRole) => {
+export const getUserRoleName = (role: UserRole, t?: any) => {
+  if (t) return t(role)
   switch (role) {
     case 'super_admin':
       return '超級管理員'
@@ -56,6 +58,8 @@ export const getUserRoleName = (role: UserRole) => {
       return '帳號管理員'
     case 'admin_members':
       return '社員管理員'
+    case 'admin_calendar':
+      return '行事曆管理員'
     case 'member':
       return '一般會員'
   }

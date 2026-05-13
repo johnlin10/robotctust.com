@@ -116,6 +116,7 @@ header.header {
             @include mixins.border-radius(6px);
             padding: 3px 9px;
             font-size: 0.8rem;
+            letter-spacing: 0;
 
             &.active {
               background-color: rgba(var(--background-secondary-rgb), 0.5);

@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useMemo, useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import styles from './RegisterForm.module.scss'
 
 // third-party utils
@@ -38,135 +39,122 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 interface RegisterFormProps {
-  onSwitchToLogin: (email?: string) => void // 切換到登入模式
-  onClose?: () => void // 關閉模組
-  showCloseButton?: boolean // 是否顯示關閉按鈕
-  next?: string // 登入後跳轉的路徑
+  onSwitchToLogin: (email?: string) => void
+  onClose?: () => void
+  showCloseButton?: boolean
+  next?: string
 }
 
 interface FormData {
-  email: string // 電子郵件
-  password: string // 密碼
-  confirmPassword: string // 確認密碼
-  username?: string // 帳號名稱
-  displayName?: string // 顯示名稱
-  schoolIdentity: SchoolIdentity // 校園身分
-  clubIdentity: ClubIdentity // 社團身分
-  studentId?: string // 學號
+  email: string
+  password: string
+  confirmPassword: string
+  username?: string
+  displayName?: string
+  schoolIdentity: SchoolIdentity
+  clubIdentity: ClubIdentity
+  studentId?: string
 }
 
-const schoolIdentityOptions: Array<{
-  value: SchoolIdentity
-  label: string
-}> = [
-  { value: 'current_student', label: '本校學生' },
-  { value: 'teacher', label: '本校老師' },
-  { value: 'external', label: '非本校人士' },
-  { value: 'alumni', label: '畢業生' },
-]
-
-const clubIdentityOptions: Array<{
-  value: ClubIdentity
-  label: string
-}> = [
-  { value: 'member', label: '我是社團成員' },
-  { value: 'non_member', label: '我不是社團成員' },
-]
-
-/**
- * [Schema] 註冊表單驗證規則
- */
-const registerSchema: yup.ObjectSchema<FormData> = yup.object({
-  email: yup
-    .string()
-    .required('請輸入電子郵件')
-    .email('請輸入有效的電子郵件格式'),
-  password: yup
-    .string()
-    .required('請輸入密碼')
-    .min(8, '密碼至少需要 8 個字元')
-    .matches(/[a-z]/, '密碼必須包含小寫英文字母')
-    .matches(/[A-Z]/, '密碼必須包含大寫英文字母')
-    .matches(/[0-9]/, '密碼必須包含數字')
-    .matches(
-      /[!@#$%^&*(),.?":{}|<>_\-+=[\]\\/'`;~]/,
-      '密碼必須包含至少一個特殊字元',
-    ),
-  confirmPassword: yup
-    .string()
-    .required('請再次輸入密碼')
-    .oneOf([yup.ref('password')], '密碼不一致'),
-  username: yup
-    .string()
-    .optional()
-    .matches(/^[a-z0-9_]*$/, '僅能使用英文小寫、數字和底線')
-    .min(3, '至少 3 個字元')
-    .max(20, '最多 20 個字元'),
-  displayName: yup.string().optional().max(20, '最多 20 個字元'),
-  schoolIdentity: yup
-    .mixed<SchoolIdentity>()
-    .oneOf(
-      schoolIdentityOptions.map((option) => option.value),
-      '請選擇您的校園身分',
-    )
-    .required('請選擇您的校園身分'),
-  clubIdentity: yup
-    .mixed<ClubIdentity>()
-    .oneOf(
-      clubIdentityOptions.map((option) => option.value),
-      '請選擇是否為社團成員',
-    )
-    .required('請選擇是否為社團成員'),
-  studentId: yup
-    .string()
-    .trim()
-    .max(20, '學號最多 20 個字元')
-    .matches(/^[A-Za-z0-9_-]*$/, '學號僅能使用英文字母、數字、底線與連字號')
-    .when('schoolIdentity', {
-      is: 'current_student',
-      then: (schema) => schema.required('若您是本校學生，請輸入學號'),
-      otherwise: (schema) => schema.optional(),
-    }),
-})
-
-/**
- * [Component] 註冊表單
- * @param onSwitchToLogin 切換到登入模式
- * @param onClose 關閉模組
- * @param showCloseButton 是否顯示關閉按鈕
- * @returns
- */
 export const RegisterForm: React.FC<RegisterFormProps> = ({
   onSwitchToLogin,
   onClose,
   showCloseButton = true,
   next,
 }) => {
-  // AuthContext
-  const {
-    register: registerUser,
-    signInWithGoogle,
-    checkEmailExists,
-  } = useAuth()
-  // ToastContext
+  const t = useTranslations('Login')
+  const { register: registerUser, signInWithGoogle, checkEmailExists } = useAuth()
   const { showToast } = useToast()
-  // 註冊步數: 1. Email, 2. Password, 3. Profile, 4. Identity
+
   const [step, setStep] = useState(1)
-  // 註冊狀態
   const [isLoading, setIsLoading] = useState(false)
-  // 錯誤訊息
   const [error, setError] = useState<string>('')
-  // 信箱驗證等待狀態
   const [emailSent, setEmailSent] = useState(false)
-  // 頭像預覽
+  const [agreeTerms, setAgreeTerms] = useState(false)
   const [previewImage, setPreviewImage] = useState<string>(
     '/assets/image/userEmptyAvatar.svg',
   )
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
-  // 頭像上傳 ref
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // 表單狀態
+  const schoolIdentityOptions = useMemo(
+    () => [
+      { value: 'current_student' as SchoolIdentity, label: t('form.register.step4.schoolIdentityOptions.current_student') },
+      { value: 'teacher' as SchoolIdentity, label: t('form.register.step4.schoolIdentityOptions.teacher') },
+      { value: 'external' as SchoolIdentity, label: t('form.register.step4.schoolIdentityOptions.external') },
+      { value: 'alumni' as SchoolIdentity, label: t('form.register.step4.schoolIdentityOptions.alumni') },
+    ],
+    [t],
+  )
+
+  const clubIdentityOptions = useMemo(
+    () => [
+      { value: 'member' as ClubIdentity, label: t('form.register.step4.clubIdentityOptions.member') },
+      { value: 'non_member' as ClubIdentity, label: t('form.register.step4.clubIdentityOptions.non_member') },
+    ],
+    [t],
+  )
+
+  const registerSchema: yup.ObjectSchema<FormData> = useMemo(
+    () =>
+      yup.object({
+        email: yup
+          .string()
+          .required(t('form.register.validation.emailRequired'))
+          .email(t('form.register.validation.emailInvalid')),
+        password: yup
+          .string()
+          .required(t('form.register.validation.passwordRequired'))
+          .min(8, t('form.register.validation.passwordMinLength'))
+          .matches(/[a-z]/, t('form.register.validation.passwordLowercase'))
+          .matches(/[A-Z]/, t('form.register.validation.passwordUppercase'))
+          .matches(/[0-9]/, t('form.register.validation.passwordNumber'))
+          .matches(
+            /[!@#$%^&*(),.?":{}|<>_\-+=[\]\\/'`;~]/,
+            t('form.register.validation.passwordSpecial'),
+          ),
+        confirmPassword: yup
+          .string()
+          .required(t('form.register.validation.confirmPasswordRequired'))
+          .oneOf([yup.ref('password')], t('form.register.validation.confirmPasswordMismatch')),
+        username: yup
+          .string()
+          .optional()
+          .matches(/^[a-z0-9_]*$/, t('form.register.validation.usernamePattern'))
+          .min(3, t('form.register.validation.usernameMinLength'))
+          .max(20, t('form.register.validation.usernameMaxLength')),
+        displayName: yup
+          .string()
+          .optional()
+          .max(20, t('form.register.validation.displayNameMaxLength')),
+        schoolIdentity: yup
+          .mixed<SchoolIdentity>()
+          .oneOf(
+            schoolIdentityOptions.map((o) => o.value),
+            t('form.register.validation.schoolIdentityRequired'),
+          )
+          .required(t('form.register.validation.schoolIdentityRequired')),
+        clubIdentity: yup
+          .mixed<ClubIdentity>()
+          .oneOf(
+            clubIdentityOptions.map((o) => o.value),
+            t('form.register.validation.clubIdentityRequired'),
+          )
+          .required(t('form.register.validation.clubIdentityRequired')),
+        studentId: yup
+          .string()
+          .trim()
+          .max(20, t('form.register.validation.studentIdMaxLength'))
+          .matches(/^[A-Za-z0-9_-]*$/, t('form.register.validation.studentIdPattern'))
+          .when('schoolIdentity', {
+            is: 'current_student',
+            then: (schema) => schema.required(t('form.register.validation.studentIdRequired')),
+            otherwise: (schema) => schema.optional(),
+          }),
+      }),
+    [t, schoolIdentityOptions, clubIdentityOptions],
+  )
+
   const {
     register,
     handleSubmit,
@@ -177,11 +165,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     setValue,
   } = useForm<FormData>({
     resolver: yupResolver(registerSchema),
-    mode: 'onBlur', // 預設失焦時驗證
+    mode: 'onBlur',
     reValidateMode: 'onChange',
   })
 
-  // 監聽表單變化
   const watchPassword = watch('password') ?? ''
   const watchEmail = watch('email') ?? ''
   const watchUsername = watch('username') ?? ''
@@ -191,7 +178,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const watchStudentId = watch('studentId') ?? ''
   const isCurrentStudent = watchSchoolIdentity === 'current_student'
 
-  // 密碼規則驗證（用於 UI 顯示）
   const passwordRules = {
     length: watchPassword.length >= 8,
     hasLowercase: /[a-z]/.test(watchPassword),
@@ -200,63 +186,29 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     hasSpecial: /[!@#$%^&*(),.?":{}|<>_\-+=[\]\\/'`;~]/.test(watchPassword),
   }
 
-  // Password 即時驗證（用於即時顯示規則達成狀態）
   useEffect(() => {
-    // 如果密碼存在，則觸發驗證
-    if (watchPassword) {
-      // 觸發驗證
-      trigger('password')
-    }
+    if (watchPassword) trigger('password')
   }, [watchPassword, trigger])
 
-  // ConfirmPassword 即時驗證
   useEffect(() => {
-    // 如果確認密碼存在，則觸發驗證
-    if (watch('confirmPassword')) {
-      // 觸發驗證
-      trigger('confirmPassword')
-    }
+    if (watch('confirmPassword')) trigger('confirmPassword')
   }, [watch('confirmPassword'), watchPassword, trigger])
 
-  // Debounce 驗證 email（輸入停止 1 秒後才驗證）
   useEffect(() => {
-    // 如果電子郵件不存在，則清除錯誤
-    if (!watchEmail) {
-      clearErrors('email')
-      return
-    }
-    // 設定延遲驗證
-    const timer = setTimeout(() => {
-      trigger('email')
-    }, 1500)
+    if (!watchEmail) { clearErrors('email'); return }
+    const timer = setTimeout(() => trigger('email'), 1500)
     return () => clearTimeout(timer)
   }, [watchEmail, trigger, clearErrors])
 
-  // Debounce 驗證 username（輸入停止 1 秒後才驗證）
   useEffect(() => {
-    // 如果帳號名稱不存在，則清除錯誤
-    if (!watchUsername) {
-      clearErrors('username')
-      return
-    }
-    // 設定延遲驗證
-    const timer = setTimeout(() => {
-      trigger('username')
-    }, 1500)
+    if (!watchUsername) { clearErrors('username'); return }
+    const timer = setTimeout(() => trigger('username'), 1500)
     return () => clearTimeout(timer)
   }, [watchUsername, trigger, clearErrors])
 
-  // Debounce 驗證 displayName（輸入停止 1 秒後才驗證）
   useEffect(() => {
-    // 如果顯示名稱不存在，則清除錯誤
-    if (!watchDisplayName) {
-      clearErrors('displayName')
-      return
-    }
-    // 設定延遲驗證
-    const timer = setTimeout(() => {
-      trigger('displayName')
-    }, 1500)
+    if (!watchDisplayName) { clearErrors('displayName'); return }
+    const timer = setTimeout(() => trigger('displayName'), 1500)
     return () => clearTimeout(timer)
   }, [watchDisplayName, trigger, clearErrors])
 
@@ -267,120 +219,78 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     }
   }, [watchSchoolIdentity, clearErrors, setValue])
 
-  /**
-   * [Function] 檢查目前步驟是否可以進入下一步
-   * @returns void
-   */
+  const getErrorMessage = (errorMessage: string): string => {
+    if (errorMessage.includes('使用者名稱已存在')) return t('form.register.errors.usernameTaken')
+    if (errorMessage.includes('User already registered')) return t('form.register.errors.emailRegistered')
+    if (errorMessage.includes('student_id') || errorMessage.includes('學號')) return t('form.register.errors.studentIdBound')
+    if (errorMessage.toLowerCase().includes('password')) return t('form.register.errors.passwordWeak')
+    return t('form.register.errors.default', { message: errorMessage })
+  }
+
   const handleNextStep = async () => {
-    // 設定需要驗證的欄位
     let fieldsToValidate: (keyof FormData)[] = []
     if (step === 1) fieldsToValidate = ['email']
     if (step === 2) fieldsToValidate = ['password', 'confirmPassword']
     if (step === 3) fieldsToValidate = ['username', 'displayName']
 
-    // 觸發驗證
     const result = await trigger(fieldsToValidate)
-    // 如果驗證結果為 true，則進入下一步
     if (result) {
-      // 如果是第一步，檢查 Email 是否已註冊
       if (step === 1) {
-        // 設定為載入中
         setIsLoading(true)
-        // 嘗試檢查 Email 是否已註冊
         try {
-          // 嘗試檢查 Email 是否已註冊
           const emailExists = await checkEmailExists(watchEmail)
-          // 如果 Email 已註冊，則跳轉至登入頁面
           if (emailExists) {
-            showToast('偵測到此電子郵件已註冊，已為您跳轉至登入頁面。', 'info')
+            showToast(t('form.register.toast.emailDetected'), 'info')
             onSwitchToLogin(watchEmail)
             return
           }
         } catch (err) {
-          console.error('檢查 Email 時發生錯誤:', err)
+          console.error('Email check error:', err)
         } finally {
           setIsLoading(false)
         }
       }
-
-      // 進入下一步
       setStep(step + 1)
-      // 清空錯誤訊息
       setError('')
     }
   }
 
-  /**
-   * [Function] 前一步驟處理
-   * @returns void
-   */
   const handlePrevStep = () => {
-    // 前一步驟
     setStep(step - 1)
     setError('')
   }
 
-  /**
-   * [Function] 頭像上傳處理
-   * @param event 事件
-   * @returns void
-   */
   const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // 獲取檔案
     const file = event.target.files?.[0]
-    // 如果檔案存在，則處理檔案
     if (file) {
-      // 如果檔案大小超過 5MB，則設定錯誤訊息
       if (file.size > 5 * 1024 * 1024) {
-        setError('頭像檔案大小不能超過 5MB')
+        setError(t('form.register.errors.avatarTooLarge'))
         return
       }
-      // 如果檔案類型不是圖片，則設定錯誤訊息
       if (!file.type.startsWith('image/')) {
-        setError('請選擇圖片檔案')
+        setError(t('form.register.errors.avatarInvalidType'))
         return
       }
-      // 創建 FileReader 實例
       const reader = new FileReader()
-      // 設定 FileReader 的 onload 事件
       reader.onload = (e) => {
-        // 獲取結果
         const result = e.target?.result as string
-        // 設定頭像預覽
         setPreviewImage(result)
-        // 設定頭像檔案
         setAvatarFile(file)
       }
-      // 讀取檔案
       reader.readAsDataURL(file)
     }
   }
 
-  /**
-   * [Function] 表單提交處理
-   * @param {FormData} data 表單資料
-   * @returns void
-   */
   const onSubmit = async (data: FormData) => {
-    // 嘗試註冊
     try {
-      // 設定為載入中
       setIsLoading(true)
-      // 清空錯誤訊息
       setError('')
 
-      // 設定頭像 URL
       let avatarURL = '/assets/image/userEmptyAvatar.png'
-      // 如果頭像檔案存在，則上傳頭像
       if (avatarFile) {
-        // 上傳頭像
-        avatarURL = await uploadUserAvatarToFirebaseStorage(
-          avatarFile,
-          data.email,
-        )
+        avatarURL = await uploadUserAvatarToFirebaseStorage(avatarFile, data.email)
       }
 
-      // 設定註冊資料
       const registerData: RegisterFormData = {
         email: data.email!,
         password: data.password!,
@@ -392,71 +302,45 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         studentId: data.studentId?.trim(),
       }
 
-      // 註冊使用者
       const { requiresEmailConfirmation } = await registerUser(registerData)
-      // 如果需要信箱驗證，則顯示提示訊息等待使用者確認
       if (requiresEmailConfirmation) {
         setEmailSent(true)
-        showToast('驗證信已寄出，請前往信箱完成驗證！', 'success')
+        showToast(t('form.register.toast.emailSent'), 'success')
       } else {
-        showToast('註冊成功，歡迎加入！', 'success')
+        showToast(t('form.register.toast.success'), 'success')
         onClose?.()
       }
     } catch (error) {
-      console.error('註冊失敗:', error)
+      console.error('Registration failed:', error)
       setError(
-        getErrorMessage((error as { message?: string })?.message || '未知錯誤'),
+        getErrorMessage((error as { message?: string })?.message || 'unknown'),
       )
     } finally {
       setIsLoading(false)
     }
   }
 
-  /**
-   * [Function] 錯誤訊息轉換
-   * @param {string} errorMessage 錯誤訊息
-   * @returns {string} 錯誤訊息
-   */
-  const getErrorMessage = (errorMessage: string): string => {
-    if (errorMessage.includes('使用者名稱已存在')) return '此帳號名稱已被使用'
-    if (errorMessage.includes('User already registered'))
-      return '此電子郵件已被註冊'
-    if (errorMessage.includes('student_id') || errorMessage.includes('學號'))
-      return '此學號已被綁定，請確認輸入是否正確，或改用既有帳號登入'
-    if (errorMessage.toLowerCase().includes('password'))
-      return '密碼不符合安全性要求'
-    return `註冊失敗: ${errorMessage}`
-  }
-
-  /**
-   * [Function] Google 登入處理
-   * @returns void
-   */
   const handleGoogleSignIn = async () => {
-    // 嘗試 Google 登入
     try {
       setIsLoading(true)
       setError('')
-      // 觸發 Google 登入
       await signInWithGoogle(next)
-      // 設定為註冊成功
-      showToast('Google 登入成功，歡迎加入！', 'success')
+      showToast(t('form.register.toast.googleSuccess'), 'success')
       onClose?.()
     } catch (err: unknown) {
       setError(
-        getErrorMessage((err as { message?: string })?.message || '未知錯誤'),
+        getErrorMessage((err as { message?: string })?.message || 'unknown'),
       )
     } finally {
       setIsLoading(false)
     }
   }
 
-  // 如果需要信箱驗證，則顯示提示訊息等待使用者確認
   if (emailSent) {
     return (
       <div className={styles.email_sent}>
         <div className={styles.form_header}>
-          <h2>請驗證您的信箱</h2>
+          <h2>{t('form.register.emailVerification.title')}</h2>
           {showCloseButton && (
             <button className={styles.close_button} onClick={onClose}>
               <FontAwesomeIcon icon={faXmark} />
@@ -464,10 +348,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           )}
         </div>
         <p className={styles.email_sent_text}>
-          驗證信已寄送至您的信箱，請點擊信中的連結完成帳號驗證後即可登入。
+          {t('form.register.emailVerification.text')}
         </p>
         <Link href="/login" className={styles.submit_button}>
-          前往登入
+          {t('form.register.emailVerification.goToLogin')}
         </Link>
       </div>
     )
@@ -485,7 +369,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </button>
       )}
 
-      {/* 步驟指示器 */}
       <div className={styles.stepper}>
         {[1, 2, 3, 4].map((s) => (
           <div
@@ -496,15 +379,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             <span className={styles.step_dot}>
               {step > s ? <FontAwesomeIcon icon={faCheck} /> : s}
             </span>
-            {/* <span className={styles.step_text}>
-              {s === 1 && step === 1
-                ? '選擇註冊方式'
-                : s === 2 && step === 2
-                  ? '密碼設定'
-                  : s === 3 && step === 3
-                    ? '完成個人資料'
-                    : ''}
-            </span> */}
           </div>
         ))}
       </div>
@@ -521,13 +395,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               />
               <div className={styles.divider}>
                 <span className={styles.divider_line}></span>
-                <span className={styles.divider_text}>或使用 Email 註冊</span>
+                <span className={styles.divider_text}>
+                  {t('form.register.step1.emailDivider')}
+                </span>
               </div>
             </div>
 
             <div className={styles.form_group}>
               <label htmlFor="email">
-                電子郵件 <span className={styles.required}>*</span>
+                {t('form.register.step1.email')}{' '}
+                <span className={styles.required}>*</span>
               </label>
               <input
                 id="email"
@@ -544,19 +421,42 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               )}
             </div>
 
+            <label className={styles.terms_checkbox}>
+              <input
+                type="checkbox"
+                checked={agreeTerms}
+                onChange={(e) => setAgreeTerms(e.target.checked)}
+              />
+              <span>
+                {t.rich('form.register.step1.agreeTerms', {
+                  terms: (chunks) => (
+                    <Link href="/terms" target="_blank" rel="noopener noreferrer">
+                      {chunks}
+                    </Link>
+                  ),
+                  privacy: (chunks) => (
+                    <Link href="/privacy" target="_blank" rel="noopener noreferrer">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </span>
+            </label>
+
             <button
               type="button"
               className={styles.next_button}
               onClick={handleNextStep}
-              disabled={!watchEmail || !!errors.email}
+              disabled={!watchEmail || !!errors.email || !agreeTerms}
             >
-              下一步 <FontAwesomeIcon icon={faChevronRight} />
+              {t('form.register.steps.next')}{' '}
+              <FontAwesomeIcon icon={faChevronRight} />
             </button>
 
             <p className={styles.switch_text}>
-              已經有帳號了？{' '}
+              {t('form.register.step1.switchToLogin')}{' '}
               <button type="button" onClick={() => onSwitchToLogin()}>
-                立即登入
+                {t('form.register.step1.loginLink')}
               </button>
             </p>
           </div>
@@ -567,7 +467,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           <div className={styles.step_content}>
             <div className={styles.form_group}>
               <label htmlFor="password">
-                設定密碼 <span className={styles.required}>*</span>
+                {t('form.register.step2.password')}{' '}
+                <span className={styles.required}>*</span>
               </label>
               <input
                 id="password"
@@ -575,56 +476,32 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 autoFocus
                 {...register('password')}
                 className={errors.password ? styles.error : ''}
-                placeholder="請輸入密碼"
+                placeholder={t('form.register.step2.passwordPlaceholder')}
               />
 
               <div className={styles.password_rules}>
-                <div
-                  className={`${styles.rule_item} ${passwordRules.length ? styles.valid : ''}`}
-                >
-                  <FontAwesomeIcon
-                    icon={passwordRules.length ? faCheck : faCircle}
-                    className={styles.rule_icon}
-                  />
-                  至少 8 個字元
+                <div className={`${styles.rule_item} ${passwordRules.length ? styles.valid : ''}`}>
+                  <FontAwesomeIcon icon={passwordRules.length ? faCheck : faCircle} className={styles.rule_icon} />
+                  {t('form.register.step2.rules.length')}
                 </div>
-                <div
-                  className={`${styles.rule_item} ${passwordRules.hasLowercase ? styles.valid : ''}`}
-                >
-                  <FontAwesomeIcon
-                    icon={passwordRules.hasLowercase ? faCheck : faCircle}
-                    className={styles.rule_icon}
-                  />
-                  包含小寫英文字母
+                <div className={`${styles.rule_item} ${passwordRules.hasLowercase ? styles.valid : ''}`}>
+                  <FontAwesomeIcon icon={passwordRules.hasLowercase ? faCheck : faCircle} className={styles.rule_icon} />
+                  {t('form.register.step2.rules.lowercase')}
                 </div>
-                <div
-                  className={`${styles.rule_item} ${passwordRules.hasUppercase ? styles.valid : ''}`}
-                >
-                  <FontAwesomeIcon
-                    icon={passwordRules.hasUppercase ? faCheck : faCircle}
-                    className={styles.rule_icon}
-                  />
-                  包含大寫英文字母
+                <div className={`${styles.rule_item} ${passwordRules.hasUppercase ? styles.valid : ''}`}>
+                  <FontAwesomeIcon icon={passwordRules.hasUppercase ? faCheck : faCircle} className={styles.rule_icon} />
+                  {t('form.register.step2.rules.uppercase')}
                 </div>
-                <div
-                  className={`${styles.rule_item} ${passwordRules.hasNumber ? styles.valid : ''}`}
-                >
-                  <FontAwesomeIcon
-                    icon={passwordRules.hasNumber ? faCheck : faCircle}
-                    className={styles.rule_icon}
-                  />
-                  包含數字
+                <div className={`${styles.rule_item} ${passwordRules.hasNumber ? styles.valid : ''}`}>
+                  <FontAwesomeIcon icon={passwordRules.hasNumber ? faCheck : faCircle} className={styles.rule_icon} />
+                  {t('form.register.step2.rules.number')}
                 </div>
-                <div
-                  className={`${styles.rule_item} ${passwordRules.hasSpecial ? styles.valid : ''}`}
-                >
-                  <FontAwesomeIcon
-                    icon={passwordRules.hasSpecial ? faCheck : faCircle}
-                    className={styles.rule_icon}
-                  />
-                  包含特殊字元
+                <div className={`${styles.rule_item} ${passwordRules.hasSpecial ? styles.valid : ''}`}>
+                  <FontAwesomeIcon icon={passwordRules.hasSpecial ? faCheck : faCircle} className={styles.rule_icon} />
+                  {t('form.register.step2.rules.special')}
                 </div>
               </div>
+
               {errors.password && (
                 <span className={styles.field_error}>
                   {errors.password.message}
@@ -634,14 +511,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
             <div className={styles.form_group}>
               <label htmlFor="confirmPassword">
-                確認密碼 <span className={styles.required}>*</span>
+                {t('form.register.step2.confirmPassword')}{' '}
+                <span className={styles.required}>*</span>
               </label>
               <input
                 id="confirmPassword"
                 type="password"
                 {...register('confirmPassword')}
                 className={errors.confirmPassword ? styles.error : ''}
-                placeholder="請再次輸入密碼"
+                placeholder={t('form.register.step2.confirmPasswordPlaceholder')}
               />
               {errors.confirmPassword && (
                 <span className={styles.field_error}>
@@ -654,11 +532,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               type="button"
               className={styles.next_button}
               onClick={handleNextStep}
-              disabled={
-                !!errors.password || !!errors.confirmPassword || !watchPassword
-              }
+              disabled={!!errors.password || !!errors.confirmPassword || !watchPassword}
             >
-              下一步 <FontAwesomeIcon icon={faChevronRight} />
+              {t('form.register.steps.next')}{' '}
+              <FontAwesomeIcon icon={faChevronRight} />
             </button>
           </div>
         )}
@@ -667,7 +544,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         {step === 3 && (
           <div className={styles.step_content}>
             <div className={styles.avatar_section}>
-              <label>上傳大頭貼</label>
+              <label>{t('form.register.step3.uploadAvatar')}</label>
               <div className={styles.avatar_upload}>
                 <button
                   type="button"
@@ -679,7 +556,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 <div className={styles.avatar_preview}>
                   <Image
                     src={previewImage || '/assets/image/userEmptyAvatar.png'}
-                    alt="頭像預覽"
+                    alt={t('form.register.step3.uploadAvatar')}
                     className={styles.avatar_image}
                     width={80}
                     height={80}
@@ -696,17 +573,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             </div>
 
             <div className={styles.form_group}>
-              <label htmlFor="username">帳號名稱</label>
+              <label htmlFor="username">{t('form.register.step3.username')}</label>
               <input
                 id="username"
                 type="text"
                 {...register('username')}
                 className={errors.username ? styles.error : ''}
-                placeholder="例如: robot_lover"
+                placeholder="e.g. robot_lover"
               />
-              <p className={styles.hint}>
-                僅能使用英文小寫、數字和底線，將作為個人首頁網址的一部分
-              </p>
+              <p className={styles.hint}>{t('form.register.step3.usernameHint')}</p>
               {errors.username && (
                 <span className={styles.field_error}>
                   {errors.username.message}
@@ -715,15 +590,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             </div>
 
             <div className={styles.form_group}>
-              <label htmlFor="displayName">顯示名稱</label>
+              <label htmlFor="displayName">{t('form.register.step3.displayName')}</label>
               <input
                 id="displayName"
                 type="text"
                 {...register('displayName')}
                 className={errors.displayName ? styles.error : ''}
-                placeholder="你想讓大家怎麼稱呼你？"
+                placeholder={t('form.register.step3.displayNamePlaceholder')}
               />
-              <p className={styles.hint}>最多 20 個字元</p>
+              <p className={styles.hint}>{t('form.register.step3.displayNameHint')}</p>
               {errors.displayName && (
                 <span className={styles.field_error}>
                   {errors.displayName.message}
@@ -737,7 +612,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               onClick={handleNextStep}
               disabled={isLoading}
             >
-              下一步 <FontAwesomeIcon icon={faChevronRight} />
+              {t('form.register.steps.next')}{' '}
+              <FontAwesomeIcon icon={faChevronRight} />
             </button>
           </div>
         )}
@@ -745,13 +621,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         {/* Step 4: Identity */}
         {step === 4 && (
           <div className={styles.step_content}>
-            <p className={styles.section_hint}>
-              這些資訊會用於辨識社員身分與後續課程權限設定。
-            </p>
+            <p className={styles.section_hint}>{t('form.register.step4.hint')}</p>
 
             <div className={styles.form_group}>
               <label htmlFor="schoolIdentity">
-                您目前的校園身分 <span className={styles.required}>*</span>
+                {t('form.register.step4.schoolIdentity')}{' '}
+                <span className={styles.required}>*</span>
               </label>
               <select
                 id="schoolIdentity"
@@ -761,7 +636,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 defaultValue=""
               >
                 <option value="" disabled>
-                  請選擇您的校園身分
+                  {t('form.register.step4.schoolIdentityPlaceholder')}
                 </option>
                 {schoolIdentityOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -778,7 +653,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
             <div className={styles.form_group}>
               <label htmlFor="clubIdentity">
-                您是否為社團成員 <span className={styles.required}>*</span>
+                {t('form.register.step4.clubIdentity')}{' '}
+                <span className={styles.required}>*</span>
               </label>
               <select
                 id="clubIdentity"
@@ -787,7 +663,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 defaultValue=""
               >
                 <option value="" disabled>
-                  請選擇社團身分
+                  {t('form.register.step4.clubIdentityPlaceholder')}
                 </option>
                 {clubIdentityOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -805,17 +681,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             {isCurrentStudent && (
               <div className={styles.form_group}>
                 <label htmlFor="studentId">
-                  學號 <span className={styles.required}>*</span>
+                  {t('form.register.step4.studentId')}{' '}
+                  <span className={styles.required}>*</span>
                 </label>
                 <input
                   id="studentId"
                   type="text"
                   {...register('studentId')}
                   className={errors.studentId ? styles.error : ''}
-                  placeholder="請輸入學號"
+                  placeholder={t('form.register.step4.studentIdPlaceholder')}
                 />
                 <p className={styles.hint}>
-                  本校學生需提供學號以便核對社員名單
+                  {t('form.register.step4.studentIdHint')}
                 </p>
                 {errors.studentId && (
                   <span className={styles.field_error}>
@@ -838,7 +715,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 (isCurrentStudent && !watchStudentId.trim())
               }
             >
-              {isLoading ? '處理中...' : '開始探索'}
+              {isLoading
+                ? t('form.register.steps.submitting')
+                : t('form.register.steps.submit')}
             </button>
           </div>
         )}

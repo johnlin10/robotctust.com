@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { getLocale } from 'next-intl/server'
 import { SITE_CONFIG } from './siteConfigs'
 
 //* metadata 函數選項介面
@@ -44,7 +45,10 @@ export interface MetadataOptions {
  * }
  * ```
  */
-export function metadata(options: MetadataOptions): Metadata {
+export async function metadata(options: MetadataOptions): Promise<Metadata> {
+  const locale = await getLocale().catch(() => 'zh-TW')
+  const isEn = locale === 'en'
+
   const {
     title,
     description,
@@ -59,7 +63,16 @@ export function metadata(options: MetadataOptions): Metadata {
     noIndex = false,
   } = options
 
-  const fullUrl = url ? `${SITE_CONFIG.url}${url}` : SITE_CONFIG.url
+  // zh-TW canonical (no prefix): /about → https://robotctust.com/about
+  const zhPath = url === '/' ? '' : (url ?? '')
+  const zhUrl = `${SITE_CONFIG.url}${zhPath}`
+
+  // en canonical (/en prefix): /about → https://robotctust.com/en/about
+  const enUrl = `${SITE_CONFIG.url}/en${zhPath}`
+
+  // current locale's canonical URL
+  const canonicalUrl = isEn ? enUrl : zhUrl
+
   const imageUrl = image.startsWith('http')
     ? image
     : `${SITE_CONFIG.url}${image}`
@@ -92,10 +105,11 @@ export function metadata(options: MetadataOptions): Metadata {
 
     //* 規範化 URL 和替代語言
     alternates: {
-      canonical: fullUrl,
+      canonical: canonicalUrl,
       languages: {
-        'zh-TW': fullUrl,
-        'x-default': fullUrl,
+        'zh-TW': zhUrl,
+        en: enUrl,
+        'x-default': zhUrl,
       },
     },
 
@@ -103,9 +117,9 @@ export function metadata(options: MetadataOptions): Metadata {
     openGraph: {
       title,
       description,
-      url: fullUrl,
+      url: canonicalUrl,
       siteName: SITE_CONFIG.name,
-      locale: SITE_CONFIG.locale,
+      locale: isEn ? 'en_US' : 'zh_TW',
       type,
       images: [
         {
@@ -126,7 +140,7 @@ export function metadata(options: MetadataOptions): Metadata {
       title,
       description,
       images: [imageUrl],
-      creator: '@robotctust', // 可依實際 Twitter 帳號調整
+      creator: '@robotctust',
       site: '@robotctust',
     },
 
@@ -181,10 +195,12 @@ export function formatDateTimeToISO(dateTime?: {
  * @param timestamp - Firebase Timestamp 物件
  * @returns ISO 8601 格式的日期時間字串，或 undefined
  */
-export function formatFirebaseTimestampToISO(timestamp?: {
-  toDate?: () => Date
-}): string | undefined {
-  if (!timestamp?.toDate) return undefined
+export function formatFirebaseTimestampToISO(
+  timestamp?: string | { toDate?: () => Date },
+): string | undefined {
+  if (!timestamp) return undefined
+  if (typeof timestamp === 'string') return timestamp
+  if (!timestamp.toDate) return undefined
 
   try {
     return timestamp.toDate().toISOString()
@@ -201,7 +217,7 @@ export function formatFirebaseTimestampToISO(timestamp?: {
  */
 export function generateDescriptionFromMarkdown(
   markdown: string,
-  maxLength: number = 160
+  maxLength: number = 160,
 ): string {
   if (!markdown) return ''
 
@@ -232,6 +248,9 @@ export function generateDescriptionFromMarkdown(
  * @returns 基本的 metadata 物件
  * @deprecated 建議使用完整版的 metadata 函數
  */
-export function basicMetadata(title: string, description: string): Metadata {
+export async function basicMetadata(
+  title: string,
+  description: string,
+): Promise<Metadata> {
   return metadata({ title, description })
 }

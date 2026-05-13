@@ -1,0 +1,174 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2x);
+  padding: var(--space-2x);
+}
+
+/* =========================================
+   Header
+   ========================================= */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space);
+
+  .title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+}
+
+/* =========================================
+   Filters
+   ========================================= */
+.filters {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .searchInput {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(8px);
+    background: var(--background-secondary);
+    color: var(--foreground);
+    width: 240px;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--foreground-secondary);
+    }
+  }
+
+  .categorySelect {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(8px);
+    background: var(--background-secondary);
+    color: var(--foreground);
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+/* =========================================
+   Table
+   ========================================= */
+.tableWrap {
+  border: 1px solid var(--border);
+  @include mixins.border-radius(16px);
+  overflow: auto;
+  background: rgba(var(--background-rgb), 0.4);
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  th,
+  td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--foreground-secondary);
+    background: rgba(var(--background-secondary-rgb), 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background: rgba(var(--background-secondary-rgb), 0.3);
+  }
+}
+
+.titleCell {
+  max-width: 320px;
+
+  .titleLink {
+    font-weight: 600;
+    color: var(--foreground);
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    &:hover {
+      color: var(--foreground-secondary);
+    }
+  }
+}
+
+.categoryBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--category-bg-color, rgba(var(--foreground-rgb), 0.1));
+  color: var(--category-text-color, var(--foreground));
+  border: 1px solid var(--category-border-color, transparent);
+}
+
+.dateCell {
+  white-space: nowrap;
+  font-size: 0.88rem;
+  color: var(--foreground-secondary);
+}
+
+.actionsCell {
+  white-space: nowrap;
+
+  .actionButtons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+/* =========================================
+   Empty / Feedback States
+   ========================================= */
+.emptyState {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--foreground-secondary);
+  border: 1px dashed var(--border);
+  @include mixins.border-radius(16px);
+}
+
+.loading {
+  text-align: center;
+  padding: var(--space-4x);
+  color: var(--foreground-secondary);
+}

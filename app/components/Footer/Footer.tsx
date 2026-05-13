@@ -13,16 +13,19 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 // utils
 import { SITE_CONFIG } from '@/app/utils/siteConfigs'
+import { getTranslations } from 'next-intl/server'
 
 /**
  * [Component] 頁尾
  * @param widthLimited 頁尾內容的寬度是否有限制
  */
-export default function Footer({
+export default async function Footer({
   removePaddingRL,
 }: {
   removePaddingRL?: boolean
 }) {
+  const t = await getTranslations('Footer')
+  const tIndex = await getTranslations('Index')
   // 建立年份
   const firstYear = 2025
   // 目前年份
@@ -43,7 +46,7 @@ export default function Footer({
                 width={100}
                 height={100}
               />
-              <h1>中臺機器人研究社</h1>
+              <h1>{tIndex('clubName')}</h1>
             </div>
             <div className={styles.headerRight}>
               <div className={styles.social}>
@@ -90,7 +93,7 @@ export default function Footer({
             {firstYear === currentYear
               ? currentYear
               : `${firstYear}-${currentYear}`}{' '}
-            中臺機器人研究社
+            {tIndex('clubName')}
           </p>
         </div>
         <div className={styles.links}>
@@ -99,13 +102,13 @@ export default function Footer({
             className="link"
             target="_blank"
           >
-            開放原始碼
+            {t('links.openSource')}
           </Link>
           <Link href="/terms" className="link">
-            服務條款
+            {t('links.termsOfService')}
           </Link>
           <Link href="/privacy" className="link">
-            隱私權政策
+            {t('links.privacyPolicy')}
           </Link>
         </div>
         <div className={styles.version}>

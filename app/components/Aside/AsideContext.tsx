@@ -1,6 +1,12 @@
 'use client'
 
-import React, { createContext, useContext, useState, ReactNode } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+} from 'react'
 
 interface AsideContextType {
   isOpen: boolean
@@ -15,7 +21,7 @@ export const AsideProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false)
 
-  const toggleAside = () => setIsOpen((prev) => !prev)
+  const toggleAside = useCallback(() => setIsOpen((prev) => !prev), [])
 
   return (
     <AsideContext.Provider value={{ isOpen, setIsOpen, toggleAside }}>

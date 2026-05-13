@@ -1,7 +1,7 @@
 import { cache } from 'react'
 import { createClient } from '@/app/utils/supabase/server'
 import { createAdminClient } from '@/app/utils/supabase/admin'
-import { SemesterNode } from '@/app/courses/types/course'
+import { SemesterNode } from '@/app/[locale]/courses/types/course'
 
 const semesterTreeSelect = `
   id,

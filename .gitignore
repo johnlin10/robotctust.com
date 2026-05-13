@@ -45,8 +45,16 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# firebase 
+# firebase
 robot-group-firebase-sa.json
+robot-group-firebase-sa.json
+*-firebase-sa.json
+
+# migration logs
+migration-log.json
+
+# claude code
+.claude/
 # Firebase rules with sensitive data
 *.rules
 *.rules.*

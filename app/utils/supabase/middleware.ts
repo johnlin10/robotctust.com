@@ -4,11 +4,12 @@ import { NextResponse, type NextRequest } from 'next/server'
 /**
  * [Middleware] 更新 session
  * @param {NextRequest} request - NextRequest 物件
+ * @param {NextResponse} [response] - 可選的 NextResponse 物件 (例如來自 next-intl)
  * @returns {NextResponse} NextResponse 物件
  */
-export async function updateSession(request: NextRequest) {
-  // 建立 NextResponse 物件
-  let supabaseResponse = NextResponse.next({
+export async function updateSession(request: NextRequest, response?: NextResponse) {
+  // 如果有傳入 response 就使用它，否則建立新的
+  let supabaseResponse = response || NextResponse.next({
     request,
   })
 
@@ -27,9 +28,14 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value),
           )
-          supabaseResponse = NextResponse.next({
-            request,
-          })
+          
+          // 如果沒有傳入 response，則建立一個新的 NextResponse.next
+          if (!response) {
+            supabaseResponse = NextResponse.next({
+              request,
+            })
+          }
+
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options),
           )
@@ -38,11 +44,8 @@ export async function updateSession(request: NextRequest) {
     },
   )
 
-  // 取得使用者以重新整理 auth token，並在 session 過期時重新處理
-  // 這是一個防止使用者隨機登出的重要安全機制
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // 取得使用者以重新整理 auth token
+  await supabase.auth.getUser()
 
   return supabaseResponse
 }
