@@ -7,6 +7,7 @@ import CompetitionDetail from './CompetitionsDetail'
 // utils
 import { metadata, formatDateTimeToISO } from '@/app/utils/metadata'
 import { getAllCompetitions } from '@/app/utils/competitionService'
+import { getTranslations } from 'next-intl/server'
 // types
 import { Competition } from '@/app/types/competition'
 
@@ -71,23 +72,27 @@ export async function generateMetadata({
   params,
 }: CompetitionDetailProps): Promise<Metadata> {
   const { slug } = await params
-
-  // 獲取競賽資料來生成動態 meta
+  const t = await getTranslations('Competitions')
   const competitions = await getAllCompetitions()
   const competition = competitions.find((comp) => comp.id === slug)
 
   const title = competition
-    ? `競賽詳情｜${competition.title}｜中臺機器人研究社`
-    : `競賽詳情｜${slug}｜中臺機器人研究社`
+    ? t('meta.detail.titleTemplate', { title: competition.title })
+    : t('meta.detail.titleFallback', { slug })
 
   const description = competition
-    ? `${competition.description}`
-    : `查看 ${slug} 競賽的詳細資訊，包含競賽規則、時程安排與報名方式。`
+    ? competition.description
+    : t('meta.detail.descriptionFallback', { slug })
 
   return metadata({
     title,
     description,
-    keywords: ['競賽詳情', slug, '比賽資訊', ...(competition?.tags || [])],
+    keywords: [
+      t('meta.detail.keywordDetail'),
+      slug,
+      t('meta.detail.keywordInfo'),
+      ...(competition?.tags || []),
+    ],
     image:
       competition?.image ||
       '/assets/icons/web-icon/robotctust-web-icon-1024.png',

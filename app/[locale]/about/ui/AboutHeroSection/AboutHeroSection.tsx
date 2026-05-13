@@ -1,10 +1,13 @@
 import styles from './AboutHeroSection.module.scss'
 import ScrollAnimation from '@/app/components/animation/ScrollAnimation/ScrollAnimation'
+import { getTranslations } from 'next-intl/server'
 
 /**
  * 關於頁面 Hero 區域
  */
-export default function AboutHeroSection() {
+export default async function AboutHeroSection() {
+  const t = await getTranslations('About.hero')
+
   return (
     <section className={styles.hero}>
       <div className={styles.container}>
@@ -14,7 +17,7 @@ export default function AboutHeroSection() {
           delay={0}
           once
         >
-          <span>ROBOT CTUST · 關於我們</span>
+          <span>{t('eyebrow')}</span>
         </ScrollAnimation>
         <ScrollAnimation
           className={styles.headline}
@@ -22,11 +25,7 @@ export default function AboutHeroSection() {
           delay={80}
           once
         >
-          <h1>
-            比較像一間
-            <br />
-            工作坊
-          </h1>
+          <h1>{t('title')}</h1>
         </ScrollAnimation>
         <ScrollAnimation
           className={styles.tagline}
@@ -34,14 +33,15 @@ export default function AboutHeroSection() {
           delay={160}
           once
         >
-          <p>
-            我們不一定有完美的答案，
-            <br />
-            但一定有為了熱情而努力的痕跡。
-          </p>
+          <p>{t('subtitle')}</p>
         </ScrollAnimation>
-        <ScrollAnimation animation="fadeInUp" delay={240} once>
-          <p className={styles.foundingNote}>2024 年 · 由三位學生創立</p>
+        <ScrollAnimation
+          className={styles.foundingNote}
+          animation="fadeInUp"
+          delay={240}
+          once
+        >
+          <p>{t('foundingNote')}</p>
         </ScrollAnimation>
       </div>
       {/* 逐字從右往左進場的浮水印 */}

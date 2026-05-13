@@ -80,6 +80,37 @@ export const subDocs: SubDocs[] = [
     docs: [
       {
         id: '',
+        title: '114-2 社團活動二：遙控避障挑戰賽',
+        date: '2026-05-13',
+        docs: [
+          {
+            id: 'course-files',
+            title: '遙控避障挑戰賽基礎程式',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1sditJLJJX0-vp7a8nyeyk58njQ3YCzzH/view?usp=sharing',
+            icon: faGoogleDrive,
+          },
+          {
+            id: 'course-files',
+            title: 'Arduino 驅動程式',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1eeHpWV68UiTtbvFQRRDyEFXxKA0WbRSd/view?usp=sharing',
+            icon: faGoogleDrive,
+          },
+          {
+            id: 'arduino-ide-installation-and-usage-google-drive',
+            title: 'Arduino IDE 安裝及使用 - 簡報',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1E9K2VmNAzUmeRdLW2MdOmULmKpawgEBK/view?usp=sharing',
+            icon: faGoogleDrive,
+          },
+        ],
+      },
+      {
+        id: '',
         title: '114-2 社團循線競賽',
         date: '2026-04-15',
         docs: [

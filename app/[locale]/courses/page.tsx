@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { getPublishedSemestersTree } from '@/app/utils/courseService'
 import { metadata as buildMetadata } from '@/app/utils/metadata'
+import { getTranslations, getLocale } from 'next-intl/server'
 import Link from 'next/link'
 import styles from './page.module.scss'
 import { createClient } from '@/app/utils/supabase/server'
@@ -40,26 +41,40 @@ function collectCourseKeywords(
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const semesters = await getPublishedSemestersTree()
-  const courseCount = semesters.reduce(
-    (acc, s) =>
-      acc +
-      s.chapters.reduce((a: number, ch) => a + ch.courses.length, 0),
-    0,
-  )
-  const semesterPreview = semesters
-    .map((s) => s.name)
-    .filter(Boolean)
-    .slice(0, 4)
-    .join('、')
+  const [t, locale, semesters] = await Promise.all([
+    getTranslations('Courses'),
+    getLocale(),
+    getPublishedSemestersTree(),
+  ])
 
-  const description =
-    semesters.length === 0
-      ? '歡迎來到機器人研究社的學習園區，依學期與章節瀏覽已發布的課程單元，開始你的機器人學習之旅。'
-      : `本頁收錄共 ${courseCount} 堂已發布課程，涵蓋${semesterPreview}${semesters.length > 4 ? '等' : ''}學期內容。歡迎來到機器人研究社的學習園地，依章節展開單元並開始學習。`
+  // zh-TW: build rich dynamic description from live DB data
+  // en: use static i18n description (DB content is Chinese)
+  let description: string
+  if (locale === 'zh-TW') {
+    const courseCount = semesters.reduce(
+      (acc, s) =>
+        acc + s.chapters.reduce((a: number, ch) => a + ch.courses.length, 0),
+      0,
+    )
+    const semesterPreview = semesters
+      .map((s) => s.name)
+      .filter(Boolean)
+      .slice(0, 4)
+      .join('、')
+    description =
+      semesters.length === 0
+        ? t('meta.description')
+        : t('meta.dynamicDescription', {
+            courseCount,
+            semesterPreview,
+            hasMore: semesters.length > 4 ? 'yes' : 'no',
+          })
+  } else {
+    description = t('meta.description')
+  }
 
   return buildMetadata({
-    title: '課程總覽｜中臺機器人研究社',
+    title: t('meta.title'),
     description: description.slice(0, 160),
     keywords: collectCourseKeywords(semesters),
     url: '/courses',

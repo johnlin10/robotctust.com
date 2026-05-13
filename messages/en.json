@@ -311,7 +311,7 @@
     "HeroSection": {
       "titles": {
         "1": "From Spark to Action",
-        "2": "Create Your",
+        "2": "Create Your ",
         "3": "Robot Universe"
       },
       "subtitles": {
@@ -324,7 +324,6 @@
       "title": "Our Mission",
       "description": "We are here to champion robotics and empower students through hands-on experience, logical thinking, and teamwork. We strive to create an open, shared space where members don’t just refine their skills—they learn how to tackle the world's most complex problems, together."
     },
-
     "CoreProjects": {
       "title": "Core Projects",
       "description": "We layer our technologies, striving for excellence at every level.",
@@ -535,6 +534,131 @@
     "emptyState": {
       "all": "No posts available",
       "filtered": "No posts in the \"{category}\" category"
+    }
+  },
+  "About": {
+    "meta": {
+      "title": "About | Robotics Research Club of CTUST",
+      "description": "Learn about the CTUST Robotics Research Club — our founding mission, activities, and members. We are dedicated to promoting robotics education and providing students with hands-on learning opportunities.",
+      "keywords": "about us,club introduction,members,club mission"
+    },
+    "hero": {
+      "eyebrow": "ROBOT CTUST · About Us",
+      "title": "Discover the Endless Possibilities of Robotics",
+      "subtitle": "Explore, build, and grow alongside a community of like-minded enthusiasts — one step, one creation at a time.",
+      "foundingNote": "Founded in 2025 · by three students"
+    },
+    "origin": {
+      "label": "Our Story",
+      "heading": "Sparked by a Shared Passion for Robotics",
+      "paragraph1": "In the fall of 2025, Shih-Chi, Tai-Ling, and Chang-Lung crossed paths through their shared love of robotics. Seeing fellow students on campus pouring themselves into their own projects, they asked themselves: what if there were a place where everyone could come together — to build, to learn, and to grow? That question is what led them to found the CTUST Robotics Research Club.",
+      "paragraph2": "The idea quickly turned into action. At the October club fair, the newly formed club made its debut — drawing nearly thirty new members to sign up. The first workshop followed soon after. There were bumps along the way: technical hiccups, curriculum tweaks, and plenty of on-the-fly adjustments. But the three founders believed those rough edges were all part of the process. Each setback helped them find the teaching style and club culture that felt right.",
+      "paragraph3": "Today, the club is no longer just three people's dream — it's a learning community of dozens of passionate members. We still carry the same founding spirit: that every hands-on session and every moment of shared discovery is what makes this club worth building. We look forward to exploring this journey alongside you — from parts to machine, one step at a time."
+    },
+    "culture": {
+      "label": "Club Culture",
+      "heading": "Feeling the Pulse of Robotics Through Practice",
+      "narrative": "We believe the real learning journey in robotics doesn't happen in textbooks — it happens the moment you start building. Step into one of our workshops and you'll see it: newcomers focused intently on assembling their first robot, veterans patiently walking a friend through a tricky circuit, everyone learning through trial and discussion. There's no such thing as a bad question here — just people helping each other and always pushing to improve. No matter where you're starting from, if you care about robotics, there's a place for you here.",
+      "moments": [
+        {
+          "title": "Hands-On Building",
+          "description": "From parts to assembly — only by building it yourself do you truly feel the joy of creation."
+        },
+        {
+          "title": "Learning Together",
+          "description": "No bad questions. Just teammates exploring side by side, helping each other grow."
+        },
+        {
+          "title": "Always Improving",
+          "description": "Listen, reflect, and iterate — finding better ways forward with every step."
+        }
+      ]
+    },
+    "philosophy": {
+      "heading": "From Parts to Machine, Together",
+      "body": "Every robot begins with a single part, and every person's growth begins with the willingness to try. We believe the most valuable part of the journey isn't the finished product — it's the warmth of building something alongside others, the shared thinking, and the memories made along the way.",
+      "invitation": "Whether you're just starting out or already deep into the world of robotics, you're welcome here. We look forward to taking each step alongside you — building from parts to machine, and finding our story together."
+    }
+  },
+  "Contact": {
+    "meta": {
+      "title": "Contact Us | Robotics Research Club of CTUST",
+      "description": "Have a question or suggestion? Contact the CTUST Robotics Research Club via Email or Instagram. We are happy to answer questions about courses, competitions, and club activities.",
+      "keywords": "contact us,contact,Email,Instagram,club contact"
+    }
+  },
+  "Docs": {
+    "meta": {
+      "title": "Club Documents | Robotics Research Club of CTUST",
+      "description": "Important documents for the CTUST Robotics Research Club, including the club charter, financial management policy, equipment borrowing guidelines, and future plans.",
+      "keywords": "club documents,club charter,management policy,future plans,equipment borrowing",
+      "docNotFound": "Document Not Found | Robotics Research Club of CTUST",
+      "titleTemplate": "{title} | Robotics Research Club of CTUST"
+    },
+    "page": {
+      "headerTitle": "Club Documents",
+      "headerDescription": "Here you can find important documents for the CTUST Robotics Research Club and course materials."
+    },
+    "mainSection": {
+      "heading": "Club Documents"
+    },
+    "dateLabels": {
+      "today": "Today",
+      "tomorrow": "Tomorrow"
+    },
+    "linkTitle": "View {title} document",
+    "documents": {
+      "org-charter": {
+        "title": "Organization Charter",
+        "description": "Organization charter of CTUST Robotics Research Club"
+      },
+      "financial-management": {
+        "title": "Financial Management Policy",
+        "description": "Regulations and guidelines for club financial management"
+      },
+      "equipment-borrowing-guidelines": {
+        "title": "Equipment Borrowing Guidelines",
+        "description": "Procedures and regulations for borrowing club equipment"
+      },
+      "future-plans": {
+        "title": "Future Development Plans",
+        "description": "Future development roadmap for the club"
+      }
+    },
+    "courseMaterials": {
+      "title": "Course Materials",
+      "category": "Club Documents"
+    }
+  },
+  "Competitions": {
+    "meta": {
+      "title": "Competitions | Robotics Research Club of CTUST",
+      "description": "Explore competitions participated in by the CTUST Robotics Research Club, including schedules, eligibility requirements, and award information.",
+      "keywords": "competitions,contest,robotics competition,participation info",
+      "detail": {
+        "titleTemplate": "Competition | {title} | Robotics Research Club of CTUST",
+        "titleFallback": "Competition | {slug} | Robotics Research Club of CTUST",
+        "descriptionFallback": "View details for the {slug} competition, including rules, schedules, and registration information.",
+        "keywordDetail": "competition details",
+        "keywordInfo": "contest information"
+      }
+    }
+  },
+  "Courses": {
+    "meta": {
+      "title": "Courses | Robotics Research Club of CTUST",
+      "description": "Browse published courses by semester and chapter from the CTUST Robotics Research Club. Start your robotics learning journey today.",
+      "keywords": "courses,learning,online courses,robotics",
+      "dynamicDescription": "This page includes {courseCount} published courses. Welcome to the CTUST Robotics Research Club learning area — browse by chapter and start learning."
+    },
+    "lockedCourse": {
+      "description": "This course requires a member account to access. Please log in to view the content.",
+      "keywords": "course,member login"
+    },
+    "detail": {
+      "titleTemplate": "{name} | Courses | Robotics Research Club of CTUST",
+      "keywords": "course,online courses,robotics,learning unit",
+      "fallbackDescription": "{name} is an online course unit from the CTUST Robotics Research Club, offering structured lessons and completion tracking to guide your robotics learning journey."
     }
   }
 }

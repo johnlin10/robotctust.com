@@ -46,7 +46,7 @@ yarn-error.log*
 next-env.d.ts
 
 # firebase
-robot-group-firebase-adminsdk-fbsvc-21357d1bbe.json
+robot-group-firebase-sa.json
 robot-group-firebase-sa.json
 *-firebase-sa.json
 
@@ -72,3 +72,5 @@ serializationTest.ts
 
 supabase-setup.md
 PROJECT.md
+
+migration-log.json

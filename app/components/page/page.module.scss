@@ -7,7 +7,7 @@
   height: fit-content;
   min-height: 100vh;
   padding-top: var(--header-height, 72px);
-  overflow-x: clip;
+  overflow: clip;
 
   .pageLayout {
     display: flex;
@@ -28,7 +28,8 @@
   .asideSlot {
     flex-shrink: 0;
     padding-left: var(--space-2x);
-    // On mobile, the wrapper stays 0 width since Aside is position:fixed drawer
+    width: 100%;
+    max-width: 280px;
   }
 
   .mainContent {
@@ -79,6 +80,15 @@
   }
 }
 
+@keyframes backgroundGridParallax {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(25%);
+  }
+}
+
 // background grid
 .backgroundGrid {
   z-index: -10;
@@ -91,4 +101,11 @@
     linear-gradient(var(--background-grid-color) 1px, transparent 1px),
     linear-gradient(90deg, var(--background-grid-color) 1px, transparent 1px);
   background-size: 64px 64px;
+}
+
+@supports (animation-timeline: scroll()) {
+  .backgroundGrid {
+    animation: backgroundGridParallax linear both;
+    animation-timeline: scroll(root);
+  }
 }

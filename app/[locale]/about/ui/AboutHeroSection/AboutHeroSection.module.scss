@@ -54,20 +54,22 @@
     }
 
     > .foundingNote {
-      @include mixins.flexbox(row, flex-start, center);
-      gap: 10px;
-      margin: 8px 0 0;
-      font-size: 0.8rem;
-      letter-spacing: 0.12em;
-      color: var(--foreground-tertiary);
+      p {
+        @include mixins.flexbox(row, flex-start, center);
+        gap: 9px;
+        margin: 8px 0 0;
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        color: var(--foreground-tertiary);
 
-      &::before {
-        content: '';
-        display: block;
-        width: 28px;
-        height: 1px;
-        background: var(--foreground-tertiary);
-        flex-shrink: 0;
+        &::before {
+          content: '';
+          display: block;
+          width: 28px;
+          height: 1px;
+          background: var(--foreground-tertiary);
+          flex-shrink: 0;
+        }
       }
     }
   }

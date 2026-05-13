@@ -4,18 +4,19 @@ import styles from './docs.module.scss'
 import { mainDocs } from './docs'
 import { Metadata } from 'next'
 import { metadata } from '@/app/utils/metadata'
+import { getTranslations } from 'next-intl/server'
 import Page from '@/app/components/page/Page'
 import SubDocsClient from './ui/SubDocsClient/SubDocsClient'
 
-export default function DocsPage() {
+export default async function DocsPage() {
+  const t = await getTranslations('Docs')
+
   return (
     <Page
       style={styles.docsContainer}
       header={{
-        title: '社團文檔',
-        descriptions: [
-          '這裡包含了中臺機器人研究社的各種重要文件，以及課程需要使用的資料。',
-        ],
+        title: t('page.headerTitle'),
+        descriptions: [t('page.headerDescription')],
       }}
     >
       <div className={styles.docsContent}>
@@ -23,7 +24,7 @@ export default function DocsPage() {
           <SubDocsClient />
         </div>
         <div className={styles.mainDocs}>
-          <h2>社團文件</h2>
+          <h2>{t('mainSection.heading')}</h2>
           <div className={styles.mainDocsContent}>
             {mainDocs.map((doc) => (
               <Link
@@ -32,10 +33,10 @@ export default function DocsPage() {
                 className={styles.docCard}
               >
                 <FontAwesomeIcon icon={doc.icon} className={styles.docIcon} />
-                <h3 className={styles.docTitle}>{doc.title}</h3>
-                <p className={styles.docDescription}>{doc.description}</p>
+                <h3 className={styles.docTitle}>{t(`documents.${doc.id}.title`)}</h3>
+                <p className={styles.docDescription}>{t(`documents.${doc.id}.description`)}</p>
                 {doc.category && (
-                  <span className={styles.docCategory}>{doc.category}</span>
+                  <span className={styles.docCategory}>{t('courseMaterials.category')}</span>
                 )}
               </Link>
             ))}
@@ -47,12 +48,12 @@ export default function DocsPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Docs')
   return metadata({
-    title: '社團文件｜中臺機器人研究社',
-    description:
-      '中臺機器人研究社的重要文件，包括組織章程、管理辦法及發展規劃等',
+    title: t('meta.title'),
+    description: t('meta.description'),
+    keywords: t('meta.keywords').split(','),
     image: '/assets/image/metadata-backgrounds/docs.webp',
-    keywords: ['社團文件', '組織章程', '管理辦法', '發展規劃'],
     url: '/docs',
     category: 'docs',
   })

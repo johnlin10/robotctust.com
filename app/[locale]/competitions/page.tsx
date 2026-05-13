@@ -6,6 +6,7 @@ import Page from '@/app/components/page/Page'
 import CompetitionsClient from './CompetitionsClient'
 // util
 import { metadata } from '@/app/utils/metadata'
+import { getTranslations } from 'next-intl/server'
 
 function Competitions() {
   return (
@@ -24,12 +25,12 @@ function Competitions() {
   )
 }
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Competitions')
   return metadata({
-    title: '競賽｜中臺機器人研究社',
-    description:
-      '探索中臺機器人研究社參與的各項內外部競賽資訊，包含競賽時程、報名資格與獎項內容。',
-    keywords: ['競賽', '比賽', '機器人競賽', '參賽資訊'],
+    title: t('meta.title'),
+    description: t('meta.description'),
+    keywords: t('meta.keywords').split(','),
     image: '/assets/image/metadata-backgrounds/competitions.webp',
     url: '/competitions',
     category: 'competitions',

@@ -1,6 +1,7 @@
 import styles from './contact.module.scss'
 import { Metadata } from 'next'
 import { metadata } from '@/app/utils/metadata'
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 // components
 import Page from '@/app/components/page/Page'
@@ -79,11 +80,12 @@ function Contact() {
   )
 }
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Contact')
   return metadata({
-    title: '聯絡我們',
-    description: '聯絡中臺機器人研究社',
-    keywords: ['聯絡我們', '聯絡方式', '聯絡管道'],
+    title: t('meta.title'),
+    description: t('meta.description'),
+    keywords: t('meta.keywords').split(','),
     url: '/contact',
     category: 'contact',
   })

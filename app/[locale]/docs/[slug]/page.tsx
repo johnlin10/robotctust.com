@@ -5,6 +5,8 @@ import styles from './doc-content.module.scss'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Page from '@/app/components/page/Page'
+import { metadata } from '@/app/utils/metadata'
+import { getTranslations } from 'next-intl/server'
 
 export async function generateStaticParams() {
   return mainDocs.map((doc) => ({
@@ -19,10 +21,14 @@ export default async function DocPage({
 }) {
   const { slug } = await params
   const doc = getDocById(slug)
+  const t = await getTranslations('Docs')
 
   if (!doc) {
     notFound()
   }
+
+  const translatedTitle = t(`documents.${doc.id}.title`)
+  const translatedDescription = t(`documents.${doc.id}.description`)
 
   return (
     <Page style={styles.docContent}>
@@ -32,12 +38,14 @@ export default async function DocPage({
             <FontAwesomeIcon icon={doc.icon} className={styles.docIcon} />
             <div className={styles.docMeta}>
               <h3>
-                {doc.title}
+                {translatedTitle}
                 {doc.category && (
-                  <span className={styles.docCategory}>{doc.category}</span>
+                  <span className={styles.docCategory}>
+                    {t('courseMaterials.category')}
+                  </span>
                 )}
               </h3>
-              <p className={styles.docDescription}>{doc.description}</p>
+              <p className={styles.docDescription}>{translatedDescription}</p>
             </div>
           </div>
         </div>
@@ -56,20 +64,26 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
+  const t = await getTranslations('Docs')
   const doc = getDocById(slug)
 
   if (!doc) {
-    return {
-      title: '文件未找到｜中臺機器人研究社',
-    }
+    return metadata({
+      title: t('meta.docNotFound'),
+      description: '',
+      noIndex: true,
+    })
   }
 
-  return {
-    title: `${doc.title}｜中臺機器人研究社`,
-    description: doc.description,
-    openGraph: {
-      title: `${doc.title}｜中臺機器人研究社`,
-      description: doc.description,
-    },
-  }
+  const translatedTitle = t(`documents.${doc.id}.title`)
+  const translatedDescription = t(`documents.${doc.id}.description`)
+
+  return metadata({
+    title: t('meta.titleTemplate', { title: translatedTitle }),
+    description: translatedDescription,
+    keywords: t('meta.keywords').split(','),
+    image: '/assets/image/metadata-backgrounds/docs.webp',
+    url: `/docs/${slug}`,
+    category: 'docs',
+  })
 }

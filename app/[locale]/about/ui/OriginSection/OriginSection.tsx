@@ -1,5 +1,6 @@
 import styles from './OriginSection.module.scss'
 import ScrollAnimation from '@/app/components/animation/ScrollAnimation/ScrollAnimation'
+import { getTranslations } from 'next-intl/server'
 
 const founders = [
   { name: '藍世錡', role: '社長' },
@@ -10,7 +11,9 @@ const founders = [
 /**
  * 創社緣起區域
  */
-export default function OriginSection() {
+export default async function OriginSection() {
+  const t = await getTranslations('About.origin')
+
   return (
     <section className={styles.origin}>
       <div className={styles.container}>
@@ -22,8 +25,8 @@ export default function OriginSection() {
             animation="fadeInUp"
             once={false}
           >
-            <span>創社緣起</span>
-            <h2>從一個缺口開始</h2>
+            <span>{t('label')}</span>
+            <h2>{t('heading')}</h2>
           </ScrollAnimation>
           <ScrollAnimation
             className={styles.paragraph}
@@ -31,10 +34,7 @@ export default function OriginSection() {
             delay={60}
             once={false}
           >
-            <p>
-              2025 年 5
-              月，三位對機器人技術同樣著迷的同學在學校發現了一件事：校內有許多充滿活力的社團，卻幾乎沒有一個以「學習」本身為核心的地方。
-            </p>
+            <p>{t('paragraph1')}</p>
           </ScrollAnimation>
           <ScrollAnimation
             className={styles.paragraph}
@@ -42,9 +42,7 @@ export default function OriginSection() {
             delay={100}
             once={false}
           >
-            <p>
-              沒有一個讓你真正動手做事的地方，沒有一個可以花一整個下午研究一個問題的地方。於是，一個念頭慢慢成形：如果我們來做這件事呢？
-            </p>
+            <p>{t('paragraph2')}</p>
           </ScrollAnimation>
           <ScrollAnimation
             className={styles.paragraph}
@@ -52,9 +50,7 @@ export default function OriginSection() {
             delay={140}
             once={false}
           >
-            <p>
-              三個人以共同的興趣出發，從課程設計到機器人製作，每一個環節都是第一次。我們又找了幾位夥伴，邊做邊學，把不確定的事情拿出來一起面對。
-            </p>
+            <p>{t('paragraph3')}</p>
           </ScrollAnimation>
         </div>
 
@@ -75,7 +71,6 @@ export default function OriginSection() {
               <span className={styles.foundersLabel}>創辦人</span>
               {founders.map((founder) => (
                 <div key={founder.name} className={styles.founderItem}>
-                  {/* <span className={styles.founderDot} aria-hidden="true" /> */}
                   <span className={styles.founderName}>{founder.name}</span>
                   <span className={styles.founderRole}>{founder.role}</span>
                 </div>

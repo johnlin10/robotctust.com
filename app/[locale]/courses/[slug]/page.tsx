@@ -8,6 +8,7 @@ import {
   metadata as buildMetadata,
 } from '@/app/utils/metadata'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import styles from './courseDetail.module.scss'
 import { createClient } from '@/app/utils/supabase/server'
@@ -24,6 +25,7 @@ interface CoursePageProps {
 
 function buildCourseSeoDescription(
   course: NonNullable<Awaited<ReturnType<typeof getCourseWithContents>>>,
+  fallback: string,
 ): string {
   const fromField = course.description?.trim()
   if (fromField) {
@@ -40,14 +42,17 @@ function buildCourseSeoDescription(
   if (textBlock?.content?.trim()) {
     return generateDescriptionFromMarkdown(textBlock.content, 160)
   }
-  return `${course.name}為中臺機器人研究社的線上課程單元，提供章節化教材與完成驗證流程，協助你循序學習機器人相關主題。`
+  return fallback
 }
 
 export async function generateMetadata({
   params,
 }: CoursePageProps): Promise<Metadata> {
   const { slug } = await params
-  const supabase = await createClient()
+  const [t, supabase] = await Promise.all([
+    getTranslations('Courses'),
+    createClient(),
+  ])
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -61,22 +66,24 @@ export async function generateMetadata({
 
   if (!course) {
     return buildMetadata({
-      title: `${publicCourse.name}｜課程｜中臺機器人研究社`,
-      description: '本課程內容需使用具社員權限的帳號登入後查看。',
-      keywords: [publicCourse.name, '課程', '社員登入'],
+      title: t('detail.titleTemplate', { name: publicCourse.name }),
+      description: t('lockedCourse.description'),
+      keywords: [publicCourse.name, ...t('lockedCourse.keywords').split(',')],
       url: `/courses/${slug}`,
       category: 'courses',
       noIndex: true,
     })
   }
 
-  const description = buildCourseSeoDescription(course)
-  const title = `${course.name}｜課程｜中臺機器人研究社`
+  const description = buildCourseSeoDescription(
+    course,
+    t('detail.fallbackDescription', { name: course.name }),
+  )
 
   return buildMetadata({
-    title,
+    title: t('detail.titleTemplate', { name: course.name }),
     description,
-    keywords: [course.name, '課程', '線上課程', '機器人', '教學單元'],
+    keywords: [course.name, ...t('detail.keywords').split(',')],
     url: `/courses/${slug}`,
     type: 'article',
     category: 'courses',

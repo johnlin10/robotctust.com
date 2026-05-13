@@ -10,11 +10,20 @@
   @include mixins.border-radius(16px);
   @include mixins.glass-blur(24px);
 
+  @include mixins.respond-by-max-width('600px') {
+    padding: var(--space-2x);
+    padding-top: var(--space-4x);
+  }
+
   > .container {
     @include mixins.flexbox(column, flex-start, flex-start);
     gap: 32px;
     max-width: 900px;
     margin: 0 auto;
+
+    @include mixins.respond-by-max-width('600px') {
+      gap: var(--space-2x);
+    }
 
     // sectionLabel + h2 的 animated.div 包裝器
     > .headingGroup {
@@ -46,7 +55,6 @@
         font-size: 0.95rem;
         line-height: 1.9;
         color: var(--foreground-secondary);
-        max-width: 620px;
       }
     }
 

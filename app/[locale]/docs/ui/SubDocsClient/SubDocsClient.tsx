@@ -5,13 +5,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styles from './SubDocsClient.module.scss'
 import { subDocs } from '../../docs'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { useTranslations } from 'next-intl'
 
 export default function SubDocsClient() {
+  const t = useTranslations('Docs')
+
   return (
     <div className={styles.subDocs}>
       {subDocs.map((docGroup) => (
         <div className={styles.docGroup} key={docGroup.id}>
-          <h2>{docGroup.title}</h2>
+          <h2>{t('courseMaterials.title')}</h2>
           {docGroup.docs.map((subDoc) => {
             // 取得今天日期
             const todayDate = new Date()
@@ -41,7 +44,11 @@ export default function SubDocsClient() {
                       isToday ? styles.subDocToday : ''
                     } ${isTomorrow ? styles.subDocTomorrow : ''}`}
                   >
-                    {isToday ? '今天' : isTomorrow ? '明天' : date}
+                    {isToday
+                      ? t('dateLabels.today')
+                      : isTomorrow
+                        ? t('dateLabels.tomorrow')
+                        : date}
                   </span>
                   {subDoc.title}
                 </h4>
@@ -53,7 +60,7 @@ export default function SubDocsClient() {
                       className={styles.subDocLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      title={`查看 ${doc.title} 文件`}
+                      title={t('linkTitle', { title: doc.title })}
                     >
                       {doc.icon && (
                         <FontAwesomeIcon
