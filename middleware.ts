@@ -47,6 +47,6 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // 排除 static, image, favicon 等，處理其餘所有路徑（包含 /api/* 以確保 session token 能刷新）
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|xml|txt|md|json|woff|woff2|ttf|otf|map)$).*)',
   ],
 }
